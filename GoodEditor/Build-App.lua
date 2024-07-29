@@ -10,7 +10,7 @@ project "GoodEditor"
 
    files { "Source/**.h", "Source/**.cpp" }
 
-   local libDir = "Libs"
+   local libDir = "../TooGoodEngine/Libs"
 
    includedirs
    {

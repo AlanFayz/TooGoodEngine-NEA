@@ -3,12 +3,12 @@
 #include <iostream>
 
 
-namespace Core {
+namespace TooGoodEngine {
 
 	void PrintHelloWorld()
 	{
 		std::cout << "Hello World!\n";
-		std::cin.get();	
+		std::cin.get();
 	}
 
 }
