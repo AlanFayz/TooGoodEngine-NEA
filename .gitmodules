@@ -1,0 +1,9 @@
+[submodule "TooGoodEngine/Libs/GLFW"]
+	path = TooGoodEngine/Libs/GLFW
+	url = https://github.com/glfw/glfw.git
+[submodule "TooGoodEngine/Libs/AssimpWithPremake"]
+	path = TooGoodEngine/Libs/AssimpWithPremake
+	url = https://github.com/DevAlgos/AssimpWithPremake.git
+[submodule "TooGoodEngine/Libs/ImGui"]
+	path = TooGoodEngine/Libs/ImGui
+	url = https://github.com/DevAlgos/imgui.git
