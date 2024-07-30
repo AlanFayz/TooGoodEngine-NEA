@@ -36,9 +36,52 @@ namespace TooGoodEngine {
 		m_Nodes.push_back(child);
 
 		Node& parentNode = m_Nodes[index];
-		parentNode.Children.insert(m_Nodes.size() - 1);
+		parentNode.Children.push_back(m_Nodes.size() - 1);
 
 		return entity;
+	}
+
+	const bool EntityTree::ContainsEntity(const Entity& entity)
+	{
+		return _Find(entity) != g_NullNode;
+	}
+
+	Node& EntityTree::GetNode(const Entity& parent)
+	{
+		size_t index = _Find(parent);
+
+		TGE_VERIFY(index != g_NullNode, "parent not found");
+
+		return m_Nodes[index];
+	}
+
+	void EntityTree::Move(const Entity& child, const Entity& newParent)
+	{
+		size_t childIndex  = _Find(child);
+		size_t parentIndex = _Find(newParent);
+
+		TGE_VERIFY(childIndex != g_NullNode && parentIndex != g_NullNode, "child or parent was not found");
+
+		auto& childNode  = m_Nodes[childIndex];
+		auto& parentNode = m_Nodes[parentIndex];
+
+		if (childNode.ParentIndex == g_NullNode)
+		{
+			parentNode.Children.push_back(childIndex);
+			childNode.ParentIndex = parentIndex;
+			return;
+		}
+
+		size_t oldParentIndex = m_Nodes[childIndex].ParentIndex;
+		auto& oldParentNode = m_Nodes[oldParentIndex];
+
+		auto it = std::find(oldParentNode.Children.begin(), oldParentNode.Children.end(), childIndex);
+
+		if(it != oldParentNode.Children.end())
+			oldParentNode.Children.erase(it);
+
+		parentNode.Children.push_back(childIndex);
+		childNode.ParentIndex = parentIndex;
 	}
 
 	size_t EntityTree::_Find(const Entity& entity)

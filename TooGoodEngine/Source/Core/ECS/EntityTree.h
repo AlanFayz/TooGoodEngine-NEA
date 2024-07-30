@@ -3,7 +3,6 @@
 #include "Registry.h"
 
 #include <stack>
-#include <set>
 
 namespace TooGoodEngine {
 
@@ -13,8 +12,8 @@ namespace TooGoodEngine {
 	{
 		std::string_view Name;
 		EntityID Entity;
-		size_t ParentIndex;
-		std::set<size_t> Children;
+		size_t ParentIndex = g_NullNode;
+		std::vector<size_t> Children;
 	};
 
 	class EntityTree : public Registry
@@ -26,6 +25,15 @@ namespace TooGoodEngine {
 		Entity Add(std::string_view name);
 		Entity Add(const Entity& parent, std::string_view name);
 
+		const bool ContainsEntity(const Entity& entity);
+		Node& GetNode(const Entity& parent);
+
+		/*
+			Will move a child entity to a new parent
+		*/
+
+		void Move(const Entity& child, const Entity& newParent);
+
 		/*
 			Applies function using depth first to elements
 			function should take in a name and entity ID
@@ -33,6 +41,7 @@ namespace TooGoodEngine {
 
 		template<typename Fun>
 		void Depth(const Entity& parent, Fun fun); 
+
 
 	private:
 		size_t _Find(const Entity& entity);
