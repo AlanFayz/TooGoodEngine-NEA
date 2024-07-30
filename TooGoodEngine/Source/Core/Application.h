@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Core/ECS/DenseMap.h"
+#include "ECS/DenseMap.h"
 
 namespace TooGoodEngine {
 	
