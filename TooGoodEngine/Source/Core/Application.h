@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Core/ECS/MemoryAllocator.h"
+#include "Core/ECS/DenseMap.h"
 
 namespace TooGoodEngine {
 	
@@ -13,7 +13,7 @@ namespace TooGoodEngine {
 		void Run();
 
 	private:
-		MemoryAllocator m_MemoryAllocator;
+		DenseMap m_DenseMap;
 	};
 
 }

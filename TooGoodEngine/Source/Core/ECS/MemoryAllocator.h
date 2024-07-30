@@ -3,6 +3,7 @@
 #include "Core/Base.h"
 
 #include <type_traits>
+#include <iterator>
 
 namespace TooGoodEngine {
 
@@ -67,6 +68,13 @@ namespace TooGoodEngine {
 		void Insert(const T& element);
 
 		/*
+			Inserts an array of elements
+		*/
+
+		template<typename Iterator>
+		void InsertN(Iterator begin, Iterator end);
+
+		/*
 			construts an element at the end of the buffer,
 			must have a valid constructor
 		*/
@@ -117,7 +125,7 @@ namespace TooGoodEngine {
 	inline T* MemoryAllocator::End()
 	{
 		TGE_VERIFY(m_Identity == typeid(T).name(), "elements need to be same");
-		return (T*)m_Buffer + m_Size - 1;
+		return (T*)m_Buffer + m_Size;
 	}
 
 	template<typename T>
@@ -135,6 +143,18 @@ namespace TooGoodEngine {
 
 		T* converted = (T*)m_Buffer;
 		converted[m_Size++] = element;
+	}
+
+	template<typename Iterator>
+	inline void MemoryAllocator::InsertN(Iterator begin, Iterator end)
+	{
+		TGE_VERIFY(end > begin, "cannot be the same iterator");
+
+		using ValueType = typename std::iterator_traits<Iterator>::value_type;
+
+		for (Iterator iterator = begin; iterator != end; iterator++)
+			Insert<ValueType>(*iterator);
+
 	}
 
 	template<typename T, typename ...Args>
@@ -163,7 +183,7 @@ namespace TooGoodEngine {
 			m_Identity = typeid(T).name();
 
 		TGE_VERIFY(m_Identity == typeid(T).name() &&
-				   index < m_Size && index >= 0, 
+				   index < m_Size, 
 				   "elements must be the same or index out of range");
 
 
