@@ -16,12 +16,12 @@ namespace TooGoodEngine {
 			m_File.close();
 	}
 
-	StrongRef<MemoryAllocator> FileReader::Read(size_t bytes)
+	Ref<MemoryAllocator> FileReader::Read(size_t bytes)
 	{
 		if (!m_File.is_open())
 			return nullptr;
 		
-		StrongRef<MemoryAllocator> allocator = CreateStrongRef<MemoryAllocator>(bytes);
+		Ref<MemoryAllocator> allocator = CreateRef<MemoryAllocator>(bytes);
 
 		char* converted = (char*)allocator->GetRaw();
 		m_File.read(converted, bytes);

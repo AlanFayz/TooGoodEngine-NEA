@@ -6,22 +6,22 @@
 namespace TooGoodEngine {
 
 	template<typename T>
-	using StrongRef = std::shared_ptr<T>;
+	using Ref = std::shared_ptr<T>;
 
 	template<typename T>
 	using WeakRef   = std::weak_ptr<T>;
 
 	template<typename T>
-	using UniqueRef = std::unique_ptr<T>;
+	using Scoped = std::unique_ptr<T>;
 
 	template<typename T, typename ...Args>
-	constexpr StrongRef<T> CreateStrongRef(Args&&... args)
+	constexpr Ref<T> CreateRef(Args&&... args)
 	{
 		return std::make_shared<T>(std::forward<Args>(args)...);
 	}
 
 	template<typename T, typename ...Args>
-	constexpr UniqueRef<T> CreateUniqueRef(Args&&... args)
+	constexpr Scoped<T> CreateScoped(Args&&... args)
 	{
 		return std::make_unique<T>(std::forward<Args>(args)...);
 	}

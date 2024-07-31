@@ -29,7 +29,7 @@ project "TooGoodEngine"
    targetdir ("../Binaries/" .. OutputDir .. "/%{prj.name}")
    objdir ("../Binaries/Intermediates/" .. OutputDir .. "/%{prj.name}")
 
-   files { "Source/**.h", "Source/**.cpp" }
+   files { "Source/**.h", "Source/**.cpp", "Source/**.hpp" }
 
    local pythonDir = FindPython()
    local libDir = "Libs"
