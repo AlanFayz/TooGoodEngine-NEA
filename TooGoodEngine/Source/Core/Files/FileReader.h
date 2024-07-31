@@ -11,7 +11,7 @@ namespace TooGoodEngine {
 	class FileReader
 	{
 	public:
-		FileReader(const std::filesystem::path& path);
+		FileReader(const std::filesystem::path& path, bool isBinary);
 		~FileReader();
 
 		inline const size_t GetPosition() { _VerifyStream(); return m_File.tellg(); };

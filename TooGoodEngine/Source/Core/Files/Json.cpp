@@ -66,9 +66,5 @@ namespace TooGoodEngine {
 			m_Stream.close();
 	}
 
-	template<>
-	static void Impl_Write::Call(const JsonPath& path, const int& data)
-	{
-
-	}
+	
 }

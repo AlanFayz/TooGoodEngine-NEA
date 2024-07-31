@@ -2,9 +2,12 @@
 
 namespace TooGoodEngine {
 	
-	FileReader::FileReader(const std::filesystem::path& path)
+	FileReader::FileReader(const std::filesystem::path& path, bool isBinary)
 	{
-		m_File.open(path);
+		if(isBinary)
+			m_File.open(path, std::ios::binary);
+		else 
+			m_File.open(path);
 
 		if (!m_File.is_open())
 			TGE_LOG_WARNING("failed to open file ", path);

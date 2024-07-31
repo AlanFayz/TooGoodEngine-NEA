@@ -58,6 +58,12 @@ namespace TooGoodEngine {
 		}
 	};
 
+	template<>
+	static void Impl_Write::Call(const JsonPath& path, const int& data)
+	{
+
+	}
+
 
 	template<typename T>
 	inline void JsonWriter::WriteGeneric(const JsonPath& path, const T& data) 
