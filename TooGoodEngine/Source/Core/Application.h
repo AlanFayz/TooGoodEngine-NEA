@@ -2,6 +2,8 @@
 
 #include "Window.h"
 #include "Layers/LayerStack.h"
+#include "Utils/Timer.h"
+#include "API/OpenGL/Buffer.h"
 
 namespace TooGoodEngine {
 	
@@ -23,6 +25,7 @@ namespace TooGoodEngine {
 
 		bool m_Runnning = true;
 		Window m_Window;
+		Timer m_Timer;
 	};
 
 }

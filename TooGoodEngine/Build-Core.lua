@@ -8,7 +8,7 @@ project "TooGoodEngine"
    targetdir ("../Binaries/" .. OutputDir .. "/%{prj.name}")
    objdir ("../Binaries/Intermediates/" .. OutputDir .. "/%{prj.name}")
 
-   files { "Source/**.h", "Source/**.cpp", "Source/**.hpp" }
+   files { "Source/**.h", "Source/**.cpp", "Source/**.hpp", "Source/**.c" }
 
    local libDir = "Libs"
    
@@ -21,7 +21,8 @@ project "TooGoodEngine"
       PythonDir .. "include",
       libDir    .. "/AssimpWithPremake/include",
       libDir    .. "/GLFW/include",
-      libDir    .. "/ImGui"
+      libDir    .. "/ImGui",
+
    }
 
    libdirs 

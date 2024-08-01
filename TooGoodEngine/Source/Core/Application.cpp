@@ -31,10 +31,15 @@ namespace TooGoodEngine {
 
 		while (m_Runnning)
 		{
+			m_Timer.Start();
+
 			m_LayerStack.OnUpdateLayers(delta);
 			m_LayerStack.OnGuiUpdateLayers(delta);
 
 			m_Window.Update();
+
+			delta = (double)m_Timer.EllapsedMilli();
+			delta /= 1000.0;
 		}
 	}
 
@@ -49,9 +54,6 @@ namespace TooGoodEngine {
 			TGE_LOG_INFO(castedEvent->GetWidth(), " ", castedEvent->GetHeight());
 		}
 
-		//dispatch event to layers incase any behaviour needs to happen
-		//when application is closing
 		m_LayerStack.OnEvent(event);
 	}
-
 }

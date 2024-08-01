@@ -3,6 +3,7 @@
 #include "Core/Base.h"
 #include "Events/Event.h"
 
+#include "External/glad/glad.h"
 #include <GLFW/glfw3.h>
 
 namespace TooGoodEngine {
@@ -23,9 +24,17 @@ namespace TooGoodEngine {
 		inline void SetWidth(uint32_t width)   { m_Width = width; }
 		inline void SetHeight(uint32_t height) { m_Height = height; }
 
-
 		inline EventDispatcher<Application>& GetDispatcher() { return m_Dispatcher; }
 		inline GLFWwindow* GetWindow() const { return m_Window; }
+
+		static void OpenGLDebugCallback(
+			GLenum source, 
+			GLenum type, 
+			GLuint id, 
+			GLenum severity, 
+			GLsizei length, 
+			const GLchar* message, 
+			const void* userParam);
 
 	private:
 		uint32_t m_Width, m_Height;

@@ -2,6 +2,7 @@
 
 #include "Application.h"
 
+
 namespace TooGoodEngine {
 
 	Window::Window(uint32_t width, uint32_t height, const std::string& title, EventDispatcher<Application>& dispatcher)
@@ -37,6 +38,14 @@ namespace TooGoodEngine {
 				ApplicationCloseEvent closeEvent;
 				myWindow->GetDispatcher().Dispatch(&closeEvent);
 			});
+
+		glfwMakeContextCurrent(m_Window);
+		
+		TGE_VERIFY(gladLoadGL(), "failed to load glad");
+
+		glEnable(GL_DEBUG_OUTPUT);
+		glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+		glDebugMessageCallback(Window::OpenGLDebugCallback, nullptr);
 	}
 
 	Window::~Window()
@@ -52,5 +61,16 @@ namespace TooGoodEngine {
 	{
 		glfwPollEvents();
 		glfwSwapBuffers(m_Window);
+	}
+
+	void Window::OpenGLDebugCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
+	{
+		switch (severity)
+		{
+		case GL_DEBUG_SEVERITY_LOW:    TGE_LOG_INFO(message);      break;
+		case GL_DEBUG_SEVERITY_MEDIUM: TGE_LOG_WARNING(message);   break;
+		case GL_DEBUG_SEVERITY_HIGH:   TGE_ASSERT(false, message); break;
+		default:					   TGE_LOG_INFO(message);      break;
+		}
 	}
 }
