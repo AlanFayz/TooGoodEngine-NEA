@@ -5,6 +5,7 @@
 namespace TooGoodEngine {
 
 	Application::Application()
+		: m_Dispatcher(this), m_Window(1200, 800, "window", m_Dispatcher)
 	{
 		ScriptingEngine::Init();
 	}
@@ -32,6 +33,8 @@ namespace TooGoodEngine {
 		{
 			m_LayerStack.OnUpdateLayers(delta);
 			m_LayerStack.OnGuiUpdateLayers(delta);
+
+			m_Window.Update();
 		}
 	}
 
@@ -39,6 +42,12 @@ namespace TooGoodEngine {
 	{
 		if (event->GetType() == EventType::ApplicationClose)
 			m_Runnning = false;
+
+		if (event->GetType() == EventType::WindowResize)
+		{
+			WindowResizeEvent* castedEvent = (WindowResizeEvent*)event;
+			TGE_LOG_INFO(castedEvent->GetWidth(), " ", castedEvent->GetHeight());
+		}
 
 		//dispatch event to layers incase any behaviour needs to happen
 		//when application is closing

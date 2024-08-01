@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Window.h"
 #include "Layers/LayerStack.h"
 
 namespace TooGoodEngine {
@@ -18,7 +19,10 @@ namespace TooGoodEngine {
 
 	private:
 		LayerStack m_LayerStack;
+		EventDispatcher<Application> m_Dispatcher;
+
 		bool m_Runnning = true;
+		Window m_Window;
 	};
 
 }

@@ -25,20 +25,24 @@ namespace TooGoodEngine {
 		virtual void OnEvent(Event* event) = 0;
 	};
 
+	template<typename T>
 	class EventDispatcher
 	{
 	public:
-		EventDispatcher() = default;
+		EventDispatcher(T* context) : m_EventHandler(context) {};
 		~EventDispatcher() = default;
 
-		template<typename Type, typename E>
-		void Dispatch(Type* eventHandler, E* event)
+		template<typename E>
+		void Dispatch(E* event)
 		{
-			static_assert(std::is_base_of_v<EventHandler, Type>, "not base class of event handler");
+			static_assert(std::is_base_of_v<EventHandler, T>, "not base class of event handler");
 			static_assert(std::is_base_of_v<Event, E>, "not a base class of event");
 
-			eventHandler->OnEvent(event);
+			m_EventHandler->OnEvent(event);
 		}
+
+	private:
+		T* m_EventHandler;
 	};
 
 	class WindowResizeEvent : public Event

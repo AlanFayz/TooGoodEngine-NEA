@@ -17,7 +17,8 @@ project "GoodEditor"
       "Source",
       "../TooGoodEngine/Source",
 
-      libDir .. "/ImGui",
+      libDir    .. "/ImGui",
+      libDir    .. "/GLFW/include",
       PythonDir .. "include"
    }
 
