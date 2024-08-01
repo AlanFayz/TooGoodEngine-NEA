@@ -6,6 +6,7 @@
 namespace TooGoodEngine {
 
 	namespace PythonBindings {
+
 		static PyObject* LogMsg(PyObject* self, PyObject* args)
 		{
 			const char* val;

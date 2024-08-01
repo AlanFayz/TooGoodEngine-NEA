@@ -1,19 +1,24 @@
 #pragma once
 
-#include "Scripting/ScriptComponent.h"
+#include "Layers/LayerStack.h"
 
 namespace TooGoodEngine {
 	
-	class Application
+	class Application : public EventHandler
 	{
 	public:
 		Application();
 		~Application();
 
+		void AddLayer(const Ref<Layer>& layer);
+		void RemoveLayer(const Ref<Layer>& layer);
 		void Run();
+		
+		virtual void OnEvent(Event* event);
 
 	private:
-		ScriptComponent m_Component;
+		LayerStack m_LayerStack;
+		bool m_Runnning = true;
 	};
 
 }

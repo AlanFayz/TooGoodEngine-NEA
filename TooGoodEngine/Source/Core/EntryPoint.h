@@ -10,7 +10,6 @@ namespace TooGoodEngine {
 		Application app;
 		app.Run();
 
-
 		return 0;
 	}
 
