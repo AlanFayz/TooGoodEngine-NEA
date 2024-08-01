@@ -5,11 +5,6 @@
 
 namespace TooGoodEngine {
 
-	/// <summary>
-	/// Unique identifier for identifying
-	/// components/assets
-	/// </summary>
-
 	class UUID
 	{
 	public:

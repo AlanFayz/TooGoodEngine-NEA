@@ -6,7 +6,7 @@
 
 namespace TooGoodEngine {
 
-	static constexpr size_t g_NullNode = std::numeric_limits<size_t>::max();
+	inline constexpr size_t g_NullNode = std::numeric_limits<size_t>::max();
 
 	struct Node
 	{

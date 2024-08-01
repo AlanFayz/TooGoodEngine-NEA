@@ -17,7 +17,13 @@ project "GoodEditor"
       "Source",
       "../TooGoodEngine/Source",
 
-      libDir .. "/ImGui"
+      libDir .. "/ImGui",
+      PythonDir .. "include"
+   }
+
+   libdirs 
+   {
+       PythonDir .. "/libs"
    }
 
    links
@@ -33,8 +39,9 @@ project "GoodEditor"
 
    filter "configurations:Debug"
        defines { "DEBUG" }
-       runtime "Debug"
+       runtime "Release"
        symbols "On"
+       optimize "Off"
 
        libdirs
        {

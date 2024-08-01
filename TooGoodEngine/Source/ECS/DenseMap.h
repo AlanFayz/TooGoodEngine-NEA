@@ -39,7 +39,7 @@ namespace TooGoodEngine {
 		void Remove(EntityID entity);
 
 		template<typename T>
-		const T& Get(EntityID entity);
+		T& Get(EntityID entity);
 
 		/*
 			Function should take in the type of component as a reference
@@ -93,7 +93,7 @@ namespace TooGoodEngine {
 	}
 
 	template<typename T>
-	inline const T& DenseMap::Get(EntityID entity)
+	inline T& DenseMap::Get(EntityID entity)
 	{
 		TGE_VERIFY(m_Sparse.contains(entity), "entity has no component");
 		return m_Dense.GetElement<T>(m_Sparse[entity]);

@@ -14,7 +14,7 @@ namespace TooGoodEngine {
 		the same type
 	*/
 
-	static constexpr size_t g_ResizeFactor = 2;
+	inline constexpr size_t g_ResizeFactor = 2;
 
 	class MemoryAllocator
 	{
@@ -34,7 +34,7 @@ namespace TooGoodEngine {
 		inline const size_t GetSize()     const	{ return m_Size; }
 
 		template<typename T>
-		inline const T& GetElement(size_t index);
+		inline T& GetElement(size_t index);
 
 		template<typename T>
 		inline T* Begin();
@@ -105,7 +105,7 @@ namespace TooGoodEngine {
 	};
 
 	template<typename T>
-	inline const T& MemoryAllocator::GetElement(size_t index)
+	inline T& MemoryAllocator::GetElement(size_t index)
 	{
 		TGE_VERIFY(index < m_Size && m_Identity == typeid(T).name(), "elements need to be same");
 

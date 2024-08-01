@@ -39,5 +39,4 @@ namespace TooGoodEngine {
 		UUID m_UUID;
 	};
 
-
 }

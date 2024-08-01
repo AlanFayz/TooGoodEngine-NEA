@@ -10,6 +10,8 @@ namespace TooGoodEngine {
 
 	using json = nlohmann::json;
 
+	using JsonPath = std::vector<std::string>;
+
 	// ------- Reader ---------
 	class JsonReader
 	{
@@ -18,15 +20,42 @@ namespace TooGoodEngine {
 		~JsonReader();
 
 		inline const json& GetData() const { return m_Data; }
-		
+
 		void PrintData(bool pretty = true);
+
+		template<typename T> 
+		T Fetch(const JsonPath& path);
 
 	private:
 		std::ifstream m_Stream;
 		json m_Data;
 	};
 
-	using JsonPath = std::vector<std::string>;
+	template<typename T>
+	inline T JsonReader::Fetch(const JsonPath& path)
+	{
+		TGE_VERIFY(path.size() > 0, "path must be bigger than 0");
+
+		json* current = &m_Data;
+		size_t last = path.size() - 1;
+
+		for (size_t i = 0; i < last; ++i)
+		{
+			auto& ref = *current;
+			const std::string& key = path[i];
+
+			if (!current->contains(key))
+			{
+				TGE_LOG_ERROR("path is invalid");
+				return T();
+			}
+
+			current = &ref[key];
+		}
+		
+		json& ref = *current;
+		return ref[path[last]].get<T>();
+	}
 
 	// ------- Writer ---------
 	class JsonWriter
@@ -57,12 +86,6 @@ namespace TooGoodEngine {
 			TGE_LOG_ERROR("data type ", typeid(T).name(), " not supported");
 		}
 	};
-
-	template<>
-	static void Impl_Write::Call(const JsonPath& path, const int& data)
-	{
-
-	}
 
 
 	template<typename T>

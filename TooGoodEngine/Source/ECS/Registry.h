@@ -27,7 +27,7 @@ namespace TooGoodEngine {
 		void RemoveComponent(const Entity& entity);
 
 		template<typename T>
-		const T& GetComponent(const Entity& entity);
+		T& GetComponent(const Entity& entity);
 
 
 		template<typename T, typename Fun>
@@ -64,7 +64,7 @@ namespace TooGoodEngine {
 	}
 
 	template<typename T>
-	inline const T& Registry::GetComponent(const Entity& entity)
+	inline T& Registry::GetComponent(const Entity& entity)
 	{
 		_VerifyEntity(entity);
 		return m_Buckets[typeid(T).name()].Get<T>(entity);

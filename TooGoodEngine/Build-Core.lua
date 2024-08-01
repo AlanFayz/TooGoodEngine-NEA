@@ -1,24 +1,3 @@
-function Split(input, seperator)
-  local t = {}
-  for match in (input .. seperator):gmatch("(.-)" .. seperator) do
-    table.insert(t, match)
-  end
-  return t
-end
-
-function FindPython()
-    local env = Split(os.getenv("Path"), ";")
-
-   for _, path in ipairs(env) do
-        if string.find(path, "Python") and not string.find(path, "Launcher") and not string.find(path, "Scripts") then
-            return path
-        end
-    end
-   
-    print("Error no python found")
-    return "error"
-end
-
 project "TooGoodEngine"
    kind "StaticLib"
    language "C++"
@@ -31,7 +10,6 @@ project "TooGoodEngine"
 
    files { "Source/**.h", "Source/**.cpp", "Source/**.hpp" }
 
-   local pythonDir = FindPython()
    local libDir = "Libs"
    
    includedirs
@@ -40,7 +18,7 @@ project "TooGoodEngine"
       "Source",
 
       -- Vendor includes --
-      pythonDir .. "include",
+      PythonDir .. "include",
       libDir    .. "/AssimpWithPremake/include",
       libDir    .. "/GLFW/include",
       libDir    .. "/ImGui"
@@ -48,7 +26,7 @@ project "TooGoodEngine"
 
    libdirs 
    {
-       pythonDir .. "/libs",
+       PythonDir .. "/libs"
    }
 
    links 
@@ -66,8 +44,9 @@ project "TooGoodEngine"
 
    filter "configurations:Debug"
        defines { "DEBUG" }
-       runtime "Debug"
+       runtime "Release"
        symbols "On"
+       optimize "Off"
 
        libdirs
        {

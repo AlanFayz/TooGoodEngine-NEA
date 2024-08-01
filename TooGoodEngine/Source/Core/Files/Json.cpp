@@ -26,7 +26,6 @@ namespace TooGoodEngine {
 	}
 	JsonReader::~JsonReader()
 	{
-
 	}
 	void JsonReader::PrintData(bool pretty)
 	{
@@ -55,13 +54,11 @@ namespace TooGoodEngine {
 	}
 	JsonWriter::~JsonWriter()
 	{
-		//write the data to disk
 		if (m_Optimize)
 			m_Stream << m_Data;
 		else
 			m_Stream << std::setw(4) << m_Data;
 
-		//close the stream
 		if (m_Stream.is_open())
 			m_Stream.close();
 	}

@@ -1,19 +1,19 @@
 #pragma once
 
-#include "ECS/DenseMap.h"
+#include "Scripting/ScriptComponent.h"
 
 namespace TooGoodEngine {
 	
 	class Application
 	{
 	public:
-		Application() = default;
-		~Application() = default;
+		Application();
+		~Application();
 
 		void Run();
 
 	private:
-		DenseMap m_DenseMap;
+		ScriptComponent m_Component;
 	};
 
 }
