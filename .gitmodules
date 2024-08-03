@@ -7,3 +7,6 @@
 [submodule "TooGoodEngine/Libs/ImGui"]
 	path = TooGoodEngine/Libs/ImGui
 	url = https://github.com/DevAlgos/imgui.git
+[submodule "TooGoodEngine/Libs/glm"]
+	path = TooGoodEngine/Libs/glm
+	url = https://github.com/icaven/glm.git

@@ -19,6 +19,7 @@ project "GoodEditor"
 
       libDir    .. "/ImGui",
       libDir    .. "/GLFW/include",
+      libDir    .. "/glm",
       PythonDir .. "include"
    }
 

@@ -22,6 +22,7 @@ project "TooGoodEngine"
       libDir    .. "/AssimpWithPremake/include",
       libDir    .. "/GLFW/include",
       libDir    .. "/ImGui",
+      libDir    .. "/glm"
 
    }
 

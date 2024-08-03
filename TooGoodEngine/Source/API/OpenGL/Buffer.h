@@ -20,7 +20,7 @@ namespace TooGoodEngine {
 			BufferOptionInvalidate      = GL_MAP_INVALIDATE_BUFFER_BIT
 		};
 
-
+		
 		enum BufferMapOptions : uint32_t
 		{
 			BufferMapNone = 0,

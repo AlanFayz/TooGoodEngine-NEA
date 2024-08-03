@@ -40,6 +40,23 @@ namespace TooGoodEngine {
 			return asset;
 		}
 
+		template<typename T>
+		Ref<T> FetchAndLoadAssetWithID(const std::filesystem::path& path, UUID id, bool isBinary)
+		{
+			static_assert(std::is_base_of_v<Asset, T>, "not a valid asset");
+			Ref<T> asset = Asset::LoadAssetFromFile<T>(path, isBinary);
+
+			if (!asset)
+			{
+				TGE_LOG_WARNING("Failed to load asset of type ", typeid(T).name(), " path ", path);
+				return asset;
+			}
+
+			asset->SetID(id);
+			m_AssetBank[id] = asset;
+			return asset;
+		}
+
 		Ref<Asset> FetchAsset(UUID uuid);
 		void	   RemoveAsset(UUID uuid);
 			
