@@ -29,9 +29,11 @@ namespace TooGoodEngine {
 		template<typename T>
 		T& GetComponent(const Entity& entity);
 
-
 		template<typename T, typename Fun>
 		void ForEach(Fun fun);
+
+		template<typename T>
+		MemoryAllocator::VariableIterator<T> View();
 
 	private:
 		void _VerifyEntity(const Entity& entity) const;
@@ -74,6 +76,12 @@ namespace TooGoodEngine {
 	inline void Registry::ForEach(Fun fun)
 	{
 		m_Buckets[typeid(T).name()].ForEach<T>(fun);
+	}
+
+	template<typename T>
+	inline MemoryAllocator::VariableIterator<T> Registry::View()
+	{
+		return m_Buckets[typeid(T).name()].ViewDense<T>();
 	}
 
 }

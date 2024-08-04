@@ -92,6 +92,98 @@ namespace TooGoodEngine {
 		template<typename T>
 		void Remove(size_t index);
 
+		template<typename Type>
+		class VariableIterator
+		{
+		public:
+			using iterator_concept  = std::contiguous_iterator_tag;
+			using iterator_category = std::random_access_iterator_tag;
+			using difference_type	= std::ptrdiff_t;
+			using value_type		= Type;
+			using pointer			= value_type*;
+			using reference			= value_type&;
+
+			VariableIterator(Type* ptr, Type* end) : m_Ptr(ptr), m_Begin(ptr), m_End(end) {}
+			VariableIterator(const VariableIterator& other) :
+				m_Ptr(other.m_Ptr), m_Begin(other.m_Begin), m_End(other.m_End) {}
+
+
+			constexpr pointer begin()
+			{
+				return m_Begin;
+			}
+
+			constexpr pointer end()
+			{
+				return m_End;
+			}
+
+			constexpr reference operator*() const noexcept
+			{
+				TGE_VERIFY(m_Ptr != m_End, "pointer is out of bounds");
+				return *m_Ptr;
+			}
+
+			constexpr pointer operator->() const noexcept
+			{
+				return m_Ptr;
+			}
+
+			constexpr VariableIterator& operator++() noexcept
+			{
+				m_Ptr++;
+				return *this;
+			}
+
+			constexpr VariableIterator operator++(int) noexcept
+			{
+				VariableIterator iterator = *this;
+				++(*this);
+				return iterator;
+			}
+
+			constexpr VariableIterator& operator--() noexcept
+			{
+				m_Ptr--;
+				return *this;
+			}
+
+			constexpr VariableIterator operator--(int) noexcept
+			{
+				VariableIterator iterator = *this;
+				--(*this);
+				return iterator;
+			}
+
+			constexpr reference operator[](const difference_type _Off) const noexcept 
+			{
+				return *(*this + _Off);
+			}
+
+			constexpr bool operator==(const VariableIterator& other) const noexcept
+			{
+				return m_Ptr == other.m_Ptr;
+			}
+
+			constexpr bool operator!=(const VariableIterator& other) const noexcept
+			{
+				return m_Ptr != other.m_Ptr;
+			}
+
+		private:
+			Type* m_Begin;
+			Type* m_Ptr;
+			Type* m_End;
+		};
+
+
+		template<typename T>
+		VariableIterator<T> View()
+		{
+			TGE_VERIFY(m_Identity == typeid(T).name(), "not the same identity");
+			return VariableIterator<T>(Begin<T>(), End<T>());
+		}
+
 	private:
 		void* _Allocate(size_t bytes);
 		void  _Deallocate(void* buffer);

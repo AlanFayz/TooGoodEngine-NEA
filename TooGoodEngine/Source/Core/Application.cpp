@@ -1,6 +1,7 @@
 #include "Application.h"
 
 #include "Scripting/ScriptingEngine.h"
+#include "ECS/MemoryAllocator.h"
 
 namespace TooGoodEngine {
 
@@ -47,12 +48,6 @@ namespace TooGoodEngine {
 	{
 		if (event->GetType() == EventType::ApplicationClose)
 			m_Runnning = false;
-
-		if (event->GetType() == EventType::WindowResize)
-		{
-			WindowResizeEvent* castedEvent = (WindowResizeEvent*)event;
-			TGE_LOG_INFO(castedEvent->GetWidth(), " ", castedEvent->GetHeight());
-		}
 
 		m_LayerStack.OnEvent(event);
 	}

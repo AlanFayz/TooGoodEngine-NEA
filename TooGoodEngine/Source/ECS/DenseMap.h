@@ -29,6 +29,9 @@ namespace TooGoodEngine {
 		template<typename T>
 		inline T* EndDense() { return m_Dense.End<T>();  };
 
+		template<typename T>
+		inline MemoryAllocator::VariableIterator<T> ViewDense() { return m_Dense.View<T>(); }
+
 		template<typename T> 
 		void Add(EntityID entity, const T& type);
 
