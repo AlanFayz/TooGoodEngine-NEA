@@ -17,25 +17,11 @@ namespace TooGoodEngine {
 			m_VertexArrayHandle = 0;
 			m_CurrentOffset = 0;
 		}
-		VertexArray::VertexArray(const VertexArray& other)
-			: m_VertexArrayHandle(other.m_VertexArrayHandle), m_CurrentOffset(other.m_CurrentOffset)
-		{
-		}
 		VertexArray::VertexArray(VertexArray&& other) noexcept
 			: m_VertexArrayHandle(other.m_VertexArrayHandle), m_CurrentOffset(other.m_CurrentOffset)
 		{
 			other.m_VertexArrayHandle = 0;
 			other.m_CurrentOffset = 0;
-		}
-		VertexArray& VertexArray::operator=(const VertexArray& other)
-		{
-			if (this != &other)
-			{
-				m_VertexArrayHandle = other.m_VertexArrayHandle;
-				m_CurrentOffset = other.m_CurrentOffset;
-			}
-			
-			return *this;
 		}
 		VertexArray& VertexArray::operator=(VertexArray&& other) noexcept
 		{

@@ -55,22 +55,13 @@ namespace TooGoodEngine {
 
 			m_ProgramHandle = 0;
 		}
-		Program::Program(const Program& other)
-			: m_ProgramHandle(other.m_ProgramHandle)
-		{
-		}
+
 		Program::Program(Program&& other) noexcept
 			: m_ProgramHandle(other.m_ProgramHandle)
 		{
 			other.m_ProgramHandle = 0;
 		}
-		Program& Program::operator=(const Program& other)
-		{
-			if (this != &other)
-				m_ProgramHandle = other.m_ProgramHandle;
-			
-			return *this;
-		}
+	
 		Program& Program::operator=(Program&& other) noexcept
 		{
 			if (this != &other)

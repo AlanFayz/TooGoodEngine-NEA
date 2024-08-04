@@ -21,14 +21,6 @@ namespace TooGoodEngine {
 			}
 		}
 
-		Buffer::Buffer(const Buffer& other)
-			: m_BufferHandle(other.m_BufferHandle),
-			  m_Capacity(other.m_Capacity), 
-			  m_Flags(other.m_Flags), 
-			  m_Mapped(other.m_Mapped)
-		{
-		}
-
 		Buffer::Buffer(Buffer&& other) noexcept
 			: m_BufferHandle(other.m_BufferHandle), 
 			  m_Capacity(other.m_Capacity), 
@@ -39,19 +31,6 @@ namespace TooGoodEngine {
 			other.m_Capacity = 0;
 			other.m_Flags = BufferOptionNone; 
 			other.m_Mapped = false;
-		}
-
-		Buffer& Buffer::operator=(const Buffer& other)
-		{
-			if (this != &other)
-			{
-				m_BufferHandle = other.m_BufferHandle;
-				m_Capacity = other.m_Capacity;
-				m_Flags = other.m_Flags;
-				m_Mapped = other.m_Mapped;
-			}
-
-			return *this;
 		}
 
 		Buffer& Buffer::operator=(Buffer&& other) noexcept

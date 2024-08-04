@@ -55,12 +55,6 @@ namespace TooGoodEngine {
 			m_TextureAddress = 0;
 		}
 
-		Texture2D::Texture2D(const Texture2D& other)
-			: m_TextureHandle(other.m_TextureHandle), m_TextureAddress(other.m_TextureAddress), 
-			  m_Format(other.m_Format), m_Type(other.m_Type), m_Width(other.m_Width), m_Height(other.m_Height)
-		{
-		}
-
 		Texture2D::Texture2D(Texture2D&& other) noexcept
 			: m_TextureHandle(other.m_TextureHandle), m_TextureAddress(other.m_TextureAddress),
 			m_Format(other.m_Format), m_Type(other.m_Type), m_Width(other.m_Width), m_Height(other.m_Height)
@@ -68,19 +62,7 @@ namespace TooGoodEngine {
 			other.m_TextureHandle = 0;
 			other.m_TextureAddress = 0;
 		}
-		Texture2D& Texture2D::operator=(const Texture2D& other)
-		{
-			if (this != &other)
-			{
-				m_TextureHandle = other.m_TextureHandle;
-				m_TextureAddress = other.m_TextureAddress;
-				m_Format = other.m_Format;
-				m_Type = other.m_Type;
-				m_Width = other.m_Width;
-				m_Height = other.m_Height;
-			}
-			return *this;
-		}
+	
 		Texture2D& Texture2D::operator=(Texture2D&& other) noexcept
 		{
 			if (this != &other)

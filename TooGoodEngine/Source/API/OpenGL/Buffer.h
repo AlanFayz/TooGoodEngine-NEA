@@ -52,10 +52,10 @@ namespace TooGoodEngine {
 			Buffer(const BufferInfo& info);
 			~Buffer();
 
-			Buffer(const Buffer& other);
-			Buffer(Buffer&& other) noexcept;
+			Buffer(const Buffer& other) = delete;
+			Buffer& operator=(const Buffer& other) = delete;
 
-			Buffer& operator=(const Buffer& other);
+			Buffer(Buffer&& other) noexcept;
 			Buffer& operator=(Buffer&& other) noexcept;
 
 			inline const uint32_t GetHandle()   const { return m_BufferHandle; }

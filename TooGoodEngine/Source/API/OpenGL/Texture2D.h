@@ -46,14 +46,15 @@ namespace TooGoodEngine {
 
 		class Texture2D
 		{
+		public:
 			Texture2D() = default;
 			Texture2D(const Texture2DInfo& info);
 			~Texture2D();
 
-			Texture2D(const Texture2D& other);
-			Texture2D(Texture2D&& other) noexcept;
+			Texture2D(const Texture2D& other) = delete;
+			Texture2D& operator=(const Texture2D& other) = delete;
 
-			Texture2D& operator=(const Texture2D& other);
+			Texture2D(Texture2D&& other) noexcept;
 			Texture2D& operator=(Texture2D&& other) noexcept;
 			
 			void SetData(void* data);

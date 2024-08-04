@@ -28,10 +28,10 @@ namespace TooGoodEngine {
 			VertexArray();
 			~VertexArray();
 
-			VertexArray(const VertexArray& other);
-			VertexArray(VertexArray&& other) noexcept;
+			VertexArray(const VertexArray& other) = delete;
+			VertexArray& operator=(const VertexArray& other) = delete;
 
-			VertexArray& operator=(const VertexArray& other);
+			VertexArray(VertexArray&& other) noexcept;
 			VertexArray& operator=(VertexArray&& other) noexcept;
 
 			void AttachVertexBuffer(const Buffer& buffer, uint32_t bindingIndex, size_t offset, size_t stride);
@@ -42,6 +42,8 @@ namespace TooGoodEngine {
 
 			void AttachVertexInput(const Buffer& buffer, const Program& program, const VertexInputMap& map);
 			void AttachVertexInput(const Ref<Buffer>& buffer, const Ref<Program>& program, const VertexInputMap& map);
+
+			inline void Bind() { glBindVertexArray(m_VertexArrayHandle); }
 
 		private:
 			constexpr size_t GetSizeFromType(VertexType type);

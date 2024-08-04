@@ -23,10 +23,10 @@ namespace TooGoodEngine {
 			Program() = default;
 			~Program();
 
-			Program(const Program& other);
-			Program(Program&& other) noexcept;
+			Program(const Program& other) = delete;
+			Program& operator=(const Program& other) = delete;
 
-			Program& operator=(const Program& other);
+			Program(Program&& other) noexcept;
 			Program& operator=(Program&& other) noexcept;
 
 			inline const uint32_t GetHandle() const { return m_ProgramHandle; }
