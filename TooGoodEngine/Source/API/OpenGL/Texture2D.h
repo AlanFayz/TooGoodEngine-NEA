@@ -63,6 +63,8 @@ namespace TooGoodEngine {
 			inline const GLuint64 GetAddress() const { return m_TextureAddress; }
 			inline const Texture2DType GetType() const { return m_Type; }
 			inline const Texture2DFormat GetFormat() const { return m_Format; }
+			inline const uint32_t GetWidth() const { return m_Width; }
+			inline const uint32_t GetHeight() const { return m_Height; }
 
 		private:
 			constexpr GLenum GetInternalFormat(Texture2DFormat format);

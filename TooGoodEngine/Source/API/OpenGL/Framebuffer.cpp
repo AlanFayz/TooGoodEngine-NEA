@@ -7,6 +7,7 @@ namespace TooGoodEngine {
 		{
 			glCreateFramebuffers(1, &m_FramebufferHandle);
 
+			std::vector<GLenum> drawBuffers;
 			uint32_t index = 0;
 			for (const auto& colorAttachment : info.ColorAttachments)
 			{
@@ -14,6 +15,8 @@ namespace TooGoodEngine {
 					m_FramebufferHandle,
 					GL_COLOR_ATTACHMENT0 + (GLenum)index,
 					colorAttachment->GetHandle(), 0);
+
+				drawBuffers.push_back(GL_COLOR_ATTACHMENT0 + (GLenum)index);
 			}
 
 			if (info.DepthAttachment)
@@ -27,6 +30,9 @@ namespace TooGoodEngine {
 
 			GLenum status = glCheckNamedFramebufferStatus(m_FramebufferHandle, GL_FRAMEBUFFER);
 			TGE_VERIFY(status == GL_FRAMEBUFFER_COMPLETE, "framebuffer incomplete with code ", status);
+		
+			
+			glNamedFramebufferDrawBuffers(m_FramebufferHandle, (GLsizei)drawBuffers.size(), drawBuffers.data());
 		}
 
 		Framebuffer::~Framebuffer()
@@ -53,5 +59,40 @@ namespace TooGoodEngine {
 
 			return *this;
 		}
+
+		void Framebuffer::BlitColorAttachment(const BlitInfo& info)
+		{
+			TGE_VERIFY(info.Destination && info.Source, "destination or source was nullptr");
+			TGE_VERIFY(info.DestinationWidth > 0 &&
+					   info.DestinationHeight > 0 &&
+					   info.SourceWidth > 0 &&
+					   info.SourceHeight > 0, "all dimensions have to be bigger than 0");
+
+			glNamedFramebufferReadBuffer(info.Source->GetHandle(), GL_COLOR_ATTACHMENT0 + (GLenum)info.SourceIndex);
+			glNamedFramebufferDrawBuffer(info.Destination->GetHandle(), GL_COLOR_ATTACHMENT0 + (GLenum)info.DestinationIndex);
+
+			glBlitNamedFramebuffer(
+				(GLuint)info.Source->GetHandle(), (GLuint)info.Destination->GetHandle(),
+				0, 0, (GLint)info.SourceWidth, (GLint)info.SourceHeight,
+				0, 0, (GLint)info.DestinationWidth, (GLint)info.DestinationHeight,
+				GL_COLOR_BUFFER_BIT, (GLenum)info.FilterType);
+					
+		}
+
+		void Framebuffer::BlitDepthAttachment(const BlitInfo& info)
+		{
+			TGE_VERIFY(info.Destination && info.Source, "destination or source was nullptr");
+			TGE_VERIFY(info.DestinationWidth > 0 &&
+				info.DestinationHeight > 0 &&
+				info.SourceWidth > 0 &&
+				info.SourceHeight > 0, "all dimensions have to be bigger than 0");
+
+			glBlitNamedFramebuffer(
+				(GLuint)info.Source->GetHandle(), (GLuint)info.Destination->GetHandle(),
+				0, 0, (GLint)info.SourceWidth, (GLint)info.SourceHeight,
+				0, 0, (GLint)info.DestinationWidth, (GLint)info.DestinationHeight,
+				GL_DEPTH_BUFFER_BIT, GL_NEAREST);
+		}
+		
 	}
 }

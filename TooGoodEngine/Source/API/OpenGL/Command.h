@@ -2,6 +2,8 @@
 
 #include "VertexArray.h"
 
+#include <glm/glm.hpp>
+
 namespace TooGoodEngine {
 	namespace OpenGL {
 
@@ -17,9 +19,10 @@ namespace TooGoodEngine {
 		class Command
 		{
 		public:
-			static void DrawArrays(VertexArray* vertexArray, DrawMode mode, uint32_t first, uint32_t count);
-			static void DrawElements(VertexArray* vertexArray, DrawMode mode, uint32_t count);
-			static void DrawElementsInstanced(VertexArray* vertexArray, DrawMode mode, uint32_t count, uint32_t instanceCount);
+			static void DrawArrays(Program* program, VertexArray* vertexArray, DrawMode mode, uint32_t first, uint32_t count);
+			static void DrawElements(Program* program, VertexArray* vertexArray, DrawMode mode, uint32_t count);
+			static void DrawElementsInstanced(Program* program, VertexArray* vertexArray, DrawMode mode, uint32_t count, uint32_t instanceCount);
+			static void ClearColor(const glm::vec4& color);
 		};
 
 	}

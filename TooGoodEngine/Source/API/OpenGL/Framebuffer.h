@@ -10,9 +10,11 @@ namespace TooGoodEngine {
 
 		struct FramebufferInfo
 		{
-			std::vector<Ref<Texture2D>> ColorAttachments;
+			std::vector<Ref<Texture2D>> ColorAttachments; 
 			Ref<Texture2D> DepthAttachment; //if needed will make this DepthStencil 
 		};
+
+		
 
 		class Framebuffer
 		{
@@ -28,6 +30,21 @@ namespace TooGoodEngine {
 			Framebuffer& operator=(Framebuffer&& other) noexcept;
 
 			inline const uint32_t GetHandle() const { return m_FramebufferHandle; }
+
+			struct BlitInfo
+			{
+				Framebuffer* Source;
+				Framebuffer* Destination;
+				uint32_t SourceWidth, SourceHeight;
+				uint32_t DestinationWidth, DestinationHeight;
+				uint32_t SourceIndex, DestinationIndex;
+				TextureParamaterOption FilterType;
+			};
+
+			static void BlitColorAttachment(const BlitInfo& info); 
+
+			//note, source and destination index are obselete here
+			static void BlitDepthAttachment(const BlitInfo& info);
 
 		private:
 			uint32_t m_FramebufferHandle = 0;

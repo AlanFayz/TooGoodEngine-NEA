@@ -1,7 +1,5 @@
 #include "Program.h"
 
-#include "Core/Files/FileReader.h"
-
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -76,6 +74,8 @@ namespace TooGoodEngine {
 		template<>
 		void Program::SetUniform(const std::string& name, const int& data)
 		{
+			glUseProgram(m_ProgramHandle);
+
 			GLuint location = glGetUniformLocation(m_ProgramHandle, name.c_str());
 
 			if (location != -1)
@@ -85,8 +85,23 @@ namespace TooGoodEngine {
 		}
 
 		template<>
+		void Program::SetUniform(const std::string& name, const float& data)
+		{
+			glUseProgram(m_ProgramHandle);
+
+			GLuint location = glGetUniformLocation(m_ProgramHandle, name.c_str());
+
+			if (location != -1)
+				glUniform1f(location, (GLfloat)data);
+			else
+				TGE_LOG_ERROR("not a valid uniform name");
+		}
+
+		template<>
 		void Program::SetUniform(const std::string& name, const glm::vec3& data)
 		{
+			glUseProgram(m_ProgramHandle);
+
 			GLuint location = glGetUniformLocation(m_ProgramHandle, name.c_str());
 
 			if (location != -1)
@@ -98,6 +113,8 @@ namespace TooGoodEngine {
 		template<>
 		void Program::SetUniform(const std::string& name, const glm::vec4& data)
 		{
+			glUseProgram(m_ProgramHandle);
+
 			GLuint location = glGetUniformLocation(m_ProgramHandle, name.c_str());
 
 			if (location != -1)
@@ -109,6 +126,8 @@ namespace TooGoodEngine {
 		template<>
 		void Program::SetUniform(const std::string& name, const glm::mat4& data)
 		{
+			glUseProgram(m_ProgramHandle);
+
 			GLuint location = glGetUniformLocation(m_ProgramHandle, name.c_str());
 
 			if (location != -1)
@@ -120,16 +139,26 @@ namespace TooGoodEngine {
 
 		std::string Program::LoadShaderFromFile(const std::filesystem::path& path)
 		{
-			std::string contents;
-			
-			FileReader reader(path, false);
-			contents.resize(reader.GetSize());
+			FILE* File = nullptr;
+			std::string sPath = path.string();
+			const char* cPath = sPath.c_str();
+			fopen_s(&File, cPath, "r");
 
-			Ref<MemoryAllocator> memory = reader.Read(reader.GetSize());
+			if (!File)
+			{
+				TGE_LOG_ERROR("File couldn't open ", path);
+				return "no shader";
+			}
 
-			memcpy(contents.data(), memory->GetRaw(), reader.GetSize());
+			std::string FileContents;
 
-			return contents;
+			char buffer[100]{};
+
+			while (fgets(buffer, sizeof(buffer), File) != nullptr)
+				FileContents += buffer;
+
+			fclose(File);
+			return FileContents;
 		}
 		constexpr GLenum Program::GetShaderType(ShaderType type)
 		{

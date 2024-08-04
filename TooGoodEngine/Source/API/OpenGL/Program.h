@@ -3,6 +3,8 @@
 #include "Core/Base.h"
 #include "External/glad/glad.h"
 
+#include <glm/gtc/matrix_transform.hpp>
+
 #include <map>
 #include <filesystem>
 
@@ -29,6 +31,7 @@ namespace TooGoodEngine {
 			Program(Program&& other) noexcept;
 			Program& operator=(Program&& other) noexcept;
 
+			inline const void Use() { glUseProgram(m_ProgramHandle); }
 			inline const uint32_t GetHandle() const { return m_ProgramHandle; }
 
 			template<typename T>
@@ -36,6 +39,18 @@ namespace TooGoodEngine {
 			{
 				TGE_LOG_ERROR(typeid(T).name(), " is not supported");
 			}
+
+			template<>
+			void SetUniform(const std::string& name, const int& data);
+			template<>
+			void SetUniform(const std::string& name, const float& data);
+			template<>
+			void SetUniform(const std::string& name, const glm::vec3& data);
+			template<>
+			void SetUniform(const std::string& name, const glm::vec4& data);
+			template<>
+			void SetUniform(const std::string& name, const glm::mat4& data);
+
 
 		private:
 			std::string LoadShaderFromFile(const std::filesystem::path& path);

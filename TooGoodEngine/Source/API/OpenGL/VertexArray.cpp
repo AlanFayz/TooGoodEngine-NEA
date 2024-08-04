@@ -36,32 +36,27 @@ namespace TooGoodEngine {
 
 			return *this;
 		}
-		void VertexArray::AttachVertexBuffer(const Buffer& buffer, uint32_t bindingIndex, size_t offset, size_t stride)
+		void VertexArray::AttachVertexBuffer(Buffer* buffer, uint32_t bindingIndex, size_t offset, size_t stride)
 		{
+			TGE_VERIFY(buffer, "buffer was nullptr");
+
 			glVertexArrayVertexBuffer(m_VertexArrayHandle,
 				(GLuint)bindingIndex,
-				(GLuint)buffer.GetHandle(), 
+				(GLuint)buffer->GetHandle(), 
 				(GLintptr)offset, 
 				(GLsizei)stride);
 		}
-		void VertexArray::AttachVertexBuffer(const Ref<Buffer>& buffer, uint32_t bindingIndex, size_t offset, size_t stride)
+	
+		void VertexArray::AttachIndexBuffer(Buffer* buffer)
 		{
 			TGE_VERIFY(buffer, "buffer was nullptr");
-			AttachVertexBuffer((*buffer), bindingIndex, offset, stride);
-		}
-		void VertexArray::AttachIndexBuffer(const Buffer& buffer)
-		{
-			glVertexArrayElementBuffer(m_VertexArrayHandle, buffer.GetHandle());
+			glVertexArrayElementBuffer(m_VertexArrayHandle, buffer->GetHandle());
 		}
 
-		void VertexArray::AttachIndexBuffer(const Ref<Buffer>& buffer)
+		void VertexArray::AttachVertexInput(Buffer* buffer, Program* program, const VertexInputMap& map)
 		{
-			TGE_VERIFY(buffer, "buffer was nullptr");
-			AttachIndexBuffer(*buffer);
-		}
+			TGE_VERIFY(buffer && program, "buffer or program was nullptr");
 
-		void VertexArray::AttachVertexInput(const Buffer& buffer, const Program& program, const VertexInputMap& map)
-		{
 			size_t totalStride = 0;
 
 			for (const auto& [name, input] : map)
@@ -69,12 +64,12 @@ namespace TooGoodEngine {
 #
 			for (const auto& [name, input] : map)
 			{
-				GLuint index = glGetAttribLocation(program.GetHandle(), name.c_str()); 
+				GLuint index = glGetAttribLocation(program->GetHandle(), name.c_str()); 
 
 				glVertexArrayAttribFormat(
 					m_VertexArrayHandle,
 					index,
-					(GLint)GetSizeFromType(input.Type),
+					GetNumberOfElements(input.Type),
 					GetBaseTypeFromVertexType(input.Type),
 					GL_FALSE, m_CurrentOffset);
 
@@ -84,19 +79,12 @@ namespace TooGoodEngine {
 				if (input.Instanced)
 					glVertexArrayBindingDivisor(m_VertexArrayHandle, index, 1);
 
-				m_CurrentOffset += GetSizeFromType(input.Type);
+				m_CurrentOffset += (uint32_t)GetSizeFromType(input.Type);
 			}
 
 			AttachVertexBuffer(buffer, m_CurrentBufferIndex, 0, totalStride);
 
 			m_CurrentBufferIndex += 1;
-		}
-
-
-		void VertexArray::AttachVertexInput(const Ref<Buffer>& buffer, const Ref<Program>& program, const VertexInputMap& map)
-		{
-			TGE_VERIFY(buffer, "buffer was nullptr");
-			AttachVertexInput(*buffer, *program, map);
 		}
 
 		constexpr size_t VertexArray::GetSizeFromType(VertexType type)
@@ -127,6 +115,22 @@ namespace TooGoodEngine {
 				case VertexType::Uint:	    return GL_UNSIGNED_INT;
 				case VertexType::None:
 				default:					return GL_NONE;
+			}
+		}
+
+		constexpr GLint VertexArray::GetNumberOfElements(VertexType type)
+		{
+			switch (type)
+			{
+			case VertexType::Vector2:	return 2;
+			case VertexType::Vector3:	return 3;
+			case VertexType::Vector4:	return 4;
+			case VertexType::Matrix4x4: return 16;
+			case VertexType::Int:		
+			case VertexType::Uint:	    
+			case VertexType::Float:		return 1;
+			case VertexType::None:
+			default:					return GL_NONE;
 			}
 		}
 	}

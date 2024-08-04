@@ -3,10 +3,12 @@
 #include "Window.h"
 #include "Layers/LayerStack.h"
 #include "Utils/Timer.h"
-#include "API/OpenGL/Buffer.h"
+
+#include "API/OpenGL/Command.h"
+
 
 namespace TooGoodEngine {
-	
+
 	class Application : public EventHandler
 	{
 	public:
@@ -16,7 +18,7 @@ namespace TooGoodEngine {
 		void AddLayer(const Ref<Layer>& layer);
 		void RemoveLayer(const Ref<Layer>& layer);
 		void Run();
-		
+
 		virtual void OnEvent(Event* event);
 
 	private:

@@ -1,10 +1,9 @@
 #include "Application.h"
 
 #include "Scripting/ScriptingEngine.h"
-#include "ECS/MemoryAllocator.h"
 
 namespace TooGoodEngine {
-
+	
 	Application::Application()
 		: m_Dispatcher(this), m_Window(1200, 800, "window", m_Dispatcher)
 	{
@@ -41,6 +40,7 @@ namespace TooGoodEngine {
 
 			delta = (double)m_Timer.EllapsedMilli();
 			delta /= 1000.0;
+
 		}
 	}
 
