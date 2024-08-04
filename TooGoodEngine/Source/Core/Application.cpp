@@ -1,13 +1,16 @@
 #include "Application.h"
 
 #include "Scripting/ScriptingEngine.h"
+#include "Utils/Input.h"
 
 namespace TooGoodEngine {
 	
+
 	Application::Application()
 		: m_Dispatcher(this), m_Window(1200, 800, "window", m_Dispatcher)
 	{
 		ScriptingEngine::Init();
+		Input::Init(m_Window.GetWindow());
 	}
 
 	Application::~Application()

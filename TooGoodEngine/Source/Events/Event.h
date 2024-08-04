@@ -16,9 +16,6 @@ namespace TooGoodEngine {
 		virtual EventType GetType() const = 0;
 	};
 
-	//note: events are not marked as "handled"
-	//they are passed to the event systems OnEvent once
-
 	class EventHandler
 	{
 	public:

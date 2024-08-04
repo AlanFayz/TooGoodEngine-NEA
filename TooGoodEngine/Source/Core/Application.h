@@ -5,7 +5,7 @@
 #include "Utils/Timer.h"
 
 #include "API/OpenGL/Command.h"
-
+#include "Project/Project.h"
 
 namespace TooGoodEngine {
 
@@ -28,6 +28,7 @@ namespace TooGoodEngine {
 		bool m_Runnning = true;
 		Window m_Window;
 		Timer m_Timer;
+
 	};
 
 }

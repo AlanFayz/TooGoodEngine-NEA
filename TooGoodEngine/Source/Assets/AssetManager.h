@@ -26,7 +26,7 @@ namespace TooGoodEngine {
 		Ref<T> FetchAndLoadAssetIntoBank(const std::filesystem::path& path, bool isBinary)
 		{
 			static_assert(std::is_base_of_v<Asset, T>, "not a valid asset");
-			Ref<T> asset = Asset::LoadAssetFromFile<T>(path, isBinary);
+			Ref<T> asset = Asset::LoadAssetFromFile(path);
 			
 			if (!asset)
 			{
@@ -44,7 +44,7 @@ namespace TooGoodEngine {
 		Ref<T> FetchAndLoadAssetWithID(const std::filesystem::path& path, UUID id, bool isBinary)
 		{
 			static_assert(std::is_base_of_v<Asset, T>, "not a valid asset");
-			Ref<T> asset = Asset::LoadAssetFromFile<T>(path, isBinary);
+			Ref<T> asset = Asset::LoadAssetFromFile(path, isBinary);
 
 			if (!asset)
 			{

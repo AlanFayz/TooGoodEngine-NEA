@@ -8,7 +8,7 @@
 
 namespace TooGoodEngine {
 
-	using json = nlohmann::json;
+	using json = nlohmann::ordered_json;
 
 	using JsonPath = std::vector<std::string>;
 

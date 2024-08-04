@@ -1,45 +1,32 @@
 #include "Asset.h"
 
+#include <map>
+#include <functional>
+
 namespace TooGoodEngine {
-	//each asset will implement its own specilization
-	template<>
-	static Ref<Asset> Asset::LoadAssetFromFile(const std::filesystem::path& path, bool isBinary)
+
+	static Ref<Asset> LoadUntypedAsset(const std::filesystem::path& path) //example use case
 	{
 		return nullptr;
 	}
 
-	//
-	// ---- example asset use ----
-	//
-
-	/*
-	class TestAsset : public Asset
+	using FunctionMap = std::map<AssetType, std::function<Ref<Asset>(const std::filesystem::path&)>>;
+	
+	static const FunctionMap s_FunctionMap
 	{
-	public:
-		TestAsset() = default;
-		TestAsset(int data) : m_Data(data) {}
-		~TestAsset() = default;
-
-		inline int GetData() const { return m_Data; }
-
-		virtual const AssetType GetAssetType() { return AssetType::None; }
-
-	private:
-		int m_Data = 5;
+		{AssetType::None, LoadUntypedAsset}
 	};
 
-	template<>
-	static Ref<TestAsset> Asset::LoadAssetFromFile(const std::filesystem::path& path, bool isBinary)
+	Ref<Asset> Asset::LoadAssetFromFile(AssetType type, const std::filesystem::path& path)
 	{
-		FileReader reader(path, isBinary);
+		if (!s_FunctionMap.contains(type))
+		{
+			TGE_LOG_WARNING("no asset of that type has associated loader function");
+			return nullptr;
+		}
 
-		Ref<MemoryAllocator> allocator = reader.Read(reader.GetSize());
-		char buf[3]{};
-		memcpy(buf, allocator->GetRaw(), allocator->GetCapacity());
-		buf[2] = '\0';
+		return s_FunctionMap.at(type)(path);
+	}
 
-		Ref<TestAsset> asset = CreateRef<TestAsset>(std::stoi(buf));
-
-		return asset;
-	}*/
+	
 }

@@ -27,13 +27,7 @@ namespace TooGoodEngine {
 		 
 		inline const UUID GetAssetID() const { return m_UUID; }
 
-		//template specilization 
-		template<typename T>
-		static Ref<T> LoadAssetFromFile(const std::filesystem::path& path, bool isBinary)
-		{
-			TGE_LOG_ERROR("current asset type not supported ", typeid(T).name());
-			return nullptr;
-		}
+		static Ref<Asset> LoadAssetFromFile(AssetType type, const std::filesystem::path& path);
 
 	private:
 		UUID m_UUID;
