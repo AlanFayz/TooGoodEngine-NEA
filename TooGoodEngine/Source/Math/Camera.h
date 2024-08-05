@@ -12,6 +12,7 @@ namespace TooGoodEngine {
 		virtual const glm::mat4& GetView() = 0;
 		virtual const glm::mat4& GetInverseProjection() = 0;
 		virtual const glm::mat4& GetInverseView() = 0;
+		virtual void OnWindowResize(float newWidth, float newHeight) = 0;
 	};
 
 }

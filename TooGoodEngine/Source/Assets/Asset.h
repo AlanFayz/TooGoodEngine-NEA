@@ -9,9 +9,8 @@ namespace TooGoodEngine {
 	enum class AssetType
 	{
 		None = 0, //more to add
-		Texture,
-		Model,
-		Scene
+		Image,
+		Model
 	};
 
 	class Asset
@@ -24,6 +23,7 @@ namespace TooGoodEngine {
 
 		virtual ~Asset() = default;
 		virtual const AssetType GetAssetType() = 0;
+		//static const AssetType GetStaticAssetType() const
 		 
 		inline const UUID GetAssetID() const { return m_UUID; }
 

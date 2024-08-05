@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Core/Files/Json.h"
+#include "Assets/AssetManager.h"
 
 namespace TooGoodEngine {
 	
@@ -13,11 +14,19 @@ namespace TooGoodEngine {
 
 		void SaveState();
 
+		template<typename T>
+		Ref<T> LoadAsset(const std::filesystem::path& path) 
+		{ 
+			return m_AssetManager.LoadAssetIntoBank<T>(path);
+		}
+
 		inline const std::filesystem::path& GetDirectory() const { return m_ProjectDirectory; }
 
 	private:
 		std::filesystem::path m_ProjectDirectory;
 		std::string m_ProjectName;
+
+		AssetManager m_AssetManager; 
 	};
 
 	inline Ref<Project> g_SelecteProject = nullptr;

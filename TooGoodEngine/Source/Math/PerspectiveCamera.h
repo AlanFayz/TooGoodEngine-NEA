@@ -19,10 +19,12 @@ namespace TooGoodEngine {
 	class PerspectiveCamera : public Camera
 	{
 	public:
+		PerspectiveCamera() = default;
 		PerspectiveCamera(const PerspectiveCameraData& data);
 		~PerspectiveCamera() = default;
 
 		void SetData(const PerspectiveCameraData& data);
+		virtual void OnWindowResize(float newWidth, float newHeight) override;
 
 		virtual const glm::vec3& GetCameraPosition() { return m_Position; }
 		virtual const glm::mat4& GetProjection() { return m_Projection; }

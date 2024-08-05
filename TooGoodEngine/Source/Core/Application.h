@@ -5,10 +5,10 @@
 #include "Utils/Timer.h"
 
 #include "API/OpenGL/Command.h"
-#include "Project/Project.h"
-#include "Renderer/Renderer.h"
+#include "Scenes/Scene.h"
 
 namespace TooGoodEngine {
+
 
 	class Application : public EventHandler
 	{
@@ -30,8 +30,7 @@ namespace TooGoodEngine {
 		Window m_Window;
 		Timer m_Timer;
 
-		Renderer m_TestRenderer;
-
+		Ref<Scene> s_TestScene;
 	};
 
 }

@@ -23,10 +23,10 @@ namespace TooGoodEngine {
 		}
 
 		template<typename T>
-		Ref<T> FetchAndLoadAssetIntoBank(const std::filesystem::path& path, bool isBinary)
+		Ref<T> LoadAssetIntoBank(const std::filesystem::path& path)
 		{
 			static_assert(std::is_base_of_v<Asset, T>, "not a valid asset");
-			Ref<T> asset = Asset::LoadAssetFromFile(path);
+			Ref<T> asset = Asset::LoadAssetFromFile(T::GetStaticAssetType(), path);
 			
 			if (!asset)
 			{

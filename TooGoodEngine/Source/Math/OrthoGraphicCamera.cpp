@@ -32,4 +32,16 @@ namespace TooGoodEngine {
 		m_InverseView = glm::inverse(m_View);
 		m_InverseProjection = glm::inverse(m_Projection);
 	}
+
+	void OrthoGraphicCamera::OnWindowResize(float newWidth, float newHeight)
+	{
+		m_Right = newWidth;
+		m_Top = newHeight;
+
+		m_View = glm::lookAt(m_Position, m_Position + m_Front, m_Up);
+		m_Projection = glm::ortho(m_Left, m_Right, m_Bottom, m_Top);
+
+		m_InverseView = glm::inverse(m_View);
+		m_InverseProjection = glm::inverse(m_Projection);
+	}
 }

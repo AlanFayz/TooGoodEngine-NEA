@@ -3,13 +3,12 @@
 #include "Scripting/ScriptingEngine.h"
 #include "Utils/Input.h"
 #include "Math/PerspectiveCamera.h"
+#include "Scenes/Scene.h"
 
 namespace TooGoodEngine {
 	
-	static RenderSettings s_Settings{ 600, 600, {0.0f, 0.0f, 0.0f, 0.0f} };
-
 	Application::Application()
-		: m_Dispatcher(this), m_Window(600, 600, "window", m_Dispatcher), m_TestRenderer(s_Settings)
+		: m_Dispatcher(this), m_Window(600, 600, "window", m_Dispatcher)
 	{
 		ScriptingEngine::Init();
 		Input::Init(m_Window.GetWindow());
@@ -33,14 +32,6 @@ namespace TooGoodEngine {
 	void Application::Run()
 	{
 		double delta = 0.0;
-	
-		glm::mat4 transform = glm::identity<glm::mat4>();
-		transform = glm::translate(transform, { 0.0f, 0.0f, -1.0f }) *
-			glm::rotate(transform, 0.0f, { 0.0f, 0.0f, 1.0f }) *
-			glm::scale(transform, { 1.0f, 1.0f, 1.0f });
-
-		PerspectiveCameraData data{};
-		PerspectiveCamera camera(data);
 
 		while (m_Runnning)
 		{
@@ -53,10 +44,6 @@ namespace TooGoodEngine {
 
 			delta = (double)m_Timer.EllapsedMilli();
 			delta /= 1000.0;
-
-			m_TestRenderer.Begin(&camera);
-			m_TestRenderer.DrawQuad(transform);
-			m_TestRenderer.End();
 		}
 	}
 
@@ -64,12 +51,6 @@ namespace TooGoodEngine {
 	{
 		if (event->GetType() == EventType::ApplicationClose)
 			m_Runnning = false;
-
-		if (event->GetType() == EventType::WindowResize)
-		{
-			WindowResizeEvent* windowResizeEvent = (WindowResizeEvent*)event;
-			m_TestRenderer.OnWindowResize(windowResizeEvent->GetWidth(), windowResizeEvent->GetHeight());
-		}
 
 		m_LayerStack.OnEvent(event);
 	}

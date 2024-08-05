@@ -24,6 +24,7 @@ namespace TooGoodEngine {
 		~OrthoGraphicCamera() = default;
 
 		void SetData(const OrthoGraphicCameraData& data);
+		virtual void OnWindowResize(float newWidth, float newHeight) override;
 
 		virtual const glm::vec3& GetCameraPosition() { return m_Position; }
 		virtual const glm::mat4& GetProjection() { return m_Projection; }

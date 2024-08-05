@@ -15,7 +15,7 @@ namespace TooGoodEngine {
 		inline const size_t GetCount() const { return (size_t)m_Count; }
 		
 		template<typename T>
-		inline bool HasComponent(const Entity& entity) { return m_Buckets[typeid(T).name()].Contains<T>(entity); }
+		inline bool HasComponent(const EntityID& entity) { return m_Buckets[typeid(T).name()].Contains<T>(entity); }
 	
 		template<typename T>
 		void AddComponent(const Entity& entity, const T& t);
@@ -27,7 +27,7 @@ namespace TooGoodEngine {
 		void RemoveComponent(const Entity& entity);
 
 		template<typename T>
-		T& GetComponent(const Entity& entity);
+		T& GetComponent(const EntityID& entity);
 
 		template<typename T, typename Fun>
 		void ForEach(Fun fun);
@@ -36,7 +36,7 @@ namespace TooGoodEngine {
 		MemoryAllocator::VariableIterator<T> View();
 
 	private:
-		void _VerifyEntity(const Entity& entity) const;
+		void _VerifyEntity(const EntityID& entity) const;
 
 	private:
 		EntityID m_Count = 0;
@@ -66,7 +66,7 @@ namespace TooGoodEngine {
 	}
 
 	template<typename T>
-	inline T& Registry::GetComponent(const Entity& entity)
+	inline T& Registry::GetComponent(const EntityID& entity)
 	{
 		_VerifyEntity(entity);
 		return m_Buckets[typeid(T).name()].Get<T>(entity);
@@ -81,6 +81,9 @@ namespace TooGoodEngine {
 	template<typename T>
 	inline MemoryAllocator::VariableIterator<T> Registry::View()
 	{
+		if (!m_Buckets.contains(typeid(T).name()))
+			return MemoryAllocator::VariableIterator<T>(nullptr, nullptr);
+
 		return m_Buckets[typeid(T).name()].ViewDense<T>();
 	}
 

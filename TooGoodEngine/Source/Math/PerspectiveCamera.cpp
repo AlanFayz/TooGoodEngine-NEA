@@ -32,4 +32,14 @@ namespace TooGoodEngine {
 		m_InverseView = glm::inverse(m_View);
 		m_Projection = glm::inverse(m_Projection);
 	}
+	void PerspectiveCamera::OnWindowResize(float newWidth, float newHeight)
+	{
+		m_AspectRatio = newWidth / newHeight;
+
+		m_View = glm::lookAt(m_Position, m_Position + m_Front, m_Up);
+		m_Projection = glm::perspective(m_Fov, m_AspectRatio, m_Near, m_Far);
+
+		m_InverseView = glm::inverse(m_View);
+		m_Projection = glm::inverse(m_Projection);
+	}
 }

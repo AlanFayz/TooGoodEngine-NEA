@@ -7,7 +7,7 @@ namespace TooGoodEngine {
 	Renderer::Renderer(const RenderSettings& settings)
 		: m_Settings(settings), m_Data()
 	{
-		if (m_Data.ShaderDirectory.empty())
+		if (settings.RuntimeShaderDirectory.empty())
 		{
 			m_Data.ShaderDirectory = __FILE__;
 			m_Data.ShaderDirectory = m_Data.ShaderDirectory.parent_path() / "Shaders";

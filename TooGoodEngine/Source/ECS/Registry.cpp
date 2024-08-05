@@ -2,9 +2,9 @@
 
 namespace TooGoodEngine{
 
-	void Registry::_VerifyEntity(const Entity& entity) const
+	void Registry::_VerifyEntity(const EntityID& entity) const
 	{
-		TGE_VERIFY(entity.GetID() < m_Count, "entity is invalid in this registry");
+		TGE_VERIFY(entity < m_Count, "entity is invalid in this registry");
 	}
 
 }
