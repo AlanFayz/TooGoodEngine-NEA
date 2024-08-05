@@ -20,7 +20,7 @@ namespace TooGoodEngine {
 			bool Instanced;
 		};
 		
-		using VertexInputMap = std::map<std::string, VertexInput>;
+		using VertexInputMap = std::vector<std::pair<std::string, VertexInput>>;
 
 		class VertexArray
 		{

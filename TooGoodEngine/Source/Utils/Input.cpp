@@ -9,7 +9,6 @@ namespace TooGoodEngine {
 	void Input::Init(GLFWwindow* window)
 	{
 		TGE_VERIFY(!s_CurrentWindow && window, "already initialized or window is nullptr");
-
 		s_CurrentWindow = window;
 	}
 

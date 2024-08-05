@@ -43,7 +43,7 @@ namespace TooGoodEngine {
 			glVertexArrayVertexBuffer(m_VertexArrayHandle,
 				(GLuint)bindingIndex,
 				(GLuint)buffer->GetHandle(), 
-				(GLintptr)offset, 
+				(GLintptr)offset,
 				(GLsizei)stride);
 		}
 	
@@ -61,11 +61,46 @@ namespace TooGoodEngine {
 
 			for (const auto& [name, input] : map)
 				totalStride += GetSizeFromType(input.Type);
-#
+			
+			size_t startingOffset = m_CurrentOffset;
+
 			for (const auto& [name, input] : map)
 			{
-				GLuint index = glGetAttribLocation(program->GetHandle(), name.c_str()); 
+				program->Use();
+				GLint index = glGetAttribLocation(program->GetHandle(), name.c_str());
 
+				if (input.Type == VertexType::Matrix4x4)
+				{
+					GLuint numColumns = GetNumberOfElements(input.Type); 
+					GLuint baseType = GetBaseTypeFromVertexType(input.Type); 
+
+					for (GLuint i = 0; i < numColumns; ++i) 
+					{
+						GLint columnIndex = index + i;
+
+						glVertexArrayAttribFormat(
+							m_VertexArrayHandle,
+							columnIndex,
+							GetNumberOfElements(VertexType::Vector4),
+							baseType,
+							GL_FALSE,
+							m_CurrentOffset + sizeof(float) * 4 * i); 
+
+						glEnableVertexArrayAttrib(m_VertexArrayHandle, columnIndex);
+						glVertexArrayAttribBinding(m_VertexArrayHandle, columnIndex, (GLuint)m_CurrentBufferIndex);
+
+						if (input.Instanced)
+							glVertexArrayBindingDivisor(m_VertexArrayHandle, columnIndex, 1);
+					}
+
+					m_CurrentOffset += sizeof(float) * 4 * numColumns; 
+
+					if (input.Instanced)
+						glVertexArrayBindingDivisor(m_VertexArrayHandle, index, 1);
+
+					continue;
+				}
+				
 				glVertexArrayAttribFormat(
 					m_VertexArrayHandle,
 					index,
@@ -82,7 +117,7 @@ namespace TooGoodEngine {
 				m_CurrentOffset += (uint32_t)GetSizeFromType(input.Type);
 			}
 
-			AttachVertexBuffer(buffer, m_CurrentBufferIndex, 0, totalStride);
+			AttachVertexBuffer(buffer, m_CurrentBufferIndex, startingOffset, totalStride);
 
 			m_CurrentBufferIndex += 1;
 		}
@@ -110,7 +145,7 @@ namespace TooGoodEngine {
 				case VertexType::Vector2:   
 				case VertexType::Vector3:   
 				case VertexType::Vector4:	return GL_FLOAT;
-				case VertexType::Matrix4x4: return GL_FLOAT_MAT4;
+				case VertexType::Matrix4x4: return GL_FLOAT;
 				case VertexType::Int:		return GL_INT;
 				case VertexType::Uint:	    return GL_UNSIGNED_INT;
 				case VertexType::None:
@@ -125,7 +160,7 @@ namespace TooGoodEngine {
 			case VertexType::Vector2:	return 2;
 			case VertexType::Vector3:	return 3;
 			case VertexType::Vector4:	return 4;
-			case VertexType::Matrix4x4: return 16;
+			case VertexType::Matrix4x4: return 4;
 			case VertexType::Int:		
 			case VertexType::Uint:	    
 			case VertexType::Float:		return 1;

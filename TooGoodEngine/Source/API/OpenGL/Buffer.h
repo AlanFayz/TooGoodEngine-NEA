@@ -12,14 +12,14 @@ namespace TooGoodEngine {
 		enum BufferOptions : uint32_t
 		{
 			BufferOptionNone = 0,
-			BufferOptionDynamicStorage  = GL_DYNAMIC_STORAGE_BIT,
-			BufferOptionMapWrite        = GL_MAP_WRITE_BIT,
-			BufferOptionMapCoherient    = GL_MAP_COHERENT_BIT,
-			BufferOptionMapPersistent   = GL_MAP_PERSISTENT_BIT,
-			BufferOptionUnsynchronized  = GL_MAP_UNSYNCHRONIZED_BIT,
-			BufferOptionInvalidate      = GL_MAP_INVALIDATE_BUFFER_BIT
+			BufferOptionDynamicStorage   = GL_DYNAMIC_STORAGE_BIT,
+			BufferOptionMapWrite		 = GL_MAP_WRITE_BIT,
+			BufferOptionMapCoherient	 = GL_MAP_COHERENT_BIT,
+			BufferOptionMapPersistent	 = GL_MAP_PERSISTENT_BIT,
+			BufferOptionUnsynchronized   = GL_MAP_UNSYNCHRONIZED_BIT,
+			BufferOptionInvalidate		 = GL_MAP_INVALIDATE_BUFFER_BIT,
+			BufferOptionMapFlushExplicit = GL_MAP_FLUSH_EXPLICIT_BIT
 		};
-
 		
 		enum BufferMapOptions : uint32_t
 		{
@@ -40,7 +40,7 @@ namespace TooGoodEngine {
 
 		struct BufferInfo
 		{
-			void* Data;
+			const void* Data;
 			size_t Capacity;
 			uint32_t Masks;
 		};
@@ -62,7 +62,7 @@ namespace TooGoodEngine {
 			inline const size_t   GetCapacity() const { return m_Capacity; }
 
 			void Resize(size_t newCapacity);
-			void SetData(size_t capacity, void* data);
+			void SetData(size_t capacity, const void* data);
 			
 			void Copy(const Ref<Buffer>& other);
 			void Copy(const Buffer& other);

@@ -23,6 +23,7 @@ namespace TooGoodEngine {
 			static void DrawElements(Program* program, VertexArray* vertexArray, DrawMode mode, uint32_t count);
 			static void DrawElementsInstanced(Program* program, VertexArray* vertexArray, DrawMode mode, uint32_t count, uint32_t instanceCount);
 			static void ClearColor(const glm::vec4& color);
+			static void SetViewport(uint32_t width, uint32_t height);
 		};
 
 	}

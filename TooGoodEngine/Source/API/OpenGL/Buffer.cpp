@@ -16,6 +16,9 @@ namespace TooGoodEngine {
 		{
 			if (m_BufferHandle)
 			{
+				if (m_Mapped)
+					Unmap();
+
 				glDeleteBuffers(1, &m_BufferHandle);
 				m_BufferHandle = 0;
 			}
@@ -67,7 +70,7 @@ namespace TooGoodEngine {
 			m_Capacity = newCapacity;
 		}
 
-		void Buffer::SetData(size_t capacity, void* data)
+		void Buffer::SetData(size_t capacity, const void* data)
 		{
 			if (capacity > m_Capacity)
 			{
