@@ -1,7 +1,4 @@
 #pragma once
 
-namespace TooGoodEngine {
-
-	void PrintHelloWorld();
-
-}
+#include "Project/Project.h"
+#include "Layers/Layer.h"

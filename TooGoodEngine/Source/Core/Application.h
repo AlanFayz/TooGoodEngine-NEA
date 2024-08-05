@@ -9,11 +9,17 @@
 
 namespace TooGoodEngine {
 
+	struct ApplicationData
+	{
+		std::vector<Ref<Layer>> Layers;
+		uint32_t WindowWidth, WindowHeight;
+		std::string Title;
+	};
 
 	class Application : public EventHandler
 	{
 	public:
-		Application();
+		Application(ApplicationData& data);
 		~Application();
 
 		void AddLayer(const Ref<Layer>& layer);
@@ -21,6 +27,11 @@ namespace TooGoodEngine {
 		void Run();
 
 		virtual void OnEvent(Event* event);
+
+	private:
+		void _InitImGui();
+		void _UpdateImGui(double delta);
+		void _ShutdownImGui();
 
 	private:
 		LayerStack m_LayerStack;

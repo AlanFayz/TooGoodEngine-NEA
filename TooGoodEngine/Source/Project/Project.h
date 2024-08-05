@@ -2,6 +2,7 @@
 
 #include "Core/Files/Json.h"
 #include "Assets/AssetManager.h"
+#include "Scenes/Scene.h"
 
 namespace TooGoodEngine {
 	
@@ -27,6 +28,7 @@ namespace TooGoodEngine {
 		std::string m_ProjectName;
 
 		AssetManager m_AssetManager; 
+		std::vector<Ref<Scene>> m_LoadedScenes;
 	};
 
 	inline Ref<Project> g_SelecteProject = nullptr;

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Events/Event.h"
-#include "Project/Project.h"
 #include "Assets/Asset.h"
 #include "ECS/EntityTree.h"
 #include "Renderer/Renderer.h"

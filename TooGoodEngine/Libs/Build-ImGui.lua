@@ -5,6 +5,12 @@ project "ImGui"
 	targetdir ("../Binaries/" .. OutputDir .. "/%{prj.name}")
     objdir ("../Binaries/Intermediates/" .. OutputDir .. "/%{prj.name}")
 
+	includedirs
+	{
+		"ImGui", 
+		"GLFW/include"
+	}
+
 	files
 	{
 		"ImGui/imconfig.h",
@@ -16,7 +22,12 @@ project "ImGui"
 		"ImGui/imstb_rectpack.h",
 		"ImGui/imstb_textedit.h",
 		"ImGui/imstb_truetype.h",
-		"ImGui/imgui_demo.cpp"
+		"ImGui/imgui_demo.cpp", 
+		"ImGui/imgui_tables.cpp",
+		"ImGui/backends/imgui_impl_glfw.cpp",
+		"ImGui/backends/imgui_impl_glfw.h",
+		"ImGui/backends/imgui_impl_opengl3.cpp",
+		"ImGui/backends/imgui_impl_opengl3.h"
 	}
 
 	filter "system:windows"

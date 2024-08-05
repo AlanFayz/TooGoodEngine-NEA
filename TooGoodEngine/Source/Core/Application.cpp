@@ -5,17 +5,29 @@
 #include "Math/PerspectiveCamera.h"
 #include "Scenes/Scene.h"
 
+#include <imgui.h>
+#include <backends/imgui_impl_glfw.h>
+#include <backends/imgui_impl_opengl3.h>
+
 namespace TooGoodEngine {
-	
-	Application::Application()
-		: m_Dispatcher(this), m_Window(600, 600, "window", m_Dispatcher)
+
+	Application::Application(ApplicationData& data)
+		: m_Dispatcher(this), m_Window(data.WindowWidth, data.WindowHeight, data.Title, m_Dispatcher)
 	{
 		ScriptingEngine::Init();
 		Input::Init(m_Window.GetWindow());
+
+		_InitImGui();
+
+		for (auto& layer : data.Layers)
+			AddLayer(layer);
+
+		data.Layers.clear();
 	}
 
 	Application::~Application()
 	{
+		_ShutdownImGui();
 		ScriptingEngine::Shutdown();
 	}
 
@@ -38,7 +50,8 @@ namespace TooGoodEngine {
 			m_Timer.Start();
 
 			m_LayerStack.OnUpdateLayers(delta);
-			m_LayerStack.OnGuiUpdateLayers(delta);
+
+			_UpdateImGui(delta);
 
 			m_Window.Update();
 
@@ -53,5 +66,57 @@ namespace TooGoodEngine {
 			m_Runnning = false;
 
 		m_LayerStack.OnEvent(event);
+	}
+	void Application::_UpdateImGui(double delta)
+	{
+		ImGuiIO& io = ImGui::GetIO();
+
+		bool showDemoWindow = true;
+
+		ImGui_ImplOpenGL3_NewFrame();
+		ImGui_ImplGlfw_NewFrame();
+		ImGui::NewFrame();
+
+		m_LayerStack.OnGuiUpdateLayers(delta);
+
+		ImGui::ShowDemoWindow(&showDemoWindow);
+
+		OpenGL::Command::ClearColor({ 0.0f, 0.0f, 0.0f, 1.0f });
+		ImGui::Render();
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+		{
+			GLFWwindow* backup_current_context = glfwGetCurrentContext();
+			ImGui::UpdatePlatformWindows();
+			ImGui::RenderPlatformWindowsDefault();
+			glfwMakeContextCurrent(backup_current_context);
+		}
+	}
+	void Application::_ShutdownImGui()
+	{
+		ImGui_ImplOpenGL3_Shutdown();
+		ImGui_ImplGlfw_Shutdown();
+		ImGui::DestroyContext();
+	}
+	void Application::_InitImGui()
+	{
+		ImGui::CreateContext();
+
+		ImGuiIO& io = ImGui::GetIO();
+		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+
+		ImGui::StyleColorsDark();
+
+		ImGuiStyle& style = ImGui::GetStyle();
+		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+		{
+			style.WindowRounding = 0.0f;
+			style.Colors[ImGuiCol_WindowBg].w = 1.0f;
+		}
+
+		ImGui_ImplGlfw_InitForOpenGL(m_Window.GetWindow(), true);
+		ImGui_ImplOpenGL3_Init();
 	}
 }

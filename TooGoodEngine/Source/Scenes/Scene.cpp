@@ -27,6 +27,8 @@ namespace TooGoodEngine {
 				script.OnUpdate(delta);
 		}
 
+		//TODO: physics goes here
+
 		// ---- Render Meshes ----
 		{
 			m_SceneRenderer->Begin(&m_SceneCamera);

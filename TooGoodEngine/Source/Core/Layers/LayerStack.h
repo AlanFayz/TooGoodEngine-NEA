@@ -22,6 +22,8 @@ namespace TooGoodEngine {
 
 		virtual void OnEvent(Event* event);
 
+		inline const std::vector<Ref<Layer>>& Get() const { return m_Stack; }
+
 	private:
 		std::vector<Ref<Layer>> m_Stack;
 	};

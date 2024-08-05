@@ -6,7 +6,8 @@
 	url = https://github.com/DevAlgos/AssimpWithPremake.git
 [submodule "TooGoodEngine/Libs/ImGui"]
 	path = TooGoodEngine/Libs/ImGui
-	url = https://github.com/DevAlgos/imgui.git
+	url = https://github.com/ocornut/imgui.git
+	branch = docking
 [submodule "TooGoodEngine/Libs/glm"]
 	path = TooGoodEngine/Libs/glm
 	url = https://github.com/icaven/glm.git

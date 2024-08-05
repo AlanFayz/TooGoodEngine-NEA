@@ -6,12 +6,13 @@
     "Scene 1": {
       "Entities": {
         "Entity 1": {
-          "Children": [ "Entity 2", "Entity 3", "Entity 4" ],
+          "Children": [ 1, 2, 3, 4 ],
           "Transform": {
             "Position": [ 1.0, 0.0, 1.0 ],
             "Rotation": 90.0,
             "Scale": 3.0
           },
+          "Mesh":  "Path/To/Mesh.fbx", //will cache the name incase other meshes have the same
           "Script": "Path/To/Script.py"
         }
       }

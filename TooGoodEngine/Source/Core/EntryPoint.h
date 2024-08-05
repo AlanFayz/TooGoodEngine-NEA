@@ -5,9 +5,9 @@
 
 namespace TooGoodEngine {
 
-	int EngineMain()
+	int EngineMain(ApplicationData& data)
 	{
-		Application app;
+		Application app(data);
 		app.Run();
 
 		return 0;
