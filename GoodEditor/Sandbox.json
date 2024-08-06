@@ -1,0 +1,53 @@
+{
+    "Project Name": "Sandbox",
+    "Project Directory": "D:\\Dev\\TooGoodEngine-NEA\\GoodEditor",
+    "Last Build Date": "2024-08-06 20:27:41",
+    "Scenes": {
+        "Scene 1": {
+            "Entities": {
+                "Entity 1": {
+                    "Transform": {
+                        "Position": [
+                            -0.5,
+                            0.0,
+                            1.0
+                        ],
+                        "Scale": [
+                            0.5,
+                            0.5,
+                            1.0
+                        ],
+                        "Rotation Axis": [
+                            1.1754943508222875e-38,
+                            1.1754943508222875e-38,
+                            1.0
+                        ],
+                        "Rotation": 0.0
+                    },
+                    "Mesh": "##Quad"
+                },
+                "Entity 2": {
+                    "Transform": {
+                        "Position": [
+                            0.5,
+                            0.0,
+                            1.0
+                        ],
+                        "Scale": [
+                            0.5,
+                            0.5,
+                            1.0
+                        ],
+                        "Rotation Axis": [
+                            1.1754943508222875e-38,
+                            1.1754943508222875e-38,
+                            1.0
+                        ],
+                        "Rotation": 0.0
+                    },
+                    "Mesh": "##Quad"
+                }
+            }
+        }
+    }
+}

@@ -11,11 +11,30 @@ namespace TooGoodEngine {
 		Registry() = default;
 		~Registry() = default;
 
-		inline Entity CreateEntity(std::string_view name) { return Entity(name, m_Count++); }
+		inline Entity CreateEntity(const std::string& name) 
+		{
+			Entity entity = Entity(name, m_Count++);
+			m_Entites.push_back(entity);
+			return entity; 
+		}
 		inline const size_t GetCount() const { return (size_t)m_Count; }
+
+		inline Entity GetEntity(EntityID id)
+		{
+			if (id < m_Entites.size())
+				return m_Entites[id];
+
+			return Entity("null entity", g_NullEntity);
+		}
 		
 		template<typename T>
-		inline bool HasComponent(const EntityID& entity) { return m_Buckets[typeid(T).name()].Contains<T>(entity); }
+		inline bool HasComponent(const EntityID& entity) 
+		{ 
+			if(m_Buckets.contains(typeid(T).name()))
+				return m_Buckets[typeid(T).name()].Contains<T>(entity);
+
+			return false;
+		}
 	
 		template<typename T>
 		void AddComponent(const Entity& entity, const T& t);
@@ -41,6 +60,7 @@ namespace TooGoodEngine {
 	private:
 		EntityID m_Count = 0;
 		std::unordered_map<std::string, DenseMap> m_Buckets; //string identifier
+		std::vector<Entity> m_Entites;
 	};
 
 

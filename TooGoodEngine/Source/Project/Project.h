@@ -15,6 +15,8 @@ namespace TooGoodEngine {
 
 		void SaveState();
 
+		Ref<Scene> LoadScene(const json& jsonScene, const std::string& name);
+
 		template<typename T>
 		Ref<T> LoadAsset(const std::filesystem::path& path) 
 		{ 
@@ -22,14 +24,16 @@ namespace TooGoodEngine {
 		}
 
 		inline const std::filesystem::path& GetDirectory() const { return m_ProjectDirectory; }
+		inline const Ref<Scene> GetCurrentScene() const { return m_CurrentScene; }
 
 	private:
 		std::filesystem::path m_ProjectDirectory;
 		std::string m_ProjectName;
 
 		AssetManager m_AssetManager; 
+		Ref<Scene> m_CurrentScene = nullptr;
 		std::vector<Ref<Scene>> m_LoadedScenes;
 	};
 
-	inline Ref<Project> g_SelecteProject = nullptr;
+	inline Ref<Project> g_SelectedProject = nullptr;
 }

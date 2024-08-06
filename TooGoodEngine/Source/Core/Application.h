@@ -41,7 +41,6 @@ namespace TooGoodEngine {
 		Window m_Window;
 		Timer m_Timer;
 
-		Ref<Scene> s_TestScene;
 	};
 
 }

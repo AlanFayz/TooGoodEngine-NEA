@@ -4,6 +4,7 @@
 #include "Utils/Input.h"
 #include "Math/PerspectiveCamera.h"
 #include "Scenes/Scene.h"
+#include "Project/Project.h"
 
 #include <imgui.h>
 #include <backends/imgui_impl_glfw.h>
@@ -69,9 +70,10 @@ namespace TooGoodEngine {
 	}
 	void Application::_UpdateImGui(double delta)
 	{
-		ImGuiIO& io = ImGui::GetIO();
+		if (!g_SelectedProject)
+			OpenGL::Command::ClearColor({ 0.0f, 0.0f, 0.0f, 1.0f });
 
-		bool showDemoWindow = true;
+		ImGuiIO& io = ImGui::GetIO();
 
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
@@ -79,9 +81,8 @@ namespace TooGoodEngine {
 
 		m_LayerStack.OnGuiUpdateLayers(delta);
 
-		ImGui::ShowDemoWindow(&showDemoWindow);
+		//ImGui::ShowDemoWindow(&showDemoWindow);
 
-		OpenGL::Command::ClearColor({ 0.0f, 0.0f, 0.0f, 1.0f });
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 

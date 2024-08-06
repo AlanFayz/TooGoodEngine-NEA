@@ -5,14 +5,14 @@ namespace TooGoodEngine {
 	Scene::Scene()
 	{
 		RenderSettings settings{};
-		settings.ViewportWidth  = 600;
-		settings.ViewportHeight = 600;
+		settings.ViewportWidth  = 1200; //TODO: add a way to get the window dimensions
+		settings.ViewportHeight = 800;
 		settings.ClearColor     = { 0.0f, 0.0f, 0.0f, 1.0f };
 
 		m_SceneRenderer = CreateRef<Renderer>(settings);
 
 		PerspectiveCameraData cameraData{};
-		cameraData.AspectRatio = 600.0f / 600.0f;
+		cameraData.AspectRatio = 1200.0f / 800.0f;
 
 		m_SceneCamera.SetData(cameraData);
 	}
@@ -39,7 +39,7 @@ namespace TooGoodEngine {
 					if (!m_Registry.HasComponent<TransformComponent>(entityID))
 						return;
 
-					auto& transform = m_Registry.GetComponent<TransformComponent>(entityID);
+					TransformComponent& transform = m_Registry.GetComponent<TransformComponent>(entityID);
 					//TODO: add materials
 
 					m_SceneRenderer->Draw(component.ID, transform.GetTransform());

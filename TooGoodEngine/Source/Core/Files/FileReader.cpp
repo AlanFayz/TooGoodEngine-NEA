@@ -24,7 +24,8 @@ namespace TooGoodEngine {
 		if (!m_File.is_open())
 			return nullptr;
 		
-		Ref<MemoryAllocator> allocator = CreateRef<MemoryAllocator>(bytes);
+		Ref<MemoryAllocator> allocator = CreateRef<MemoryAllocator>();
+		allocator->Allocate<char>(bytes / sizeof(char));
 
 		char* converted = (char*)allocator->GetRaw();
 		m_File.read(converted, bytes);

@@ -12,7 +12,7 @@ namespace TooGoodEngine {
 		float Far = 100.0f;
 
 		glm::vec3 Position = { 0.0f, 0.0f, 0.0f };
-		glm::vec3 Front = { 0.0f, 0.0f, -1.0f };
+		glm::vec3 Front = { 0.0f, 0.0f, 1.0f };
 		glm::vec3 Up = { 0.0f, 1.0f, 0.0f };
 	};
 

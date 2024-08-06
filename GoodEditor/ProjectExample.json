@@ -6,20 +6,30 @@
     "Scene 1": {
       "Entities": {
         "Entity 1": {
-          "Children": [ 1, 2, 3, 4 ],
+          "Children": [],
           "Transform": {
-            "Position": [ 1.0, 0.0, 1.0 ],
-            "Rotation": 90.0,
-            "Scale": 3.0
+            "Position": [ -0.5, 0.0, 1.0 ],
+            "Scale": [ 0.5, 0.5, 1.0 ],
+            "Rotation Axis": [ 0.0, 0.0, 1.0 ],
+            "Rotation": 0.0
           },
-          "Mesh":  "Path/To/Mesh.fbx", //will cache the name incase other meshes have the same
-          "Script": "Path/To/Script.py"
+          "Mesh": "##Quad"
+        },
+        "Entity 2": {
+          "Children": [],
+          "Transform": {
+            "Position": [ 0.5, 0.0, 1.0 ],
+            "Scale": [ 0.5, 0.5, 1.0 ],
+            "Rotation Axis": [ 0.0, 0.0, 1.0 ],
+            "Rotation": 0.0
+          },
+          "Mesh": "##Quad"
         }
       }
     },
     "Scene 2": {
       "Entities": {
-        // Define entities here
+        
       }
     }
   }

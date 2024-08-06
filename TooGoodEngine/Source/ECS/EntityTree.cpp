@@ -2,7 +2,7 @@
 
 namespace TooGoodEngine {
 
-	Entity EntityTree::Add(std::string_view name)
+	Entity EntityTree::Add(const std::string& name)
 	{
 		Entity entity = CreateEntity(name);
 
@@ -16,7 +16,7 @@ namespace TooGoodEngine {
 		return entity;
 	}
 
-	Entity EntityTree::Add(const Entity& parent, std::string_view name)
+	Entity EntityTree::Add(const Entity& parent, const std::string& name)
 	{
 		size_t index = _Find(parent);
 

@@ -11,11 +11,14 @@ namespace TooGoodEngine {
 			m_Position(position), m_Rotation(rotation),
 			m_Scale(scale), m_RotationAxis(rotationAxis)
 	{
-		_UpdateTransform();
+		UpdateTransform();
 	}
 
-	void TransformComponent::_UpdateTransform()
+	void TransformComponent::UpdateTransform()
 	{
+		m_RotationAxis = glm::clamp(m_RotationAxis, { FLT_MIN, FLT_MIN, FLT_MIN }, { 1.0f, 1.0f, 1.0f });
+
+		m_Transform = glm::identity<glm::mat4>();
 		m_Transform = glm::translate(m_Transform, m_Position) *
 			glm::rotate(m_Transform, m_Rotation, m_RotationAxis) *
 			glm::scale(m_Transform, m_Scale);
@@ -24,13 +27,13 @@ namespace TooGoodEngine {
 	void TransformComponent::Translate(const glm::vec3& offset)
 	{
 		m_Position += offset;
-		_UpdateTransform();
+		UpdateTransform();
 	}
 
 	void TransformComponent::Rotate(float offset)
 	{
 		m_Rotation += offset;
-		_UpdateTransform();
+		UpdateTransform();
 	}
 
 	void TransformComponent::UpdateRotationAxis(const glm::vec3& offset)
@@ -39,13 +42,13 @@ namespace TooGoodEngine {
 		m_RotationAxis = glm::clamp(
 			m_RotationAxis, { FLT_MIN, FLT_MIN, FLT_MIN }, { 1.0f, 1.0f, 1.0f });
 
-		_UpdateTransform();
+		UpdateTransform();
 	}
 
 	void TransformComponent::Scale(const glm::vec3& offset)
 	{
 		m_Scale += offset;
-		_UpdateTransform();
+		UpdateTransform();
 	}
 	
 }

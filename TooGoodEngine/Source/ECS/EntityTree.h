@@ -22,8 +22,8 @@ namespace TooGoodEngine {
 		EntityTree() = default;
 		~EntityTree() = default;
 
-		Entity Add(std::string_view name);
-		Entity Add(const Entity& parent, std::string_view name);
+		Entity Add(const std::string& name);
+		Entity Add(const Entity& parent, const std::string& name);
 
 		const bool ContainsEntity(const Entity& entity);
 		Node& GetNode(const Entity& parent);

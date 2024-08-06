@@ -88,7 +88,7 @@ namespace TooGoodEngine {
 		TGE_VERIFY(id < m_Data.GeometryList.size(), "index out of range");
 
 		Instance info{};
-		info.MaterialIndex = materialIndex == 0 ? m_Data.GeometryList[id].GetDefaultMaterialIndex() : materialIndex;
+		info.MaterialIndex = materialIndex;
 		info.Transform = transform;
 
 		m_Data.GeometryList[id].Push(info);

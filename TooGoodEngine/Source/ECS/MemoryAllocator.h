@@ -4,6 +4,9 @@
 
 #include <type_traits>
 #include <iterator>
+#include <cstdlib>
+#include <xmemory>
+#include <vector>
 
 namespace TooGoodEngine {
 
@@ -20,7 +23,6 @@ namespace TooGoodEngine {
 	{
 	public:
 		MemoryAllocator();
-		MemoryAllocator(size_t capacity);
 
 		~MemoryAllocator();
 		
@@ -46,19 +48,22 @@ namespace TooGoodEngine {
 			Will delete current block of memory then allocate a new one
 		*/
 
-		void Allocate(size_t newBytes);
+		template<typename T>
+		void Allocate(size_t newCapacity);
 
 		/*
 			Will delete the current block of memory
 		*/
 
+		template<typename T>
 		void Deallocate();
 
 		/*
 			Will move elements to new buffer with new size then delete old buffer
 		*/
 
-		void Reallocate(size_t newBytes);
+		template<typename T>
+		void Reallocate(size_t newCapacity);
 
 		/*
 			Inserts an element at the end of the buffer
@@ -96,7 +101,6 @@ namespace TooGoodEngine {
 		class VariableIterator
 		{
 		public:
-			using iterator_concept  = std::contiguous_iterator_tag;
 			using iterator_category = std::random_access_iterator_tag;
 			using difference_type	= std::ptrdiff_t;
 			using value_type		= Type;
@@ -185,8 +189,12 @@ namespace TooGoodEngine {
 		}
 
 	private:
-		void* _Allocate(size_t bytes);
+		template<typename T>
+		void* _Allocate(size_t nElements);
 		void  _Deallocate(void* buffer);
+
+		template<typename T>
+		void* _Reallocate(size_t nElements);
 
 	private:
 		void* m_Buffer;
@@ -209,6 +217,9 @@ namespace TooGoodEngine {
 	template<typename T>
 	inline T* MemoryAllocator::Begin()
 	{
+		if (m_Identity.empty())
+			return nullptr;
+
 		TGE_VERIFY(m_Identity == typeid(T).name(), "elements need to be same");
 		return (T*)m_Buffer;
 	}
@@ -216,8 +227,62 @@ namespace TooGoodEngine {
 	template<typename T>
 	inline T* MemoryAllocator::End()
 	{
+		if (m_Identity.empty())
+			return nullptr;
+
 		TGE_VERIFY(m_Identity == typeid(T).name(), "elements need to be same");
 		return (T*)m_Buffer + m_Size;
+	}
+
+	template<typename T>
+	inline void MemoryAllocator::Allocate(size_t newCapacity)
+	{
+		if (m_Buffer)
+			Deallocate<T>();
+
+		m_Buffer = _Allocate<T>(newCapacity);
+		m_Capacity = newCapacity;
+
+		for(size_t i = 0; i < m_Capacity; i++)
+			new((T*)m_Buffer + i) T();
+	}
+
+	template<typename T>
+	inline void MemoryAllocator::Deallocate()
+	{
+		for (size_t i = 0; i < m_Capacity; ++i) 
+			((T*)m_Buffer)[i].~T();
+		
+		_Deallocate(m_Buffer);
+		m_Buffer = nullptr;
+	}
+
+	template<typename T>
+	inline void MemoryAllocator::Reallocate(size_t newCapacity)
+	{
+		//if buffer is already null then we can just allocate memory normally
+		if (!m_Buffer)
+		{
+			Allocate<T>(newCapacity);
+			return;
+		}
+
+		if (newCapacity < m_Capacity)
+		{
+			for (size_t i = newCapacity; i < m_Capacity; i++)
+				((T*)m_Buffer)[i].~T();
+		}
+
+		m_Buffer = _Reallocate<T>(newCapacity);
+
+
+		if (newCapacity > m_Capacity)
+		{
+			for (size_t i = m_Capacity; i < newCapacity; i++)
+				new((T*)m_Buffer + i) T();
+		}
+		 
+		m_Capacity = newCapacity;
 	}
 
 	template<typename T>
@@ -230,10 +295,11 @@ namespace TooGoodEngine {
 		
 		TGE_VERIFY(m_Identity == typeid(T).name(), "elements must be the same!");
 		
-		if (m_Capacity <= m_Size * sizeof(T))
-			Reallocate(m_Capacity * g_ResizeFactor + sizeof(T));
+		if (m_Capacity <= m_Size)
+			Reallocate<T>((m_Size + 1) * g_ResizeFactor);
 
-		T* converted = (T*)m_Buffer;
+
+		T* converted = (T*)m_Buffer; 
 		converted[m_Size++] = element;
 	}
 
@@ -259,8 +325,8 @@ namespace TooGoodEngine {
 
 		TGE_VERIFY(m_Identity == typeid(T).name(), "elements must be the same!");
 
-		if (m_Capacity <= m_Size * sizeof(T))
-			Reallocate(m_Capacity * g_ResizeFactor + sizeof(T));
+		if (m_Capacity <= m_Size)
+			Reallocate<T>((m_Size + 1) * g_ResizeFactor);
 
 		T* converted = (T*)(m_Buffer);
 		converted[m_Size++] = T(std::forward<Args>(args)...);
@@ -286,5 +352,16 @@ namespace TooGoodEngine {
 
 		std::swap(*toDelete, *end);
 		m_Size--;
+	}
+	template<typename T>
+	inline void* MemoryAllocator::_Allocate(size_t nElements)
+	{
+		//using windows specific until std::aligned_alloc becomes available on msvc (may add a compile time check)
+		return _aligned_malloc(nElements * sizeof(T), alignof(T));
+	}
+	template<typename T>
+	inline void* MemoryAllocator::_Reallocate(size_t nElements)
+	{
+		return _aligned_realloc(m_Buffer, nElements * sizeof(T), alignof(T));
 	}
 }

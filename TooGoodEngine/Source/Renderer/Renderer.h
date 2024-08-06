@@ -28,6 +28,7 @@ namespace TooGoodEngine {
 	};
 
 	using GeometryID = size_t;
+	inline constexpr GeometryID g_NullID = std::numeric_limits<size_t>::max();
 
 	class Renderer
 	{

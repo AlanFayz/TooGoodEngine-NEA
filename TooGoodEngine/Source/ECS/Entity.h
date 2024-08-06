@@ -6,13 +6,16 @@ namespace TooGoodEngine {
 	
 	using EntityID = size_t;
 
+	inline constexpr EntityID g_NullEntity = std::numeric_limits<size_t>::max();
+
 	class Entity
 	{
 	public:
+		Entity(const std::string& name, EntityID id);
 		Entity() = default;
 		~Entity() = default;
 
-		inline const std::string_view GetName() const { return m_Name; }
+		inline const std::string& GetName() const { return m_Name; }
 		inline const EntityID GetID() const { return m_ID; }
 
 		inline operator size_t() const { return m_ID; }
@@ -20,10 +23,7 @@ namespace TooGoodEngine {
 		inline operator const char* () const { return m_Name.data(); }
 
 	private:
-		Entity(std::string_view name, EntityID id);
-
-	private:
-		std::string_view m_Name;
+		std::string m_Name;
 		EntityID m_ID;
 
 		friend class Registry;

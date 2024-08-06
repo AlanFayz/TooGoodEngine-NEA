@@ -14,6 +14,9 @@ namespace TooGoodEngine {
 		DenseMap()  = default;
 		~DenseMap() = default;
 
+		template<typename T>
+		void Clean();
+
 		const std::string& GetIdentity() const { return m_Dense.GetIdentity(); }
 
 		template<typename T>
@@ -57,6 +60,12 @@ namespace TooGoodEngine {
 		std::unordered_map<size_t, EntityID> m_IndexToEntity;
 		MemoryAllocator m_Dense;
 	};
+
+	template<typename T>
+	inline void DenseMap::Clean()
+	{
+		m_Dense.Deallocate<T>();
+	}
 
 	template<typename T>
 	inline void DenseMap::Add(EntityID entity, const T& type)

@@ -6,11 +6,16 @@ namespace TooGoodEngine {
 
 	struct MeshComponent
 	{
-		MeshComponent() = default;
-		MeshComponent(GeometryID id) : ID(id) {};
+		MeshComponent() : ID(g_NullID), PathToSource("") {};
+		MeshComponent(GeometryID id, const std::filesystem::path& path) : ID(id), PathToSource(path.string()) {};
 		~MeshComponent() = default;
 
+		MeshComponent(const MeshComponent& other)
+			: ID(other.ID), PathToSource(other.PathToSource)
+		{}
+
 		GeometryID ID;
+		std::string PathToSource;
 	};
 
 }
