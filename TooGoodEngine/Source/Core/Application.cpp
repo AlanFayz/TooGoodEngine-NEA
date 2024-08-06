@@ -81,7 +81,6 @@ namespace TooGoodEngine {
 
 		m_LayerStack.OnGuiUpdateLayers(delta);
 
-		//ImGui::ShowDemoWindow(&showDemoWindow);
 
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
