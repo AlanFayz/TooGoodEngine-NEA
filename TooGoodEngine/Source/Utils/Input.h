@@ -6,7 +6,7 @@ namespace TooGoodEngine {
 	
 	enum class KeyCode
 	{
-		None = 0, W, A, S, D //will add rest later
+		None = 0, W, A, S, D, Q, E, X //will add rest later
 	};
 
 	enum class ButtonCode
@@ -26,6 +26,8 @@ namespace TooGoodEngine {
 		static const bool IsMouseButtonPressed(ButtonCode button);
 		static const bool IsMouseButtonReleased(ButtonCode button);
 		static const bool IsMouseButtonDown(ButtonCode button);
+
+		static void GetMouseCoordinates(double& x, double& y);
 
 		static void DisableCursor();
 		static void EnableCursor();

@@ -16,6 +16,8 @@ namespace TooGoodEngine {
 		glm::vec3 Up = { 0.0f, 1.0f, 0.0f };
 	};
 
+	class PerspectiveCameraController;
+
 	class PerspectiveCamera : public Camera
 	{
 	public:
@@ -23,6 +25,7 @@ namespace TooGoodEngine {
 		PerspectiveCamera(const PerspectiveCameraData& data);
 		~PerspectiveCamera() = default;
 
+		void UpdateViewProjection();
 		void SetData(const PerspectiveCameraData& data);
 		virtual void OnWindowResize(float newWidth, float newHeight) override;
 
@@ -47,6 +50,8 @@ namespace TooGoodEngine {
 		float m_AspectRatio;
 		float m_Near;
 		float m_Far;
+
+		friend class PerspectiveCameraController;
 	};
 
 }

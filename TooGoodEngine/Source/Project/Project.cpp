@@ -66,6 +66,16 @@ namespace TooGoodEngine {
 
 			JsonPath pathToEntity = { "Scenes", m_CurrentScene->GetName(), "Entities", entity.GetName()};
 
+
+			Node& node = registry.GetNode(entity);
+			
+			if (!node.Children.empty())
+			{
+				JsonPath pathToChildren = pathToEntity;
+				pathToChildren.push_back("Children");
+				writer.WriteGeneric(pathToChildren, node.Children);
+			}
+
 			if (registry.HasComponent<TransformComponent>(entity))
 				ComponentWriter::WriteTransform(writer, pathToEntity, registry.GetComponent<TransformComponent>(entity));
 

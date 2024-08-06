@@ -50,6 +50,12 @@ namespace TooGoodEngine {
 		return state == GLFW_PRESS || state == GLFW_REPEAT;
 	}
 
+	void Input::GetMouseCoordinates(double& x, double& y)
+	{
+		TGE_VERIFY(s_CurrentWindow, "input wasn't initalized");
+		glfwGetCursorPos(s_CurrentWindow, &x, &y);
+	}
+
 	void Input::DisableCursor()
 	{
 		TGE_VERIFY(s_CurrentWindow, "input wasn't initalized");
@@ -70,6 +76,9 @@ namespace TooGoodEngine {
 			case KeyCode::A:	return GLFW_KEY_A;
 			case KeyCode::S:	return GLFW_KEY_S;
 			case KeyCode::D:	return GLFW_KEY_D;
+			case KeyCode::Q:    return GLFW_KEY_Q;
+			case KeyCode::E:    return GLFW_KEY_E;
+			case KeyCode::X:	return GLFW_KEY_X;
 			case KeyCode::None: 
 			default:	return 0;
 		}

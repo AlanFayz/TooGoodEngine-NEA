@@ -5,7 +5,7 @@
 #include "ECS/EntityTree.h"
 #include "Renderer/Renderer.h"
 #include "ECS/Components/Components.h"
-#include "Math/PerspectiveCamera.h"
+#include "Math/PerspectiveCameraController.h"
 
 namespace TooGoodEngine {
 
@@ -33,7 +33,8 @@ namespace TooGoodEngine {
 		EntityTree m_Registry;
 		Ref<Renderer> m_SceneRenderer;
 		std::string m_SceneName;
-		PerspectiveCamera m_SceneCamera;
+		Ref<PerspectiveCamera> m_SceneCamera;
+		PerspectiveCameraController m_CameraController;
 	};
 
 }
