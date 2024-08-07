@@ -19,58 +19,146 @@ namespace TooGoodEngine {
 
 	inline constexpr size_t g_ResizeFactor = 2;
 
+	template<typename Container>
+	class BasicIterator
+	{
+	public:
+		using iterator_category = std::random_access_iterator_tag;
+		using difference_type = std::ptrdiff_t;
+		using value_type = typename Container::ValueType;
+		using pointer = value_type*;
+		using reference = value_type&;
+
+		BasicIterator(value_type* ptr, value_type* end) : m_Ptr(ptr), m_Begin(ptr), m_End(end) {}
+		BasicIterator(const BasicIterator& other) :
+			m_Ptr(other.m_Ptr), m_Begin(other.m_Begin), m_End(other.m_End) {}
+
+
+		constexpr pointer begin()
+		{
+			return m_Begin;
+		}
+
+		constexpr pointer end()
+		{
+			return m_End;
+		}
+
+		constexpr reference operator*() const noexcept
+		{
+			TGE_VERIFY(m_Ptr != m_End, "pointer is out of bounds");
+			return *m_Ptr;
+		}
+
+		constexpr pointer operator->() const noexcept
+		{
+			return m_Ptr;
+		}
+
+		constexpr BasicIterator& operator++() noexcept
+		{
+			m_Ptr++;
+			return *this;
+		}
+
+		constexpr BasicIterator operator++(int) noexcept
+		{
+			BasicIterator iterator = *this;
+			++(*this);
+			return iterator;
+		}
+
+		constexpr BasicIterator& operator--() noexcept
+		{
+			m_Ptr--;
+			return *this;
+		}
+
+		constexpr BasicIterator operator--(int) noexcept
+		{
+			BasicIterator iterator = *this;
+			--(*this);
+			return iterator;
+		}
+
+		constexpr reference operator[](const difference_type _Off) const noexcept
+		{
+			return *(*this + _Off);
+		}
+
+		constexpr bool operator==(const BasicIterator& other) const noexcept
+		{
+			return m_Ptr == other.m_Ptr;
+		}
+
+		constexpr bool operator!=(const BasicIterator& other) const noexcept
+		{
+			return m_Ptr != other.m_Ptr;
+		}
+
+	private:
+		value_type* m_Begin;
+		value_type* m_Ptr;
+		value_type* m_End;
+	};
+
+	template<typename Type>
 	class MemoryAllocator
 	{
 	public:
-		MemoryAllocator();
+		using ValueType = Type;
 
-		~MemoryAllocator();
-		
+	public:
+		MemoryAllocator() : m_Buffer(nullptr), m_Capacity(0), m_Size(0)
+		{
+		}
+
+		~MemoryAllocator()
+		{
+			for (size_t i = 0; i < m_Capacity; i++)
+				m_Buffer[i].~Type();
+
+			if (m_Buffer)
+				_Deallocate(m_Buffer);
+		}
+
+
 		inline const void* GetRaw()	const { return m_Buffer; }
-		inline const std::string& GetIdentity() const { return m_Identity; }
 
 		//in bytes
 		inline const size_t GetCapacity() const { return m_Capacity; }
 
 		//in count of elements
-		inline const size_t GetSize()     const	{ return m_Size; }
+		inline const size_t GetSize()     const { return m_Size; }
 
-		template<typename T>
-		inline T& GetElement(size_t index);
+		inline Type& GetElement(size_t index);
 
-		template<typename T>
-		inline T* Begin();
-
-		template<typename T>
-		inline T* End();
+		inline Type* Begin();
+		inline Type* End();
 
 		/*
 			Will delete current block of memory then allocate a new one
 		*/
 
-		template<typename T>
 		void Allocate(size_t newCapacity);
 
 		/*
 			Will delete the current block of memory
 		*/
 
-		template<typename T>
 		void Deallocate();
 
 		/*
 			Will move elements to new buffer with new size then delete old buffer
 		*/
 
-		template<typename T>
 		void Reallocate(size_t newCapacity);
 
 		/*
 			Inserts an element at the end of the buffer
 		*/
 
-		template<typename T>
-		void Insert(const T& element);
+		void Insert(const Type& element);
 
 		/*
 			Inserts an array of elements
@@ -84,284 +172,169 @@ namespace TooGoodEngine {
 			must have a valid constructor
 		*/
 
-		template<typename T, typename ...Args>
+		template<typename ...Args>
 		void Emplace(Args&&... args);
 
 		/*
-			Will remove an element at any index and must have a valid move constructor. 
+			Will remove an element at any index and must have a valid move constructor.
 			Note: this is done by swapping the last element with
-			the element at the index so make sure to update any data 
+			the element at the index so make sure to update any data
 			accordingly
 		*/
 
-		template<typename T>
 		void Remove(size_t index);
 
-		template<typename Type>
-		class VariableIterator
+
+		BasicIterator<MemoryAllocator<Type>> View()
 		{
-		public:
-			using iterator_category = std::random_access_iterator_tag;
-			using difference_type	= std::ptrdiff_t;
-			using value_type		= Type;
-			using pointer			= value_type*;
-			using reference			= value_type&;
-
-			VariableIterator(Type* ptr, Type* end) : m_Ptr(ptr), m_Begin(ptr), m_End(end) {}
-			VariableIterator(const VariableIterator& other) :
-				m_Ptr(other.m_Ptr), m_Begin(other.m_Begin), m_End(other.m_End) {}
-
-
-			constexpr pointer begin()
-			{
-				return m_Begin;
-			}
-
-			constexpr pointer end()
-			{
-				return m_End;
-			}
-
-			constexpr reference operator*() const noexcept
-			{
-				TGE_VERIFY(m_Ptr != m_End, "pointer is out of bounds");
-				return *m_Ptr;
-			}
-
-			constexpr pointer operator->() const noexcept
-			{
-				return m_Ptr;
-			}
-
-			constexpr VariableIterator& operator++() noexcept
-			{
-				m_Ptr++;
-				return *this;
-			}
-
-			constexpr VariableIterator operator++(int) noexcept
-			{
-				VariableIterator iterator = *this;
-				++(*this);
-				return iterator;
-			}
-
-			constexpr VariableIterator& operator--() noexcept
-			{
-				m_Ptr--;
-				return *this;
-			}
-
-			constexpr VariableIterator operator--(int) noexcept
-			{
-				VariableIterator iterator = *this;
-				--(*this);
-				return iterator;
-			}
-
-			constexpr reference operator[](const difference_type _Off) const noexcept 
-			{
-				return *(*this + _Off);
-			}
-
-			constexpr bool operator==(const VariableIterator& other) const noexcept
-			{
-				return m_Ptr == other.m_Ptr;
-			}
-
-			constexpr bool operator!=(const VariableIterator& other) const noexcept
-			{
-				return m_Ptr != other.m_Ptr;
-			}
-
-		private:
-			Type* m_Begin;
-			Type* m_Ptr;
-			Type* m_End;
-		};
-
-
-		template<typename T>
-		VariableIterator<T> View()
-		{
-			TGE_VERIFY(m_Identity == typeid(T).name(), "not the same identity");
-			return VariableIterator<T>(Begin<T>(), End<T>());
+			return BasicIterator<MemoryAllocator<Type>>(Begin(), End());
 		}
 
 	private:
-		template<typename T>
-		void* _Allocate(size_t nElements);
+		Type* _Allocate(size_t nElements);
 		void  _Deallocate(void* buffer);
-
-		template<typename T>
-		void* _Reallocate(size_t nElements);
+		Type* _Reallocate(size_t nElements);
 
 	private:
-		void* m_Buffer;
+		Type* m_Buffer;
 		size_t m_Size;
 		size_t m_Capacity;
 
-		std::string m_Identity;
 	};
 
-	template<typename T>
-	inline T& MemoryAllocator::GetElement(size_t index)
+	template<typename Type>
+	inline Type& MemoryAllocator<Type>::GetElement(size_t index)
 	{
-		TGE_VERIFY(index < m_Size && m_Identity == typeid(T).name(), "elements need to be same");
-
-		T* converted = (T*)m_Buffer;
-
-		return converted[index];
+		TGE_VERIFY(index < m_Size, "index out of range");
+		return m_Buffer[index];
 	}
 
-	template<typename T>
-	inline T* MemoryAllocator::Begin()
+	template<typename Type>
+	inline Type* MemoryAllocator<Type>::Begin()
 	{
-		if (m_Identity.empty())
-			return nullptr;
-
-		TGE_VERIFY(m_Identity == typeid(T).name(), "elements need to be same");
-		return (T*)m_Buffer;
+		return m_Buffer;
 	}
 
-	template<typename T>
-	inline T* MemoryAllocator::End()
+	template<typename Type>
+	inline Type* MemoryAllocator<Type>::End()
 	{
-		if (m_Identity.empty())
-			return nullptr;
-
-		TGE_VERIFY(m_Identity == typeid(T).name(), "elements need to be same");
-		return (T*)m_Buffer + m_Size;
+		return m_Buffer + m_Size;
 	}
 
-	template<typename T>
-	inline void MemoryAllocator::Allocate(size_t newCapacity)
+
+	template<typename Type>
+	inline void MemoryAllocator<Type>::Allocate(size_t newCapacity)
 	{
 		if (m_Buffer)
-			Deallocate<T>();
+			Deallocate();
 
-		m_Buffer = _Allocate<T>(newCapacity);
+		m_Buffer = _Allocate(newCapacity);
 		m_Capacity = newCapacity;
 
-		for(size_t i = 0; i < m_Capacity; i++)
-			new((T*)m_Buffer + i) T();
+		for (size_t i = 0; i < m_Capacity; i++)
+			new(m_Buffer + i) Type();
 	}
 
-	template<typename T>
-	inline void MemoryAllocator::Deallocate()
+	template<typename Type>
+	inline void MemoryAllocator<Type>::Deallocate()
 	{
-		for (size_t i = 0; i < m_Capacity; ++i) 
-			((T*)m_Buffer)[i].~T();
-		
+		for (size_t i = 0; i < m_Capacity; ++i)
+			m_Buffer[i].~Type();
+
 		_Deallocate(m_Buffer);
 		m_Buffer = nullptr;
 	}
 
-	template<typename T>
-	inline void MemoryAllocator::Reallocate(size_t newCapacity)
+	template<typename Type>
+	inline void MemoryAllocator<Type>::Reallocate(size_t newCapacity)
 	{
 		//if buffer is already null then we can just allocate memory normally
 		if (!m_Buffer)
 		{
-			Allocate<T>(newCapacity);
+			Allocate(newCapacity);
 			return;
 		}
 
 		if (newCapacity < m_Capacity)
 		{
 			for (size_t i = newCapacity; i < m_Capacity; i++)
-				((T*)m_Buffer)[i].~T();
+				m_Buffer[i].~Type();
 		}
 
-		m_Buffer = _Reallocate<T>(newCapacity);
-
+		m_Buffer = _Reallocate(newCapacity);
 
 		if (newCapacity > m_Capacity)
 		{
 			for (size_t i = m_Capacity; i < newCapacity; i++)
-				new((T*)m_Buffer + i) T();
+				new(m_Buffer + i) Type();
 		}
-		 
+
 		m_Capacity = newCapacity;
 	}
 
-	template<typename T>
-	inline void MemoryAllocator::Insert(const T& element)
+	template<typename Type>
+	inline void MemoryAllocator<Type>::Insert(const Type& element)
 	{
-		static_assert(std::is_copy_constructible_v<T>, "no copy constructor");
+		static_assert(std::is_copy_constructible_v<Type>, "no copy constructor");
 
-		if (m_Identity.empty())
-			m_Identity = typeid(T).name();
-		
-		TGE_VERIFY(m_Identity == typeid(T).name(), "elements must be the same!");
-		
 		if (m_Capacity <= m_Size)
-			Reallocate<T>((m_Size + 1) * g_ResizeFactor);
+			Reallocate((m_Size + 1) * g_ResizeFactor);
 
-
-		T* converted = (T*)m_Buffer; 
-		converted[m_Size++] = element;
+		m_Buffer[m_Size++] = element;
 	}
 
-	template<typename Iterator>
-	inline void MemoryAllocator::InsertN(Iterator begin, Iterator end)
-	{
-		TGE_VERIFY(end > begin, "cannot be the same iterator");
 
+	template<typename Type>
+	template<typename Iterator>
+	void MemoryAllocator<Type>::InsertN(Iterator begin, Iterator end)
+	{
 		using ValueType = typename std::iterator_traits<Iterator>::value_type;
 
 		for (Iterator iterator = begin; iterator != end; iterator++)
 			Insert<ValueType>(*iterator);
-
 	}
 
-	template<typename T, typename ...Args>
-	inline void MemoryAllocator::Emplace(Args && ...args)
+	template<typename Type>
+	template<typename ...Args>
+	inline void MemoryAllocator<Type>::Emplace(Args&& ...args)
 	{
-		static_assert(std::is_constructible_v<T>, "no constructor");
-
-		if (m_Identity.empty())
-			m_Identity = typeid(T).name();
-
-		TGE_VERIFY(m_Identity == typeid(T).name(), "elements must be the same!");
+		static_assert(std::is_constructible_v<Type>, "no constructor");
 
 		if (m_Capacity <= m_Size)
-			Reallocate<T>((m_Size + 1) * g_ResizeFactor);
+			Reallocate((m_Size + 1) * g_ResizeFactor);
 
-		T* converted = (T*)(m_Buffer);
-		converted[m_Size++] = T(std::forward<Args>(args)...);
+		m_Buffer[m_Size++] = Type(std::forward<Args>(args)...);
 	}
 
-	template<typename T>
-	inline void MemoryAllocator::Remove(size_t index)
+	template<typename Type>
+	inline void MemoryAllocator<Type>::Remove(size_t index)
 	{
 		TGE_VERIFY(m_Buffer, "buffer is null");
-
-		if (m_Identity.empty())
-			m_Identity = typeid(T).name();
-
-		TGE_VERIFY(m_Identity == typeid(T).name() &&
-				   index < m_Size, 
-				   "elements must be the same or index out of range");
+		TGE_VERIFY(index < m_Size, "index out of range");
 
 
-		T* toDelete = (T*)m_Buffer + index;
-		T* end = (T*)m_Buffer + m_Size - 1;
+		Type* toDelete = m_Buffer + index;
+		Type* end = m_Buffer + m_Size - 1;
 
-		(*toDelete).~T();
+		(*toDelete).~Type();
 
 		std::swap(*toDelete, *end);
 		m_Size--;
 	}
-	template<typename T>
-	inline void* MemoryAllocator::_Allocate(size_t nElements)
+	template<typename Type>
+	inline Type* MemoryAllocator<Type>::_Allocate(size_t nElements)
 	{
 		//using windows specific until std::aligned_alloc becomes available on msvc (may add a compile time check)
-		return _aligned_malloc(nElements * sizeof(T), alignof(T));
+		return (Type*)_aligned_malloc(nElements * sizeof(Type), alignof(Type));
 	}
-	template<typename T>
-	inline void* MemoryAllocator::_Reallocate(size_t nElements)
+	template<typename Type>
+	inline void MemoryAllocator<Type>::_Deallocate(void* buffer)
 	{
-		return _aligned_realloc(m_Buffer, nElements * sizeof(T), alignof(T));
+		_aligned_free(buffer);
+	}
+	template<typename Type>
+	inline Type* MemoryAllocator<Type>::_Reallocate(size_t nElements)
+	{
+		return (Type*)_aligned_realloc(m_Buffer, nElements * sizeof(Type), alignof(Type));
 	}
 }

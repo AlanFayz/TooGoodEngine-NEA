@@ -32,7 +32,6 @@ namespace TooGoodEngine {
 		if (m_ShouldNotUpdate)
 			return;
 
-
 		glm::vec3 Movement(0.0f);
 
 		if (WKeyDown)

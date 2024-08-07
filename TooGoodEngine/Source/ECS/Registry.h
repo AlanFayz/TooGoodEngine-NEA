@@ -3,13 +3,16 @@
 #include "DenseMap.h"
 #include "Entity.h"
 
+#include <typeindex>
+#include <functional>
+
 namespace TooGoodEngine {
 
 	class Registry
 	{
 	public:
 		Registry() = default;
-		~Registry() = default;
+		~Registry();
 
 		inline Entity CreateEntity(const std::string& name) 
 		{
@@ -27,84 +30,116 @@ namespace TooGoodEngine {
 			return Entity("null entity", g_NullEntity);
 		}
 		
-		template<typename T>
+		template<typename Type>
 		inline bool HasComponent(const EntityID& entity) 
 		{ 
-			if(m_Buckets.contains(typeid(T).name()))
-				return m_Buckets[typeid(T).name()].Contains<T>(entity);
+			if (m_Buckets.contains(typeid(Type)))
+			{
+				DenseMap<Type>* bucket = GetAssuredType<Type>();
+				return bucket->Contains(entity);
+			}
 
 			return false;
 		}
 	
-		template<typename T>
-		void AddComponent(const Entity& entity, const T& t);
+		template<typename Type>
+		void AddComponent(const Entity& entity, const Type& t);
 
-		template<typename T, typename ...Args>
+		template<typename Type, typename ...Args>
 		void EmplaceComponent(const Entity& entity, Args&&... args);
 
-		template<typename T>
+		template<typename Type>
 		void RemoveComponent(const Entity& entity);
 
-		template<typename T>
-		T& GetComponent(const EntityID& entity);
+		template<typename Type>
+		Type& GetComponent(const EntityID& entity);
 
-		template<typename T, typename Fun>
+		template<typename Type, typename Fun>
 		void ForEach(Fun fun);
 
-		template<typename T>
-		MemoryAllocator::VariableIterator<T> View();
+		template<typename Type>
+		auto View();
 
 	private:
 		void _VerifyEntity(const EntityID& entity) const;
 
+		template<typename Type>
+		auto GetAssuredType();
+
 	private:
 		EntityID m_Count = 0;
-		std::unordered_map<std::string, DenseMap> m_Buckets; //string identifier
+
+		struct BucketEntry
+		{
+			void* Data;
+			std::function<void(void*)> Deleter;
+		};
+
+		std::unordered_map<std::type_index, BucketEntry> m_Buckets;
 		std::vector<Entity> m_Entites;
 	};
 
-
-	template<typename T>
-	inline void Registry::AddComponent(const Entity& entity, const T& t)
+	template<typename Type>
+	inline void Registry::AddComponent(const Entity& entity, const Type& t)
 	{
-		_VerifyEntity(entity);
-		m_Buckets[typeid(T).name()].Add<T>(entity, t);
+		DenseMap<Type>* bucket = GetAssuredType<Type>();
+		bucket->Add(entity, t);
 	}
 
-	template<typename T, typename ...Args>
-	inline void Registry::EmplaceComponent(const Entity& entity, Args&&... args)
+	template<typename Type, typename ...Args>
+	inline void Registry::EmplaceComponent(const Entity& entity, Args && ...args)
 	{
-		_VerifyEntity(entity);
-		m_Buckets[typeid(T).name()].Emplace<T>(entity, std::forward<Args>(args)...);
+		DenseMap<Type>* bucket = GetAssuredType<Type>();
+		bucket->Emplace(entity, std::forward<Args>(args)...);
 	}
 
-	template<typename T>
+	template<typename Type>
 	inline void Registry::RemoveComponent(const Entity& entity)
 	{
-		_VerifyEntity(entity);
-		m_Buckets[typeid(T).name()].Remove<T>(entity);
+		DenseMap<Type>* bucket = GetAssuredType<Type>();
+		if (bucket->Contains(entity))
+			bucket->Remove(entity);
+
+		TGE_LOG_WARNING("entity ", entity.GetName(), " doesn't contain component ", typeid(Type).name());
 	}
 
-	template<typename T>
-	inline T& Registry::GetComponent(const EntityID& entity)
+	template<typename Type>
+	inline Type& Registry::GetComponent(const EntityID& entity)
 	{
-		_VerifyEntity(entity);
-		return m_Buckets[typeid(T).name()].Get<T>(entity);
+		DenseMap<Type>* bucket = GetAssuredType<Type>();
+
+		TGE_VERIFY(bucket->Contains(entity), "doesn't contain component");
+		return bucket->Get(entity);
 	}
 
-	template<typename T, typename Fun>
+	template<typename Type, typename Fun>
 	inline void Registry::ForEach(Fun fun)
 	{
-		m_Buckets[typeid(T).name()].ForEach<T>(fun);
+		DenseMap<Type>* bucket = GetAssuredType<Type>();
+		bucket->ForEach(fun);
 	}
 
-	template<typename T>
-	inline MemoryAllocator::VariableIterator<T> Registry::View()
+	template<typename Type>
+	inline auto Registry::View()
 	{
-		if (!m_Buckets.contains(typeid(T).name()))
-			return MemoryAllocator::VariableIterator<T>(nullptr, nullptr);
+		DenseMap<Type>* bucket = GetAssuredType<Type>();
+		return bucket->ViewDense();
+	}
 
-		return m_Buckets[typeid(T).name()].ViewDense<T>();
+	template<typename Type>
+	inline auto Registry::GetAssuredType()
+	{
+		auto it = m_Buckets.find(typeid(Type));
+		if (it != m_Buckets.end()) 
+			return (DenseMap<Type>*)(it->second.Data);
+		
+
+		BucketEntry entry;
+		entry.Data = new DenseMap<Type>();
+		entry.Deleter = [](void* memory) { delete (DenseMap<Type>*)(memory); };
+
+		m_Buckets[typeid(Type)] = entry;
+		return (DenseMap<Type>*)(entry.Data);
 	}
 
 }

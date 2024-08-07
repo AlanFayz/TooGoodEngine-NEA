@@ -2,6 +2,8 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 
+#include "Core/Base.h"
+
 namespace TooGoodEngine {
 	
 	class TransformComponent

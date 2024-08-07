@@ -16,7 +16,7 @@ namespace TooGoodEngine {
 
 		inline const size_t GetPosition() { _VerifyStream(); return m_File.tellg(); };
 
-		Ref<MemoryAllocator> Read(size_t bytes);
+		Ref<MemoryAllocator<char>> Read(size_t bytes);
 		void  SeekPosition(size_t position);
 		const size_t GetSize();
 

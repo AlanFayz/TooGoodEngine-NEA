@@ -26,6 +26,20 @@ namespace TooGoodEngine {
 
 			m_Data.ColorShaderProgram = OpenGL::Program(map);
 		}
+		// ---- init buffers ----
+
+		{
+			OpenGL::BufferInfo bufferInfo{};
+			bufferInfo.Capacity = 10 * sizeof(Material); //default size will be 10
+			bufferInfo.Data = nullptr;
+			bufferInfo.Masks = OpenGL::BufferOptionMapCoherient  |
+							   OpenGL::BufferOptionMapPersistent |
+							   OpenGL::BufferOptionMapWrite;
+
+			m_Data.MaterialBuffer = OpenGL::Buffer(bufferInfo);
+			m_Data.MaterialMappedData = (Material*)m_Data.MaterialBuffer.MapRange(bufferInfo.Masks);
+		}
+
 
 		// ---- Add default meshes ----
 		Geometry square;
@@ -46,10 +60,36 @@ namespace TooGoodEngine {
 		square.Indices = squareIndices;
 
 		m_Data.SquareGeometryIndex = AddGeometry(square);
+
+		// ---- Default material ----
 	}
 
 	Renderer::~Renderer()
 	{
+		for (size_t i = 0; i <= m_Data.CurrentMaterialBufferIndex; i++)
+			m_Data.MaterialMappedData[i].MakeHandlesNonResident();
+	}
+
+	MaterialID Renderer::AddMaterial(const Material& material)
+	{
+		MaterialID id = m_Data.CurrentMaterialBufferIndex;
+
+		if (m_Data.CurrentMaterialBufferIndex * sizeof(Material) >= m_Data.MaterialBuffer.GetCapacity())
+		{
+			m_Data.MaterialBuffer.Unmap();
+			m_Data.MaterialBuffer.Resize(m_Data.CurrentMaterialBufferIndex * sizeof(Material) * 2);
+			m_Data.MaterialMappedData = (Material*)m_Data.MaterialBuffer.MapRange(
+				OpenGL::BufferOptionMapCoherient  |
+				OpenGL::BufferOptionMapPersistent |
+				OpenGL::BufferOptionMapWrite
+			);
+		}
+
+		m_Data.MaterialMappedData[m_Data.CurrentMaterialBufferIndex++] = material;
+		
+		material.MakeHandlesResident();
+
+		return id;
 	}
 
 	GeometryID Renderer::AddGeometry(const Geometry& data)
@@ -116,6 +156,8 @@ namespace TooGoodEngine {
 
 	void Renderer::RenderInstances()
 	{
+		m_Data.ColorShaderProgram.Use();
+
 		PerFrameData data{};
 		data.ViewProjection = m_Data.CurrentCamera->GetProjection() * m_Data.CurrentCamera->GetView();
 
@@ -124,6 +166,7 @@ namespace TooGoodEngine {
 			m_Data.ColorShaderProgram.SetUniform("ViewProjection", data.ViewProjection);
 
 			instanceBuffer.BeginBatch(0);
+			m_Data.MaterialBuffer.BindBase(1, OpenGL::BufferTypeShaderStorage);
 
 			OpenGL::Command::DrawElementsInstanced(
 				&m_Data.ColorShaderProgram,
