@@ -4,14 +4,14 @@
 
 layout(location = 0) out vec4 OutColor;
 
-const int MATERIAL_TYPE_IMAGE  = 0;
-const int MATERIAL_TYPE_VECTOR = 1;
+const int MATERIAL_TYPE_IMAGE  = 1;
+const int MATERIAL_TYPE_VECTOR = 2;
 
 struct MaterialComponent 
 {
-	int   Type;
 	vec4  Component;
 	uvec2 BindlessSampler;
+	int   Type;
 };
 
 struct Material 
@@ -34,7 +34,7 @@ struct MaterialData
 	float Roughness;
 };
 
-readonly layout(std430, location = 1) buffer u_MaterialBuffer 
+readonly layout(std430, binding = 1) buffer u_MaterialBuffer 
 {
 	Material Data[];
 } Materials;
@@ -66,13 +66,16 @@ MaterialData FetchMaterialData(in Material material, in vec2 textureCoordinate)
 	return data;
 }
 
-in vec3 oNormal;
-in vec2 oTextureCoord;
+in vec3 o_Normal;
+in vec2 o_TextureCoord;
+in flat uint o_MaterialIndex;
 
 void main()
 {
-	float a = dot(oNormal, oNormal);
-    float b = dot(oTextureCoord, oTextureCoord);
+	float a = dot(o_Normal, o_Normal);
+    float b = dot(o_TextureCoord, o_TextureCoord);
 
-    OutColor = vec4(1.0, 1.0, 1.0, 1.0) * a * b;
+	MaterialData materialData = FetchMaterialData(Materials.Data[o_MaterialIndex], o_TextureCoord);
+
+    OutColor = vec4(1.0, 1.0, 1.0, 1.0) * materialData.Albedo * a * b;
 }

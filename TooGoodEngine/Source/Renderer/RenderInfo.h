@@ -25,7 +25,10 @@ namespace TooGoodEngine {
 	{
 		std::vector<Vertex>     Vertices;
 		std::vector<uint32_t>   Indices; //will have a material soon
+
+		MaterialInfo Material;
 	};
+
 
 	struct PerFrameData
 	{

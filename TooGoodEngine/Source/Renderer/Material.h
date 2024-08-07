@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Alignment.h"
+#include "API/OpenGL/Texture2D.h"
 
 #include <inttypes.h>
 #include <glm/glm.hpp>
@@ -14,11 +15,12 @@ namespace TooGoodEngine {
 
 	struct MaterialComponent
 	{
-		TGE_SCALAR_ALIGNMENT   MaterialType Type;
-		TGE_VECTOR_4_ALIGNMENT glm::vec4 Component;
-		TGE_VECTOR_2_ALIGNMENT uint64_t  BindlessTextureHandle; 
+		glm::vec4 Component;
+		uint64_t  BindlessTextureHandle = 0; //uvec2 in the shader
+		MaterialType Type;
 	};
 
+	//TODO: currently always assumes the texture is valid, is this ok??
 	struct Material
 	{
 		MaterialComponent Albedo;
@@ -26,40 +28,32 @@ namespace TooGoodEngine {
 		MaterialComponent Emission;
 		MaterialComponent Roughness;
 
-		TGE_SCALAR_ALIGNMENT float AlbedoFactor;  
-		TGE_SCALAR_ALIGNMENT float MetallicFactor;
-		TGE_SCALAR_ALIGNMENT float EmissionFactor;
+		float AlbedoFactor;  
+		float MetallicFactor;
+		float EmissionFactor;
  
-		void MakeHandlesResident() const
-		{ 
-			if(Albedo.Type == MaterialType::Image)
-				glMakeTextureHandleResidentARB((GLuint64)Albedo.BindlessTextureHandle);
-
-			if (Metallic.Type == MaterialType::Image)
-				glMakeTextureHandleResidentARB((GLuint64)Metallic.BindlessTextureHandle);
-
-			if (Emission.Type == MaterialType::Image)
-				glMakeTextureHandleResidentARB((GLuint64)Emission.BindlessTextureHandle);
-
-			if(Roughness.Type == MaterialType::Image)
-				glMakeTextureHandleResidentARB((GLuint64)Roughness.BindlessTextureHandle);
-
-		}
-
-		void MakeHandlesNonResident() const
-		{
-			if (Albedo.Type == MaterialType::Image)
-				glMakeTextureHandleNonResidentARB((GLuint64)Albedo.BindlessTextureHandle);
-
-			if (Metallic.Type == MaterialType::Image)
-				glMakeTextureHandleNonResidentARB((GLuint64)Metallic.BindlessTextureHandle);
-
-			if (Emission.Type == MaterialType::Image)
-				glMakeTextureHandleNonResidentARB((GLuint64)Emission.BindlessTextureHandle);
-
-			if (Roughness.Type == MaterialType::Image)
-				glMakeTextureHandleNonResidentARB((GLuint64)Roughness.BindlessTextureHandle);
-		}
+		void MakeHandlesResident() const;
+		void MakeHandlesNonResident() const;
 	};
+
+	struct MaterialInfo
+	{
+		glm::vec4 Albedo;
+		Ref<OpenGL::Texture2D> AlbedoTexture = nullptr;
+		float AlbedoFactor;
+
+		glm::vec4 Metallic;
+		Ref<OpenGL::Texture2D> MetallicTexture = nullptr;
+		float MetallicFactor;
+
+		glm::vec4 Emission;
+		Ref<OpenGL::Texture2D> EmissionTexture = nullptr;
+		float EmissionFactor;
+
+		float Roughness;
+		Ref<OpenGL::Texture2D> RoughnessTexture = nullptr;
+	};
+
+	Material CreateMaterial(const MaterialInfo& info);
 
 }

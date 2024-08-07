@@ -1,0 +1,90 @@
+#include "Material.h"
+
+namespace TooGoodEngine {
+	Material CreateMaterial(const MaterialInfo& info)
+	{
+		Material material{};
+
+		if (info.AlbedoTexture)
+		{
+			material.Albedo.Type = MaterialType::Image;
+			material.Albedo.BindlessTextureHandle = info.AlbedoTexture->GetAddress();
+		}
+		else
+		{
+			material.Albedo.Type = MaterialType::Vector;
+			material.Albedo.Component = info.Albedo;
+		}
+
+		material.AlbedoFactor = info.AlbedoFactor;
+
+		if (info.MetallicTexture)
+		{
+			material.Metallic.Type = MaterialType::Image;
+			material.Metallic.BindlessTextureHandle = info.MetallicTexture->GetAddress();
+		}
+		else
+		{
+			material.Metallic.Type = MaterialType::Vector;
+			material.Metallic.Component = info.Metallic;
+		}
+
+		material.MetallicFactor = info.MetallicFactor;
+
+		if (info.EmissionTexture)
+		{
+			material.Emission.Type = MaterialType::Image;
+			material.Emission.BindlessTextureHandle = info.EmissionTexture->GetAddress();
+		}
+		else
+		{
+			material.Emission.Type = MaterialType::Vector;
+			material.Emission.Component = info.Emission;
+		}
+
+		material.EmissionFactor = info.EmissionFactor;
+
+		if (info.RoughnessTexture)
+		{
+			material.Roughness.Type = MaterialType::Image;
+			material.Roughness.BindlessTextureHandle = info.RoughnessTexture->GetAddress();
+		}
+		else
+		{
+			material.Roughness.Type = MaterialType::Vector;
+			material.Roughness.Component = glm::vec4(info.Roughness, 0.0f, 0.0f, 0.0f);
+		}
+
+		return material;
+	}
+	void Material::MakeHandlesResident() const
+	{
+		
+		if (Albedo.Type == MaterialType::Image)
+			glMakeTextureHandleResidentARB((GLuint64)Albedo.BindlessTextureHandle);
+
+		if (Metallic.Type == MaterialType::Image)
+			glMakeTextureHandleResidentARB((GLuint64)Metallic.BindlessTextureHandle);
+
+		if (Emission.Type == MaterialType::Image)
+			glMakeTextureHandleResidentARB((GLuint64)Emission.BindlessTextureHandle);
+
+		if (Roughness.Type == MaterialType::Image)
+			glMakeTextureHandleResidentARB((GLuint64)Roughness.BindlessTextureHandle);
+
+	}
+	void Material::MakeHandlesNonResident() const
+	{
+		if (Albedo.Type == MaterialType::Image)
+			glMakeTextureHandleNonResidentARB((GLuint64)Albedo.BindlessTextureHandle);
+
+		if (Metallic.Type == MaterialType::Image)
+			glMakeTextureHandleNonResidentARB((GLuint64)Metallic.BindlessTextureHandle);
+
+		if (Emission.Type == MaterialType::Image)
+			glMakeTextureHandleNonResidentARB((GLuint64)Emission.BindlessTextureHandle);
+
+		if (Roughness.Type == MaterialType::Image)
+			glMakeTextureHandleNonResidentARB((GLuint64)Roughness.BindlessTextureHandle);
+	}
+}

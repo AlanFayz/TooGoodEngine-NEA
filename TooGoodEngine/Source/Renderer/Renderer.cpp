@@ -17,7 +17,6 @@ namespace TooGoodEngine {
 			m_Data.ShaderDirectory = settings.RuntimeShaderDirectory;
 		}
 
-
 		// ---- init shaders ----
 		{
 			OpenGL::ShaderMap map
@@ -62,6 +61,25 @@ namespace TooGoodEngine {
 		m_Data.SquareGeometryIndex = AddGeometry(square);
 
 		// ---- Default material ----
+		
+		Material defaultMaterial{};
+
+		defaultMaterial.Albedo.Type		 = MaterialType::Vector;
+		defaultMaterial.Albedo.Component = glm::vec4(1.0f, 1.0f, 1.0f, -1.0f);
+		defaultMaterial.AlbedoFactor     =  1.0f;
+		
+		defaultMaterial.Metallic.Type      = MaterialType::Vector;
+		defaultMaterial.Metallic.Component = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+		defaultMaterial.MetallicFactor     = 1.0f;
+
+		defaultMaterial.Emission.Type      = MaterialType::Vector;
+		defaultMaterial.Emission.Component = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+		defaultMaterial.EmissionFactor     = 1.0f;
+
+		defaultMaterial.Roughness.Type = MaterialType::Vector;
+		defaultMaterial.Roughness.Component = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+
+		AddMaterial(defaultMaterial);
 	}
 
 	Renderer::~Renderer()
@@ -114,6 +132,15 @@ namespace TooGoodEngine {
 	{
 		m_Settings.ViewportWidth = newWidth;
 		m_Settings.ViewportHeight = newHeight;
+	}
+
+	void Renderer::ChangeMaterialData(MaterialID id, const Material& material)
+	{
+		TGE_VERIFY(id < m_Data.CurrentMaterialBufferIndex, "not a valid material id");
+
+		m_Data.MaterialMappedData[id].MakeHandlesNonResident();
+		m_Data.MaterialMappedData[id] = material;
+		m_Data.MaterialMappedData[id].MakeHandlesResident();
 	}
 
 	void Renderer::Begin(Camera* camera)

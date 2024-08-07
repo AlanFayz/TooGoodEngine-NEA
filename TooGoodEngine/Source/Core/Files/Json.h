@@ -68,25 +68,12 @@ namespace TooGoodEngine {
 		template<typename T>
 		void WriteGeneric(const JsonPath& path, const T& data);
 
-		template<typename T>
-		void Write(const JsonPath& path, const T& data);
-
 	private:
 		std::ofstream m_Stream;
 		json m_Data;
 		bool m_Optimize;
 
 	};
-
-	struct Impl_Write
-	{
-		template<typename T>
-		static void Call(const JsonPath& path, const T& data)
-		{
-			TGE_LOG_ERROR("data type ", typeid(T).name(), " not supported");
-		}
-	};
-
 
 	template<typename T>
 	inline void JsonWriter::WriteGeneric(const JsonPath& path, const T& data) 
@@ -109,11 +96,5 @@ namespace TooGoodEngine {
 		(*current)[path[last]] = data;
 	}
 
-	template<typename T>
-	inline void JsonWriter::Write(const JsonPath& path, const T& data)
-	{
-		TGE_VERIFY(path.size() > 0, "path must be bigger than 0");
-		Impl_Write::Call(path, data);
-	}
 }
 

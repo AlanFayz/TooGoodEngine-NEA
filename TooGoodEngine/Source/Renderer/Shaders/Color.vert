@@ -11,13 +11,14 @@ struct InstanceData
     mat4 Transform;
 };
  
-readonly layout(location = 0) buffer u_Instance
+readonly layout(binding = 0) buffer u_Instance
 {
     InstanceData Data[];
 } Instances;
 
-out vec3 oNormal;
-out vec2 oTextureCoord;
+out vec3 o_Normal;
+out vec2 o_TextureCoord;
+out flat uint o_MaterialIndex;
 
 uniform mat4 ViewProjection;
 
@@ -25,6 +26,7 @@ void main()
 {
     gl_Position = ViewProjection * Instances.Data[gl_InstanceID].Transform * vec4(Position, 1.0);
 
-    oNormal = Normal; 
-    oTextureCoord = TextureCoord; 
+    o_Normal = Normal; 
+    o_TextureCoord = TextureCoord; 
+    o_MaterialIndex = Instances.Data[gl_InstanceID].MaterialIndex;
 }

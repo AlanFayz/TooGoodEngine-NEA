@@ -43,7 +43,7 @@ namespace TooGoodEngine {
 	void Project::SaveState()
 	{
 		std::filesystem::path file = m_ProjectDirectory / (m_ProjectName + ".json");
-		JsonWriter writer(file, false);
+		JsonWriter writer(file, false); //will be true when build() function is created
 
 		auto timePoint = std::chrono::system_clock::now();
 		std::time_t currentTime = std::chrono::system_clock::to_time_t(timePoint);

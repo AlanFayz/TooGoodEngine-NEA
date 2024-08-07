@@ -35,7 +35,7 @@ namespace TooGoodEngine {
 		{ 
 			if (m_Buckets.contains(typeid(Type)))
 			{
-				DenseMap<Type>* bucket = GetAssuredType<Type>();
+				DenseMap<Type>* bucket = GetAssuredBucketType<Type>();
 				return bucket->Contains(entity);
 			}
 
@@ -64,7 +64,7 @@ namespace TooGoodEngine {
 		void _VerifyEntity(const EntityID& entity) const;
 
 		template<typename Type>
-		auto GetAssuredType();
+		auto GetAssuredBucketType();
 
 	private:
 		EntityID m_Count = 0;
@@ -82,21 +82,21 @@ namespace TooGoodEngine {
 	template<typename Type>
 	inline void Registry::AddComponent(const Entity& entity, const Type& t)
 	{
-		DenseMap<Type>* bucket = GetAssuredType<Type>();
+		DenseMap<Type>* bucket = GetAssuredBucketType<Type>();
 		bucket->Add(entity, t);
 	}
 
 	template<typename Type, typename ...Args>
 	inline void Registry::EmplaceComponent(const Entity& entity, Args && ...args)
 	{
-		DenseMap<Type>* bucket = GetAssuredType<Type>();
+		DenseMap<Type>* bucket = GetAssuredBucketType<Type>();
 		bucket->Emplace(entity, std::forward<Args>(args)...);
 	}
 
 	template<typename Type>
 	inline void Registry::RemoveComponent(const Entity& entity)
 	{
-		DenseMap<Type>* bucket = GetAssuredType<Type>();
+		DenseMap<Type>* bucket = GetAssuredBucketType<Type>();
 		if (bucket->Contains(entity))
 			bucket->Remove(entity);
 
@@ -106,7 +106,7 @@ namespace TooGoodEngine {
 	template<typename Type>
 	inline Type& Registry::GetComponent(const EntityID& entity)
 	{
-		DenseMap<Type>* bucket = GetAssuredType<Type>();
+		DenseMap<Type>* bucket = GetAssuredBucketType<Type>();
 
 		TGE_VERIFY(bucket->Contains(entity), "doesn't contain component");
 		return bucket->Get(entity);
@@ -115,19 +115,19 @@ namespace TooGoodEngine {
 	template<typename Type, typename Fun>
 	inline void Registry::ForEach(Fun fun)
 	{
-		DenseMap<Type>* bucket = GetAssuredType<Type>();
+		DenseMap<Type>* bucket = GetAssuredBucketType<Type>();
 		bucket->ForEach(fun);
 	}
 
 	template<typename Type>
 	inline auto Registry::View()
 	{
-		DenseMap<Type>* bucket = GetAssuredType<Type>();
+		DenseMap<Type>* bucket = GetAssuredBucketType<Type>();
 		return bucket->ViewDense();
 	}
 
 	template<typename Type>
-	inline auto Registry::GetAssuredType()
+	inline auto Registry::GetAssuredBucketType()
 	{
 		auto it = m_Buckets.find(typeid(Type));
 		if (it != m_Buckets.end()) 
