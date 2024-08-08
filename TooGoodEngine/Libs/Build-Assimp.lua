@@ -112,9 +112,10 @@ project 'assimp'
 	}
 
 	filter "configurations:Debug"
-        defines { "DEBUG" }
-        runtime "Debug"
-        symbols "on"
+       defines { "DEBUG" }
+       runtime "Release"
+       symbols "On"
+       optimize "Off"
 
     filter "configurations:Release"
         defines { "RELEASE" }

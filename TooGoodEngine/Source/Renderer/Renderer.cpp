@@ -7,7 +7,7 @@ namespace TooGoodEngine {
 	Renderer::Renderer(const RenderSettings& settings)
 		: m_Settings(settings), m_Data()
 	{
-		if (settings.RuntimeShaderDirectory.empty())
+		if (settings.RuntimeShaderDirectory.empty()) //if not set then in the editor
 		{
 			m_Data.ShaderDirectory = __FILE__;
 			m_Data.ShaderDirectory = m_Data.ShaderDirectory.parent_path() / "Shaders";
@@ -17,6 +17,8 @@ namespace TooGoodEngine {
 			m_Data.ShaderDirectory = settings.RuntimeShaderDirectory;
 		}
 
+		_ApplySettings();
+
 		// ---- init shaders ----
 		{
 			OpenGL::ShaderMap map
@@ -25,88 +27,32 @@ namespace TooGoodEngine {
 
 			m_Data.ColorShaderProgram = OpenGL::Program(map);
 		}
-		// ---- init buffers ----
-
-		{
-			OpenGL::BufferInfo bufferInfo{};
-			bufferInfo.Capacity = 10 * sizeof(Material); //default size will be 10
-			bufferInfo.Data = nullptr;
-			bufferInfo.Masks = OpenGL::BufferOptionMapCoherient  |
-							   OpenGL::BufferOptionMapPersistent |
-							   OpenGL::BufferOptionMapWrite;
-
-			m_Data.MaterialBuffer = OpenGL::Buffer(bufferInfo);
-			m_Data.MaterialMappedData = (Material*)m_Data.MaterialBuffer.MapRange(bufferInfo.Masks);
-		}
-
-
-		// ---- Add default meshes ----
-		Geometry square;
-
-		std::vector<Vertex> squareData = {
-			{ glm::vec3(-0.5f, -0.5f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec2(0.0f, 0.0f) }, 
-			{ glm::vec3(0.5f, -0.5f, 0.0f),  glm::vec3(0.0f, 0.0f, 1.0f), glm::vec2(1.0f, 0.0f) }, 
-			{ glm::vec3(-0.5f,  0.5f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec2(0.0f, 1.0f) }, 
-			{ glm::vec3(0.5f,  0.5f, 0.0f),  glm::vec3(0.0f, 0.0f, 1.0f), glm::vec2(1.0f, 1.0f) }  
-		};
-
-		std::vector<uint32_t> squareIndices = {
-			0, 1, 2, 
-			1, 3, 2  
-		};
-
-		square.Vertices = squareData;
-		square.Indices = squareIndices;
-
-		m_Data.SquareGeometryIndex = AddGeometry(square);
-
-		// ---- Default material ----
 		
-		Material defaultMaterial{};
+		_CreateBuffers();
+		_CreateDefaultMaterialsAndMeshes();
 
-		defaultMaterial.Albedo.Type		 = MaterialType::Vector;
-		defaultMaterial.Albedo.Component = glm::vec4(1.0f, 1.0f, 1.0f, -1.0f);
-		defaultMaterial.AlbedoFactor     =  1.0f;
-		
-		defaultMaterial.Metallic.Type      = MaterialType::Vector;
-		defaultMaterial.Metallic.Component = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
-		defaultMaterial.MetallicFactor     = 1.0f;
-
-		defaultMaterial.Emission.Type      = MaterialType::Vector;
-		defaultMaterial.Emission.Component = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
-		defaultMaterial.EmissionFactor     = 1.0f;
-
-		defaultMaterial.Roughness.Type = MaterialType::Vector;
-		defaultMaterial.Roughness.Component = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
-
-		AddMaterial(defaultMaterial);
 	}
 
 	Renderer::~Renderer()
 	{
-		for (size_t i = 0; i <= m_Data.CurrentMaterialBufferIndex; i++)
-			m_Data.MaterialMappedData[i].MakeHandlesNonResident();
+		for (size_t i = 0; i <= m_Data.Materials.Size; i++)
+			m_Data.Materials.MappedData[i].MakeHandlesNonResident();
 	}
 
 	MaterialID Renderer::AddMaterial(const Material& material)
 	{
-		MaterialID id = m_Data.CurrentMaterialBufferIndex;
+		MaterialID id = m_Data.Materials.Size;
 
-		if (m_Data.CurrentMaterialBufferIndex * sizeof(Material) >= m_Data.MaterialBuffer.GetCapacity())
+		if (m_Data.Materials.Size * sizeof(Material) >= m_Data.Materials.Buffer.GetCapacity())
 		{
-			m_Data.MaterialBuffer.Unmap();
-			m_Data.MaterialBuffer.Resize(m_Data.CurrentMaterialBufferIndex * sizeof(Material) * 2);
-			m_Data.MaterialMappedData = (Material*)m_Data.MaterialBuffer.MapRange(
-				OpenGL::BufferOptionMapCoherient  |
-				OpenGL::BufferOptionMapPersistent |
-				OpenGL::BufferOptionMapWrite
-			);
+			m_Data.Materials.Buffer.Unmap();
+			m_Data.Materials.Buffer.Resize(m_Data.Materials.Size * sizeof(Material) * 2);
+			m_Data.Materials.MappedData = (Material*)m_Data.Materials.Buffer.MapRange(m_Data.Materials.MapFlags);
 		}
 
-		m_Data.MaterialMappedData[m_Data.CurrentMaterialBufferIndex++] = material;
+		m_Data.Materials.MappedData[m_Data.Materials.Size++] = material;
 		
 		material.MakeHandlesResident();
-
 		return id;
 	}
 
@@ -121,11 +67,37 @@ namespace TooGoodEngine {
 		info.VertexData = data.Vertices.data();
 		info.VertexDataSize = data.Vertices.size();
 
-		info.DefaultMaterialIndex = 0; //TODO: need to add material system
+		info.DefaultMaterialIndex = AddMaterial(CreateMaterial(data.Material)); 
 
 		m_Data.GeometryList.emplace_back(info);
 
 		return m_Data.GeometryList.size() - 1;
+	}
+
+	ModelInfo Renderer::AddModel(const Ref<Model>& model)
+	{
+		auto& data = model->GetData();
+
+		TGE_VERIFY(data.size() > 0, "cannot have a size of 0");
+
+		ModelInfo info{};
+		
+		info.ID = AddGeometry(data[0]);
+		info.Size = 1;
+
+		for (size_t i = 1; i < data.size(); i++)
+		{
+			AddGeometry(data[i]);
+			info.Size++;
+		}
+
+		return info;
+	}
+
+	void Renderer::ChangeSettings(const RenderSettings& settings)
+	{
+		m_Settings = settings;
+		_ApplySettings();
 	}
 
 	void Renderer::OnWindowResize(uint32_t newWidth, uint32_t newHeight)
@@ -136,11 +108,11 @@ namespace TooGoodEngine {
 
 	void Renderer::ChangeMaterialData(MaterialID id, const Material& material)
 	{
-		TGE_VERIFY(id < m_Data.CurrentMaterialBufferIndex, "not a valid material id");
+		TGE_VERIFY(id < m_Data.Materials.Size, "not a valid material id");
 
-		m_Data.MaterialMappedData[id].MakeHandlesNonResident();
-		m_Data.MaterialMappedData[id] = material;
-		m_Data.MaterialMappedData[id].MakeHandlesResident();
+		m_Data.Materials.MappedData[id].MakeHandlesNonResident(); 
+		m_Data.Materials.MappedData[id] = material;
+		m_Data.Materials.MappedData[id].MakeHandlesResident();
 	}
 
 	void Renderer::Begin(Camera* camera)
@@ -153,21 +125,63 @@ namespace TooGoodEngine {
 	void Renderer::Draw(GeometryID id, const glm::mat4& transform, uint32_t materialIndex)
 	{
 		TGE_VERIFY(id < m_Data.GeometryList.size(), "index out of range");
+		TGE_VERIFY(materialIndex < m_Data.Materials.Size, "index out of range");
 
 		Instance info{};
-		info.MaterialIndex = materialIndex;
+		info.MaterialIndex = materialIndex == 0 ? m_Data.GeometryList[id].GetDefaultMaterialIndex() : materialIndex;
 		info.Transform = transform;
 
 		m_Data.GeometryList[id].Push(info);
 	}
 
-	void Renderer::DrawQuad(const glm::mat4& transform, uint32_t materialIndex)
+	void Renderer::DrawModel(const ModelInfo& info, const glm::mat4& transform)
 	{
-		Instance instance{};
-		instance.MaterialIndex = materialIndex;
-		instance.Transform = transform;
+		for (size_t i = 0; i < info.Size; i++)
+		{
+			if (info.CustomMaterials.size() > i)
+				Draw(info.ID + i, transform, info.CustomMaterials[i]);
+			else
+				Draw(info.ID + i, transform);
+		}
+	}
 
-		m_Data.GeometryList[m_Data.SquareGeometryIndex].Push(instance);
+	void Renderer::PlacePointLight(const glm::vec3& position, const glm::vec4& color, float radius, float intensity)
+	{
+		PointLight light{};
+		light.Color = color;
+		light.Position = glm::vec4(position, 1.0f);
+		light.Radius = radius;
+		light.Intensity = intensity;
+
+		auto& currentBuffer = m_Data.PointLights.Buffers[m_Data.PointLights.BufferIndex];
+
+		if (m_Data.PointLights.Size * sizeof(PointLight) >= currentBuffer.GetCapacity())
+		{
+			currentBuffer.Unmap();
+			currentBuffer.Resize(m_Data.PointLights.Size * sizeof(PointLight) * 2);
+			m_Data.PointLights.MappedData[m_Data.PointLights.BufferIndex] = (PointLight*)currentBuffer.MapRange(m_Data.PointLights.MapFlags);
+		}
+
+		m_Data.PointLights.MappedData[m_Data.PointLights.BufferIndex][m_Data.PointLights.Size++] = light;
+	}
+
+	void Renderer::AddDirectionaLight(const glm::vec3& direction, const glm::vec4& color, float intensity)
+	{
+		DirectionalLight light{};
+		light.Color = color;
+		light.Direction = glm::vec4(direction, 1.0f);
+		light.Intensity = intensity;
+
+		auto& currentBuffer = m_Data.DirectionalLights.Buffers[m_Data.DirectionalLights.BufferIndex];
+
+		if (m_Data.DirectionalLights.Size * sizeof(DirectionalLight) >= currentBuffer.GetCapacity())
+		{
+			currentBuffer.Unmap();
+			currentBuffer.Resize(m_Data.PointLights.Size * sizeof(DirectionalLight) * 2);
+			m_Data.DirectionalLights.MappedData[m_Data.DirectionalLights.BufferIndex] = (DirectionalLight*)currentBuffer.MapRange(m_Data.DirectionalLights.MapFlags);
+		}
+
+		m_Data.DirectionalLights.MappedData[m_Data.DirectionalLights.BufferIndex][m_Data.DirectionalLights.Size++] = light;
 	}
 
 	void Renderer::End()
@@ -176,12 +190,19 @@ namespace TooGoodEngine {
 		m_Data.IsDrawing = false;
 
 		OpenGL::Command::SetViewport(m_Settings.ViewportWidth, m_Settings.ViewportHeight);
-		OpenGL::Command::ClearColor({ 0.0f, 0.0f, 0.0f, 1.0f });
+		OpenGL::Command::ClearColor(m_Settings.ClearColor);
+		OpenGL::Command::ClearDepth();
 		
-		RenderInstances();
+		_RenderInstances();
+
+		m_Data.PointLights.Size = 0;
+		m_Data.DirectionalLights.Size = 0;
+
+		m_Data.PointLights.BufferIndex = (m_Data.PointLights.BufferIndex + 1) % 3;
+		m_Data.DirectionalLights.BufferIndex = (m_Data.DirectionalLights.BufferIndex + 1) % 3;
 	}
 
-	void Renderer::RenderInstances()
+	void Renderer::_RenderInstances()
 	{
 		m_Data.ColorShaderProgram.Use();
 
@@ -190,10 +211,15 @@ namespace TooGoodEngine {
 
 		for (auto& instanceBuffer : m_Data.GeometryList)
 		{
-			m_Data.ColorShaderProgram.SetUniform("ViewProjection", data.ViewProjection);
+			m_Data.ColorShaderProgram.SetUniform("u_ViewProjection",   data.ViewProjection);
+			m_Data.ColorShaderProgram.SetUniform("u_PointLightSize",   (int)m_Data.PointLights.Size);
+			m_Data.ColorShaderProgram.SetUniform("u_DirectionalLightSize", (int)m_Data.DirectionalLights.Size);
 
 			instanceBuffer.BeginBatch(0);
-			m_Data.MaterialBuffer.BindBase(1, OpenGL::BufferTypeShaderStorage);
+			m_Data.Materials.Buffer.BindBase(1, OpenGL::BufferTypeShaderStorage);
+			m_Data.PointLights.Buffers[m_Data.PointLights.BufferIndex].BindBase(2, OpenGL::BufferTypeShaderStorage);
+			m_Data.DirectionalLights.Buffers[m_Data.DirectionalLights.BufferIndex].BindBase(3, OpenGL::BufferTypeShaderStorage);
+
 
 			OpenGL::Command::DrawElementsInstanced(
 				&m_Data.ColorShaderProgram,
@@ -203,6 +229,153 @@ namespace TooGoodEngine {
 
 			instanceBuffer.EndBatch();
 		}
+	}
+
+	void Renderer::_ApplySettings()
+	{
+		//TODO: wrap around functions in OpenGL::Command class
+		glEnable(GL_DEPTH_TEST);
+
+		switch (m_Settings.DepthTesting)
+		{
+			case DepthTestOption::Equal:	   glDepthFunc(GL_EQUAL);  break;
+			case DepthTestOption::LessOrEqual: glDepthFunc(GL_LEQUAL); break;
+			case DepthTestOption::Less:        glDepthFunc(GL_LESS);   break;
+			case DepthTestOption::None:
+			default:
+				glDisable(GL_DEPTH_TEST);
+				break;
+		}
+
+		glEnable(GL_CULL_FACE);
+
+		switch (m_Settings.Culling)
+		{
+			case CullingOption::FrontAndBack: glCullFace(GL_FRONT_AND_BACK); break;
+			case CullingOption::Front:		  glCullFace(GL_FRONT);			 break;
+			case CullingOption::Back:		  glCullFace(GL_BACK);			 break;
+			case CullingOption::None:
+			default:
+				glDisable(GL_CULL_FACE);
+				break;
+		}
+
+		switch (m_Settings.WindingOrder)
+		{
+			case WindingOrderOption::ClockWise: glFrontFace(GL_CW); break;
+			case WindingOrderOption::CounterClockWise:
+			case WindingOrderOption::None:
+			default:
+				glFrontFace(GL_CCW);
+				break;
+		}
+
+		//TODO: add settings for different blend functions
+		if (m_Settings.Blending)
+			glEnable(GL_BLEND);
+		else
+			glDisable(GL_BLEND);
+	}
+
+	void Renderer::_CreateBuffers()
+	{
+		//
+		// ---- Materials ----
+		{
+			OpenGL::BufferInfo bufferInfo{};
+			bufferInfo.Capacity = 10 * sizeof(Material); 
+			bufferInfo.Data = nullptr;
+			bufferInfo.Masks = OpenGL::BufferOptionMapCoherient |
+							   OpenGL::BufferOptionMapPersistent |
+							   OpenGL::BufferOptionMapWrite;
+
+
+			m_Data.Materials.MapFlags = OpenGL::BufferOptionMapCoherient | OpenGL::BufferOptionMapPersistent | OpenGL::BufferOptionMapWrite;
+			m_Data.Materials.Buffer = OpenGL::Buffer(bufferInfo);
+			m_Data.Materials.MappedData = (Material*)m_Data.Materials.Buffer.MapRange(m_Data.Materials.MapFlags);
+			m_Data.Materials.Size = 0;
+		}
+
+		//
+		// ---- Point Lights ----
+		{
+			OpenGL::BufferInfo bufferInfo{};
+			bufferInfo.Capacity = 10 * sizeof(PointLight);
+			bufferInfo.Data = nullptr;
+			bufferInfo.Masks = OpenGL::BufferOptionMapCoherient |
+							   OpenGL::BufferOptionMapPersistent |
+							   OpenGL::BufferOptionMapWrite;
+
+			m_Data.PointLights.MapFlags = OpenGL::BufferOptionMapCoherient | OpenGL::BufferOptionMapPersistent | OpenGL::BufferOptionMapWrite;
+			
+			for (size_t i = 0; i < 3; i++)
+			{
+				m_Data.PointLights.Buffers[i] = OpenGL::Buffer(bufferInfo);
+				m_Data.PointLights.MappedData[i] = (PointLight*)m_Data.PointLights.Buffers[i].MapRange(m_Data.PointLights.MapFlags);
+			}
+
+			m_Data.PointLights.BufferIndex = 0;
+			m_Data.PointLights.Size = 0;
+		}
+
+		//
+		// ---- Directional Lights ----
+		{
+			OpenGL::BufferInfo bufferInfo{};
+			bufferInfo.Capacity = 10 * sizeof(DirectionalLight);
+			bufferInfo.Data = nullptr;
+			bufferInfo.Masks = OpenGL::BufferOptionMapCoherient |
+							   OpenGL::BufferOptionMapPersistent |
+							   OpenGL::BufferOptionMapWrite;
+
+			m_Data.DirectionalLights.MapFlags = OpenGL::BufferOptionMapCoherient | OpenGL::BufferOptionMapPersistent | OpenGL::BufferOptionMapWrite;
+
+			for (size_t i = 0; i < 3; i++)
+			{
+				m_Data.DirectionalLights.Buffers[i] = OpenGL::Buffer(bufferInfo);
+				m_Data.DirectionalLights.MappedData[i] = (DirectionalLight*)m_Data.DirectionalLights.Buffers[i].MapRange(m_Data.DirectionalLights.MapFlags);
+			}
+
+			m_Data.DirectionalLights.BufferIndex = 0;
+			m_Data.DirectionalLights.Size = 0;
+		}
+	}
+
+	void Renderer::_CreateDefaultMaterialsAndMeshes()
+	{
+		// ---- default mesh (maybe more in the future) ----
+		Geometry square;
+
+		std::vector<Vertex> squareData = {
+			{ glm::vec3(-0.5f, -0.5f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec2(0.0f, 0.0f) },
+			{ glm::vec3(0.5f, -0.5f, 0.0f),  glm::vec3(0.0f, 0.0f, 1.0f), glm::vec2(1.0f, 0.0f) },
+			{ glm::vec3(-0.5f,  0.5f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec2(0.0f, 1.0f) },
+			{ glm::vec3(0.5f,  0.5f, 0.0f),  glm::vec3(0.0f, 0.0f, 1.0f), glm::vec2(1.0f, 1.0f) }
+		};
+
+		std::vector<uint32_t> squareIndices = {
+			2, 3, 1,
+			2, 1, 0
+		};
+
+		square.Vertices = squareData;
+		square.Indices = squareIndices;
+
+		MaterialInfo info;
+		
+		info.Albedo = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+		info.AlbedoFactor = 1.0f;
+		
+		info.Metallic = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+		info.MetallicFactor = 1.0f;
+
+		info.Emission = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
+		info.EmissionFactor = 0.0f;
+
+		info.Roughness = 1.0f;
+		
+		square.Material = info;
+		m_Data.SquareGeometryIndex = AddGeometry(square);
 	}
 
 }

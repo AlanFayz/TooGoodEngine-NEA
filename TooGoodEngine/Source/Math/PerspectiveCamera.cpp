@@ -9,11 +9,7 @@ namespace TooGoodEngine {
 		  m_Up(data.Up), m_AspectRatio(data.AspectRatio), m_Near(data.Near), m_Far(data.Far),
 		  m_Fov(data.Fov), m_InverseView(), m_InverseProjection()
 	{
-		m_View = glm::lookAt(m_Position, m_Position + m_Front, m_Up);
-		m_Projection = glm::perspective(m_Fov, m_AspectRatio, m_Near, m_Far);
-
-		m_InverseView = glm::inverse(m_View);
-		m_Projection = glm::inverse(m_Projection);
+		UpdateViewProjection();
 	}
 
 	void PerspectiveCamera::UpdateViewProjection()
@@ -35,20 +31,12 @@ namespace TooGoodEngine {
 		m_Far = data.Far;
 		m_Fov = data.Fov;
 
-		m_View = glm::lookAt(m_Position, m_Position + m_Front, m_Up);
-		m_Projection = glm::perspective(m_Fov, m_AspectRatio, m_Near, m_Far);
-
-		m_InverseView = glm::inverse(m_View);
-		m_Projection = glm::inverse(m_Projection);
+		UpdateViewProjection();
 	}
 	void PerspectiveCamera::OnWindowResize(float newWidth, float newHeight)
 	{
 		m_AspectRatio = newWidth / newHeight;
 
-		m_View = glm::lookAt(m_Position, m_Position + m_Front, m_Up);
-		m_Projection = glm::perspective(m_Fov, m_AspectRatio, m_Near, m_Far);
-
-		m_InverseView = glm::inverse(m_View);
-		m_Projection = glm::inverse(m_Projection);
+		UpdateViewProjection();
 	}
 }

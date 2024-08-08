@@ -19,15 +19,15 @@ namespace TooGoodEngine {
 			m_File.close();
 	}
 
-	Ref<MemoryAllocator<char>> FileReader::Read(size_t bytes)
+	MemoryAllocator<char> FileReader::Read(size_t bytes)
 	{
 		if (!m_File.is_open())
-			return nullptr;
+			return {};
 		
-		Ref<MemoryAllocator<char>> allocator = CreateRef<MemoryAllocator<char>>();
-		allocator->Allocate(bytes / sizeof(char));
+		MemoryAllocator<char> allocator = MemoryAllocator<char>();
+		allocator.Allocate(bytes / sizeof(char));
 
-		char* converted = (char*)allocator->GetRaw();
+		char* converted = (char*)allocator.GetRaw();
 		m_File.read(converted, bytes);
 
 		return allocator;

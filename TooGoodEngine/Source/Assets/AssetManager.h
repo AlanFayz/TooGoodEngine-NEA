@@ -26,18 +26,18 @@ namespace TooGoodEngine {
 		Ref<T> LoadAssetIntoBank(const std::filesystem::path& path)
 		{
 			static_assert(std::is_base_of_v<Asset, T>, "not a valid asset");
-			Ref<T> asset = Asset::LoadAssetFromFile(T::GetStaticAssetType(), path);
+			Ref<Asset> asset = Asset::LoadAssetFromFile(T::GetStaticAssetType(), path);
 			
 			if (!asset)
 			{
 				TGE_LOG_WARNING("Failed to load asset of type ", typeid(T).name(), " path ", path);
-				return asset;
+				return nullptr;
 			}
 
 			UUID uuid = asset->GetAssetID();
 
 			m_AssetBank[uuid] = asset;
-			return asset;
+			return dynamic_pointer_cast<T>(asset);
 		}
 
 		template<typename T>
@@ -61,7 +61,7 @@ namespace TooGoodEngine {
 		void	   RemoveAsset(UUID uuid);
 			
 	private:
-		AssetBank m_AssetBank;
+		AssetBank m_AssetBank{};
 	};
 
 }

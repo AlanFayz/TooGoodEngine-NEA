@@ -20,7 +20,7 @@ namespace TooGoodEngine {
 		const uint32_t* Indices;
 		size_t IndexDataSize;
 
-		uint32_t DefaultMaterialIndex = 0;
+		size_t DefaultMaterialIndex = 0;
 	};
 
 	class GeometryInstanceBuffer
@@ -38,7 +38,7 @@ namespace TooGoodEngine {
 
 		inline const uint32_t GetInstanceCount() const { return m_InstanceCount; }
 		inline const uint32_t GetIndexCount() const { return m_IndexCount; }
-		inline const uint32_t GetDefaultMaterialIndex() const { return m_DefaultMaterialIndex; }
+		inline const size_t GetDefaultMaterialIndex() const { return m_DefaultMaterialIndex; }
 		
 		inline OpenGL::VertexArray* GetVertexArrayPointer() { return &m_VertexArray; }
 
@@ -52,7 +52,7 @@ namespace TooGoodEngine {
 		uint32_t m_CurrentInstanceBuffer;
 
 		uint32_t m_InstanceCount;
-		uint32_t m_DefaultMaterialIndex;
+		size_t m_DefaultMaterialIndex;
 		uint32_t m_IndexCount;
 	};
 

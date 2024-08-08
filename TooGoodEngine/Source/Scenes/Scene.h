@@ -35,6 +35,8 @@ namespace TooGoodEngine {
 		std::string m_SceneName;
 		Ref<PerspectiveCamera> m_SceneCamera;
 		PerspectiveCameraController m_CameraController;
+
+		ModelInfo m_TestModel;
 	};
 
 }

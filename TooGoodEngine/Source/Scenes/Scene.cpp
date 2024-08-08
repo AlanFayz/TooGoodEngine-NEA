@@ -1,18 +1,21 @@
 #include "Scene.h"
 
+#include "Project/Project.h"
+
 namespace TooGoodEngine {
 
 	Scene::Scene()
 		: m_CameraController(nullptr)
 	{
+		//TODO: add a way to get the window dimensions (isn't a pressing issue as this is fixed by resizing the window)
 		RenderSettings settings{};
-		settings.ViewportWidth  = 1200; //TODO: add a way to get the window dimensions
+		settings.ViewportWidth  = 1200;  
 		settings.ViewportHeight = 800;
 		settings.ClearColor     = { 0.0f, 0.0f, 0.0f, 1.0f };
 
 		m_SceneRenderer = CreateRef<Renderer>(settings);
 
-		PerspectiveCameraData cameraData{};
+		PerspectiveCameraData cameraData;
 		cameraData.AspectRatio = 1200.0f / 800.0f;
 
 		m_SceneCamera = CreateRef<PerspectiveCamera>(cameraData);
@@ -30,10 +33,10 @@ namespace TooGoodEngine {
 
 			for (auto& script : scriptComponents)
 				script.OnUpdate(delta);
+
 		}
 
-		//TODO: physics goes here
-
+	
 		// ---- Render Meshes ----
 		{
 			m_SceneRenderer->Begin(m_SceneCamera.get());

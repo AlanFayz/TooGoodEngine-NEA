@@ -24,14 +24,28 @@ namespace TooGoodEngine {
 	struct Geometry
 	{
 		std::vector<Vertex>     Vertices;
-		std::vector<uint32_t>   Indices; //will have a material soon
+		std::vector<uint32_t>   Indices; 
 
 		MaterialInfo Material;
 	};
 
-
 	struct PerFrameData
 	{
 		glm::mat4 ViewProjection;
+	};
+
+	struct PointLight
+	{
+		glm::vec4 Position;
+		glm::vec4 Color;
+		float Intensity;
+		float Radius;
+	};
+
+	struct DirectionalLight
+	{
+		glm::vec4 Direction;
+		glm::vec4 Color;
+		float Intensity;
 	};
 }

@@ -27,7 +27,7 @@ namespace TooGoodEngine {
 			glTextureStorage2D(
 				m_TextureHandle, 
 				(GLsizei)info.MipMapLevels, 
-				GetInternalFormat(info.Format), 
+				GetInternalFormat(info.Format),
 				(GLsizei)info.Width, (GLsizei)info.Height);
 
 			if (info.Data)
@@ -37,8 +37,8 @@ namespace TooGoodEngine {
 					0, 0, 0,
 					(GLsizei)info.Width,
 					(GLsizei)info.Height,
-					GetDataType(info.Format),
-					GetTarget(info.Type), info.Data);
+					GetComponentFormat(info.Format),
+					GetDataType(info.Format), info.Data);
 			}
 
 			glGenerateMipmap(GetTarget(info.Type));

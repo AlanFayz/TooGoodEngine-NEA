@@ -3,6 +3,9 @@
 #include <map>
 #include <functional>
 
+#include "Image.h"
+#include "Model.h"
+
 namespace TooGoodEngine {
 
 	static Ref<Asset> LoadUntypedAsset(const std::filesystem::path& path) //example use case
@@ -14,7 +17,9 @@ namespace TooGoodEngine {
 	
 	static const FunctionMap s_FunctionMap
 	{
-		{AssetType::None, LoadUntypedAsset}
+		{AssetType::None,  LoadUntypedAsset}, 
+		{AssetType::Image, Image::LoadImageAssetFromFile}, 
+		{AssetType::Model, Model::LoadModelAssetFromFile}
 	};
 
 	Ref<Asset> Asset::LoadAssetFromFile(AssetType type, const std::filesystem::path& path)

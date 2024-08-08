@@ -22,8 +22,8 @@ namespace TooGoodEngine {
 		void SetID(UUID other) { m_UUID = other; }
 
 		virtual ~Asset() = default;
-		virtual const AssetType GetAssetType() = 0;
-		//static const AssetType GetStaticAssetType() const
+		virtual const AssetType GetAssetType() const = 0;
+		//static const AssetType GetStaticAssetType() 
 		 
 		inline const UUID GetAssetID() const { return m_UUID; }
 

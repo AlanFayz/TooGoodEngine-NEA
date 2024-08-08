@@ -8,7 +8,7 @@ namespace TooGoodEngine {
 		if (info.AlbedoTexture)
 		{
 			material.Albedo.Type = MaterialType::Image;
-			material.Albedo.BindlessTextureHandle = info.AlbedoTexture->GetAddress();
+			material.Albedo.BindlessTextureHandle = info.AlbedoTexture->GetTexture().GetAddress();
 		}
 		else
 		{
@@ -21,7 +21,7 @@ namespace TooGoodEngine {
 		if (info.MetallicTexture)
 		{
 			material.Metallic.Type = MaterialType::Image;
-			material.Metallic.BindlessTextureHandle = info.MetallicTexture->GetAddress();
+			material.Metallic.BindlessTextureHandle = info.MetallicTexture->GetTexture().GetAddress();
 		}
 		else
 		{
@@ -34,7 +34,7 @@ namespace TooGoodEngine {
 		if (info.EmissionTexture)
 		{
 			material.Emission.Type = MaterialType::Image;
-			material.Emission.BindlessTextureHandle = info.EmissionTexture->GetAddress();
+			material.Emission.BindlessTextureHandle = info.EmissionTexture->GetTexture().GetAddress();
 		}
 		else
 		{
@@ -47,7 +47,7 @@ namespace TooGoodEngine {
 		if (info.RoughnessTexture)
 		{
 			material.Roughness.Type = MaterialType::Image;
-			material.Roughness.BindlessTextureHandle = info.RoughnessTexture->GetAddress();
+			material.Roughness.BindlessTextureHandle = info.RoughnessTexture->GetTexture().GetAddress();
 		}
 		else
 		{

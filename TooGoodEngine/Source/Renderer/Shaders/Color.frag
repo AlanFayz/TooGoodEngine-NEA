@@ -34,10 +34,39 @@ struct MaterialData
 	float Roughness;
 };
 
+struct PointLight
+{
+	vec4 Position;
+	vec4 Color;
+	float Intensity;
+	float Radius;
+};
+
+struct DirectionalLight
+{
+	vec4 Direction;
+	vec4 Color;
+	float Intensity;
+};
+
 readonly layout(std430, binding = 1) buffer u_MaterialBuffer 
 {
 	Material Data[];
 } Materials;
+
+readonly layout(std430, binding = 2) buffer u_PointLightBuffer 
+{
+	PointLight Data[];
+} PointLights;
+
+readonly layout(std430, binding = 3) buffer u_DirectionalLightBuffer 
+{
+	DirectionalLight Data[];
+} DirectionalLights;
+
+ //TODO: should package everything into PerFrameData struct
+uniform int u_PointLightSize;
+uniform int u_DirectionalLightSize;
 
 MaterialData FetchMaterialData(in Material material, in vec2 textureCoordinate)
 {
@@ -77,5 +106,15 @@ void main()
 
 	MaterialData materialData = FetchMaterialData(Materials.Data[o_MaterialIndex], o_TextureCoord);
 
-    OutColor = vec4(1.0, 1.0, 1.0, 1.0) * materialData.Albedo * a * b;
+	vec4 LightContribution = vec4(1.0);
+
+	//TODO: add proper light calculations
+
+	for(int i = 0; i < u_PointLightSize; i++)
+		LightContribution += PointLights.Data[i].Color;
+
+	for(int i = 0; i < u_DirectionalLightSize; i++)
+		LightContribution += DirectionalLights.Data[i].Color;
+
+    OutColor = vec4(1.0, 1.0, 1.0, 1.0) * materialData.Albedo * LightContribution + ((a + b) * 0.1);
 }

@@ -2,6 +2,7 @@
 
 #include "Alignment.h"
 #include "API/OpenGL/Texture2D.h"
+#include "Assets/Image.h"
 
 #include <inttypes.h>
 #include <glm/glm.hpp>
@@ -20,7 +21,7 @@ namespace TooGoodEngine {
 		MaterialType Type;
 	};
 
-	//TODO: currently always assumes the texture is valid, is this ok??
+	//NOTE: currently always assumes the texture is valid, is this ok??
 	struct Material
 	{
 		MaterialComponent Albedo;
@@ -39,19 +40,19 @@ namespace TooGoodEngine {
 	struct MaterialInfo
 	{
 		glm::vec4 Albedo;
-		Ref<OpenGL::Texture2D> AlbedoTexture = nullptr;
+		Ref<Image> AlbedoTexture = nullptr;
 		float AlbedoFactor;
 
 		glm::vec4 Metallic;
-		Ref<OpenGL::Texture2D> MetallicTexture = nullptr;
+		Ref<Image> MetallicTexture = nullptr;
 		float MetallicFactor;
 
 		glm::vec4 Emission;
-		Ref<OpenGL::Texture2D> EmissionTexture = nullptr;
+		Ref<Image> EmissionTexture = nullptr;
 		float EmissionFactor;
 
 		float Roughness;
-		Ref<OpenGL::Texture2D> RoughnessTexture = nullptr;
+		Ref<Image> RoughnessTexture = nullptr;
 	};
 
 	Material CreateMaterial(const MaterialInfo& info);

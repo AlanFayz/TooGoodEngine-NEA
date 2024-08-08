@@ -10,13 +10,6 @@
 
 namespace TooGoodEngine {
 
-	/*
-		This is designed to be used with a specific type chosen at runtime,
-		therefore the type will have to be specified when retreiving an item from memory
-		however checks will need to be done to make sure a given memory allocator is using
-		the same type
-	*/
-
 	inline constexpr size_t g_ResizeFactor = 2;
 
 	template<typename Container>
@@ -288,10 +281,11 @@ namespace TooGoodEngine {
 	template<typename Iterator>
 	void MemoryAllocator<Type>::InsertN(Iterator begin, Iterator end)
 	{
-		using ValueType = typename std::iterator_traits<Iterator>::value_type;
+		using value_type = typename std::iterator_traits<Iterator>::value_type;
+		static_assert(std::is_same_v<value_type, ValueType>, "not the correct type");
 
 		for (Iterator iterator = begin; iterator != end; iterator++)
-			Insert<ValueType>(*iterator);
+			Insert(*iterator);
 	}
 
 	template<typename Type>

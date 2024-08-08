@@ -20,11 +20,11 @@ out vec3 o_Normal;
 out vec2 o_TextureCoord;
 out flat uint o_MaterialIndex;
 
-uniform mat4 ViewProjection;
+uniform mat4 u_ViewProjection;
 
 void main()
 {
-    gl_Position = ViewProjection * Instances.Data[gl_InstanceID].Transform * vec4(Position, 1.0);
+    gl_Position = u_ViewProjection * Instances.Data[gl_InstanceID].Transform * vec4(Position, 1.0);
 
     o_Normal = Normal; 
     o_TextureCoord = TextureCoord; 

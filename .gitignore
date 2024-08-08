@@ -1,6 +1,8 @@
 # Directories
 .vs/
 Binaries/
+GoodEditor/Resources/TestModels/
+GoodEditor/textures/
 
 # Files
 *.vcxproj

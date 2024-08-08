@@ -72,6 +72,7 @@ namespace GoodEditor {
 					m_ProjectPath = m_File;
 					m_ProjectLoader = false;
 					g_SelectedProject = CreateRef<Project>(m_ProjectPath);
+					g_SelectedProject->LoadAllScenes();
 				}
 			}
 
@@ -83,6 +84,7 @@ namespace GoodEditor {
 					m_ProjectLoader = false;
 					m_ProjectPath = path;
 					g_SelectedProject = CreateRef<Project>(m_ProjectPath);
+					g_SelectedProject->LoadAllScenes();
 				}
 			}
 

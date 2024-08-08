@@ -12,18 +12,6 @@ namespace TooGoodEngine {
 
 		m_ProjectDirectory = std::filesystem::path(reader.Fetch<std::string>({ "Project Directory" }));
 		m_ProjectName	   = reader.Fetch<std::string>({ "Project Name" });
-
-		auto scenes = reader.Fetch<json>({ "Scenes" });
-
-		for (auto it = scenes.begin(); it != scenes.end(); it++)
-		{
-			m_CurrentScene = LoadScene(*it, it.key()); //first scene will be start scene
-		
-			if (m_CurrentScene)
-				m_LoadedScenes.push_back(m_CurrentScene);
-		}
-
-		m_CurrentScene = m_LoadedScenes[0];
 	}
 
 	Project::Project(const std::string& name, const std::filesystem::path& pathOfDirectory)
@@ -145,6 +133,23 @@ namespace TooGoodEngine {
 		}
 
 		return scene;
+	}
+
+	void Project::LoadAllScenes()
+	{
+		JsonReader reader(m_ProjectDirectory / (m_ProjectName + ".json"));
+
+		auto scenes = reader.Fetch<json>({ "Scenes" });
+
+		for (auto it = scenes.begin(); it != scenes.end(); it++)
+		{
+			m_CurrentScene = LoadScene(*it, it.key()); 
+
+			if (m_CurrentScene)
+				m_LoadedScenes.push_back(m_CurrentScene);
+		}
+
+		m_CurrentScene = m_LoadedScenes[0];
 	}
 
 }
