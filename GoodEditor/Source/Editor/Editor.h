@@ -2,6 +2,8 @@
 
 #include <Core/Core.h>
 
+#include <imgui.h>
+
 
 namespace GoodEditor {
 
@@ -21,10 +23,12 @@ namespace GoodEditor {
 
 	private:
 		void _TryGetProjectName();
+		void _RenderViewport(const Ref<OpenGL::Texture2D>& image);
 
 	private:
 		bool m_ProjectLoader = true;
 		char m_File[256];
 		std::filesystem::path m_ProjectPath;
+		ImVec2 m_PreviousWindowSize = ImVec2(0, 0);
 	};
 }

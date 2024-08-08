@@ -70,8 +70,7 @@ namespace TooGoodEngine {
 	}
 	void Application::_UpdateImGui(double delta)
 	{
-		if (!g_SelectedProject)
-			OpenGL::Command::ClearColor({ 0.0f, 0.0f, 0.0f, 1.0f });
+		OpenGL::Command::ClearColor({ 0.0f, 0.0f, 0.0f, 1.0f });
 
 		ImGuiIO& io = ImGui::GetIO();
 

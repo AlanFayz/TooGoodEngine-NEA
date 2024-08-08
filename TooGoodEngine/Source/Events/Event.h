@@ -7,7 +7,7 @@ namespace TooGoodEngine {
 
 	enum class EventType
 	{
-		None = 0, WindowResize, ApplicationClose
+		None = 0, WindowResize, ApplicationClose, ViewportResize
 	};
 
 	class Event
@@ -56,6 +56,24 @@ namespace TooGoodEngine {
 		inline const uint32_t GetHeight() const { return m_Height; }
 
 		virtual EventType GetType() const { return EventType::WindowResize; }
+	private:
+		uint32_t m_Width, m_Height;
+	};
+
+	class ViewportResizeEvent : public Event
+	{
+	public:
+		ViewportResizeEvent(uint32_t width, uint32_t height)
+			: m_Width(width), m_Height(height)
+		{
+		}
+
+		~ViewportResizeEvent() = default;
+
+		inline const uint32_t GetWidth() const { return m_Width; }
+		inline const uint32_t GetHeight() const { return m_Height; }
+
+		virtual EventType GetType() const { return EventType::ViewportResize; }
 	private:
 		uint32_t m_Width, m_Height;
 	};

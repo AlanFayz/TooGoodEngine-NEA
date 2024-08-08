@@ -60,11 +60,10 @@ namespace TooGoodEngine {
 
 	void Scene::OnEvent(Event* event)
 	{
-		if (event->GetType() == EventType::WindowResize)
+		if (event->GetType() == EventType::ViewportResize)
 		{
-			WindowResizeEvent* windowResizeEvent = (WindowResizeEvent*)event;
+			ViewportResizeEvent* windowResizeEvent = (ViewportResizeEvent*)event;
 			m_SceneRenderer->OnWindowResize(windowResizeEvent->GetWidth(), windowResizeEvent->GetHeight());
-	
 			m_SceneCamera->OnWindowResize((float)windowResizeEvent->GetWidth(), (float)windowResizeEvent->GetHeight());
 		}
 	}

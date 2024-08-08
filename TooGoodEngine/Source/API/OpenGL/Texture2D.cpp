@@ -152,7 +152,7 @@ namespace TooGoodEngine {
 			{
 				case Texture2DType::Texture:		    return GL_TEXTURE_2D;
 				case Texture2DType::Multisample:		return GL_TEXTURE_2D_MULTISAMPLE;
-				case Texture2DType::DepthTexture:		return GL_TEXTURE_DEPTH;
+				case Texture2DType::DepthTexture:		return GL_TEXTURE_2D;
 				case Texture2DType::None:
 				default:								return GL_NONE;
 			}

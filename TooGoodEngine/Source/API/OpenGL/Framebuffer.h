@@ -30,6 +30,8 @@ namespace TooGoodEngine {
 			Framebuffer& operator=(Framebuffer&& other) noexcept;
 
 			inline const uint32_t GetHandle() const { return m_FramebufferHandle; }
+			inline const void Bind() const { glBindFramebuffer(GL_FRAMEBUFFER, m_FramebufferHandle); }
+			inline const void Unbind() const { glBindFramebuffer(GL_FRAMEBUFFER, 0); }
 
 			struct BlitInfo
 			{

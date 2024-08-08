@@ -31,6 +31,8 @@ namespace TooGoodEngine {
 		_CreateBuffers();
 		_CreateDefaultMaterialsAndMeshes();
 
+		_CreateTextures();
+		_CreateFramebuffers();
 	}
 
 	Renderer::~Renderer()
@@ -189,6 +191,8 @@ namespace TooGoodEngine {
 		TGE_VERIFY(m_Data.IsDrawing, "haven't drawn anything");
 		m_Data.IsDrawing = false;
 
+		m_Data.FinalImageFramebuffer.Bind();
+
 		OpenGL::Command::SetViewport(m_Settings.ViewportWidth, m_Settings.ViewportHeight);
 		OpenGL::Command::ClearColor(m_Settings.ClearColor);
 		OpenGL::Command::ClearDepth();
@@ -200,6 +204,8 @@ namespace TooGoodEngine {
 
 		m_Data.PointLights.BufferIndex = (m_Data.PointLights.BufferIndex + 1) % 3;
 		m_Data.DirectionalLights.BufferIndex = (m_Data.DirectionalLights.BufferIndex + 1) % 3;
+
+		m_Data.FinalImageFramebuffer.Unbind();
 	}
 
 	void Renderer::_RenderInstances()
@@ -231,16 +237,17 @@ namespace TooGoodEngine {
 		}
 	}
 
-	void Renderer::_ApplySettings()
+	void Renderer::_ApplySettings() const
 	{
 		//TODO: wrap around functions in OpenGL::Command class
 		glEnable(GL_DEPTH_TEST);
 
 		switch (m_Settings.DepthTesting)
 		{
-			case DepthTestOption::Equal:	   glDepthFunc(GL_EQUAL);  break;
-			case DepthTestOption::LessOrEqual: glDepthFunc(GL_LEQUAL); break;
-			case DepthTestOption::Less:        glDepthFunc(GL_LESS);   break;
+			case DepthTestOption::Greater:	   glDepthFunc(GL_GREATER); break;
+			case DepthTestOption::Equal:	   glDepthFunc(GL_EQUAL);   break;
+			case DepthTestOption::LessOrEqual: glDepthFunc(GL_LEQUAL);  break;
+			case DepthTestOption::Less:        glDepthFunc(GL_LESS);    break;
 			case DepthTestOption::None:
 			default:
 				glDisable(GL_DEPTH_TEST);
@@ -376,6 +383,52 @@ namespace TooGoodEngine {
 		
 		square.Material = info;
 		m_Data.SquareGeometryIndex = AddGeometry(square);
+	}
+
+	void Renderer::_CreateTextures()
+	{
+		{
+			OpenGL::Texture2DInfo info{};
+			info.Type = OpenGL::Texture2DType::Texture;
+			info.Format = OpenGL::Texture2DFormat::RGBA32F;
+			info.Width = m_Settings.ViewportWidth;
+			info.Height = m_Settings.ViewportHeight;
+
+			info.Paramaters[OpenGL::TextureParamater::MinFilter] = OpenGL::TextureParamaterOption::Linear;
+			info.Paramaters[OpenGL::TextureParamater::MagFilter] = OpenGL::TextureParamaterOption::Linear;
+
+			info.Paramaters[OpenGL::TextureParamater::WrapModeS] = OpenGL::TextureParamaterOption::ClampToBorder;
+			info.Paramaters[OpenGL::TextureParamater::WrapModeT] = OpenGL::TextureParamaterOption::ClampToBorder;
+
+			m_Data.FinalImageTexture = CreateRef<OpenGL::Texture2D>(info);
+		}
+
+		{
+			OpenGL::Texture2DInfo info{};
+			info.Type = OpenGL::Texture2DType::DepthTexture;
+			info.Format = OpenGL::Texture2DFormat::DEPTH_32F;
+			info.Width = m_Settings.ViewportWidth;
+			info.Height = m_Settings.ViewportHeight;
+
+			info.Paramaters[OpenGL::TextureParamater::MinFilter] = OpenGL::TextureParamaterOption::Linear;
+			info.Paramaters[OpenGL::TextureParamater::MagFilter] = OpenGL::TextureParamaterOption::Linear;
+
+			info.Paramaters[OpenGL::TextureParamater::WrapModeS] = OpenGL::TextureParamaterOption::ClampToBorder;
+			info.Paramaters[OpenGL::TextureParamater::WrapModeT] = OpenGL::TextureParamaterOption::ClampToBorder;
+
+			m_Data.DepthTexture = CreateRef<OpenGL::Texture2D>(info);
+		}
+	}
+
+	void Renderer::_CreateFramebuffers()
+	{
+		{
+			OpenGL::FramebufferInfo info{};
+			info.ColorAttachments.push_back(m_Data.FinalImageTexture);
+			info.DepthAttachment = m_Data.DepthTexture;
+
+			m_Data.FinalImageFramebuffer = OpenGL::Framebuffer(info);
+		}
 	}
 
 }

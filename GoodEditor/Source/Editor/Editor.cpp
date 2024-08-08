@@ -50,7 +50,16 @@ namespace GoodEditor {
 			return;
 		}
 
-		//ImGui::DockSpaceOverViewport();
+		ImGui::DockSpaceOverViewport();
+
+		//
+		//get scene info
+
+		Ref<Scene>    currentScene         = g_SelectedProject->GetCurrentScene();
+		Ref<Renderer> currentSceneRenderer = currentScene->GetSceneRenderer();
+		Ref<OpenGL::Texture2D> image       = currentSceneRenderer->GetImage();
+
+		_RenderViewport(image);
 	}
 	void Editor::OnEvent(TooGoodEngine::Event* event)
 	{
@@ -91,5 +100,18 @@ namespace GoodEditor {
 			ImGui::End();
 		}
 
+	}
+	void Editor::_RenderViewport(const Ref<OpenGL::Texture2D>& image)
+	{
+		ImGui::Begin("Viewport");
+
+		if (m_PreviousWindowSize.x != ImGui::GetWindowSize().x || m_PreviousWindowSize.y != ImGui::GetWindowSize().y);
+		{
+			ViewportResizeEvent event((uint32_t)ImGui::GetWindowSize().x, (uint32_t)ImGui::GetWindowSize().y);
+			OnEvent(&event);
+		}
+
+		ImGui::Image((void*)image->GetHandle(), ImGui::GetContentRegionAvail(), ImVec2(0, 1), ImVec2(1, 0));
+		ImGui::End();
 	}
 }

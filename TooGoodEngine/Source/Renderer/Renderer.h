@@ -4,12 +4,14 @@
 #include "GeometryInstanceBuffer.h"
 #include "Math/Camera.h"
 #include "Assets/Model.h"
+#include "API/OpenGL/Framebuffer.h"
 
 namespace TooGoodEngine {
 
+	//TODO: more to add (such as blending operations, polygone mode etc...)
 	enum class DepthTestOption
 	{
-		None = 0, Less, LessOrEqual, Equal
+		None = 0, Less, LessOrEqual, Equal, Greater
 	};
 
 	enum class CullingOption
@@ -79,8 +81,11 @@ namespace TooGoodEngine {
 		DirectionalLightBuffer DirectionalLights;
 
 		Camera* CurrentCamera;
-
 		size_t SquareGeometryIndex;
+
+		OpenGL::Framebuffer FinalImageFramebuffer;
+		Ref<OpenGL::Texture2D> FinalImageTexture;
+		Ref<OpenGL::Texture2D> DepthTexture;
 	};
 
 	using GeometryID = size_t;
@@ -118,12 +123,18 @@ namespace TooGoodEngine {
 		void AddDirectionaLight(const glm::vec3& direction, const glm::vec4& color, float intensity);
 		void End();
 
+		inline const Ref<OpenGL::Texture2D> GetImage() const { return m_Data.FinalImageTexture; }
+
 	private:
 		void _RenderInstances();
-		void _ApplySettings();
+		void _ApplySettings() const;
 
 		void _CreateBuffers();
 		void _CreateDefaultMaterialsAndMeshes();
+
+		void _CreateTextures();
+		void _CreateFramebuffers();
+		
 
 	private:
 		RenderSettings m_Settings;
