@@ -5,6 +5,17 @@ namespace TooGoodEngine {
 	{
 		Material material{};
 
+		if (info.AmbientTexture)
+		{
+			material.Ambient.Type = MaterialType::Image;
+			material.Ambient.BindlessTextureHandle = info.AmbientTexture->GetTexture().GetAddress();
+		}
+		else
+		{
+			material.Ambient.Type = MaterialType::Vector;
+			material.Ambient.Component = info.Ambient;
+		}
+
 		if (info.AlbedoTexture)
 		{
 			material.Albedo.Type = MaterialType::Image;
@@ -59,7 +70,9 @@ namespace TooGoodEngine {
 	}
 	void Material::MakeHandlesResident() const
 	{
-		
+		if (Ambient.Type == MaterialType::Image)
+			glMakeTextureHandleResidentARB((GLuint64)Ambient.BindlessTextureHandle);
+
 		if (Albedo.Type == MaterialType::Image)
 			glMakeTextureHandleResidentARB((GLuint64)Albedo.BindlessTextureHandle);
 
@@ -75,6 +88,9 @@ namespace TooGoodEngine {
 	}
 	void Material::MakeHandlesNonResident() const
 	{
+		if (Ambient.Type == MaterialType::Image)
+			glMakeTextureHandleNonResidentARB((GLuint64)Ambient.BindlessTextureHandle);
+
 		if (Albedo.Type == MaterialType::Image)
 			glMakeTextureHandleNonResidentARB((GLuint64)Albedo.BindlessTextureHandle);
 

@@ -18,19 +18,30 @@ namespace TooGoodEngine {
 		const bool DKeyDown = Input::IsKeyDown(KeyCode::D);
 		const bool QKeyDown = Input::IsKeyDown(KeyCode::Q);
 		const bool EKeyDown = Input::IsKeyDown(KeyCode::E);
-		const bool XKeyDown = Input::IsKeyDown(KeyCode::X);
+		const bool XKeyDown = Input::IsKeyPressed(KeyCode::X);
+
+		double CurrentX = 0, CurrentY = 0;
+		Input::GetMouseCoordinates(CurrentX, CurrentY);
+
+		float XDifference = ((float)CurrentX - (float)m_LastX) * m_Sensitivity;
+		float YDifference = ((float)CurrentY - (float)m_LastY) * m_Sensitivity;
+
+		m_LastX = CurrentX;
+		m_LastY = CurrentY;
 
 		if (XKeyDown)
 		{
-			m_ShouldNotUpdate = !m_ShouldNotUpdate;
-			if (m_ShouldNotUpdate)
-				Input::EnableCursor();
-			else
-				Input::DisableCursor();
+			Input::DisableCursor();
+			m_CursorDisabled = true;
 		}
+		else
+		{
+			if(m_CursorDisabled)
+				Input::EnableCursor();
 
-		if (m_ShouldNotUpdate)
+			m_CursorDisabled = false;
 			return;
+		}
 
 		glm::vec3 Movement(0.0f);
 
@@ -53,14 +64,7 @@ namespace TooGoodEngine {
 
 		m_Camera->m_Position += Movement;
 
-		double CurrentX = 0, CurrentY = 0;
-		Input::GetMouseCoordinates(CurrentX, CurrentY);
-
-		float XDifference = ((float)CurrentX - (float)m_LastX) * m_Sensitivity;
-		float YDifference = ((float)CurrentY - (float)m_LastY) * m_Sensitivity;
-
-		m_LastX = CurrentX;
-		m_LastY = CurrentY;
+		
 
 		m_Yaw -= XDifference;
 		m_Pitch += YDifference;

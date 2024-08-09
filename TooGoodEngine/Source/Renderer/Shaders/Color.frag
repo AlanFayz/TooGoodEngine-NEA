@@ -16,6 +16,7 @@ struct MaterialComponent
 
 struct Material 
 {
+	MaterialComponent Ambient;
 	MaterialComponent Albedo;
 	MaterialComponent Metallic;
 	MaterialComponent Emission;
@@ -28,6 +29,7 @@ struct Material
 
 struct MaterialData
 {
+	vec4  Ambient;
 	vec4  Albedo;
 	vec4  Metallic;
 	vec4  Emission;
@@ -71,6 +73,11 @@ uniform int u_DirectionalLightSize;
 MaterialData FetchMaterialData(in Material material, in vec2 textureCoordinate)
 {
 	MaterialData data;
+
+	if(material.Ambient.Type == MATERIAL_TYPE_IMAGE)
+		data.Ambient = texture(sampler2D(material.Ambient.BindlessSampler), textureCoordinate);
+	else 
+		data.Ambient = material.Ambient.Component;
 
 	if(material.Albedo.Type == MATERIAL_TYPE_IMAGE)
 		data.Albedo = texture(sampler2D(material.Albedo.BindlessSampler), textureCoordinate) * material.AlbedoFactor;

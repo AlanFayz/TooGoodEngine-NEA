@@ -44,38 +44,8 @@ namespace TooGoodEngine {
 		writer.WriteGeneric<std::string>({ "Project Directory" }, m_ProjectDirectory.string());
 		writer.WriteGeneric<std::string>({ "Last Build Date" }, timeStream.str());
 
-		auto& registry = m_CurrentScene->GetRegistry();
-
-		//TODO: will need to do for multiple scenes when supported
-
-		for (EntityID entityId = 0; entityId < registry.GetCount(); entityId++)
-		{
-			Entity entity = registry.GetEntity(entityId);
-
-			JsonPath pathToEntity = { "Scenes", m_CurrentScene->GetName(), "Entities", entity.GetName()};
-
-
-			Node& node = registry.GetNode(entity);
-			
-			if (!node.Children.empty())
-			{
-				JsonPath pathToChildren = pathToEntity;
-				pathToChildren.push_back("Children");
-				writer.WriteGeneric(pathToChildren, node.Children);
-			}
-
-			if (registry.HasComponent<TransformComponent>(entity))
-				ComponentWriter::WriteTransform(writer, pathToEntity, registry.GetComponent<TransformComponent>(entity));
-
-			if (registry.HasComponent<MeshComponent>(entity))
-			{
-				std::string path = registry.GetComponent<MeshComponent>(entity).PathToSource;
-				MeshComponent writeComp;
-				writeComp.PathToSource = path;
-				ComponentWriter::WriteMesh(writer, pathToEntity, writeComp);
-			}
-
-		}
+		for (const auto& scene: m_LoadedScenes)
+			SaveScene(writer, scene);
 	}
 
 	Ref<Scene> Project::LoadScene(const json& jsonScene, const std::string& name)
@@ -127,12 +97,47 @@ namespace TooGoodEngine {
 
 			for (auto& child : children)
 			{
-				Entity childEntity("loop entity", child); //all that matters is the ID here name is for debug
+				Entity childEntity = registry.GetEntity(child);
 				registry.Move(childEntity, parent);
 			}
 		}
 
 		return scene;
+	}
+
+	void Project::SaveScene(JsonWriter& writer, const Ref<Scene>& scene)
+	{
+		auto& registry = scene->GetRegistry();
+
+		//TODO: will need to do for multiple scenes when supported
+
+		for (EntityID entityId = 0; entityId < registry.GetCount(); entityId++)
+		{
+			Entity entity = registry.GetEntity(entityId);
+
+			JsonPath pathToEntity = { "Scenes", scene->GetName(), "Entities", entity.GetName() };
+
+			Node& node = registry.GetNode(entity);
+
+			if (!node.Children.empty())
+			{
+				JsonPath pathToChildren = pathToEntity;
+				pathToChildren.push_back("Children");
+				writer.WriteGeneric(pathToChildren, node.Children);
+			}
+
+			if (registry.HasComponent<TransformComponent>(entity))
+				ComponentWriter::WriteTransform(writer, pathToEntity, registry.GetComponent<TransformComponent>(entity));
+
+			if (registry.HasComponent<MeshComponent>(entity))
+			{
+				std::string path = registry.GetComponent<MeshComponent>(entity).PathToSource;
+				MeshComponent writeComp;
+				writeComp.PathToSource = path;
+				ComponentWriter::WriteMesh(writer, pathToEntity, writeComp);
+			}
+
+		}
 	}
 
 	void Project::LoadAllScenes()

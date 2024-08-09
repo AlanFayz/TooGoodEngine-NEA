@@ -11,18 +11,29 @@ namespace TooGoodEngine {
 	//TODO: more to add (such as blending operations, polygone mode etc...)
 	enum class DepthTestOption
 	{
-		None = 0, Less, LessOrEqual, Equal, Greater
+		None = 0, Less, LessOrEqual, Equal, Greater, Count
 	};
 
 	enum class CullingOption
 	{
-		None = 0, Back, Front, FrontAndBack
+		None = 0, Back, Front, FrontAndBack, Count
 	};
 
 	//order to process triangle vertices
 	enum class WindingOrderOption
 	{
-		None = 0, ClockWise, CounterClockWise
+		None = 0, ClockWise, CounterClockWise, Count
+	};
+
+	enum class BlendingFactor
+	{
+		None = 0, Zero, One, SrcColor, DstColor, OneMinusSrcColor, OneMinusDstColor, SrcAlpha,
+		OneMinusSrcAlpha, DstAlpha, OneMinusDstAlpha, Count
+	};
+
+	enum class FillMode
+	{
+		None = 0, Point, Line, Fill, Count
 	};
 
 	struct RenderSettings
@@ -34,7 +45,11 @@ namespace TooGoodEngine {
 		DepthTestOption DepthTesting    = DepthTestOption::Less;
 		CullingOption Culling           = CullingOption::Back;
 		WindingOrderOption WindingOrder = WindingOrderOption::CounterClockWise;
-		bool Blending = false;
+		
+		//Note, if either is none then there will be no blending
+		BlendingFactor Source      = BlendingFactor::None;
+		BlendingFactor Destination = BlendingFactor::None;
+		FillMode FillingMode       = FillMode::Fill;
 	};
 
 	struct RenderData
@@ -124,10 +139,11 @@ namespace TooGoodEngine {
 		void End();
 
 		inline const Ref<OpenGL::Texture2D> GetImage() const { return m_Data.FinalImageTexture; }
+		inline const RenderSettings& GetSettings() const { return m_Settings; }
 
 	private:
 		void _RenderInstances();
-		void _ApplySettings() const;
+		void _ApplySettings();
 
 		void _CreateBuffers();
 		void _CreateDefaultMaterialsAndMeshes();
@@ -135,6 +151,7 @@ namespace TooGoodEngine {
 		void _CreateTextures();
 		void _CreateFramebuffers();
 		
+		GLenum GetBlendFactor(BlendingFactor factor);
 
 	private:
 		RenderSettings m_Settings;

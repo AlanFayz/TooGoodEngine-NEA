@@ -24,6 +24,7 @@ namespace TooGoodEngine {
 	//NOTE: currently always assumes the texture is valid, is this ok??
 	struct Material
 	{
+		MaterialComponent Ambient;
 		MaterialComponent Albedo;
 		MaterialComponent Metallic;
 		MaterialComponent Emission;
@@ -39,6 +40,9 @@ namespace TooGoodEngine {
 
 	struct MaterialInfo
 	{
+		glm::vec4 Ambient;
+		Ref<Image> AmbientTexture = nullptr;
+
 		glm::vec4 Albedo;
 		Ref<Image> AlbedoTexture = nullptr;
 		float AlbedoFactor;

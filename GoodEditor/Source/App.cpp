@@ -7,7 +7,7 @@ int main()
 {
 	ApplicationData data{};
 	data.Layers.push_back(CreateRef<GoodEditor::Editor>());
-	data.Title        = "Editor";
+	data.Title        = "Good Editor";
 	data.WindowWidth  = 1200;
 	data.WindowHeight = 800;
 

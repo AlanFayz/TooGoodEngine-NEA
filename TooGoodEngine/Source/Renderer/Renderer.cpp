@@ -106,6 +106,9 @@ namespace TooGoodEngine {
 	{
 		m_Settings.ViewportWidth = newWidth;
 		m_Settings.ViewportHeight = newHeight;
+
+		_CreateTextures();
+		_CreateFramebuffers();
 	}
 
 	void Renderer::ChangeMaterialData(MaterialID id, const Material& material)
@@ -237,9 +240,8 @@ namespace TooGoodEngine {
 		}
 	}
 
-	void Renderer::_ApplySettings() const
+	void Renderer::_ApplySettings() 
 	{
-		//TODO: wrap around functions in OpenGL::Command class
 		glEnable(GL_DEPTH_TEST);
 
 		switch (m_Settings.DepthTesting)
@@ -277,11 +279,28 @@ namespace TooGoodEngine {
 				break;
 		}
 
-		//TODO: add settings for different blend functions
-		if (m_Settings.Blending)
-			glEnable(GL_BLEND);
-		else
+		switch (m_Settings.FillingMode)
+		{
+			case FillMode::Line:	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);  break;
+			case FillMode::Point:	glPolygonMode(GL_FRONT_AND_BACK, GL_POINT); break;
+			case FillMode::Fill:
+			case FillMode::None:
+			default:
+				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+				break;
+		}
+
+		GLenum sourceBlend = GetBlendFactor(m_Settings.Source);
+		GLenum dstBlend = GetBlendFactor(m_Settings.Destination);
+
+		if (sourceBlend == GL_INVALID_ENUM || dstBlend == GL_INVALID_ENUM)
 			glDisable(GL_BLEND);
+		else
+		{
+			glEnable(GL_BLEND);
+			glBlendFunc(sourceBlend, dstBlend);
+		}
+		
 	}
 
 	void Renderer::_CreateBuffers()
@@ -370,6 +389,8 @@ namespace TooGoodEngine {
 
 		MaterialInfo info;
 		
+		info.Ambient = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+
 		info.Albedo = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 		info.AlbedoFactor = 1.0f;
 		
@@ -400,6 +421,7 @@ namespace TooGoodEngine {
 			info.Paramaters[OpenGL::TextureParamater::WrapModeS] = OpenGL::TextureParamaterOption::ClampToBorder;
 			info.Paramaters[OpenGL::TextureParamater::WrapModeT] = OpenGL::TextureParamaterOption::ClampToBorder;
 
+			m_Data.FinalImageTexture.reset();
 			m_Data.FinalImageTexture = CreateRef<OpenGL::Texture2D>(info);
 		}
 
@@ -416,6 +438,7 @@ namespace TooGoodEngine {
 			info.Paramaters[OpenGL::TextureParamater::WrapModeS] = OpenGL::TextureParamaterOption::ClampToBorder;
 			info.Paramaters[OpenGL::TextureParamater::WrapModeT] = OpenGL::TextureParamaterOption::ClampToBorder;
 
+			m_Data.DepthTexture.reset();
 			m_Data.DepthTexture = CreateRef<OpenGL::Texture2D>(info);
 		}
 	}
@@ -427,7 +450,27 @@ namespace TooGoodEngine {
 			info.ColorAttachments.push_back(m_Data.FinalImageTexture);
 			info.DepthAttachment = m_Data.DepthTexture;
 
+			m_Data.FinalImageFramebuffer.~Framebuffer();
 			m_Data.FinalImageFramebuffer = OpenGL::Framebuffer(info);
+		}
+	}
+
+	GLenum Renderer::GetBlendFactor(BlendingFactor factor)
+	{
+		switch (m_Settings.Source)
+		{
+			case BlendingFactor::OneMinusDstAlpha: return GL_ONE_MINUS_DST_ALPHA;
+			case BlendingFactor::DstAlpha:		   return GL_DST_ALPHA;
+			case BlendingFactor::OneMinusSrcAlpha: return GL_ONE_MINUS_SRC_ALPHA;
+			case BlendingFactor::SrcAlpha:		   return GL_SRC_ALPHA;
+			case BlendingFactor::OneMinusDstColor: return GL_ONE_MINUS_DST_COLOR;
+			case BlendingFactor::OneMinusSrcColor: return GL_ONE_MINUS_SRC_COLOR;
+			case BlendingFactor::DstColor:		   return GL_DST_COLOR;
+			case BlendingFactor::SrcColor:		   return GL_SRC_COLOR;
+			case BlendingFactor::One:			   return GL_ONE;
+			case BlendingFactor::Zero:			   return GL_ZERO;
+			case BlendingFactor::None:
+			default: return GL_INVALID_ENUM;
 		}
 	}
 

@@ -59,7 +59,9 @@ namespace TooGoodEngine {
 
 		Ref<Asset> FetchAsset(UUID uuid);
 		void	   RemoveAsset(UUID uuid);
-			
+		
+		const AssetBank& GetBank() const { return m_AssetBank; } //simply for rendering
+
 	private:
 		AssetBank m_AssetBank{};
 	};

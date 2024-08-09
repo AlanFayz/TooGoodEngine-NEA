@@ -9,13 +9,11 @@ namespace TooGoodEngine {
 
 		auto& componentPosition = component.GetPosition();
 		auto& componentRotation = component.GetRotation();
-		auto& componentScale = component.GetScale();
-		auto& componentRotationAxis = component.GetRotationAxis();
+		auto& componentScale    = component.GetScale();
 
 		std::vector<float> position = jsonComponent["Position"].get<std::vector<float>>();
 		std::vector<float> scale = jsonComponent["Scale"].get<std::vector<float>>();
-		std::vector<float> rotationAxis = jsonComponent["Rotation Axis"].get<std::vector<float>>();
-		float rotation = jsonComponent["Rotation"].get<float>();
+		std::vector<float> rotation = jsonComponent["Rotation"].get<std::vector<float>>();
 
 		size_t i = 0;
 		for (; i < position.size(); i++)
@@ -36,15 +34,14 @@ namespace TooGoodEngine {
 		}
 
 		i = 0;
-		for (; i < rotationAxis.size(); i++)
+		for (; i < rotation.size(); i++)
 		{
 			if (i >= 3) //too many
 				break;
 
-			componentRotationAxis[i] = rotationAxis[i];
+			componentRotation[i] = rotation[i];
 		}
 
-		componentRotation = rotation;
 
 		component.UpdateTransform();
 

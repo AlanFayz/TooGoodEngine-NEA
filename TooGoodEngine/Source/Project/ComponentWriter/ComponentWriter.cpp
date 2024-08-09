@@ -17,17 +17,10 @@ namespace TooGoodEngine {
 		writer.WriteGeneric(path, scale);
 
 		path = entityPath;
-		path.insert(path.end(), { "Transform", "Rotation Axis" });
-
-		std::array<float, 3> rotationAxis = { component.GetRotationAxis()[0], component.GetRotationAxis()[1], component.GetRotationAxis()[2] };
-		writer.WriteGeneric(path, rotationAxis);
-
-		path = entityPath;
 		path.insert(path.end(), { "Transform", "Rotation" });
 
-		float rotation = component.GetRotation();
-		writer.WriteGeneric(path, rotation);
-
+		std::array<float, 3> rotationAxis = { component.GetRotation()[0], component.GetRotation()[1], component.GetRotation()[2] };
+		writer.WriteGeneric(path, rotationAxis);
 	}
 
 	void ComponentWriter::WriteMesh(JsonWriter& writer, const JsonPath& entityPath, MeshComponent& component)

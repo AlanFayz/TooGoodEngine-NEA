@@ -29,8 +29,15 @@
     },
     "Scene 2": {
       "Entities": {
-        
+
       }
+    }
+  },
+  "Assets": {
+    "Asset 1": {
+      "UUID": 349530808032850,
+      "File Path": "C:Users/Hello.png",
+      "Asset Type": "Image"
     }
   }
 }

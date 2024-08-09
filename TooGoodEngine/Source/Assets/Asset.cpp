@@ -30,8 +30,27 @@ namespace TooGoodEngine {
 			return nullptr;
 		}
 
-		return s_FunctionMap.at(type)(path);
+		Ref<Asset> asset = s_FunctionMap.at(type)(path);
+		asset->_SetPath(path);
+
+		return asset;
 	}
 
-	
+	void Asset::_SetPath(const std::filesystem::path& path)
+	{
+		m_Path = path;
+	}
+
+	std::string_view GetAssetTypeString(AssetType type)
+	{
+		switch (type)
+		{
+		case TooGoodEngine::AssetType::None:	return "None";
+		case TooGoodEngine::AssetType::Image:	return "Image";
+		case TooGoodEngine::AssetType::Model:	return "Model";
+		default:								return "None (INVALID)";
+			break;
+		}
+	}
+
 }

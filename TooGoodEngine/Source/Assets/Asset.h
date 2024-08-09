@@ -13,6 +13,8 @@ namespace TooGoodEngine {
 		Model
 	};
 
+	std::string_view GetAssetTypeString(AssetType type);
+
 	class Asset
 	{
 	public:
@@ -25,12 +27,17 @@ namespace TooGoodEngine {
 		virtual const AssetType GetAssetType() const = 0;
 		//static const AssetType GetStaticAssetType() 
 		 
+		inline const std::filesystem::path& GetPath() const { return m_Path; }
 		inline const UUID GetAssetID() const { return m_UUID; }
 
 		static Ref<Asset> LoadAssetFromFile(AssetType type, const std::filesystem::path& path);
 
 	private:
+		void _SetPath(const std::filesystem::path& path);
+
+	private:
 		UUID m_UUID;
+		std::filesystem::path m_Path;
 	};
 
 }

@@ -74,6 +74,11 @@ namespace TooGoodEngine {
 	{
 		MaterialInfo info{};
 		
+		info.AmbientTexture = _LoadImageFromAiMaterial(material, aiTextureType_AMBIENT, 0);
+
+		if (!info.AmbientTexture)
+			material->Get(AI_MATKEY_COLOR_AMBIENT, info.Ambient);
+
 		info.AlbedoTexture = _LoadImageFromAiMaterial(material, aiTextureType_DIFFUSE, 0);
 		info.AlbedoFactor  = 1.0f;
 
