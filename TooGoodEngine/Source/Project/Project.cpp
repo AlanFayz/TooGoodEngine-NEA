@@ -75,11 +75,16 @@ namespace TooGoodEngine {
 
 				if (secondIt.key() == "Transform")
 					registry.AddComponent<TransformComponent>(entity, ComponentLoader::LoadTransform(jsonComponent));
-				
+
 				else if (secondIt.key() == "Mesh")
 				{
 					MeshComponent component = ComponentLoader::LoadMesh(jsonComponent, *renderer);
 					registry.AddComponent<MeshComponent>(entity, component);
+				}
+				else if (secondIt.key() == "Material")
+				{
+					MaterialComponent component = ComponentLoader::LoadMaterial(jsonComponent, *renderer);
+					registry.AddComponent<MaterialComponent>(entity, component);
 				}
 			}
 		}
@@ -137,6 +142,11 @@ namespace TooGoodEngine {
 				ComponentWriter::WriteMesh(writer, pathToEntity, writeComp);
 			}
 
+			if (registry.HasComponent<MaterialComponent>(entity))
+			{
+				MaterialComponent& component = registry.GetComponent<MaterialComponent>(entity);
+				ComponentWriter::WriteMaterial(writer, pathToEntity, component);
+			}
 		}
 	}
 

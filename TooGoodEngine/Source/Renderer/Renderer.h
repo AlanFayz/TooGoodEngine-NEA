@@ -103,9 +103,6 @@ namespace TooGoodEngine {
 		Ref<OpenGL::Texture2D> DepthTexture;
 	};
 
-	using GeometryID = size_t;
-	using MaterialID = size_t;
-
 	inline constexpr size_t g_NullID = std::numeric_limits<size_t>::max();
 
 	struct ModelInfo

@@ -1,43 +1,64 @@
 {
   "Project Name": "Sandbox",
-  "Last Build Date": 1,
   "Project Directory": "D:\\Dev\\TooGoodEngine-NEA\\GoodEditor",
+  "Last Build Date": "2024-08-09 19:07:16",
   "Scenes": {
     "Scene 1": {
       "Entities": {
         "Entity 1": {
-          "Children": [],
           "Transform": {
-            "Position": [ -0.5, 0.0, 1.0 ],
-            "Scale": [ 0.5, 0.5, 1.0 ],
-            "Rotation Axis": [ 0.0, 0.0, 1.0 ],
-            "Rotation": 0.0
+            "Position": [
+              0.10000000149011612,
+              0.0,
+              1.0
+            ],
+            "Scale": [
+              0.5,
+              0.5,
+              1.0
+            ],
+            "Rotation": [
+              6.400000095367432,
+              1.1754943508222875e-38,
+              1.0
+            ]
           },
-          "Mesh": "##Quad"
+          "Mesh": "##Quad",
+          "Material": {
+            "Ambient": [ 0.0, 0.0, 0.0, 1.0 ],
+            "Albedo": [ 1.0, 1.0, 1.0, 1.0 ],
+            "Metallic": [ 0.0, 0.0, 0.0, 1.0 ],
+            "Emission": [ 0.0, 0.0, 0.0, 0.0 ],
+            "Roughness": 1.0,
+            "Albedo Factor": 1.0,
+            "Metallic Factor": 1.0,
+            "Emission Factor": 0.0
+          }
         },
         "Entity 2": {
-          "Children": [],
+          "Children": [
+            0
+          ],
           "Transform": {
-            "Position": [ 0.5, 0.0, 1.0 ],
-            "Scale": [ 0.5, 0.5, 1.0 ],
-            "Rotation Axis": [ 0.0, 0.0, 1.0 ],
-            "Rotation": 0.0
+            "Position": [
+              1.100000023841858,
+              -5.877471754111438e-39,
+              1.2000000476837158
+            ],
+            "Scale": [
+              1.2999999523162842,
+              1.600000023841858,
+              3.200000047683716
+            ],
+            "Rotation": [
+              6.900000095367432,
+              170.89999389648438,
+              472.70001220703125
+            ]
           },
           "Mesh": "##Quad"
         }
       }
-    },
-    "Scene 2": {
-      "Entities": {
-
-      }
-    }
-  },
-  "Assets": {
-    "Asset 1": {
-      "UUID": 349530808032850,
-      "File Path": "C:Users/Hello.png",
-      "Asset Type": "Image"
     }
   }
 }

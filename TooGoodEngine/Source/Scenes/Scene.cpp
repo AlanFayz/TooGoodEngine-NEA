@@ -48,11 +48,18 @@ namespace TooGoodEngine {
 						return;
 
 					TransformComponent& transform = m_Registry.GetComponent<TransformComponent>(entityID);
-					//TODO: add materials
-
-					m_SceneRenderer->Draw(component.ID, transform.GetTransform());
+					
+					if(!m_Registry.HasComponent<MaterialComponent>(entityID))
+						m_SceneRenderer->Draw(component.ID, transform.GetTransform());
+					else
+					{
+						//these are added externally either by loading it from the project or from the editor.
+						MaterialComponent& material = m_Registry.GetComponent<MaterialComponent>(entityID);
+						m_SceneRenderer->Draw(component.ID, transform.GetTransform(), material.ID);
+					}
 				});
-
+			
+			m_SceneRenderer->AddDirectionaLight({ 1.0f, 0.0f, 1.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, 2.0f);
 			m_SceneRenderer->End();
 		}
 		

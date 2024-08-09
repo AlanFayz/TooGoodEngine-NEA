@@ -11,6 +11,7 @@ namespace TooGoodEngine {
 	public:
 		static TransformComponent LoadTransform(const json& jsonComponent);
 		static MeshComponent LoadMesh(const json& jsonComponent, Renderer& sceneRenderer);
+		static MaterialComponent LoadMaterial(const json& jsonComponent, Renderer& sceneRenderer);
 	};
 
 }

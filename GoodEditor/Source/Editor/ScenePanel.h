@@ -30,6 +30,7 @@ namespace GoodEditor {
 		
 		static void _DrawComponent(TransformComponent& component);
 		static void _DrawComponent(MeshComponent& component);
+		static void _DrawComponent(MaterialComponent& component);
 	};
 
 	

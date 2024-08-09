@@ -48,4 +48,8 @@ namespace TooGoodEngine {
 		glm::vec4 Color;
 		float Intensity;
 	};
+
+
+	using GeometryID = size_t;
+	using MaterialID = size_t;
 }

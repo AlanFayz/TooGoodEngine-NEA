@@ -10,6 +10,7 @@ namespace TooGoodEngine {
 	public:
 		static void WriteTransform(JsonWriter& writer, const JsonPath& entityPath, TransformComponent& component);
 		static void WriteMesh(JsonWriter& writer, const JsonPath& entityPath, MeshComponent& component);
+		static void WriteMaterial(JsonWriter& writer, const JsonPath& entityPath, MaterialComponent& component);
 	};
 
 }

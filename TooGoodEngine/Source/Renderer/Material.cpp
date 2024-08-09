@@ -9,6 +9,7 @@ namespace TooGoodEngine {
 		{
 			material.Ambient.Type = MaterialType::Image;
 			material.Ambient.BindlessTextureHandle = info.AmbientTexture->GetTexture().GetAddress();
+			material.Ambient.ImageComponent = info.AmbientTexture;
 		}
 		else
 		{
@@ -20,6 +21,8 @@ namespace TooGoodEngine {
 		{
 			material.Albedo.Type = MaterialType::Image;
 			material.Albedo.BindlessTextureHandle = info.AlbedoTexture->GetTexture().GetAddress();
+			material.Albedo.ImageComponent = info.AlbedoTexture;
+
 		}
 		else
 		{
@@ -33,6 +36,7 @@ namespace TooGoodEngine {
 		{
 			material.Metallic.Type = MaterialType::Image;
 			material.Metallic.BindlessTextureHandle = info.MetallicTexture->GetTexture().GetAddress();
+			material.Metallic.ImageComponent = info.MetallicTexture;
 		}
 		else
 		{
@@ -46,6 +50,7 @@ namespace TooGoodEngine {
 		{
 			material.Emission.Type = MaterialType::Image;
 			material.Emission.BindlessTextureHandle = info.EmissionTexture->GetTexture().GetAddress();
+			material.Emission.ImageComponent = info.EmissionTexture;
 		}
 		else
 		{
@@ -59,6 +64,7 @@ namespace TooGoodEngine {
 		{
 			material.Roughness.Type = MaterialType::Image;
 			material.Roughness.BindlessTextureHandle = info.RoughnessTexture->GetTexture().GetAddress();
+			material.Roughness.ImageComponent = info.RoughnessTexture;
 		}
 		else
 		{

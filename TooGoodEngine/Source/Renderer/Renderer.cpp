@@ -38,7 +38,10 @@ namespace TooGoodEngine {
 	Renderer::~Renderer()
 	{
 		for (size_t i = 0; i <= m_Data.Materials.Size; i++)
+		{
 			m_Data.Materials.MappedData[i].MakeHandlesNonResident();
+			m_Data.Materials.MappedData[i].~Material();
+		}
 	}
 
 	MaterialID Renderer::AddMaterial(const Material& material)
@@ -50,6 +53,9 @@ namespace TooGoodEngine {
 			m_Data.Materials.Buffer.Unmap();
 			m_Data.Materials.Buffer.Resize(m_Data.Materials.Size * sizeof(Material) * 2);
 			m_Data.Materials.MappedData = (Material*)m_Data.Materials.Buffer.MapRange(m_Data.Materials.MapFlags);
+
+			size_t sizeToInit = m_Data.Materials.Buffer.GetCapacity() - (m_Data.Materials.Size * sizeof(Material));
+			memset(m_Data.Materials.MappedData + m_Data.Materials.Size, 0, sizeToInit);
 		}
 
 		m_Data.Materials.MappedData[m_Data.Materials.Size++] = material;
@@ -223,6 +229,7 @@ namespace TooGoodEngine {
 			m_Data.ColorShaderProgram.SetUniform("u_ViewProjection",   data.ViewProjection);
 			m_Data.ColorShaderProgram.SetUniform("u_PointLightSize",   (int)m_Data.PointLights.Size);
 			m_Data.ColorShaderProgram.SetUniform("u_DirectionalLightSize", (int)m_Data.DirectionalLights.Size);
+			m_Data.ColorShaderProgram.SetUniform("u_CameraPosition", m_Data.CurrentCamera->GetCameraPosition());
 
 			instanceBuffer.BeginBatch(0);
 			m_Data.Materials.Buffer.BindBase(1, OpenGL::BufferTypeShaderStorage);
@@ -320,6 +327,8 @@ namespace TooGoodEngine {
 			m_Data.Materials.Buffer = OpenGL::Buffer(bufferInfo);
 			m_Data.Materials.MappedData = (Material*)m_Data.Materials.Buffer.MapRange(m_Data.Materials.MapFlags);
 			m_Data.Materials.Size = 0;
+
+			memset(m_Data.Materials.MappedData, 0, m_Data.Materials.Buffer.GetCapacity());
 		}
 
 		//

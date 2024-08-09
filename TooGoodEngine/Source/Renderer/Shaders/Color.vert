@@ -16,6 +16,7 @@ readonly layout(binding = 0) buffer u_Instance
     InstanceData Data[];
 } Instances;
 
+out vec3 o_WorldPosition;
 out vec3 o_Normal;
 out vec2 o_TextureCoord;
 out flat uint o_MaterialIndex;
@@ -24,9 +25,11 @@ uniform mat4 u_ViewProjection;
 
 void main()
 {
-    gl_Position = u_ViewProjection * Instances.Data[gl_InstanceID].Transform * vec4(Position, 1.0);
+    vec4 WorldPosition = Instances.Data[gl_InstanceID].Transform * vec4(Position, 1.0);
+    gl_Position = u_ViewProjection * WorldPosition;
 
-    o_Normal = Normal; 
+    o_WorldPosition = WorldPosition.xyz;
+    o_Normal = mat3(transpose(inverse(Instances.Data[gl_InstanceID].Transform))) * Normal; 
     o_TextureCoord = TextureCoord; 
     o_MaterialIndex = Instances.Data[gl_InstanceID].MaterialIndex;
 }

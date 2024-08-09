@@ -79,6 +79,9 @@ namespace GoodEditor {
 
 		if (tree.HasComponent<MeshComponent>(entity))
 			_DrawComponent(tree.GetComponent<MeshComponent>(entity));
+
+		if (tree.HasComponent<MaterialComponent>(entity))
+			_DrawComponent(tree.GetComponent<MaterialComponent>(entity));
 	}
 
 	void ScenePanel::_DrawSettings(const Ref<Scene>& scene)
@@ -195,5 +198,88 @@ namespace GoodEditor {
 			ImGui::TreePop();
 		}
 	
+	}
+	void ScenePanel::_DrawComponent(MaterialComponent& component)
+	{
+		if (ImGui::TreeNode("Material"))
+		{
+			bool changed = false;
+
+			//TODO: add buttons to remove/add new images
+
+			//
+			// ---- Ambient ----
+			if (component.Material.Ambient.ImageComponent)
+			{
+				ImGui::Image((void*)component.Material.Ambient.ImageComponent->GetTexture().GetHandle(), ImVec2(60, 60), ImVec2(0, 1), ImVec2(1, 0));
+			}
+			else
+			{
+				if (ImGui::DragFloat4("Ambient", glm::value_ptr(component.Material.Ambient.Component), 0.01f, 0.0f, 1.0f))
+					changed = true;
+			}
+
+			//
+			// ---- Albedo ----
+			if (component.Material.Albedo.ImageComponent)
+			{
+				ImGui::Image((void*)component.Material.Albedo.ImageComponent->GetTexture().GetHandle(), ImVec2(60, 60), ImVec2(0, 1), ImVec2(1, 0));
+			}
+			else
+			{
+				if (ImGui::DragFloat4("Albedo", glm::value_ptr(component.Material.Albedo.Component), 0.01f, 0.0f, 1.0f))
+					changed = true;
+			}
+
+			if (ImGui::DragFloat("Albedo Factor", &component.Material.AlbedoFactor, 0.01f, 0.0f, FLT_MAX / 2))
+				changed = true;
+
+			//
+			// ---- Metallic ----
+			if (component.Material.Metallic.ImageComponent)
+			{
+				ImGui::Image((void*)component.Material.Metallic.ImageComponent->GetTexture().GetHandle(), ImVec2(60, 60), ImVec2(0, 1), ImVec2(1, 0));
+			}
+			else
+			{
+				if (ImGui::DragFloat4("Metallic", glm::value_ptr(component.Material.Metallic.Component), 0.01f, 0.0f, 1.0f))
+					changed = true;
+			}
+
+			if (ImGui::DragFloat("Metallic Factor", &component.Material.MetallicFactor, 0.01f, 0.0f, FLT_MAX / 2))
+				changed = true;
+
+			//
+			// ---- Emission ----
+			if (component.Material.Emission.ImageComponent)
+			{
+				ImGui::Image((void*)component.Material.Emission.ImageComponent->GetTexture().GetHandle(), ImVec2(60, 60), ImVec2(0, 1), ImVec2(1, 0));
+			}
+			else
+			{
+				if (ImGui::DragFloat4("Emission", glm::value_ptr(component.Material.Emission.Component), 0.01f,  0.0f, 1.0f))
+					changed = true;
+			}
+
+			if (ImGui::DragFloat("Emission Factor", &component.Material.EmissionFactor, 0.1f, 0.0f, FLT_MAX / 2))
+				changed = true;
+
+			//
+			// ---- Roughness ----
+			if (component.Material.Roughness.ImageComponent)
+			{
+				ImGui::Image((void*)component.Material.Roughness.ImageComponent->GetTexture().GetHandle(), ImVec2(60, 60), ImVec2(0, 1), ImVec2(1, 0));
+			}
+			else
+			{
+				if (ImGui::DragFloat("Roughness", glm::value_ptr(component.Material.Roughness.Component), 0.01f, 0.0f, 1.0f))
+					changed = true;
+			}
+
+			if (changed)
+				g_SelectedProject->GetCurrentScene()->GetSceneRenderer()->ChangeMaterialData(component.ID, component.Material);
+
+			ImGui::TreePop();
+		}
 	}
 }

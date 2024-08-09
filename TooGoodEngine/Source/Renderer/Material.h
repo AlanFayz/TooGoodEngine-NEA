@@ -14,21 +14,21 @@ namespace TooGoodEngine {
 		None = 0, Image, Vector
 	};
 
-	struct MaterialComponent
+	struct MaterialAttribute
 	{
 		glm::vec4 Component;
+		Ref<Image> ImageComponent = nullptr; //simply here to keep a lifetime.
 		uint64_t  BindlessTextureHandle = 0; //uvec2 in the shader
 		MaterialType Type;
 	};
 
-	//NOTE: currently always assumes the texture is valid, is this ok??
 	struct Material
 	{
-		MaterialComponent Ambient;
-		MaterialComponent Albedo;
-		MaterialComponent Metallic;
-		MaterialComponent Emission;
-		MaterialComponent Roughness;
+		MaterialAttribute Ambient;
+		MaterialAttribute Albedo;
+		MaterialAttribute Metallic;
+		MaterialAttribute Emission;
+		MaterialAttribute Roughness;
 
 		float AlbedoFactor;  
 		float MetallicFactor;

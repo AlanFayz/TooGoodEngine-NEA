@@ -1,5 +1,7 @@
 #include "ComponentWriter.h"
 
+#include <glm/gtc/type_ptr.hpp>
+
 namespace TooGoodEngine {
 
 	void ComponentWriter::WriteTransform(JsonWriter& writer, const JsonPath& entityPath, TransformComponent& component)
@@ -29,6 +31,117 @@ namespace TooGoodEngine {
 		path.insert(path.end(), { "Mesh" });
 
 		writer.WriteGeneric(path, component.PathToSource);
+	}
+
+	void ComponentWriter::WriteMaterial(JsonWriter& writer, const JsonPath& entityPath, MaterialComponent& component)
+	{
+		/*
+		"Ambient": [ 0.0, 0.0, 0.0, 1.0 ],
+				"Albedo": [ 1.0, 1.0, 1.0, 1.0 ],
+				"Metallic": [ 0.0, 0.0, 0.0, 1.0 ],
+				"Emission": [ 0.0, 0.0, 0.0, 0.0 ],
+				"Roughness": 1.0,
+				"Albedo Factor":    1.0,
+				"Metallic Factor":  1.0,
+				"Emission Factor":  0.0
+	*/
+		JsonPath path = entityPath;
+		
+
+		//
+		// ---- Ambient ----
+		if (component.Material.Ambient.ImageComponent)
+		{
+			path.insert(path.end(), { "Material", "Ambient Image" });
+			writer.WriteGeneric(path, component.Material.Ambient.ImageComponent->GetPath().string());
+		}
+		else 
+		{ 
+			path.insert(path.end(), { "Material", "Ambient" });
+			auto& color = component.Material.Ambient.Component;
+			std::array<float, 4> attribute = { color[0], color[1], color[2], color[3] };
+			writer.WriteGeneric(path, attribute);
+		}
+
+		path = entityPath;
+
+		//
+		// ---- Albedo ----
+		if (component.Material.Albedo.ImageComponent)
+		{
+			path.insert(path.end(), { "Material", "Albedo Image" });
+			writer.WriteGeneric(path, component.Material.Albedo.ImageComponent->GetPath().string());
+		}
+		else
+		{
+			path.insert(path.end(), { "Material", "Albedo" });
+			auto& color = component.Material.Albedo.Component;
+			std::array<float, 4> attribute = { color[0], color[1], color[2], color[3] };
+			writer.WriteGeneric(path, attribute);
+		}
+
+		path = entityPath;
+		path.insert(path.end(), { "Material", "Albedo Factor" });
+		writer.WriteGeneric(path, component.Material.AlbedoFactor);
+
+		path = entityPath;
+
+		//
+		// ---- Metallic ----
+		if (component.Material.Metallic.ImageComponent)
+		{
+			path.insert(path.end(), { "Material", "Metallic Image" });
+			writer.WriteGeneric(path, component.Material.Metallic.ImageComponent->GetPath().string());
+		}
+		else
+		{
+			path.insert(path.end(), { "Material", "Metallic" });
+			auto& color = component.Material.Metallic.Component;
+			std::array<float, 4> attribute = { color[0], color[1], color[2], color[3] };
+			writer.WriteGeneric(path, attribute);
+		}
+
+		path = entityPath;
+		path.insert(path.end(), { "Material", "Metallic Factor" });
+		writer.WriteGeneric(path, component.Material.MetallicFactor);
+
+		path = entityPath;
+
+		//
+		// ---- Emission ----
+		if (component.Material.Emission.ImageComponent)
+		{
+			path.insert(path.end(), { "Material", "Emission Image" });
+			writer.WriteGeneric(path, component.Material.Emission.ImageComponent->GetPath().string());
+		}
+		else
+		{
+			path.insert(path.end(), { "Material", "Emission" });
+			auto& color = component.Material.Emission.Component;
+			std::array<float, 4> attribute = { color[0], color[1], color[2], color[3] };
+			writer.WriteGeneric(path, attribute);
+		}
+
+		path = entityPath;
+		path.insert(path.end(), { "Material", "Emission Factor" });
+		writer.WriteGeneric(path, component.Material.EmissionFactor);
+
+
+		path = entityPath;
+
+		//
+		// ---- Roughness ----
+		if (component.Material.Roughness.ImageComponent)
+		{
+			path.insert(path.end(), { "Material", "Roughness Image" });
+			writer.WriteGeneric(path, component.Material.Roughness.ImageComponent->GetPath().string());
+		}
+		else
+		{
+			path.insert(path.end(), { "Material", "Roughness" });
+			auto& color = component.Material.Roughness.Component;
+			writer.WriteGeneric(path, color[0]);
+		}
 	}
 
 }
