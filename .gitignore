@@ -2,7 +2,7 @@
 .vs/
 Binaries/
 GoodEditor/Resources/
-GoodEditor/textures/
+GoodEditor/__pycache__
 
 # Files
 *.vcxproj
