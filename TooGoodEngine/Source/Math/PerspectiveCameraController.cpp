@@ -76,8 +76,6 @@ namespace TooGoodEngine {
 
 		m_Camera->m_Front = glm::normalize(Direction);
 
-		TGE_LOG_INFO(m_Camera->m_Front[0], " ", m_Camera->m_Front[1], " ", m_Camera->m_Front[2]);
-
 		m_Camera->UpdateViewProjection();
 	}
 	void PerspectiveCameraController::SetCamera(const Ref<PerspectiveCamera>& newCamera)

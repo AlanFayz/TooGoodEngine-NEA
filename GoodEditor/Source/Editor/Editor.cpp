@@ -89,24 +89,46 @@ namespace GoodEditor {
 
 			if (ImGui::Button("Enter"))
 			{
-				if (std::filesystem::path(m_File).extension() == ".json")
+				std::filesystem::path path(m_File);
+				if (path.extension() == ".json" && std::filesystem::exists(path))
 				{
 					m_ProjectPath = m_File;
 					m_ProjectLoader = false;
-					g_SelectedProject = CreateRef<Project>(m_ProjectPath);
-					g_SelectedProject->LoadAllScenes();
+					
+					try
+					{
+						g_SelectedProject = CreateRef<Project>(m_ProjectPath);
+						g_SelectedProject->LoadAllScenes();
+					}
+					catch (const std::exception& e)
+					{
+						TGE_LOG_INFO(e.what());
+						g_SelectedProject = nullptr;
+						m_ProjectLoader = true;
+					}
+					
 				}
 			}
 
-			if (ImGui::Button("Open File Dialog"))
+			if (ImGui::Button("Open File"))
 			{
 				std::filesystem::path path = FileDialog::GetPathFromDialog();
-				if (!path.empty() && path.extension() == ".json")
+				if (path.extension() == ".json" && std::filesystem::exists(path))
 				{
 					m_ProjectLoader = false;
 					m_ProjectPath = path;
-					g_SelectedProject = CreateRef<Project>(m_ProjectPath);
-					g_SelectedProject->LoadAllScenes();
+
+					try
+					{
+						g_SelectedProject = CreateRef<Project>(m_ProjectPath);
+						g_SelectedProject->LoadAllScenes();
+					}
+					catch (const std::exception& e)
+					{
+						TGE_LOG_INFO(e.what());
+						g_SelectedProject = nullptr;
+						m_ProjectLoader = true;
+					}
 				}
 			}
 
