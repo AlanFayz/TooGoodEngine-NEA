@@ -72,7 +72,7 @@ namespace GoodEditor {
 		AssetPanel::DrawAssets();
 		ScenePanel::DrawScenePanel();
 
-		//ImGui::ShowDemoWindow();
+		ImGui::ShowDemoWindow();
 	}
 	void Editor::OnEvent(TooGoodEngine::Event* event)
 	{
@@ -116,8 +116,27 @@ namespace GoodEditor {
 	}
 	void Editor::_RenderViewport(const Ref<OpenGL::Texture2D>& image)
 	{
-		ImGui::Begin("Viewport");
+		ImGui::Begin("Viewport", (bool*)0, ImGuiWindowFlags_MenuBar);
+		_RenderViewportMenuBar();
+		
 		ImGui::Image((void*)image->GetHandle(), ImGui::GetContentRegionAvail(), ImVec2(0, 1), ImVec2(1, 0));
 		ImGui::End();
+	}
+	void Editor::_RenderViewportMenuBar()
+	{
+		if (ImGui::BeginMenuBar())
+		{  
+			if (ImGui::Button("2D View"))
+			{
+				g_SelectedProject->GetCurrentScene()->SetSceneView(SceneView::View2D);
+			}
+
+			if (ImGui::Button("3D View"))
+			{
+				g_SelectedProject->GetCurrentScene()->SetSceneView(SceneView::View3D);
+			}
+
+			ImGui::EndMenuBar();
+		}
 	}
 }

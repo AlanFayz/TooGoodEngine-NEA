@@ -28,15 +28,22 @@ namespace TooGoodEngine {
 		static const bool IsMouseButtonDown(ButtonCode button);
 
 		static void GetMouseCoordinates(double& x, double& y);
+		static void GetScrollWheel(double& x, double& y);
 
 		static void DisableCursor();
 		static void EnableCursor();
 
 	private:
-		static constexpr int GetGLFWKeyCode(KeyCode key);
-		static constexpr int GetGLFWButtonCode(ButtonCode button);
+		static constexpr int _GetGLFWKeyCode(KeyCode key);
+		static constexpr int _GetGLFWButtonCode(ButtonCode button);
+
+		static void _ScrollCallback(GLFWwindow* window, double xOffset, double yOffset);
 
 	private:
 		static GLFWwindow* s_CurrentWindow;
+
+		static double s_CurrentXOffset;
+		static double s_CurrentYOffset;
+		
 	};
 }

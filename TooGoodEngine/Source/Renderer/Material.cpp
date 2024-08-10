@@ -14,9 +14,10 @@ namespace TooGoodEngine {
 		else
 		{
 			material.Ambient.Type = MaterialType::Vector;
-			material.Ambient.Component = info.Ambient;
 		}
 
+		material.Ambient.Component = info.Ambient;
+		
 		if (info.AlbedoTexture)
 		{
 			material.Albedo.Type = MaterialType::Image;
@@ -27,8 +28,9 @@ namespace TooGoodEngine {
 		else
 		{
 			material.Albedo.Type = MaterialType::Vector;
-			material.Albedo.Component = info.Albedo;
 		}
+
+		material.Albedo.Component = info.Albedo;
 
 		material.AlbedoFactor = info.AlbedoFactor;
 
@@ -41,9 +43,10 @@ namespace TooGoodEngine {
 		else
 		{
 			material.Metallic.Type = MaterialType::Vector;
-			material.Metallic.Component = info.Metallic;
 		}
-
+	
+		material.Metallic.Component = info.Metallic;
+		
 		material.MetallicFactor = info.MetallicFactor;
 
 		if (info.EmissionTexture)
@@ -55,8 +58,9 @@ namespace TooGoodEngine {
 		else
 		{
 			material.Emission.Type = MaterialType::Vector;
-			material.Emission.Component = info.Emission;
 		}
+
+		material.Emission.Component = info.Emission;
 
 		material.EmissionFactor = info.EmissionFactor;
 
@@ -69,8 +73,9 @@ namespace TooGoodEngine {
 		else
 		{
 			material.Roughness.Type = MaterialType::Vector;
-			material.Roughness.Component = glm::vec4(info.Roughness, 0.0f, 0.0f, 0.0f);
 		}
+
+		material.Roughness.Component = glm::vec4(info.Roughness, 0.0f, 0.0f, 0.0f);
 
 		return material;
 	}

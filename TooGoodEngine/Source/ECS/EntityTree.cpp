@@ -41,6 +41,22 @@ namespace TooGoodEngine {
 		return entity;
 	}
 
+	void EntityTree::RemoveEntity(EntityID id)
+	{
+		if (id >= m_Count)
+			return;
+		
+		size_t nodeIndex = _Find(GetEntity(id));
+		if (nodeIndex == g_NullNode)
+			return;
+
+		for (auto& child : m_Nodes[nodeIndex].Children)
+			RemoveEntity(child);
+
+		m_Nodes.erase(m_Nodes.begin() + nodeIndex);
+		m_Entites[id] = Entity("null entity", g_NullEntity);
+	}
+
 	const bool EntityTree::ContainsEntity(const Entity& entity)
 	{
 		return _Find(entity) != g_NullNode;
@@ -90,6 +106,19 @@ namespace TooGoodEngine {
 			[&](const Node& node) 
 			{
 				return node.Entity == entity.GetID();
+			});
+
+		if (it != m_Nodes.end())
+			return (size_t)std::distance(m_Nodes.begin(), it);
+
+		return g_NullNode;
+	}
+	size_t EntityTree::_FindByName(const std::string& name)
+	{
+		auto it = std::find_if(m_Nodes.begin(), m_Nodes.end(),
+			[&](const Node& node)
+			{
+				return GetEntity(node.Entity).GetName() == name;
 			});
 
 		if (it != m_Nodes.end())

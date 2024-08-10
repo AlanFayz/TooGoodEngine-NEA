@@ -93,16 +93,16 @@ namespace TooGoodEngine {
 		uint64_t k = 0;
 		for (const auto& jsonEntity : jsonEntities)
 		{
-			std::vector<EntityID> children; 
+			std::vector<std::string> children; 
 			
 			if(jsonEntity.contains("Children"))
-				children = jsonEntity["Children"].get<std::vector<EntityID>>();
+				children = jsonEntity["Children"].get<std::vector<std::string>>();
 
 			Entity& parent = entityList[k++];
 
 			for (auto& child : children)
 			{
-				Entity childEntity = registry.GetEntity(child);
+				Entity childEntity = registry.GetEntityByName(child);
 				registry.Move(childEntity, parent);
 			}
 		}
@@ -120,6 +120,9 @@ namespace TooGoodEngine {
 		{
 			Entity entity = registry.GetEntity(entityId);
 
+			if (entity.GetID() == g_NullEntity)
+				continue;
+
 			JsonPath pathToEntity = { "Scenes", scene->GetName(), "Entities", entity.GetName() };
 
 			Node& node = registry.GetNode(entity);
@@ -128,7 +131,15 @@ namespace TooGoodEngine {
 			{
 				JsonPath pathToChildren = pathToEntity;
 				pathToChildren.push_back("Children");
-				writer.WriteGeneric(pathToChildren, node.Children);
+				std::vector<std::string> strChildren;
+
+				for (auto& child : node.Children)
+				{
+					Entity ent = scene->GetRegistry().GetEntity(child);
+					strChildren.push_back(ent.GetName());
+				}
+
+				writer.WriteGeneric(pathToChildren, strChildren);
 			}
 
 			if (registry.HasComponent<TransformComponent>(entity))

@@ -29,6 +29,10 @@ namespace TooGoodEngine {
 
 			return Entity("null entity", g_NullEntity);
 		}
+
+		virtual void RemoveEntity(EntityID id);
+
+		Entity GetEntityByName(const std::string& name);
 		
 		template<typename Type>
 		inline bool HasComponent(const EntityID& entity) 
@@ -66,7 +70,7 @@ namespace TooGoodEngine {
 		template<typename Type>
 		auto GetAssuredBucketType();
 
-	private:
+	protected:
 		EntityID m_Count = 0;
 
 		struct BucketEntry

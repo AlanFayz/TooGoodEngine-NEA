@@ -16,6 +16,7 @@ namespace TooGoodEngine {
 		float Bottom;
 	};
 
+	class OrthoGraphicCameraController;
 
 	class OrthoGraphicCamera : public Camera
 	{
@@ -25,6 +26,8 @@ namespace TooGoodEngine {
 
 		void SetData(const OrthoGraphicCameraData& data);
 		virtual void OnWindowResize(float newWidth, float newHeight) override;
+
+		void UpdateViewProjection();
 
 		virtual const glm::vec3& GetCameraPosition() { return m_Position; }
 		virtual const glm::mat4& GetProjection() { return m_Projection; }
@@ -44,6 +47,8 @@ namespace TooGoodEngine {
 		glm::vec3 m_Up;
 
 		float m_Top, m_Bottom, m_Left, m_Right;
+
+		friend class OrthoGraphicCameraController;
 	};
 
 }

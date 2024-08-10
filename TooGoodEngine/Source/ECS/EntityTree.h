@@ -25,6 +25,8 @@ namespace TooGoodEngine {
 		Entity Add(const std::string& name);
 		Entity Add(const Entity& parent, const std::string& name);
 
+		virtual void RemoveEntity(EntityID id) override;
+
 		const bool ContainsEntity(const Entity& entity);
 		Node& GetNode(const Entity& parent);
 
@@ -45,6 +47,7 @@ namespace TooGoodEngine {
 
 	private:
 		size_t _Find(const Entity& entity);
+		size_t _FindByName(const std::string& name);
 
 	private:
 		std::vector<Node> m_Nodes;

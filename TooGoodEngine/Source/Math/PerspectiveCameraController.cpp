@@ -64,10 +64,8 @@ namespace TooGoodEngine {
 
 		m_Camera->m_Position += Movement;
 
-		
-
-		m_Yaw -= XDifference;
-		m_Pitch += YDifference;
+		m_Yaw += XDifference;
+		m_Pitch -= YDifference;
 
 		m_Pitch = std::clamp(m_Pitch, -89.0f, 89.0f);
 
@@ -77,6 +75,8 @@ namespace TooGoodEngine {
 		Direction.z = sin(glm::radians(m_Yaw)) * cos(glm::radians(m_Pitch));
 
 		m_Camera->m_Front = glm::normalize(Direction);
+
+		TGE_LOG_INFO(m_Camera->m_Front[0], " ", m_Camera->m_Front[1], " ", m_Camera->m_Front[2]);
 
 		m_Camera->UpdateViewProjection();
 	}

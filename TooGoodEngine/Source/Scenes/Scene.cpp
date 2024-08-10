@@ -5,7 +5,7 @@
 namespace TooGoodEngine {
 
 	Scene::Scene()
-		: m_CameraController(nullptr)
+		: m_CameraController(nullptr), m_CameraController2D(nullptr)
 	{
 		//TODO: add a way to get the window dimensions (isn't a pressing issue as this is fixed by resizing the window)
 		RenderSettings settings{};
@@ -17,15 +17,31 @@ namespace TooGoodEngine {
 
 		PerspectiveCameraData cameraData;
 		cameraData.AspectRatio = 1200.0f / 800.0f;
+		cameraData.Up = glm::vec3(0.0f, -1.0f, 0.0f);
 
 		m_SceneCamera = CreateRef<PerspectiveCamera>(cameraData);
 
 		m_CameraController.SetCamera(m_SceneCamera);
+
+		OrthoGraphicCameraData orthoCameraData{};
+		orthoCameraData.Position = glm::vec3(0.0f, 0.0f, 0.0f);
+		orthoCameraData.Front = glm::vec3(0.0f, 0.0f, 1.0f);
+		orthoCameraData.Up = glm::vec3(0.0f, -1.0f, 0.0f);
+		orthoCameraData.Left = -3.0f;
+		orthoCameraData.Right = 3.0f;
+		orthoCameraData.Bottom = -4.0f;
+		orthoCameraData.Top = 4.0f;
+
+		m_SceneCamera2D = CreateRef<OrthoGraphicCamera>(orthoCameraData);
+		m_CameraController2D.SetCamera(m_SceneCamera2D);
 	}
 
 	void Scene::Update(double delta)
 	{
-		m_CameraController.Update(delta);
+		if (m_SceneView == SceneView::View3D)
+			m_CameraController.Update(delta);
+		else
+			m_CameraController2D.Update(delta);
 
 		// ---- Run Scripts ----
 		{
@@ -36,10 +52,12 @@ namespace TooGoodEngine {
 
 		}
 
-	
 		// ---- Render Meshes ----
 		{
-			m_SceneRenderer->Begin(m_SceneCamera.get());
+			if (m_SceneView == SceneView::View3D)
+				m_SceneRenderer->Begin(m_SceneCamera.get());
+			else
+				m_SceneRenderer->Begin(m_SceneCamera2D.get());
 
 			m_Registry.ForEach<MeshComponent>(
 				[this](auto& component, const auto entityID) 
@@ -53,7 +71,6 @@ namespace TooGoodEngine {
 						m_SceneRenderer->Draw(component.ID, transform.GetTransform());
 					else
 					{
-						//these are added externally either by loading it from the project or from the editor.
 						MaterialComponent& material = m_Registry.GetComponent<MaterialComponent>(entityID);
 						m_SceneRenderer->Draw(component.ID, transform.GetTransform(), material.ID);
 					}
@@ -72,6 +89,11 @@ namespace TooGoodEngine {
 			ViewportResizeEvent* windowResizeEvent = (ViewportResizeEvent*)event;
 			m_SceneRenderer->OnWindowResize(windowResizeEvent->GetWidth(), windowResizeEvent->GetHeight());
 			m_SceneCamera->OnWindowResize((float)windowResizeEvent->GetWidth(), (float)windowResizeEvent->GetHeight());
+			m_SceneCamera2D->OnWindowResize((float)windowResizeEvent->GetWidth(), (float)windowResizeEvent->GetHeight());
 		}
+	}
+	void Scene::SetSceneView(SceneView view)
+	{
+		m_SceneView = view;
 	}
 }

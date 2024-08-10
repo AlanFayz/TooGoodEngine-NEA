@@ -6,11 +6,16 @@
 #include "Renderer/Renderer.h"
 #include "ECS/Components/Components.h"
 #include "Math/PerspectiveCameraController.h"
+#include "Math/OrthoGraphicCameraController.h"
 
 namespace TooGoodEngine {
 
-	//scene loading will be inside project 
-	//and handled by the project
+	
+	//(from the scene camera not a user camera)
+	enum class SceneView
+	{
+		None = 0, View2D, View3D
+	};
 
 	class Scene : public EventHandler 
 	{
@@ -23,6 +28,8 @@ namespace TooGoodEngine {
 
 		virtual void OnEvent(Event* event) override;
 
+		void SetSceneView(SceneView view);
+
 		inline EntityTree& GetRegistry() { return m_Registry; }
 		inline Ref<Renderer> GetSceneRenderer() { return m_SceneRenderer; }
 
@@ -33,10 +40,16 @@ namespace TooGoodEngine {
 		EntityTree m_Registry;
 		Ref<Renderer> m_SceneRenderer;
 		std::string m_SceneName;
+		
 		Ref<PerspectiveCamera> m_SceneCamera;
 		PerspectiveCameraController m_CameraController;
 
+		Ref<OrthoGraphicCamera> m_SceneCamera2D;
+		OrthoGraphicCameraController m_CameraController2D;
+
 		ModelInfo m_TestModel;
+
+		SceneView m_SceneView = SceneView::View3D;
 	};
 
 }

@@ -24,6 +24,7 @@ namespace GoodEditor {
 	private:
 		void _TryGetProjectName();
 		void _RenderViewport(const Ref<OpenGL::Texture2D>& image);
+		void _RenderViewportMenuBar();
 
 	private:
 		bool m_ProjectLoader = true;
