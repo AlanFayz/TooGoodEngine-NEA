@@ -55,8 +55,10 @@ namespace TooGoodEngine {
 			path.insert(path.end(), { "Material", "Ambient Image" });
 			writer.WriteGeneric(path, component.Material.Ambient.ImageComponent->GetPath().string());
 		}
-		else 
-		{ 
+		 
+		{
+			path = entityPath;
+
 			path.insert(path.end(), { "Material", "Ambient" });
 			auto& color = component.Material.Ambient.Component;
 			std::array<float, 4> attribute = { color[0], color[1], color[2], color[3] };
@@ -72,13 +74,16 @@ namespace TooGoodEngine {
 			path.insert(path.end(), { "Material", "Albedo Image" });
 			writer.WriteGeneric(path, component.Material.Albedo.ImageComponent->GetPath().string());
 		}
-		else
+		
 		{
+			path = entityPath;
+
 			path.insert(path.end(), { "Material", "Albedo" });
 			auto& color = component.Material.Albedo.Component;
 			std::array<float, 4> attribute = { color[0], color[1], color[2], color[3] };
 			writer.WriteGeneric(path, attribute);
 		}
+		
 
 		path = entityPath;
 		path.insert(path.end(), { "Material", "Albedo Factor" });
@@ -93,13 +98,17 @@ namespace TooGoodEngine {
 			path.insert(path.end(), { "Material", "Metallic Image" });
 			writer.WriteGeneric(path, component.Material.Metallic.ImageComponent->GetPath().string());
 		}
-		else
+
 		{
+			path = entityPath;
+
 			path.insert(path.end(), { "Material", "Metallic" });
 			auto& color = component.Material.Metallic.Component;
 			std::array<float, 4> attribute = { color[0], color[1], color[2], color[3] };
 			writer.WriteGeneric(path, attribute);
 		}
+	
+		
 
 		path = entityPath;
 		path.insert(path.end(), { "Material", "Metallic Factor" });
@@ -114,8 +123,10 @@ namespace TooGoodEngine {
 			path.insert(path.end(), { "Material", "Emission Image" });
 			writer.WriteGeneric(path, component.Material.Emission.ImageComponent->GetPath().string());
 		}
-		else
+
 		{
+			path = entityPath;
+
 			path.insert(path.end(), { "Material", "Emission" });
 			auto& color = component.Material.Emission.Component;
 			std::array<float, 4> attribute = { color[0], color[1], color[2], color[3] };
@@ -136,12 +147,15 @@ namespace TooGoodEngine {
 			path.insert(path.end(), { "Material", "Roughness Image" });
 			writer.WriteGeneric(path, component.Material.Roughness.ImageComponent->GetPath().string());
 		}
-		else
+		
 		{
+			path = entityPath;
+
 			path.insert(path.end(), { "Material", "Roughness" });
 			auto& color = component.Material.Roughness.Component;
 			writer.WriteGeneric(path, color[0]);
 		}
+		
 	}
 
 }

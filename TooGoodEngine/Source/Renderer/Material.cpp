@@ -77,36 +77,36 @@ namespace TooGoodEngine {
 	void Material::MakeHandlesResident() const
 	{
 		if (Ambient.Type == MaterialType::Image)
-			glMakeTextureHandleResidentARB((GLuint64)Ambient.BindlessTextureHandle);
+			Ambient.ImageComponent->GetTexture().MakeResident();
 
 		if (Albedo.Type == MaterialType::Image)
-			glMakeTextureHandleResidentARB((GLuint64)Albedo.BindlessTextureHandle);
+			Albedo.ImageComponent->GetTexture().MakeResident();
 
 		if (Metallic.Type == MaterialType::Image)
-			glMakeTextureHandleResidentARB((GLuint64)Metallic.BindlessTextureHandle);
+			Metallic.ImageComponent->GetTexture().MakeResident();
 
 		if (Emission.Type == MaterialType::Image)
-			glMakeTextureHandleResidentARB((GLuint64)Emission.BindlessTextureHandle);
+			Emission.ImageComponent->GetTexture().MakeResident();
 
 		if (Roughness.Type == MaterialType::Image)
-			glMakeTextureHandleResidentARB((GLuint64)Roughness.BindlessTextureHandle);
+			Roughness.ImageComponent->GetTexture().MakeResident();
 
 	}
 	void Material::MakeHandlesNonResident() const
 	{
 		if (Ambient.Type == MaterialType::Image)
-			glMakeTextureHandleNonResidentARB((GLuint64)Ambient.BindlessTextureHandle);
+			Ambient.ImageComponent->GetTexture().MakeNonResident();
 
-		if (Albedo.Type == MaterialType::Image)
-			glMakeTextureHandleNonResidentARB((GLuint64)Albedo.BindlessTextureHandle);
+		if (Albedo.Type  == MaterialType::Image)
+			Albedo.ImageComponent->GetTexture().MakeNonResident();
 
 		if (Metallic.Type == MaterialType::Image)
-			glMakeTextureHandleNonResidentARB((GLuint64)Metallic.BindlessTextureHandle);
+			Metallic.ImageComponent->GetTexture().MakeNonResident();
 
 		if (Emission.Type == MaterialType::Image)
-			glMakeTextureHandleNonResidentARB((GLuint64)Emission.BindlessTextureHandle);
+			Emission.ImageComponent->GetTexture().MakeNonResident();
 
 		if (Roughness.Type == MaterialType::Image)
-			glMakeTextureHandleNonResidentARB((GLuint64)Roughness.BindlessTextureHandle);
+			Roughness.ImageComponent->GetTexture().MakeNonResident();
 	}
 }

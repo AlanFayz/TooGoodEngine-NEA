@@ -77,28 +77,28 @@ MaterialData FetchMaterialData(in Material material, in vec2 textureCoordinate)
 {
 	MaterialData data;
 
-	if(material.Ambient.Type == MATERIAL_TYPE_IMAGE)
-		data.Ambient = texture(sampler2D(material.Ambient.BindlessSampler), textureCoordinate);
+	if(material.Ambient.Type == MATERIAL_TYPE_IMAGE) 
+		data.Ambient = texture(sampler2D(material.Ambient.BindlessSampler), textureCoordinate) * material.Ambient.Component;
 	else 
 		data.Ambient = material.Ambient.Component;
 
 	if(material.Albedo.Type == MATERIAL_TYPE_IMAGE)
-		data.Albedo = texture(sampler2D(material.Albedo.BindlessSampler), textureCoordinate) * material.AlbedoFactor;
+		data.Albedo = texture(sampler2D(material.Albedo.BindlessSampler), textureCoordinate) * material.Albedo.Component * material.AlbedoFactor;
 	else 
 		data.Albedo = material.Albedo.Component * material.AlbedoFactor;
 
 	if(material.Metallic.Type == MATERIAL_TYPE_IMAGE)
-		data.Metallic = texture(sampler2D(material.Metallic.BindlessSampler), textureCoordinate) * material.MetallicFactor;
+		data.Metallic = texture(sampler2D(material.Metallic.BindlessSampler), textureCoordinate) * material.Metallic.Component * material.MetallicFactor;
 	else   
 		data.Metallic = material.Metallic.Component * material.MetallicFactor;
 
 	if(material.Emission.Type == MATERIAL_TYPE_IMAGE)
-		data.Emission = texture(sampler2D(material.Emission.BindlessSampler), textureCoordinate) * material.EmissionFactor;
+		data.Emission = texture(sampler2D(material.Emission.BindlessSampler), textureCoordinate) * material.Emission.Component * material.EmissionFactor;
 	else 
 		data.Emission = material.Emission.Component * material.EmissionFactor;
 
 	if(material.Roughness.Type == MATERIAL_TYPE_IMAGE)
-		data.Roughness = texture(sampler2D(material.Albedo.BindlessSampler), textureCoordinate).r;
+		data.Roughness = texture(sampler2D(material.Albedo.BindlessSampler), textureCoordinate).r * material.Roughness.Component.r;
 	else 
 		data.Roughness = material.Roughness.Component.r;
 

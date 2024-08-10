@@ -80,7 +80,7 @@ namespace TooGoodEngine {
 			std::filesystem::path path = jsonComponent["Ambient Image"].get<std::filesystem::path>();
 			info.AmbientTexture = g_SelectedProject->GetAssetManager().LoadAssetIntoBank<Image>(path);
 		}
-		else
+		
 		{
 			std::array<float, 4> ambientCol = jsonComponent["Ambient"].get<std::array<float, 4>>();
 			info.Ambient = { ambientCol[0], ambientCol[1], ambientCol[2], ambientCol[3] };
@@ -93,7 +93,7 @@ namespace TooGoodEngine {
 			std::filesystem::path path = jsonComponent["Albedo Image"].get<std::filesystem::path>();
 			info.AlbedoTexture = g_SelectedProject->GetAssetManager().LoadAssetIntoBank<Image>(path);
 		}
-		else
+
 		{
 			std::array<float, 4> albedoCol = jsonComponent["Albedo"].get<std::array<float, 4>>();
 			info.Albedo = { albedoCol[0], albedoCol[1], albedoCol[2], albedoCol[3] };
@@ -108,7 +108,7 @@ namespace TooGoodEngine {
 			std::filesystem::path path = jsonComponent["Metallic Image"].get<std::filesystem::path>();
 			info.MetallicTexture = g_SelectedProject->GetAssetManager().LoadAssetIntoBank<Image>(path);
 		}
-		else
+
 		{
 			std::array<float, 4> metallicCol = jsonComponent["Metallic"].get<std::array<float, 4>>();
 			info.Metallic = { metallicCol[0], metallicCol[1], metallicCol[2], metallicCol[3] };
@@ -123,7 +123,7 @@ namespace TooGoodEngine {
 			std::filesystem::path path = jsonComponent["Emission Image"].get<std::filesystem::path>();
 			info.EmissionTexture = g_SelectedProject->GetAssetManager().LoadAssetIntoBank<Image>(path);
 		}
-		else
+
 		{
 			std::array<float, 4> emissionCol = jsonComponent["Emission"].get<std::array<float, 4>>();
 			info.Emission = { emissionCol[0], emissionCol[1], emissionCol[2], emissionCol[3] };
@@ -138,7 +138,7 @@ namespace TooGoodEngine {
 			std::filesystem::path path = jsonComponent["Roughness Image"].get<std::filesystem::path>();
 			info.RoughnessTexture = g_SelectedProject->GetAssetManager().LoadAssetIntoBank<Image>(path);
 		}
-		else
+
 		{
 			info.Roughness = jsonComponent["Roughness"].get<float>();
 		}

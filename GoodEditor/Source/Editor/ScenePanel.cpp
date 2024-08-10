@@ -213,7 +213,7 @@ namespace GoodEditor {
 			{
 				ImGui::Image((void*)component.Material.Ambient.ImageComponent->GetTexture().GetHandle(), ImVec2(60, 60), ImVec2(0, 1), ImVec2(1, 0));
 			}
-			else
+
 			{
 				if (ImGui::DragFloat4("Ambient", glm::value_ptr(component.Material.Ambient.Component), 0.01f, 0.0f, 1.0f))
 					changed = true;
@@ -225,7 +225,7 @@ namespace GoodEditor {
 			{
 				ImGui::Image((void*)component.Material.Albedo.ImageComponent->GetTexture().GetHandle(), ImVec2(60, 60), ImVec2(0, 1), ImVec2(1, 0));
 			}
-			else
+
 			{
 				if (ImGui::DragFloat4("Albedo", glm::value_ptr(component.Material.Albedo.Component), 0.01f, 0.0f, 1.0f))
 					changed = true;
@@ -240,7 +240,7 @@ namespace GoodEditor {
 			{
 				ImGui::Image((void*)component.Material.Metallic.ImageComponent->GetTexture().GetHandle(), ImVec2(60, 60), ImVec2(0, 1), ImVec2(1, 0));
 			}
-			else
+
 			{
 				if (ImGui::DragFloat4("Metallic", glm::value_ptr(component.Material.Metallic.Component), 0.01f, 0.0f, 1.0f))
 					changed = true;
@@ -255,7 +255,7 @@ namespace GoodEditor {
 			{
 				ImGui::Image((void*)component.Material.Emission.ImageComponent->GetTexture().GetHandle(), ImVec2(60, 60), ImVec2(0, 1), ImVec2(1, 0));
 			}
-			else
+
 			{
 				if (ImGui::DragFloat4("Emission", glm::value_ptr(component.Material.Emission.Component), 0.01f,  0.0f, 1.0f))
 					changed = true;
@@ -270,7 +270,7 @@ namespace GoodEditor {
 			{
 				ImGui::Image((void*)component.Material.Roughness.ImageComponent->GetTexture().GetHandle(), ImVec2(60, 60), ImVec2(0, 1), ImVec2(1, 0));
 			}
-			else
+
 			{
 				if (ImGui::DragFloat("Roughness", glm::value_ptr(component.Material.Roughness.Component), 0.01f, 0.0f, 1.0f))
 					changed = true;

@@ -378,6 +378,20 @@ namespace TooGoodEngine {
 
 	void Renderer::_CreateDefaultMaterialsAndMeshes()
 	{
+
+		{
+			OpenGL::Texture2DInfo info{};
+			info.Type   = OpenGL::Texture2DType::Texture;
+			info.Format = OpenGL::Texture2DFormat::RGBA32F;
+			info.Width  = 1;
+			info.Height = 1;
+
+			glm::vec4 data = glm::vec4(1.0f);
+			info.Data = &data;
+			m_Data.DefaultImage = CreateRef<Image>(info);
+			m_Data.DefaultImage->GetTexture().MakeResident();
+		}
+
 		// ---- default mesh (maybe more in the future) ----
 		Geometry square;
 

@@ -101,6 +101,8 @@ namespace TooGoodEngine {
 		OpenGL::Framebuffer FinalImageFramebuffer;
 		Ref<OpenGL::Texture2D> FinalImageTexture;
 		Ref<OpenGL::Texture2D> DepthTexture;
+
+		Ref<Image> DefaultImage;
 	};
 
 	inline constexpr size_t g_NullID = std::numeric_limits<size_t>::max();
@@ -149,7 +151,6 @@ namespace TooGoodEngine {
 		void _CreateFramebuffers();
 		
 		GLenum GetBlendFactor(BlendingFactor factor);
-
 	private:
 		RenderSettings m_Settings;
 		RenderData m_Data;

@@ -1,7 +1,7 @@
 {
     "Project Name": "Sandbox",
     "Project Directory": "D:\\Dev\\TooGoodEngine-NEA\\GoodEditor",
-    "Last Build Date": "2024-08-09 20:43:07",
+    "Last Build Date": "2024-08-10 15:37:06",
     "Scenes": {
         "Scene 1": {
             "Entities": {
@@ -27,26 +27,32 @@
                     "Material": {
                         "Ambient": [
                             0.0,
-                            0.5600000023841858,
+                            0.0,
                             0.0,
                             1.0
                         ],
-                        "Albedo Image": "D:\\Dev\\TooGoodEngine-NEA\\GoodEditor\\textures\\lemon_diff_4k.png",
-                        "Albedo Factor": 2.869999885559082,
+                        "Albedo Image": "D:\\Dev\\TooGoodEngine-NEA\\GoodEditor\\Resources\\plywood_diff_1k.png",
+                        "Albedo": [
+                            1.0,
+                            1.0,
+                            1.0,
+                            0.9800000190734863
+                        ],
+                        "Albedo Factor": 1.0,
                         "Metallic": [
                             0.0,
                             1.0,
                             1.0,
                             1.0
                         ],
-                        "Metallic Factor": 1.0,
+                        "Metallic Factor": 1.0499999523162842,
                         "Emission": [
                             0.0,
                             0.0,
                             0.0,
                             0.0
                         ],
-                        "Emission Factor": 3.4000000953674316,
+                        "Emission Factor": 0.0,
                         "Roughness": 1.0
                     }
                 },

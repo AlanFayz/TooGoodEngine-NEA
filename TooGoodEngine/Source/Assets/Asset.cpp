@@ -31,7 +31,8 @@ namespace TooGoodEngine {
 		}
 
 		Ref<Asset> asset = s_FunctionMap.at(type)(path);
-		asset->_SetPath(path);
+		if(asset)
+			asset->_SetPath(path);
 
 		return asset;
 	}

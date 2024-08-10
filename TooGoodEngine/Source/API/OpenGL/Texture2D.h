@@ -59,6 +59,9 @@ namespace TooGoodEngine {
 			
 			void SetData(void* data);
 
+			void MakeResident();
+			void MakeNonResident();
+
 			inline const uint32_t GetHandle()  const { return m_TextureHandle; }
 			inline const GLuint64 GetAddress() const { return m_TextureAddress; }
 			inline const Texture2DType GetType() const { return m_Type; }
@@ -82,6 +85,7 @@ namespace TooGoodEngine {
 			Texture2DFormat m_Format;
 
 			uint32_t m_Width, m_Height;
+			bool m_Resident = false;
 		};
 	}
 }

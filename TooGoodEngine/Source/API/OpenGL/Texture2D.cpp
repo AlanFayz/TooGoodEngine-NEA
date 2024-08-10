@@ -48,7 +48,10 @@ namespace TooGoodEngine {
 		Texture2D::~Texture2D()
 		{
 			if (m_TextureHandle)
+			{
+				MakeNonResident();
 				glDeleteTextures(1, &m_TextureHandle);
+			}
 		
 
 			m_TextureHandle = 0;
@@ -93,6 +96,20 @@ namespace TooGoodEngine {
 				GetDataType(m_Format),
 				GetTarget(m_Type), data);
 			
+		}
+		void Texture2D::MakeResident()
+		{
+			if (!m_Resident)
+				glMakeTextureHandleResidentARB(m_TextureAddress);
+
+			m_Resident = true;
+		}
+		void Texture2D::MakeNonResident()
+		{
+			if (m_Resident)
+				glMakeTextureHandleNonResidentARB(m_TextureAddress);
+
+			m_Resident = false;
 		}
 		constexpr GLenum Texture2D::GetInternalFormat(Texture2DFormat format)
 		{
