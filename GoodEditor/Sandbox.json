@@ -1,7 +1,7 @@
 {
     "Project Name": "Sandbox",
     "Project Directory": "D:\\Dev\\TooGoodEngine-NEA\\GoodEditor",
-    "Last Build Date": "2024-08-11 20:56:13",
+    "Last Build Date": "2024-08-11 22:18:11",
     "Scenes": {
         "Scene 1": {
             "Entities": {
@@ -72,17 +72,18 @@
                             1.600000023841858
                         ],
                         "Rotation": [
+                            -18.100000381469727,
                             0.0,
-                            0.0,
-                            360.0
+                            360.6000061035156
                         ]
                     },
                     "Mesh": "##Quad",
                     "Material": {
+                        "Ambient Image": "D:\\Dev\\TooGoodEngine-NEA\\GoodEditor\\Assets\\Untitled.png",
                         "Ambient": [
-                            1.0,
-                            1.0,
-                            1.0,
+                            0.0,
+                            0.8067274689674377,
+                            0.871886134147644,
                             1.0
                         ],
                         "Albedo": [

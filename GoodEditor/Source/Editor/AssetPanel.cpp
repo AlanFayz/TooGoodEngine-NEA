@@ -42,12 +42,15 @@ namespace GoodEditor {
             while (!std::filesystem::exists(m_CurrentDirectory))
                 m_CurrentDirectory = m_CurrentDirectory.parent_path();
 
+            int k = 10000;
             for (const auto& entry : std::filesystem::directory_iterator(m_CurrentDirectory))
             {
                 std::filesystem::path path = entry.path();
                 std::filesystem::path extension = path.extension();
                 std::string filename = path.filename().string();
                 std::string sPath = path.string();
+
+                ImGui::PushID(k++);
 
                 if (entry.is_directory())
                 {
@@ -74,7 +77,10 @@ namespace GoodEditor {
                 {
                     //any extension not supported by the engine will be ignored
                     if (!extensionMap.contains(extension))
+                    {
+                        ImGui::PopID();
                         continue;
+                    }
 
                     ImGui::BeginGroup();
 
@@ -94,13 +100,24 @@ namespace GoodEditor {
 
                     if (ImGui::BeginDragDropSource())
                     {
-                        TooGoodEngine::UUID id = g_SelectedProject->GetAssetManager().FetchAsset(path)->GetAssetID();
+                        //sometimes can be invalid if user deletes/opens for some reason
+
+                        Ref<Asset> asset = g_SelectedProject->GetAssetManager().FetchAsset(path);
+
+                        if (!asset)
+                        {
+                            g_SelectedProject->GetAssetManager().RemoveAsset(path);
+                            asset = g_SelectedProject->GetAssetManager().LoadAssetIntoBank<Image>(path);
+                        }
+
+                        TooGoodEngine::UUID id = asset->GetAssetID();
                         ImGui::SetDragDropPayload("IMAGE_TRANSFER_UUID", &id, sizeof(TooGoodEngine::UUID));
 
                         ImGui::Text(filename.c_str());
                         ImGui::EndDragDropSource();
                     }
  
+                    ImGui::PopID();
 
                     ImGui::Text(filename.c_str());
 
