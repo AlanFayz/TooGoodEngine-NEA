@@ -68,6 +68,7 @@ namespace TooGoodEngine {
 			return asset;
 		}
 
+		Ref<Asset> FetchAsset(const std::filesystem::path& path);
 		Ref<Asset> FetchAsset(UUID uuid);
 		void	   RemoveAsset(UUID uuid);
 		void       RemoveAsset(const std::filesystem::path& path);

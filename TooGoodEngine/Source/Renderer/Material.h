@@ -36,6 +36,7 @@ namespace TooGoodEngine {
  
 		void MakeHandlesResident() const;
 		void MakeHandlesNonResident() const;
+		void UpdateTypes();
 	};
 
 	struct MaterialInfo

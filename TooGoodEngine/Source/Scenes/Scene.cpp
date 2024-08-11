@@ -76,7 +76,6 @@ namespace TooGoodEngine {
 					}
 				});
 			
-			m_SceneRenderer->AddDirectionaLight({ 1.0f, 0.0f, 1.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, 2.0f);
 			m_SceneRenderer->End();
 		}
 		

@@ -7,7 +7,7 @@
 
 namespace GoodEditor {
 
-	//TODO: imgui_demo_window: "Drag and drop to copy/swap items"
+	int ScenePanel::m_IDCount = 0;
 
 	void ScenePanel::DrawScenePanel()
 	{
@@ -51,6 +51,8 @@ namespace GoodEditor {
 
 	
 		ImGui::End();
+
+		m_IDCount = 1000;
 	}
 	void ScenePanel::_DrawChildren(const Entity& entity, EntityTree& tree, std::unordered_set<EntityID>& displayed)
 	{
@@ -207,80 +209,129 @@ namespace GoodEditor {
 		{
 			bool changed = false;
 
-			//TODO: add a way to add/remove images
-
-			//
-			// ---- Ambient ----
-			if (component.Material.Ambient.ImageComponent)
-			{
-				ImGui::Image((void*)component.Material.Ambient.ImageComponent->GetTexture().GetHandle(), ImVec2(60, 60), ImVec2(0, 1), ImVec2(1, 0));
-			}
-
-			
-			if (ImGui::DragFloat4("Ambient", glm::value_ptr(component.Material.Ambient.Component), 0.01f, 0.0f, 1.0f))
+			if (_DrawMaterialAttribute("Ambient", component.Material.Ambient.Component, component.Material.Ambient.ImageComponent))
 				changed = true;
 
-			//
-			// ---- Albedo ----
-			if (component.Material.Albedo.ImageComponent)
-			{
-				ImGui::Image((void*)component.Material.Albedo.ImageComponent->GetTexture().GetHandle(), ImVec2(60, 60), ImVec2(0, 1), ImVec2(1, 0));
-			}
-
-			
-			if (ImGui::DragFloat4("Albedo", glm::value_ptr(component.Material.Albedo.Component), 0.01f, 0.0f, 1.0f))
+			if (_DrawMaterialAttribute("Albedo", component.Material.Albedo.Component, component.Material.Albedo.ImageComponent))
 				changed = true;
-			
+
+			if (_DrawMaterialAttribute("Metallic", component.Material.Metallic.Component, component.Material.Metallic.ImageComponent))
+				changed = true;
+
+			if (_DrawMaterialAttribute("Emission", component.Material.Emission.Component, component.Material.Emission.ImageComponent))
+				changed = true;
+
+			if (_DrawMaterialRoughness(component.Material.Roughness.Component.x, component.Material.Roughness.ImageComponent))
+				changed = true;
 
 			if (ImGui::DragFloat("Albedo Factor", &component.Material.AlbedoFactor, 0.01f, 0.0f, FLT_MAX / 2))
 				changed = true;
 
-			//
-			// ---- Metallic ----
-			if (component.Material.Metallic.ImageComponent)
-			{
-				ImGui::Image((void*)component.Material.Metallic.ImageComponent->GetTexture().GetHandle(), ImVec2(60, 60), ImVec2(0, 1), ImVec2(1, 0));
-			}
-
-			
-			if (ImGui::DragFloat4("Metallic", glm::value_ptr(component.Material.Metallic.Component), 0.01f, 0.0f, 1.0f))
-				changed = true;
-			
-
 			if (ImGui::DragFloat("Metallic Factor", &component.Material.MetallicFactor, 0.01f, 0.0f, FLT_MAX / 2))
 				changed = true;
-
-			//
-			// ---- Emission ----
-			if (component.Material.Emission.ImageComponent)
-			{
-				ImGui::Image((void*)component.Material.Emission.ImageComponent->GetTexture().GetHandle(), ImVec2(60, 60), ImVec2(0, 1), ImVec2(1, 0));
-			}
-
-			
-			if (ImGui::DragFloat4("Emission", glm::value_ptr(component.Material.Emission.Component), 0.01f,  0.0f, 1.0f))
-				changed = true;
-			
 
 			if (ImGui::DragFloat("Emission Factor", &component.Material.EmissionFactor, 0.1f, 0.0f, FLT_MAX / 2))
 				changed = true;
 
-			//
-			// ---- Roughness ----
-			if (component.Material.Roughness.ImageComponent)
-			{
-				ImGui::Image((void*)component.Material.Roughness.ImageComponent->GetTexture().GetHandle(), ImVec2(60, 60), ImVec2(0, 1), ImVec2(1, 0));
-			}
-
-			
-			if (ImGui::DragFloat("Roughness", glm::value_ptr(component.Material.Roughness.Component), 0.01f, 0.0f, 1.0f))
-				changed = true;
-			
-
 			if (changed)
+			{
+				component.Material.UpdateTypes();
 				g_SelectedProject->GetCurrentScene()->GetSceneRenderer()->ChangeMaterialData(component.ID, component.Material);
+			}
 
 			ImGui::TreePop();
 		}
+	}
+	bool ScenePanel::_DrawMaterialAttribute(const char* name, glm::vec4& attribute, Ref<Image>& image)
+	{
+		bool changed = false;
+
+		std::string imageName = name;
+		imageName += " Image";
+
+		if (ImGui::ColorEdit4(name, glm::value_ptr(attribute), ImGuiColorEditFlags_AlphaPreview | ImGuiColorEditFlags_NoInputs))
+			changed = true;
+
+		ImGui::PushID(m_IDCount++);
+		if (image)
+		{
+			uint32_t handle = image->GetTexture().GetHandle();
+			if (ImGui::ImageButton((void*)handle, ImVec2(15, 15), ImVec2(0, 1), ImVec2(1, 0)))
+			{
+				image = nullptr;
+				changed = true;
+			}
+
+			ImGui::SameLine();
+			ImGui::Text(imageName.c_str());
+		}
+		else
+		{
+			
+			float col[] = { 0.0f, 0.0f, 0.0f, 0.0f };
+			ImGui::ColorEdit4(imageName.c_str(), col, ImGuiColorEditFlags_AlphaPreview | 
+													  ImGuiColorEditFlags_NoInputs | 
+													  ImGuiColorEditFlags_NoPicker);
+		}
+
+		if (ImGui::BeginDragDropTarget())
+		{
+			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("IMAGE_TRANSFER_UUID"))
+			{
+				UUID id = *(UUID*)payload->Data;
+				image = g_SelectedProject->GetAssetManager().FetchAssetAssuredType<Image>(id);
+			}
+
+			changed = true;
+			ImGui::EndDragDropTarget();
+		}
+
+		ImGui::PopID();
+
+		return changed;
+	}
+	bool ScenePanel::_DrawMaterialRoughness(float& roughness, Ref<Image>& image)
+	{
+		bool changed = false;
+
+		ImGui::PushID(m_IDCount++);
+
+		if (image)
+		{
+			uint32_t handle = image->GetTexture().GetHandle();
+			if (ImGui::ImageButton((void*)handle, ImVec2(15, 15), ImVec2(0, 1), ImVec2(1, 0)))
+			{
+				image = nullptr;
+				changed = true;
+			}
+			ImGui::SameLine();
+			ImGui::Text("Roughness");
+		}
+		else
+		{
+			float col[] = { 0.0f, 0.0f, 0.0f, 0.0f };
+			ImGui::ColorEdit4("Roughness Image", col, ImGuiColorEditFlags_AlphaPreview |
+													  ImGuiColorEditFlags_NoInputs |
+													  ImGuiColorEditFlags_NoPicker);
+		}
+
+		if (ImGui::BeginDragDropTarget())
+		{
+			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("IMAGE_TRANSFER_UUID"))
+			{
+				UUID id = *(UUID*)payload->Data;
+				image = g_SelectedProject->GetAssetManager().FetchAssetAssuredType<Image>(id);
+			}
+
+			changed = true;
+			ImGui::EndDragDropTarget();
+		}
+
+		ImGui::PopID();
+
+		if (ImGui::DragFloat("Roughness", &roughness, 0.01f, 0.0f, 1.0f, "%.3f"))
+			changed = true;
+
+		return changed;
 	}
 }

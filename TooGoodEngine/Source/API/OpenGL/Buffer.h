@@ -69,6 +69,7 @@ namespace TooGoodEngine {
 
 			void* Map(uint32_t mapOptions);
 			void* MapRange(uint32_t bufferOptions);
+			void  FlushMapRange();
 			void  Unmap();
 			 
 			void BindBase(uint32_t index, BufferType type);

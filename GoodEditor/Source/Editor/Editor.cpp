@@ -39,7 +39,6 @@ namespace GoodEditor {
 		m_ExtensionMap[".png"]   = Image::LoadImageAssetFromFile("Resources/Textures/image_icon.png");
 		m_ExtensionMap[".obj"]   = Image::LoadImageAssetFromFile("Resources/Textures/obj_icon.png");
 		m_ExtensionMap[".fbx"]   = Image::LoadImageAssetFromFile("Resources/Textures/fbx_icon.png");
-
 	}
 	void Editor::OnDestroy()
 	{

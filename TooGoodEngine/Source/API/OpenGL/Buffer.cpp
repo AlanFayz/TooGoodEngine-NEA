@@ -105,6 +105,10 @@ namespace TooGoodEngine {
 			m_Mapped = true;
 			return glMapNamedBufferRange(m_BufferHandle, 0, m_Capacity, bufferOptions);
 		}
+		void Buffer::FlushMapRange()
+		{
+			glFlushMappedNamedBufferRange(m_BufferHandle, 0, (GLsizeiptr)m_Capacity);
+		}
 		void Buffer::Unmap()
 		{
 			TGE_VERIFY(m_Mapped, "not mapped");

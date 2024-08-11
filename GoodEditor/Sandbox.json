@@ -1,7 +1,7 @@
 {
     "Project Name": "Sandbox",
     "Project Directory": "D:\\Dev\\TooGoodEngine-NEA\\GoodEditor",
-    "Last Build Date": "2024-08-11 15:03:35",
+    "Last Build Date": "2024-08-11 20:56:13",
     "Scenes": {
         "Scene 1": {
             "Entities": {
@@ -25,20 +25,20 @@
                     },
                     "Mesh": "##Quad",
                     "Material": {
+                        "Ambient Image": "D:\\Dev\\TooGoodEngine-NEA\\GoodEditor\\Assets\\plywood_diff_1k.png",
                         "Ambient": [
-                            0.0,
-                            0.0,
-                            0.0,
+                            0.9679715037345886,
+                            0.9679715037345886,
+                            0.9679715037345886,
                             1.0
                         ],
-                        "Albedo Image": "D:\\Dev\\TooGoodEngine-NEA\\GoodEditor\\Assets\\plywood_diff_1k.png",
                         "Albedo": [
-                            1.0,
-                            1.0,
-                            1.0,
+                            0.935943067073822,
+                            0.0,
+                            0.0,
                             1.0
                         ],
-                        "Albedo Factor": 1.0,
+                        "Albedo Factor": 0.0,
                         "Metallic": [
                             1.0,
                             1.0,
@@ -47,9 +47,9 @@
                         ],
                         "Metallic Factor": 0.0,
                         "Emission": [
-                            1.0,
                             0.0,
-                            1.0,
+                            0.0,
+                            0.0,
                             0.8600000143051147
                         ],
                         "Emission Factor": 0.0,
@@ -80,33 +80,33 @@
                     "Mesh": "##Quad",
                     "Material": {
                         "Ambient": [
-                            0.0,
-                            0.0,
-                            0.0,
+                            1.0,
+                            1.0,
+                            1.0,
                             1.0
                         ],
                         "Albedo": [
-                            1.0,
-                            1.0,
-                            1.0,
+                            0.9572953581809998,
+                            0.2895733416080475,
+                            0.2895733416080475,
                             1.0
                         ],
-                        "Albedo Factor": 1.0,
+                        "Albedo Factor": 0.029999999329447746,
                         "Metallic": [
-                            1.0,
-                            1.0,
-                            1.0,
+                            0.0,
+                            0.0,
+                            0.0,
                             1.0
                         ],
                         "Metallic Factor": 0.0,
                         "Emission": [
-                            1.0,
                             0.0,
-                            1.0,
-                            0.8600000143051147
+                            0.0,
+                            0.0,
+                            1.0
                         ],
                         "Emission Factor": 0.0,
-                        "Roughness": 0.0
+                        "Roughness": 1.0
                     }
                 }
             }

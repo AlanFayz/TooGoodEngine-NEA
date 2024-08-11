@@ -124,6 +124,8 @@ namespace TooGoodEngine {
 		m_Data.Materials.MappedData[id].MakeHandlesNonResident(); 
 		m_Data.Materials.MappedData[id] = material;
 		m_Data.Materials.MappedData[id].MakeHandlesResident();
+
+		m_Data.Materials.Buffer.FlushMapRange();
 	}
 
 	void Renderer::Begin(Camera* camera)
@@ -319,11 +321,15 @@ namespace TooGoodEngine {
 			bufferInfo.Capacity = 10 * sizeof(Material); 
 			bufferInfo.Data = nullptr;
 			bufferInfo.Masks = OpenGL::BufferOptionMapCoherient |
-							   OpenGL::BufferOptionMapPersistent |
-							   OpenGL::BufferOptionMapWrite;
+				OpenGL::BufferOptionMapPersistent |
+				OpenGL::BufferOptionMapWrite;
 
 
-			m_Data.Materials.MapFlags = OpenGL::BufferOptionMapCoherient | OpenGL::BufferOptionMapPersistent | OpenGL::BufferOptionMapWrite;
+			m_Data.Materials.MapFlags = OpenGL::BufferOptionMapCoherient | 
+										OpenGL::BufferOptionMapPersistent | 
+										OpenGL::BufferOptionMapWrite | 
+										OpenGL::BufferOptionMapFlushExplicit;
+
 			m_Data.Materials.Buffer = OpenGL::Buffer(bufferInfo);
 			m_Data.Materials.MappedData = (Material*)m_Data.Materials.Buffer.MapRange(m_Data.Materials.MapFlags);
 			m_Data.Materials.Size = 0;

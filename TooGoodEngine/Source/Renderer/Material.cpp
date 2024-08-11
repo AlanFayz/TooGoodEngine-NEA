@@ -83,6 +83,7 @@ namespace TooGoodEngine {
 	{
 		if (Ambient.Type == MaterialType::Image)
 			Ambient.ImageComponent->GetTexture().MakeResident();
+		
 
 		if (Albedo.Type == MaterialType::Image)
 			Albedo.ImageComponent->GetTexture().MakeResident();
@@ -113,5 +114,59 @@ namespace TooGoodEngine {
 
 		if (Roughness.Type == MaterialType::Image)
 			Roughness.ImageComponent->GetTexture().MakeNonResident();
+	}
+	void Material::UpdateTypes()
+	{
+		if (Ambient.ImageComponent)
+		{
+			Ambient.Type = MaterialType::Image;
+			Ambient.BindlessTextureHandle = Ambient.ImageComponent->GetTexture().GetAddress();
+		}
+		else
+		{
+			Ambient.Type = MaterialType::Vector;
+		}
+
+		if (Albedo.ImageComponent)
+		{
+			Albedo.Type = MaterialType::Image;
+			Albedo.BindlessTextureHandle = Albedo.ImageComponent->GetTexture().GetAddress();
+		}
+		else
+		{
+			Albedo.Type = MaterialType::Vector;
+		}
+
+		if (Metallic.ImageComponent)
+		{
+			Metallic.Type = MaterialType::Image;
+			Metallic.BindlessTextureHandle = Metallic.ImageComponent->GetTexture().GetAddress();
+		}
+		else
+		{
+			Metallic.Type = MaterialType::Vector;
+		}
+
+
+		if (Emission.ImageComponent)
+		{
+			Emission.Type = MaterialType::Image;
+			Emission.BindlessTextureHandle = Emission.ImageComponent->GetTexture().GetAddress();
+		}
+		else
+		{
+			Emission.Type = MaterialType::Vector;
+		}
+
+		if (Roughness.ImageComponent)
+		{
+			Roughness.Type = MaterialType::Image;
+			Roughness.BindlessTextureHandle = Roughness.ImageComponent->GetTexture().GetAddress();
+		}
+		else
+		{
+			Roughness.Type = MaterialType::Vector;
+		}
+
 	}
 }

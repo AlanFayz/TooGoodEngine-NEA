@@ -81,10 +81,6 @@ namespace GoodEditor {
                     ImGui::ImageButton((void*)extensionMap[path.extension()]->GetTexture().GetHandle(),
                         ImVec2(buttonWidth, buttonHeight), ImVec2(0, 1), ImVec2(1, 0));
 
-                    ImGui::Text(filename.c_str());
-
-                    ImGui::EndGroup();
-
                     if (!m_CachedDirectories.contains(path))
                     {
                         //TODO: audio asset when supported needs to be here as well
@@ -95,6 +91,20 @@ namespace GoodEditor {
 
                         m_CachedDirectories.insert(path);
                     }
+
+                    if (ImGui::BeginDragDropSource())
+                    {
+                        TooGoodEngine::UUID id = g_SelectedProject->GetAssetManager().FetchAsset(path)->GetAssetID();
+                        ImGui::SetDragDropPayload("IMAGE_TRANSFER_UUID", &id, sizeof(TooGoodEngine::UUID));
+
+                        ImGui::Text(filename.c_str());
+                        ImGui::EndDragDropSource();
+                    }
+ 
+
+                    ImGui::Text(filename.c_str());
+
+                    ImGui::EndGroup();
 
                     currentX += buttonWidth;
 
