@@ -3,24 +3,20 @@
 #include "Project/Project.h"
 
 #include <imgui.h>
-
+#include <set>
 
 namespace GoodEditor {
 
 	using namespace TooGoodEngine;
 
-	/*
-		Simply displays the currently loaded assets
-	*/
-
 	class AssetPanel
 	{
 	public:
-		static void DrawAssets();
+		static void DrawAssetPanel(std::map<std::filesystem::path, Ref<Image>>& extensionMap);
 
 	private:
-		static void _ShowAssetPannelPopup();
-
+		static std::filesystem::path m_CurrentDirectory;
+		static std::set<std::filesystem::path> m_CachedDirectories;
 	};
 
 }

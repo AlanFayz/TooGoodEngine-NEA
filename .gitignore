@@ -1,7 +1,7 @@
 # Directories
 .vs/
 Binaries/
-GoodEditor/Resources/
+GoodEditor/Assets/
 GoodEditor/__pycache__
 
 # Files

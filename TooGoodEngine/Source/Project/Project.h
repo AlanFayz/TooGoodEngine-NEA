@@ -32,6 +32,9 @@ namespace TooGoodEngine {
 			return m_AssetManager.LoadAssetIntoBank<T>(path);
 		}
 
+		//TODO: change this to be fetched from project file (asset directory)
+
+		inline const std::filesystem::path  GetAssetDirectory() const { return m_ProjectDirectory / "Assets"; }
 		inline const std::filesystem::path& GetDirectory() const { return m_ProjectDirectory; }
 		inline Ref<Scene> GetCurrentScene() const { return m_CurrentScene; }
 		inline AssetManager& GetAssetManager() { return m_AssetManager; }

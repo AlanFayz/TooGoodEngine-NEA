@@ -32,7 +32,14 @@ namespace GoodEditor {
 		style.Colors[25] = ImColor(67, 69, 71, 204);    //header hovered
 		style.Colors[26] = ImColor(122, 117, 123, 204); //header active
 		style.Colors[27] = ImColor(70, 70, 154, 128);   //header active
-		style.Colors[41] = ImColor(2, 5, 20, 128);   //docking empty background
+		style.Colors[41] = ImColor(2, 5, 20, 128);      //docking empty background
+
+		m_ExtensionMap["folder"] = Image::LoadImageAssetFromFile("Resources/Textures/folder_icon.png");
+		m_ExtensionMap["back"]	 = Image::LoadImageAssetFromFile("Resources/Textures/back_icon.png");
+		m_ExtensionMap[".png"]   = Image::LoadImageAssetFromFile("Resources/Textures/image_icon.png");
+		m_ExtensionMap[".obj"]   = Image::LoadImageAssetFromFile("Resources/Textures/obj_icon.png");
+		m_ExtensionMap[".fbx"]   = Image::LoadImageAssetFromFile("Resources/Textures/fbx_icon.png");
+
 	}
 	void Editor::OnDestroy()
 	{
@@ -69,7 +76,7 @@ namespace GoodEditor {
 
 		_RenderViewport(image);
 
-		AssetPanel::DrawAssets();
+		AssetPanel::DrawAssetPanel(m_ExtensionMap);
 		ScenePanel::DrawScenePanel();
 
 		ImGui::ShowDemoWindow();

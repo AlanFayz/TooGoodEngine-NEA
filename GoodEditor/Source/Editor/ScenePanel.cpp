@@ -7,6 +7,8 @@
 
 namespace GoodEditor {
 
+	//TODO: imgui_demo_window: "Drag and drop to copy/swap items"
+
 	void ScenePanel::DrawScenePanel()
 	{
 		Ref<Scene> currentScene = g_SelectedProject->GetCurrentScene();

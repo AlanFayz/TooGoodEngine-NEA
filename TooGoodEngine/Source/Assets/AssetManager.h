@@ -8,7 +8,8 @@
 
 namespace TooGoodEngine {
 
-	using AssetBank = std::map<UUID, Ref<Asset>>;
+	using AssetBank  = std::map<UUID, Ref<Asset>>;
+	using AssetCache = std::map<std::filesystem::path, UUID>;
 
 	class AssetManager
 	{
@@ -17,7 +18,7 @@ namespace TooGoodEngine {
 		~AssetManager() = default;
 
 		template<typename T>
-		Ref<T> GetAsset(UUID uuid)
+		Ref<T> FetchAssetAssuredType(UUID uuid)
 		{
 			return std::dynamic_pointer_cast<T>(FetchAsset(uuid));
 		}
@@ -26,6 +27,12 @@ namespace TooGoodEngine {
 		Ref<T> LoadAssetIntoBank(const std::filesystem::path& path)
 		{
 			static_assert(std::is_base_of_v<Asset, T>, "not a valid asset");
+
+			std::filesystem::path absolute = std::filesystem::absolute(path);
+
+			if (m_AssetCache.contains(absolute))
+				return FetchAssetAssuredType<T>(m_AssetCache[absolute]);
+
 			Ref<Asset> asset = Asset::LoadAssetFromFile(T::GetStaticAssetType(), path);
 			
 			if (!asset)
@@ -36,6 +43,7 @@ namespace TooGoodEngine {
 
 			UUID uuid = asset->GetAssetID();
 
+			m_AssetCache[absolute] = uuid;
 			m_AssetBank[uuid] = asset;
 			return dynamic_pointer_cast<T>(asset);
 		}
@@ -44,6 +52,8 @@ namespace TooGoodEngine {
 		Ref<T> FetchAndLoadAssetWithID(const std::filesystem::path& path, UUID id, bool isBinary)
 		{
 			static_assert(std::is_base_of_v<Asset, T>, "not a valid asset");
+			TGE_VERIFY(!m_AssetCache.contains(path), "asset has already been loaded");
+
 			Ref<T> asset = Asset::LoadAssetFromFile(path, isBinary);
 
 			if (!asset)
@@ -53,17 +63,20 @@ namespace TooGoodEngine {
 			}
 
 			asset->SetID(id);
+			m_AssetCache[std::filesystem::absolute(path)] = id;
 			m_AssetBank[id] = asset;
 			return asset;
 		}
 
 		Ref<Asset> FetchAsset(UUID uuid);
 		void	   RemoveAsset(UUID uuid);
+		void       RemoveAsset(const std::filesystem::path& path);
 		
 		const AssetBank& GetBank() const { return m_AssetBank; } //simply for rendering
 
 	private:
 		AssetBank m_AssetBank{};
+		AssetCache m_AssetCache;
 	};
 
 }

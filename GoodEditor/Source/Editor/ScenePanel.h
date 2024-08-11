@@ -8,10 +8,6 @@ namespace GoodEditor {
 
 	using namespace TooGoodEngine;
 
-	/*
-		Displays scene settings, entities (pretty much anything associated with a scene)
-	*/
-
 	class ScenePanel 
 	{
 	public:

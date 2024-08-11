@@ -1,7 +1,7 @@
 {
     "Project Name": "Sandbox",
     "Project Directory": "D:\\Dev\\TooGoodEngine-NEA\\GoodEditor",
-    "Last Build Date": "2024-08-10 20:51:47",
+    "Last Build Date": "2024-08-11 15:03:35",
     "Scenes": {
         "Scene 1": {
             "Entities": {
@@ -31,7 +31,7 @@
                             0.0,
                             1.0
                         ],
-                        "Albedo Image": "D:\\Dev\\TooGoodEngine-NEA\\GoodEditor\\Resources\\plywood_diff_1k.png",
+                        "Albedo Image": "D:\\Dev\\TooGoodEngine-NEA\\GoodEditor\\Assets\\plywood_diff_1k.png",
                         "Albedo": [
                             1.0,
                             1.0,
