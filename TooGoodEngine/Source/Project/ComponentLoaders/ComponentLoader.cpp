@@ -150,4 +150,35 @@ namespace TooGoodEngine {
 		return component;
 	}
 
+	PointLightComponent ComponentLoader::LoadPointLight(const json& jsonComponent)
+	{
+		PointLightComponent component{};
+		
+		std::array<float, 4> color = jsonComponent["Color"].get<std::array<float, 4>>();
+		component.Color = { color[0], color[1], color[2], color[3] };
+
+		std::array<float, 3> position = jsonComponent["Position"].get<std::array<float, 3>>();
+		component.Position = { position[0], position[1], position[2] };
+
+		component.Radius = jsonComponent["Radius"].get<float>();
+		component.Intensity = jsonComponent["Intensity"].get<float>();
+
+		return component;
+	}
+
+	DirectionalLightComponent ComponentLoader::LoadDirectionalLight(const json& jsonComponent)
+	{
+		DirectionalLightComponent component{};
+
+		std::array<float, 4> color = jsonComponent["Color"].get<std::array<float, 4>>();
+		component.Color = { color[0], color[1], color[2], color[3] };
+
+		std::array<float, 3> direction = jsonComponent["Direction"].get<std::array<float, 3>>();
+		component.Direction = { direction[0], direction[1], direction[2] };
+
+		component.Intensity = jsonComponent["Intensity"].get<float>();
+
+		return component;
+	}
+
 }

@@ -8,6 +8,7 @@
 namespace GoodEditor {
 
 	int ScenePanel::m_IDCount = 0;
+	int ScenePanel::m_ColorEditFlags = ImGuiColorEditFlags_AlphaPreview | ImGuiColorEditFlags_NoInputs;
 
 	void ScenePanel::DrawScenePanel()
 	{
@@ -86,6 +87,12 @@ namespace GoodEditor {
 
 		if (tree.HasComponent<MaterialComponent>(entity))
 			_DrawComponent(tree.GetComponent<MaterialComponent>(entity));
+
+		if (tree.HasComponent<PointLightComponent>(entity))
+			_DrawComponent(tree.GetComponent<PointLightComponent>(entity));
+
+		if (tree.HasComponent<DirectionalLightComponent>(entity))
+			_DrawComponent(tree.GetComponent<DirectionalLightComponent>(entity));
 	}
 
 	void ScenePanel::_DrawSettings(const Ref<Scene>& scene)
@@ -242,6 +249,27 @@ namespace GoodEditor {
 			ImGui::TreePop();
 		}
 	}
+	void ScenePanel::_DrawComponent(PointLightComponent& component)
+	{
+		if (ImGui::TreeNode("Point Light"))
+		{
+			ImGui::ColorEdit4("Color", glm::value_ptr(component.Color), m_ColorEditFlags);
+			ImGui::DragFloat3("Position", glm::value_ptr(component.Position), 0.1f, -FLT_MAX / 2.0f, FLT_MAX / 2.0f);
+			ImGui::DragFloat("Intensity", &component.Intensity, 0.1f, -FLT_MAX / 2.0f, FLT_MAX / 2.0f);
+			ImGui::DragFloat("Radius", &component.Radius, 0.1f, -FLT_MAX / 2.0f, FLT_MAX / 2.0f);
+			ImGui::TreePop();
+		}
+	}
+	void ScenePanel::_DrawComponent(DirectionalLightComponent& component)
+	{
+		if (ImGui::TreeNode("Directional Light"))
+		{
+			ImGui::ColorEdit4("Color", glm::value_ptr(component.Color), m_ColorEditFlags);
+			ImGui::DragFloat3("Direction", glm::value_ptr(component.Direction), 0.01f, -1.0f, 1.0f);
+			ImGui::DragFloat("Intensity", &component.Intensity, 0.1f, -FLT_MAX / 2.0f, FLT_MAX / 2.0f);
+			ImGui::TreePop();
+		}
+	}
 	bool ScenePanel::_DrawMaterialAttribute(const char* name, glm::vec4& attribute, Ref<Image>& image)
 	{
 		bool changed = false;
@@ -249,7 +277,7 @@ namespace GoodEditor {
 		std::string imageName = name;
 		imageName += " Image";
 
-		if (ImGui::ColorEdit4(name, glm::value_ptr(attribute), ImGuiColorEditFlags_AlphaPreview | ImGuiColorEditFlags_NoInputs))
+		if (ImGui::ColorEdit4(name, glm::value_ptr(attribute), m_ColorEditFlags))
 			changed = true;
 
 		ImGui::PushID(m_IDCount++);
@@ -310,8 +338,7 @@ namespace GoodEditor {
 		else
 		{
 			float col[] = { 0.0f, 0.0f, 0.0f, 0.0f };
-			ImGui::ColorEdit4("Roughness Image", col, ImGuiColorEditFlags_AlphaPreview |
-													  ImGuiColorEditFlags_NoInputs |
+			ImGui::ColorEdit4("Roughness Image", col, m_ColorEditFlags |
 													  ImGuiColorEditFlags_NoPicker);
 		}
 

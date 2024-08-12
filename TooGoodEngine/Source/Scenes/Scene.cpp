@@ -43,7 +43,7 @@ namespace TooGoodEngine {
 		else
 			m_CameraController2D.Update(delta);
 
-		// ---- Run Scripts ----
+		// ---- run scripts ----
 		{
 			auto scriptComponents = m_Registry.View<ScriptComponent>();
 
@@ -52,12 +52,32 @@ namespace TooGoodEngine {
 
 		}
 
+		// ---- renderer begin ----
+		if (m_SceneView == SceneView::View3D)
+			m_SceneRenderer->Begin(m_SceneCamera.get());
+		else
+			m_SceneRenderer->Begin(m_SceneCamera2D.get());
+
+		// ---- add point lights ----
+
+		{
+			auto pointLights = m_Registry.View<PointLightComponent>();
+
+			for (auto& pointLight : pointLights)
+				m_SceneRenderer->PlacePointLight(pointLight.Position, pointLight.Color, pointLight.Radius, pointLight.Intensity);
+		}
+
+		// ---- add directional lights ----
+
+		{
+			auto directionalLights = m_Registry.View<DirectionalLightComponent>();
+
+			for (auto& light : directionalLights)
+				m_SceneRenderer->AddDirectionaLight(light.Direction, light.Color, light.Intensity);
+		}
+
 		// ---- Render Meshes ----
 		{
-			if (m_SceneView == SceneView::View3D)
-				m_SceneRenderer->Begin(m_SceneCamera.get());
-			else
-				m_SceneRenderer->Begin(m_SceneCamera2D.get());
 
 			m_Registry.ForEach<MeshComponent>(
 				[this](auto& component, const auto entityID) 
@@ -76,9 +96,12 @@ namespace TooGoodEngine {
 					}
 				});
 			
-			m_SceneRenderer->End();
 		}
+
+		//TODO: render models here
 		
+		m_SceneRenderer->End();
+
 	}
 
 	void Scene::OnEvent(Event* event)

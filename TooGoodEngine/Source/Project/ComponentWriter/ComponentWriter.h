@@ -11,6 +11,8 @@ namespace TooGoodEngine {
 		static void WriteTransform(JsonWriter& writer, const JsonPath& entityPath, TransformComponent& component);
 		static void WriteMesh(JsonWriter& writer, const JsonPath& entityPath, MeshComponent& component);
 		static void WriteMaterial(JsonWriter& writer, const JsonPath& entityPath, MaterialComponent& component);
+		static void WritePointLight(JsonWriter& writer, const JsonPath& entityPath, PointLightComponent& component);
+		static void WriteDirectionalLight(JsonWriter& writer, const JsonPath& entityPath, DirectionalLightComponent& component);
 	};
 
 }

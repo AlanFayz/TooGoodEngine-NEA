@@ -156,7 +156,7 @@ vec4 FresnelApproximation(float NdotL, vec4 reflectivity)
 float Attenuate(float radius, float dist)
 {
 	if(radius >= dist)
-		return 1 / ((dist * dist) + EPSILON);
+		return 1.0 / ((dist * dist) + EPSILON);
 
 	return 0.0;
 }
@@ -183,14 +183,14 @@ vec4 Shade(in ShadeInfo info)
 	float NdotL = max(dot(info.Normal, info.LightDirection), EPSILON);
 	float NdotV = max(dot(info.Normal, viewDir),			 EPSILON);
 	float NdotH = max(dot(info.Normal, halfwayDir),			 EPSILON);
-	float VdotH = max(dot(viewDir, halfwayDir),				 EPSILON);
+	float VdotH = max(dot(viewDir,     halfwayDir),		     EPSILON);
 
 	vec4 lambertianDiffuse = info.Data.Albedo / PI;
 
 	vec4 F0 = vec4(0.04); 
 	F0  = mix(F0, info.Data.Albedo, info.Data.Metallic);
 
-	vec4 ks = FresnelApproximation(NdotL, F0);
+	vec4 ks = FresnelApproximation(VdotH, F0);
 	vec4 kd = (vec4(1.0) - ks) * (vec4(1.0) - info.Data.Metallic);
 
 	vec3 cookTorranceNum =  DistributionGGX(NdotH, info.Data.Roughness)    *
@@ -257,9 +257,6 @@ uniform vec3 u_CameraPosition;
 
 void main()
 {
-	float a = dot(o_Normal, o_Normal);
-    float b = dot(o_TextureCoord, o_TextureCoord);
-
 	MaterialData materialData = FetchMaterialData(Materials.Data[o_MaterialIndex], o_TextureCoord);
 
 	vec4 Color = materialData.Ambient + materialData.Emission;
@@ -280,7 +277,6 @@ void main()
 		info.Attenuation = attenuation;
 		
 		Color += Shade(info);
-
 	}
 
 	for(int i = 0; i < u_DirectionalLightSize; i++)
@@ -295,6 +291,5 @@ void main()
     OutColor.rgb = AcesFitted(Color.rgb);
 	OutColor.a = min(OutColor.a, 1.0);
 
-	OutColor = OutColor / (OutColor + vec4(1.0));
     OutColor = pow(OutColor, vec4(1.0/2.2));  
 }

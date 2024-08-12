@@ -35,19 +35,10 @@ namespace TooGoodEngine {
 
 	void ComponentWriter::WriteMaterial(JsonWriter& writer, const JsonPath& entityPath, MaterialComponent& component)
 	{
-		/*
-		"Ambient": [ 0.0, 0.0, 0.0, 1.0 ],
-				"Albedo": [ 1.0, 1.0, 1.0, 1.0 ],
-				"Metallic": [ 0.0, 0.0, 0.0, 1.0 ],
-				"Emission": [ 0.0, 0.0, 0.0, 0.0 ],
-				"Roughness": 1.0,
-				"Albedo Factor":    1.0,
-				"Metallic Factor":  1.0,
-				"Emission Factor":  0.0
-	*/
+		//TODO: change from image path to UUID once asset manager is seriliazed.
+
 		JsonPath path = entityPath;
 		
-
 		//
 		// ---- Ambient ----
 		if (component.Material.Ambient.ImageComponent)
@@ -154,6 +145,66 @@ namespace TooGoodEngine {
 			path.insert(path.end(), { "Material", "Roughness" });
 			auto& color = component.Material.Roughness.Component;
 			writer.WriteGeneric(path, color[0]);
+		}
+		
+	}
+
+	void ComponentWriter::WritePointLight(JsonWriter& writer, const JsonPath& entityPath, PointLightComponent& component)
+	{
+		JsonPath path = entityPath;
+
+		{
+			path.insert(path.end(), { "Point Light", "Color" });
+			std::array<float, 4> color = { component.Color[0], component.Color[1], component.Color[2], component.Color[3] };
+			writer.WriteGeneric(path, color);
+		}
+
+		path = entityPath;
+
+		{
+			path.insert(path.end(), { "Point Light", "Position" });
+			std::array<float, 3> position = { component.Position[0], component.Position[1], component.Position[2] };
+			writer.WriteGeneric(path, position);
+		}
+		
+		path = entityPath;
+
+		{
+			path.insert(path.end(), { "Point Light", "Radius" });
+			writer.WriteGeneric(path, component.Radius);
+		}
+
+		path = entityPath;
+
+		{
+			path.insert(path.end(), { "Point Light", "Intensity" });
+			writer.WriteGeneric(path, component.Intensity);
+		}
+	}
+
+	void ComponentWriter::WriteDirectionalLight(JsonWriter& writer, const JsonPath& entityPath, DirectionalLightComponent& component)
+	{
+		JsonPath path = entityPath;
+
+		{
+			path.insert(path.end(), { "Directional Light", "Color" });
+			std::array<float, 4> color = { component.Color[0], component.Color[1], component.Color[2], component.Color[3] };
+			writer.WriteGeneric(path, color);
+		}
+
+		path = entityPath;
+
+		{
+			path.insert(path.end(), { "Directional Light", "Direction" });
+			std::array<float, 3> direction = { component.Direction[0], component.Direction[1], component.Direction[2] };
+			writer.WriteGeneric(path, direction);
+		}
+
+		path = entityPath;
+
+		{
+			path.insert(path.end(), { "Directional Light", "Intensity" });
+			writer.WriteGeneric(path, component.Intensity);
 		}
 		
 	}

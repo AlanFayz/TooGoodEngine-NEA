@@ -29,7 +29,8 @@ void main()
     gl_Position = u_ViewProjection * WorldPosition;
 
     o_WorldPosition = WorldPosition.xyz;
-    o_Normal = mat3(transpose(inverse(Instances.Data[gl_InstanceID].Transform))) * Normal; 
+    o_Normal = transpose(inverse(mat3(Instances.Data[gl_InstanceID].Transform))) * Normal; 
+    o_Normal = normalize(o_Normal);
     o_TextureCoord = TextureCoord; 
     o_MaterialIndex = Instances.Data[gl_InstanceID].MaterialIndex;
 }

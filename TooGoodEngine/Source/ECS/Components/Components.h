@@ -4,3 +4,5 @@
 #include "Transform.h"
 #include "Scripting/ScriptComponent.h"
 #include "MaterialComponent.h"
+#include "PointLightComponent.h"
+#include "DirectionalLightComponent.h"

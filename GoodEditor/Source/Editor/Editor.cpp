@@ -77,8 +77,6 @@ namespace GoodEditor {
 
 		AssetPanel::DrawAssetPanel(m_ExtensionMap);
 		ScenePanel::DrawScenePanel();
-
-		ImGui::ShowDemoWindow();
 	}
 	void Editor::OnEvent(TooGoodEngine::Event* event)
 	{

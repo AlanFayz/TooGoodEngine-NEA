@@ -27,6 +27,8 @@ namespace GoodEditor {
 		static void _DrawComponent(TransformComponent& component);
 		static void _DrawComponent(MeshComponent& component);
 		static void _DrawComponent(MaterialComponent& component);
+		static void _DrawComponent(PointLightComponent& component);
+		static void _DrawComponent(DirectionalLightComponent& component);
 
 		static bool _DrawMaterialAttribute(const char* name, glm::vec4& attribute, Ref<Image>& image);
 		static bool _DrawMaterialRoughness(float& roughness, Ref<Image>& image);
@@ -34,6 +36,7 @@ namespace GoodEditor {
 
 	private:
 		static int m_IDCount;
+		static int m_ColorEditFlags;
 	};
 
 	

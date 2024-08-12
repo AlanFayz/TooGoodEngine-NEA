@@ -74,17 +74,27 @@ namespace TooGoodEngine {
 				auto& jsonComponent = *secondIt;
 
 				if (secondIt.key() == "Transform")
-					registry.AddComponent<TransformComponent>(entity, ComponentLoader::LoadTransform(jsonComponent));
+					registry.AddComponent(entity, ComponentLoader::LoadTransform(jsonComponent));
 
 				else if (secondIt.key() == "Mesh")
 				{
 					MeshComponent component = ComponentLoader::LoadMesh(jsonComponent, *renderer);
-					registry.AddComponent<MeshComponent>(entity, component);
+					registry.AddComponent(entity, component);
 				}
 				else if (secondIt.key() == "Material")
 				{
 					MaterialComponent component = ComponentLoader::LoadMaterial(jsonComponent, *renderer);
-					registry.AddComponent<MaterialComponent>(entity, component);
+					registry.AddComponent(entity, component);
+				}
+				else if (secondIt.key() == "Point Light")
+				{
+					PointLightComponent component = ComponentLoader::LoadPointLight(jsonComponent);
+					registry.AddComponent(entity, component);
+				}
+				else if (secondIt.key() == "Directional Light")
+				{
+					DirectionalLightComponent component = ComponentLoader::LoadDirectionalLight(jsonComponent);
+					registry.AddComponent(entity, component);
 				}
 			}
 		}
@@ -113,8 +123,6 @@ namespace TooGoodEngine {
 	void Project::SaveScene(JsonWriter& writer, const Ref<Scene>& scene)
 	{
 		auto& registry = scene->GetRegistry();
-
-		//TODO: will need to do for multiple scenes when supported
 
 		for (EntityID entityId = 0; entityId < registry.GetCount(); entityId++)
 		{
@@ -157,6 +165,18 @@ namespace TooGoodEngine {
 			{
 				MaterialComponent& component = registry.GetComponent<MaterialComponent>(entity);
 				ComponentWriter::WriteMaterial(writer, pathToEntity, component);
+			}
+
+			if (registry.HasComponent<PointLightComponent>(entity))
+			{
+				PointLightComponent& component = registry.GetComponent<PointLightComponent>(entity);
+				ComponentWriter::WritePointLight(writer, pathToEntity, component);
+			}
+
+			if (registry.HasComponent<DirectionalLightComponent>(entity))
+			{
+				DirectionalLightComponent& component = registry.GetComponent<DirectionalLightComponent>(entity);
+				ComponentWriter::WriteDirectionalLight(writer, pathToEntity, component);
 			}
 		}
 	}
