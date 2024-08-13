@@ -190,7 +190,7 @@ vec4 Shade(in ShadeInfo info)
 	vec4 F0 = vec4(0.04); 
 	F0  = mix(F0, info.Data.Albedo, info.Data.Metallic);
 
-	vec4 ks = FresnelApproximation(VdotH, F0);
+	vec4 ks = FresnelApproximation(NdotL, F0);
 	vec4 kd = (vec4(1.0) - ks) * (vec4(1.0) - info.Data.Metallic);
 
 	vec3 cookTorranceNum =  DistributionGGX(NdotH, info.Data.Roughness)    *
@@ -208,7 +208,9 @@ vec4 Shade(in ShadeInfo info)
 
 
 /*
-    From https://64.github.io/tonemapping/
+    Aces tone mapping designed to 
+	map colors from a high dynamic range into a 
+	low dynamic range.
 */
 
 const mat3 AcesInputMatrix = mat3(

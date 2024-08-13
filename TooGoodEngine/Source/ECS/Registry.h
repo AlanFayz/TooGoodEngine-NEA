@@ -39,7 +39,7 @@ namespace TooGoodEngine {
 		{ 
 			if (m_Buckets.contains(typeid(Type)))
 			{
-				DenseMap<Type>* bucket = GetBucketAssuredType<Type>();
+				auto bucket = GetBucketAssuredType<Type>();
 				return bucket->Contains(entity);
 			}
 
@@ -73,34 +73,28 @@ namespace TooGoodEngine {
 	protected:
 		EntityID m_Count = 0;
 
-		struct BucketEntry
-		{
-			void* Data;
-			std::function<void(void*)> Deleter;
-		};
-
-		std::unordered_map<std::type_index, BucketEntry> m_Buckets;
+		std::unordered_map<std::type_index, std::shared_ptr<BaseDenseMap>> m_Buckets;
 		std::vector<Entity> m_Entites;
 	};
 
 	template<typename Type>
 	inline void Registry::AddComponent(const Entity& entity, const Type& t)
 	{
-		DenseMap<Type>* bucket = GetBucketAssuredType<Type>();
+		auto bucket = GetBucketAssuredType<Type>();
 		bucket->Add(entity, t);
 	}
 
 	template<typename Type, typename ...Args>
 	inline void Registry::EmplaceComponent(const Entity& entity, Args && ...args)
 	{
-		DenseMap<Type>* bucket = GetBucketAssuredType<Type>();
+		auto bucket = GetBucketAssuredType<Type>();
 		bucket->Emplace(entity, std::forward<Args>(args)...);
 	}
 
 	template<typename Type>
 	inline void Registry::RemoveComponent(const Entity& entity)
 	{
-		DenseMap<Type>* bucket = GetBucketAssuredType<Type>();
+		auto bucket = GetBucketAssuredType<Type>();
 		if (bucket->Contains(entity))
 			bucket->Remove(entity);
 
@@ -110,7 +104,7 @@ namespace TooGoodEngine {
 	template<typename Type>
 	inline Type& Registry::GetComponent(const EntityID& entity)
 	{
-		DenseMap<Type>* bucket = GetBucketAssuredType<Type>();
+		auto bucket = GetBucketAssuredType<Type>();
 
 		TGE_VERIFY(bucket->Contains(entity), "doesn't contain component");
 		return bucket->Get(entity);
@@ -119,14 +113,14 @@ namespace TooGoodEngine {
 	template<typename Type, typename Fun>
 	inline void Registry::ForEach(Fun fun)
 	{
-		DenseMap<Type>* bucket = GetBucketAssuredType<Type>();
+		auto bucket = GetBucketAssuredType<Type>();
 		bucket->ForEach(fun);
 	}
 
 	template<typename Type>
 	inline auto Registry::View()
 	{
-		DenseMap<Type>* bucket = GetBucketAssuredType<Type>();
+		auto bucket = GetBucketAssuredType<Type>();
 		return bucket->ViewDense();
 	}
 
@@ -135,15 +129,11 @@ namespace TooGoodEngine {
 	{
 		auto it = m_Buckets.find(typeid(Type));
 		if (it != m_Buckets.end()) 
-			return (DenseMap<Type>*)(it->second.Data);
+			return std::static_pointer_cast<DenseMap<Type>>(it->second);
 		
 
-		BucketEntry entry;
-		entry.Data = new DenseMap<Type>();
-		entry.Deleter = [](void* memory) { delete (DenseMap<Type>*)(memory); };
-
-		m_Buckets[typeid(Type)] = entry;
-		return (DenseMap<Type>*)(entry.Data);
+		m_Buckets[typeid(Type)] = std::make_shared<DenseMap<Type>>();
+		return std::static_pointer_cast<DenseMap<Type>>(m_Buckets[typeid(Type)]);
 	}
 
 }

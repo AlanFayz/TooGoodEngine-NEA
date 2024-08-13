@@ -5,6 +5,7 @@
 #include "Math/Camera.h"
 #include "Assets/Model.h"
 #include "API/OpenGL/Framebuffer.h"
+#include "Assets/EnviormentMap.h"
 
 namespace TooGoodEngine {
 
@@ -50,6 +51,8 @@ namespace TooGoodEngine {
 		BlendingFactor Source      = BlendingFactor::None;
 		BlendingFactor Destination = BlendingFactor::None;
 		FillMode FillingMode       = FillMode::Fill;
+
+		Ref<EnviormentMap> CurrentEnviormentMap = nullptr;
 	};
 
 	struct RenderData
@@ -58,12 +61,13 @@ namespace TooGoodEngine {
 		bool IsDrawing = false;
 
 		OpenGL::Program ColorShaderProgram;
+		OpenGL::Program SkyBoxShaderProgram;
 
 		std::vector<GeometryInstanceBuffer> GeometryList;
 
 		//no need for triple buffering as materials are unlikely to change per frame
 		//so we do not need to restart every frame.
-		//a user can edit a material simply by its ID (index)
+		//a user can edit a material simply by its ID 
 		struct MaterialBuffer
 		{
 			OpenGL::Buffer Buffer;
@@ -72,7 +76,6 @@ namespace TooGoodEngine {
 			uint32_t MapFlags;
 		};
 
-		//do i want triple buffers for these?
 		struct PointLightBuffer
 		{
 			OpenGL::Buffer Buffers[3];
@@ -96,11 +99,13 @@ namespace TooGoodEngine {
 		DirectionalLightBuffer DirectionalLights;
 
 		Camera* CurrentCamera;
-		size_t SquareGeometryIndex;
+		GeometryID SquareGeometryIndex;
+		GeometryID CubeGeometryIndex;
 
 		OpenGL::Framebuffer FinalImageFramebuffer;
 		Ref<OpenGL::Texture2D> FinalImageTexture;
 		Ref<OpenGL::Texture2D> DepthTexture;
+
 	};
 
 	inline constexpr size_t g_NullID = std::numeric_limits<size_t>::max();
@@ -140,6 +145,8 @@ namespace TooGoodEngine {
 
 	private:
 		void _RenderInstances();
+		void _RenderSkyBox();
+
 		void _ApplySettings();
 
 		void _CreateBuffers();

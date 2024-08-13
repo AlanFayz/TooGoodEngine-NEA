@@ -4,7 +4,6 @@
 
 #include "AssetPanel.h"
 
-
 namespace GoodEditor {
 
 	using namespace TooGoodEngine;

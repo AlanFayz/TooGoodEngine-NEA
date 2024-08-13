@@ -13,7 +13,8 @@ namespace TooGoodEngine {
 			None = 0,
 			Texture,
 			Multisample,
-			DepthTexture
+			DepthTexture, 
+			CubeMap
 		};
 
 		enum class Texture2DFormat
@@ -24,12 +25,12 @@ namespace TooGoodEngine {
 
 		enum class TextureParamater
 		{
-			None = 0, MinFilter, MagFilter, WrapModeS, WrapModeT
+			None = 0, MinFilter, MagFilter, WrapModeS, WrapModeT, WrapModeR
 		};
 
 		enum class TextureParamaterOption
 		{
-			None = 0, Nearest, Linear, ClampToBorder
+			None = 0, Nearest, Linear, ClampToBorder, ClampToEdge
 		};
 
 		struct Texture2DInfo
@@ -40,6 +41,8 @@ namespace TooGoodEngine {
 			uint32_t MipMapLevels = 1;
 			uint32_t NumberOfSamples = 1;
 			void* Data = nullptr;
+
+			void* CubeMapData[6] = { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr };
 
 			std::map<TextureParamater, TextureParamaterOption> Paramaters;
 		};
@@ -61,6 +64,11 @@ namespace TooGoodEngine {
 
 			void MakeResident();
 			void MakeNonResident();
+
+			void Bind(uint32_t textureUnit) const;
+			void BindImage(uint32_t textureUnit, 
+						   uint32_t level, 
+						   uint32_t layer, bool layered);
 
 			inline const uint32_t GetHandle()  const { return m_TextureHandle; }
 			inline const GLuint64 GetAddress() const { return m_TextureAddress; }

@@ -16,11 +16,13 @@ namespace TooGoodEngine {
 			VertexShader, FragmentShader, ComputeShader
 		};
 
-		using ShaderMap = std::map<ShaderType, std::filesystem::path>;
+		using ShaderMap       = std::map<ShaderType, std::filesystem::path>;
+		using ShaderSourceMap = std::map<ShaderType, const char*>;
 
 		class Program
 		{
 		public:
+			Program(const ShaderSourceMap& map);
 			Program(const ShaderMap& map);
 			Program() = default;
 			~Program();
@@ -31,7 +33,7 @@ namespace TooGoodEngine {
 			Program(Program&& other) noexcept;
 			Program& operator=(Program&& other) noexcept;
 
-			inline const void Use() { glUseProgram(m_ProgramHandle); }
+			inline const void Use() const { glUseProgram(m_ProgramHandle); }
 			inline const uint32_t GetHandle() const { return m_ProgramHandle; }
 
 			template<typename T>

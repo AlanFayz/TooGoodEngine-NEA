@@ -28,8 +28,18 @@ namespace TooGoodEngine {
 			m_Data.ColorShaderProgram = OpenGL::Program(map);
 		}
 		
+		{
+			OpenGL::ShaderMap map
+			{ {OpenGL::ShaderType::FragmentShader, m_Data.ShaderDirectory / "SkyBox.frag"},
+			  {OpenGL::ShaderType::VertexShader, m_Data.ShaderDirectory / "SkyBox.vert"} };
+
+			m_Data.SkyBoxShaderProgram = OpenGL::Program(map);
+		}
+		
 		_CreateBuffers();
 		_CreateDefaultMaterialsAndMeshes();
+
+		m_Settings.CurrentEnviormentMap = EnviormentMap::LoadEnviromentMapAssetFromFile("Resources/test.hdr");
 
 		_CreateTextures();
 		_CreateFramebuffers();
@@ -209,6 +219,7 @@ namespace TooGoodEngine {
 		OpenGL::Command::ClearDepth();
 		
 		_RenderInstances();
+		_RenderSkyBox();
 
 		m_Data.PointLights.Size = 0;
 		m_Data.DirectionalLights.Size = 0;
@@ -246,6 +257,41 @@ namespace TooGoodEngine {
 				instanceBuffer.GetInstanceCount());
 
 			instanceBuffer.EndBatch();
+		}
+	}
+
+	void Renderer::_RenderSkyBox()
+	{
+		if (m_Settings.CurrentEnviormentMap)
+		{
+			glDepthMask(GL_FALSE);
+			glDepthFunc(GL_LEQUAL);
+			glDisable(GL_CULL_FACE);
+
+			m_Data.SkyBoxShaderProgram.Use();
+			m_Settings.CurrentEnviormentMap->GetTexture().Bind(0);
+												
+			glm::mat4 viewProjection = m_Data.CurrentCamera->GetProjection() *
+									   glm::mat4(glm::mat3(m_Data.CurrentCamera->GetView())); //(removes translation as translation is in the last column)
+
+			m_Data.SkyBoxShaderProgram.SetUniform("u_ViewProjection", viewProjection);
+			m_Data.SkyBoxShaderProgram.SetUniform("u_EnviormentMap", 0);
+			
+			//draw our cube
+			Draw(m_Data.CubeGeometryIndex, glm::identity<glm::mat4>());
+
+			m_Data.GeometryList[m_Data.CubeGeometryIndex].BeginBatch(0); 
+
+			OpenGL::Command::DrawElementsInstanced(
+				&m_Data.SkyBoxShaderProgram,
+				m_Data.GeometryList[m_Data.CubeGeometryIndex].GetVertexArrayPointer(),
+				OpenGL::DrawMode::Triangle, m_Data.GeometryList[m_Data.CubeGeometryIndex].GetIndexCount(),
+				m_Data.GeometryList[m_Data.CubeGeometryIndex].GetInstanceCount());
+
+			m_Data.GeometryList[m_Data.CubeGeometryIndex].EndBatch();
+
+			glDepthMask(GL_TRUE);
+			_ApplySettings();
 		}
 	}
 
@@ -384,41 +430,131 @@ namespace TooGoodEngine {
 
 	void Renderer::_CreateDefaultMaterialsAndMeshes()
 	{
-		// ---- default mesh (maybe more in the future) ----
-		Geometry square;
+		{
+			Geometry square;
 
-		std::vector<Vertex> squareData = {
-			{ glm::vec3(-0.5f, -0.5f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec2(0.0f, 0.0f) },
-			{ glm::vec3(0.5f, -0.5f, 0.0f),  glm::vec3(0.0f, 0.0f, -1.0f), glm::vec2(1.0f, 0.0f) },
-			{ glm::vec3(-0.5f,  0.5f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec2(0.0f, 1.0f) },
-			{ glm::vec3(0.5f,  0.5f, 0.0f),  glm::vec3(0.0f, 0.0f, -1.0f), glm::vec2(1.0f, 1.0f) }
-		};
+			std::vector<Vertex> squareData = {
+				{ glm::vec3(-0.5f, -0.5f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec2(0.0f, 0.0f) },
+				{ glm::vec3(0.5f, -0.5f, 0.0f),  glm::vec3(0.0f, 0.0f, -1.0f), glm::vec2(1.0f, 0.0f) },
+				{ glm::vec3(-0.5f,  0.5f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec2(0.0f, 1.0f) },
+				{ glm::vec3(0.5f,  0.5f, 0.0f),  glm::vec3(0.0f, 0.0f, -1.0f), glm::vec2(1.0f, 1.0f) }
+			};
 
-		std::vector<uint32_t> squareIndices = {
-			2, 3, 1,
-			2, 1, 0
-		};
+			std::vector<uint32_t> squareIndices = {
+				2, 3, 1,
+				2, 1, 0
+			};
 
-		square.Vertices = squareData;
-		square.Indices = squareIndices;
+			square.Vertices = squareData;
+			square.Indices = squareIndices;
 
-		MaterialInfo info;
-		
-		info.Ambient = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+			MaterialInfo info;
 
-		info.Albedo = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-		info.AlbedoFactor = 1.0f;
-		
-		info.Metallic = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
-		info.MetallicFactor = 1.0f;
+			info.Ambient = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 
-		info.Emission = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
-		info.EmissionFactor = 0.0f;
+			info.Albedo = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+			info.AlbedoFactor = 1.0f;
 
-		info.Roughness = 1.0f;
-		
-		square.Material = info;
-		m_Data.SquareGeometryIndex = AddGeometry(square);
+			info.Metallic = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+			info.MetallicFactor = 1.0f;
+
+			info.Emission = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
+			info.EmissionFactor = 0.0f;
+
+			info.Roughness = 1.0f;
+
+			square.Material = info;
+			m_Data.SquareGeometryIndex = AddGeometry(square);
+		}
+	
+		{
+			Geometry cube;
+
+			cube.Vertices = {
+				// Front face
+				{ glm::vec3(-0.5f, -0.5f,  0.5f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec2(0.0f, 0.0f) },
+				{ glm::vec3(0.5f, -0.5f,  0.5f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec2(1.0f, 0.0f) },
+				{ glm::vec3(-0.5f,  0.5f,  0.5f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec2(0.0f, 1.0f) },
+				{ glm::vec3(0.5f,  0.5f,  0.5f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec2(1.0f, 1.0f) },
+
+				// Back face
+				{ glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec2(0.0f, 0.0f) },
+				{ glm::vec3(0.5f, -0.5f, -0.5f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec2(1.0f, 0.0f) },
+				{ glm::vec3(-0.5f,  0.5f, -0.5f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec2(0.0f, 1.0f) },
+				{ glm::vec3(0.5f,  0.5f, -0.5f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec2(1.0f, 1.0f) },
+
+				// Left face
+				{ glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec2(0.0f, 0.0f) },
+				{ glm::vec3(-0.5f, -0.5f,  0.5f), glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec2(1.0f, 0.0f) },
+				{ glm::vec3(-0.5f,  0.5f, -0.5f), glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec2(0.0f, 1.0f) },
+				{ glm::vec3(-0.5f,  0.5f,  0.5f), glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec2(1.0f, 1.0f) },
+
+				// Right face
+				{ glm::vec3(0.5f, -0.5f, -0.5f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec2(0.0f, 0.0f) },
+				{ glm::vec3(0.5f, -0.5f,  0.5f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec2(1.0f, 0.0f) },
+				{ glm::vec3(0.5f,  0.5f, -0.5f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec2(0.0f, 1.0f) },
+				{ glm::vec3(0.5f,  0.5f,  0.5f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec2(1.0f, 1.0f) },
+
+				// Top face
+				{ glm::vec3(-0.5f,  0.5f, -0.5f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec2(0.0f, 0.0f) },
+				{ glm::vec3(0.5f,  0.5f, -0.5f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec2(1.0f, 0.0f) },
+				{ glm::vec3(-0.5f,  0.5f,  0.5f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec2(0.0f, 1.0f) },
+				{ glm::vec3(0.5f,  0.5f,  0.5f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec2(1.0f, 1.0f) },
+
+				// Bottom face
+				{ glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.0f, -1.0f, 0.0f), glm::vec2(0.0f, 0.0f) },
+				{ glm::vec3(0.5f, -0.5f, -0.5f), glm::vec3(0.0f, -1.0f, 0.0f), glm::vec2(1.0f, 0.0f) },
+				{ glm::vec3(-0.5f, -0.5f,  0.5f), glm::vec3(0.0f, -1.0f, 0.0f), glm::vec2(0.0f, 1.0f) },
+				{ glm::vec3(0.5f, -0.5f,  0.5f), glm::vec3(0.0f, -1.0f, 0.0f), glm::vec2(1.0f, 1.0f) }
+			};
+
+			cube.Indices = {
+				// Front face
+				0, 1, 2,
+				1, 3, 2,
+
+				// Back face
+				4, 5, 6,
+				5, 7, 6,
+
+				// Left face
+				8, 9, 10,
+				9, 11, 10,
+
+				// Right face
+				12, 13, 14,
+				13, 15, 14,
+
+				// Top face
+				16, 17, 18,
+				17, 19, 18,
+
+				// Bottom face
+				20, 21, 22,
+				21, 23, 22
+			};
+
+			MaterialInfo info;
+
+			info.Ambient = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+
+			info.Albedo = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+			info.AlbedoFactor = 1.0f;
+
+			info.Metallic = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+			info.MetallicFactor = 1.0f;
+
+			info.Emission = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
+			info.EmissionFactor = 0.0f;
+
+			info.Roughness = 1.0f;
+
+			cube.Material = info;
+			m_Data.SquareGeometryIndex = AddGeometry(cube);
+
+			m_Data.CubeGeometryIndex = 1;
+		}
+
 	}
 
 	void Renderer::_CreateTextures()
@@ -462,8 +598,8 @@ namespace TooGoodEngine {
 	{
 		{
 			OpenGL::FramebufferInfo info{};
-			info.ColorAttachments.push_back(m_Data.FinalImageTexture);
-			info.DepthAttachment = m_Data.DepthTexture;
+			info.ColorAttachments.push_back(m_Data.FinalImageTexture.get());
+			info.DepthAttachment = m_Data.DepthTexture.get();
 
 			m_Data.FinalImageFramebuffer.~Framebuffer();
 			m_Data.FinalImageFramebuffer = OpenGL::Framebuffer(info);

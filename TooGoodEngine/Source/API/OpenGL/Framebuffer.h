@@ -10,8 +10,8 @@ namespace TooGoodEngine {
 
 		struct FramebufferInfo
 		{
-			std::vector<Ref<Texture2D>> ColorAttachments; 
-			Ref<Texture2D> DepthAttachment; //if needed will make this DepthStencil 
+			std::vector<Texture2D*> ColorAttachments; 
+			Texture2D* DepthAttachment; //if needed will make this DepthStencil 
 		};
 
 		

@@ -8,6 +8,7 @@ namespace TooGoodEngine {
 	class Image : public Asset
 	{
 	public:
+		Image() = default;
 		Image(const OpenGL::Texture2DInfo& info); 
 		~Image() = default;
 

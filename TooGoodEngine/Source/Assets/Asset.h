@@ -10,7 +10,8 @@ namespace TooGoodEngine {
 	{
 		None = 0, //more to add
 		Image,
-		Model
+		Model, 
+		EnviormentMap
 	};
 
 	std::string_view GetAssetTypeString(AssetType type);
@@ -30,6 +31,7 @@ namespace TooGoodEngine {
 		inline const std::filesystem::path& GetPath() const { return m_Path; }
 		inline const UUID GetAssetID() const { return m_UUID; }
 
+		//TODO: add asset meta data instead of std::filesystem::path
 		static Ref<Asset> LoadAssetFromFile(AssetType type, const std::filesystem::path& path);
 
 	private:

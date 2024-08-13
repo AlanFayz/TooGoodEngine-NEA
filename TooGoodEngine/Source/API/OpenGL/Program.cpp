@@ -6,7 +6,41 @@
 
 namespace TooGoodEngine {
 	namespace OpenGL {
+		Program::Program(const ShaderSourceMap& map)
+		{
+			m_ProgramHandle = glCreateProgram();
 
+			for (const auto& [type, source] : map)
+			{
+				uint32_t shader = glCreateShader(GetShaderType(type));
+				glShaderSource(shader, 1, &source, nullptr);
+				glCompileShader(shader);
+				glAttachShader(m_ProgramHandle, shader);
+
+				GLint success;
+				glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
+				if (!success)
+				{
+					char infoLog[512];
+					glGetShaderInfoLog(shader, 512, nullptr, infoLog);
+					TGE_LOG_ERROR(infoLog);
+				}
+
+				glDeleteShader(shader);
+			}
+
+			glLinkProgram(m_ProgramHandle);
+
+			GLint success;
+			glGetProgramiv(m_ProgramHandle, GL_LINK_STATUS, &success);
+
+			if (!success)
+			{
+				char infoLog[512];
+				glGetProgramInfoLog(m_ProgramHandle, 512, nullptr, infoLog);
+				TGE_LOG_ERROR(infoLog);
+			}
+		}
 		Program::Program(const ShaderMap& map)
 		{
 			m_ProgramHandle = glCreateProgram();

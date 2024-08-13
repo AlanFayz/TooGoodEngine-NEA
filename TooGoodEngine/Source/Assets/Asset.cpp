@@ -5,10 +5,11 @@
 
 #include "Image.h"
 #include "Model.h"
+#include "EnviormentMap.h"
 
 namespace TooGoodEngine {
 
-	static Ref<Asset> LoadUntypedAsset(const std::filesystem::path& path) //example use case
+	static Ref<Asset> LoadUntypedAsset(const std::filesystem::path& path) 
 	{
 		return nullptr;
 	}
@@ -17,9 +18,10 @@ namespace TooGoodEngine {
 	
 	static const FunctionMap s_FunctionMap
 	{
-		{AssetType::None,  LoadUntypedAsset}, 
-		{AssetType::Image, Image::LoadImageAssetFromFile}, 
-		{AssetType::Model, Model::LoadModelAssetFromFile}
+		{AssetType::None,		   LoadUntypedAsset}, 
+		{AssetType::Image,		   Image::LoadImageAssetFromFile}, 
+		{AssetType::Model,		   Model::LoadModelAssetFromFile}, 
+		{AssetType::EnviormentMap, EnviormentMap::LoadEnviromentMapAssetFromFile}
 	};
 
 	Ref<Asset> Asset::LoadAssetFromFile(AssetType type, const std::filesystem::path& path)
@@ -46,11 +48,12 @@ namespace TooGoodEngine {
 	{
 		switch (type)
 		{
-		case TooGoodEngine::AssetType::None:	return "None";
-		case TooGoodEngine::AssetType::Image:	return "Image";
-		case TooGoodEngine::AssetType::Model:	return "Model";
-		default:								return "None (INVALID)";
-			break;
+			case AssetType::None:	return "None";
+			case AssetType::Image:	return "Image";
+			case AssetType::Model:	return "Model";
+			case AssetType::EnviormentMap: return "EnviormentMap";
+			default:								return "None (INVALID)";
+				break;
 		}
 	}
 

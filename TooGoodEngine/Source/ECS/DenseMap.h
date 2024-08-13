@@ -8,12 +8,18 @@
 
 namespace TooGoodEngine {
 
+	class BaseDenseMap
+	{
+	public:
+		virtual ~BaseDenseMap() = default;
+	};
+
 	template<typename Type>
-	class DenseMap
+	class DenseMap : public BaseDenseMap
 	{
 	public:
 		DenseMap()  = default;
-		~DenseMap() = default;
+		virtual ~DenseMap() = default;
 
 		inline const bool Contains(EntityID entity) const 
 		{ 

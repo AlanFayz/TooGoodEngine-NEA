@@ -3,8 +3,6 @@
 namespace TooGoodEngine{
 	Registry::~Registry()
 	{
-		for (auto& [type, entry] : m_Buckets)
-			entry.Deleter(entry.Data);
 	}
 	void Registry::RemoveEntity(EntityID id)
 	{

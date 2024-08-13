@@ -16,7 +16,7 @@ namespace TooGoodEngine {
 					GL_COLOR_ATTACHMENT0 + (GLenum)index,
 					colorAttachment->GetHandle(), 0);
 
-				drawBuffers.push_back(GL_COLOR_ATTACHMENT0 + (GLenum)index);
+				drawBuffers.push_back(GL_COLOR_ATTACHMENT0 + (GLenum)index++);
 			}
 
 			if (info.DepthAttachment)

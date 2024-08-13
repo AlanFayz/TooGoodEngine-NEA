@@ -15,6 +15,7 @@ namespace TooGoodEngine {
 	class Model : public Asset
 	{
 	public:
+		Model() = default;
 		Model(const std::vector<Geometry>& geometry);
 		~Model() = default;
 

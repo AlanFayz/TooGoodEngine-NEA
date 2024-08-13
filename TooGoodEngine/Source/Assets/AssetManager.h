@@ -33,7 +33,8 @@ namespace TooGoodEngine {
 			if (m_AssetCache.contains(absolute))
 				return FetchAssetAssuredType<T>(m_AssetCache[absolute]);
 
-			Ref<Asset> asset = Asset::LoadAssetFromFile(T::GetStaticAssetType(), path);
+			T type;
+			Ref<Asset> asset = Asset::LoadAssetFromFile(type.GetAssetType(), path);
 			
 			if (!asset)
 			{

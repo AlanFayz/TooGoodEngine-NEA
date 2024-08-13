@@ -26,11 +26,11 @@ namespace TooGoodEngine {
 
 			glTextureStorage2D(
 				m_TextureHandle, 
-				(GLsizei)info.MipMapLevels, 
+				(GLsizei)info.MipMapLevels,
 				GetInternalFormat(info.Format),
 				(GLsizei)info.Width, (GLsizei)info.Height);
 
-			if (info.Data)
+			if (info.Data && !(info.Type == Texture2DType::CubeMap))
 			{
 				glTextureSubImage2D(
 					m_TextureHandle,
@@ -39,6 +39,18 @@ namespace TooGoodEngine {
 					(GLsizei)info.Height,
 					GetComponentFormat(info.Format),
 					GetDataType(info.Format), info.Data);
+			}
+
+			if (info.CubeMapData[0] && (info.Type == Texture2DType::CubeMap))
+			{
+				for (GLenum i = 0; i < 6; i++)
+				{
+					glTextureSubImage3D(
+						m_TextureHandle, 0, 0, 0, 0,
+						(GLsizei)info.Width, (GLsizei)info.Height,
+						1, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 
+						GetDataType(info.Format), info.CubeMapData[i]);
+				}
 			}
 
 			glGenerateMipmap(GetTarget(info.Type));
@@ -111,6 +123,23 @@ namespace TooGoodEngine {
 
 			m_Resident = false;
 		}
+		void Texture2D::Bind(uint32_t textureUnit) const
+		{
+			glBindTextureUnit((GLuint)textureUnit, m_TextureHandle);
+		}
+		void Texture2D::BindImage(uint32_t textureUnit, 
+								  uint32_t level,
+								  uint32_t layer, bool layered)
+		{
+			glBindImageTexture(
+				(GLuint)textureUnit,
+				m_TextureHandle,
+				(GLint)level,
+				layered ? GL_TRUE : GL_FALSE,
+				layer,
+				GL_READ_WRITE,
+				GetInternalFormat(m_Format));
+		}
 		constexpr GLenum Texture2D::GetInternalFormat(Texture2DFormat format)
 		{
 			switch (format)
@@ -170,6 +199,7 @@ namespace TooGoodEngine {
 				case Texture2DType::Texture:		    return GL_TEXTURE_2D;
 				case Texture2DType::Multisample:		return GL_TEXTURE_2D_MULTISAMPLE;
 				case Texture2DType::DepthTexture:		return GL_TEXTURE_2D;
+				case Texture2DType::CubeMap:			return GL_TEXTURE_CUBE_MAP;
 				case Texture2DType::None:
 				default:								return GL_NONE;
 			}
@@ -182,6 +212,7 @@ namespace TooGoodEngine {
 				case TextureParamater::MagFilter:	return GL_TEXTURE_MAG_FILTER;
 				case TextureParamater::WrapModeS:   return GL_TEXTURE_WRAP_S;
 				case TextureParamater::WrapModeT:	return GL_TEXTURE_WRAP_T;
+				case TextureParamater::WrapModeR:	return GL_TEXTURE_WRAP_R;
 				case TextureParamater::None:
 				default:							return GL_NONE;
 			}
@@ -193,6 +224,7 @@ namespace TooGoodEngine {
 				case TextureParamaterOption::Nearest:		return GL_NEAREST;
 				case TextureParamaterOption::Linear:		return GL_LINEAR;
 				case TextureParamaterOption::ClampToBorder: return GL_CLAMP_TO_BORDER;
+				case TextureParamaterOption::ClampToEdge:   return GL_CLAMP_TO_EDGE;
 				case TextureParamaterOption::None:
 				default:								return GL_NONE;
 			}

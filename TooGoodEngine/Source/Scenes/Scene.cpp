@@ -34,6 +34,7 @@ namespace TooGoodEngine {
 
 		m_SceneCamera2D = CreateRef<OrthoGraphicCamera>(orthoCameraData);
 		m_CameraController2D.SetCamera(m_SceneCamera2D);
+
 	}
 
 	void Scene::Update(double delta)
