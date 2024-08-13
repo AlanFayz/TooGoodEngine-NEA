@@ -213,9 +213,12 @@ in vec2 o_TextureCoord;
 in flat uint o_MaterialIndex;
 
  //TODO: should package everything into PerFrameData struct
-uniform int u_PointLightSize;
-uniform int u_DirectionalLightSize;
+uniform int  u_PointLightSize;
+uniform int  u_DirectionalLightSize;
 uniform vec3 u_CameraPosition;
+uniform int  u_HasCubeMap;
+uniform float u_NumberOfMipMaps;
+uniform samplerCube u_CubeMap;
 
 void main()
 {
@@ -250,5 +253,14 @@ void main()
 		Color += Shade(info);
 	}
 
+	if(u_HasCubeMap == 1)
+	{
+		vec3 coordinate = reflect(o_WorldPosition - u_CameraPosition, o_Normal);
+		vec4 CubeContribution = textureLod(u_CubeMap, normalize(coordinate), (u_NumberOfMipMaps - 1) * materialData.Roughness);
+		Color += CubeContribution;
+	}
+	
+
     OutColor = Color;
+	OutColor.a = 1.0;
 }

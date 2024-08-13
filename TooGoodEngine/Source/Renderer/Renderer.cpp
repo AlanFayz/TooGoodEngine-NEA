@@ -195,6 +195,7 @@ namespace TooGoodEngine {
 		TGE_VERIFY(m_Data.IsDrawing, "haven't drawn anything");
 		m_Data.IsDrawing = false;
 
+
 		m_Data.FinalImageFramebuffer.Bind();
 
 		OpenGL::Command::SetViewport(m_Settings.ViewportWidth, m_Settings.ViewportHeight);
@@ -221,13 +222,26 @@ namespace TooGoodEngine {
 		PerFrameData data{};
 		data.ViewProjection = m_Data.CurrentCamera->GetProjection() * m_Data.CurrentCamera->GetView();
 
+		m_Data.GeometryShaderProgram.SetUniform("u_ViewProjection", data.ViewProjection);
+		m_Data.GeometryShaderProgram.SetUniform("u_PointLightSize", (int)m_Data.PointLights.Size);
+		m_Data.GeometryShaderProgram.SetUniform("u_DirectionalLightSize", (int)m_Data.DirectionalLights.Size);
+		m_Data.GeometryShaderProgram.SetUniform("u_CameraPosition", m_Data.CurrentCamera->GetCameraPosition());
+		m_Data.GeometryShaderProgram.SetUniform("u_NumberOfMipMaps", (float)g_NumberOfMipMaps);
+		
+		if (m_Data.CurrentEnviormentMap)
+		{
+			m_Data.GeometryShaderProgram.SetUniform("u_HasCubeMap", 1);
+			m_Data.GeometryShaderProgram.SetUniform("u_CubeMap", 0);
+			m_Data.CurrentEnviormentMap->GetTexture().Bind(0);
+		}
+		else
+		{
+			m_Data.GeometryShaderProgram.SetUniform("u_HasCubeMap", 0);
+		}
+		
+
 		for (auto& instanceBuffer : m_Data.GeometryList)
 		{
-			m_Data.GeometryShaderProgram.SetUniform("u_ViewProjection",   data.ViewProjection);
-			m_Data.GeometryShaderProgram.SetUniform("u_PointLightSize",   (int)m_Data.PointLights.Size);
-			m_Data.GeometryShaderProgram.SetUniform("u_DirectionalLightSize", (int)m_Data.DirectionalLights.Size);
-			m_Data.GeometryShaderProgram.SetUniform("u_CameraPosition", m_Data.CurrentCamera->GetCameraPosition());
-
 			instanceBuffer.BeginBatch(0);
 			m_Data.Materials.Buffer.BindBase(1, OpenGL::BufferTypeShaderStorage);
 			m_Data.PointLights.Buffers[m_Data.PointLights.BufferIndex].BindBase(2, OpenGL::BufferTypeShaderStorage);
@@ -260,8 +274,8 @@ namespace TooGoodEngine {
 
 			m_Data.SkyBoxShaderProgram.SetUniform("u_ViewProjection", viewProjection);
 			m_Data.SkyBoxShaderProgram.SetUniform("u_EnviormentMap", 0);
-			
-			//draw our cube
+			m_Data.SkyBoxShaderProgram.SetUniform("u_LevelOfDetail", m_Settings.LevelOfDetail);
+
 			Draw(m_Data.CubeGeometryIndex, glm::identity<glm::mat4>());
 
 			m_Data.GeometryList[m_Data.CubeGeometryIndex].BeginBatch(0); 
@@ -470,15 +484,15 @@ namespace TooGoodEngine {
 			cube.Vertices = {
 				// Front face
 				{ glm::vec3(-0.5f, -0.5f,  0.5f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec2(0.0f, 0.0f) },
-				{ glm::vec3(0.5f, -0.5f,  0.5f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec2(1.0f, 0.0f) },
+				{ glm::vec3(0.5f, -0.5f,  0.5f), glm::vec3(0.0f, 0.0f,  1.0f), glm::vec2(1.0f, 0.0f) },
 				{ glm::vec3(-0.5f,  0.5f,  0.5f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec2(0.0f, 1.0f) },
-				{ glm::vec3(0.5f,  0.5f,  0.5f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec2(1.0f, 1.0f) },
+				{ glm::vec3(0.5f,  0.5f,  0.5f), glm::vec3(0.0f, 0.0f,  1.0f), glm::vec2(1.0f, 1.0f) },
 
 				// Back face
 				{ glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec2(0.0f, 0.0f) },
-				{ glm::vec3(0.5f, -0.5f, -0.5f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec2(1.0f, 0.0f) },
+				{ glm::vec3(0.5f, -0.5f, -0.5f), glm::vec3(0.0f, 0.0f,  -1.0f), glm::vec2(1.0f, 0.0f) },
 				{ glm::vec3(-0.5f,  0.5f, -0.5f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec2(0.0f, 1.0f) },
-				{ glm::vec3(0.5f,  0.5f, -0.5f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec2(1.0f, 1.0f) },
+				{ glm::vec3(0.5f,  0.5f, -0.5f), glm::vec3(0.0f, 0.0f,  -1.0f), glm::vec2(1.0f, 1.0f) },
 
 				// Left face
 				{ glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec2(0.0f, 0.0f) },

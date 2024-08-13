@@ -30,7 +30,7 @@ namespace TooGoodEngine {
 
 		enum class TextureParamaterOption
 		{
-			None = 0, Nearest, Linear, ClampToBorder, ClampToEdge
+			None = 0, Nearest, Linear,MipMapLinear, ClampToBorder, ClampToEdge
 		};
 
 		struct Texture2DInfo
@@ -65,6 +65,7 @@ namespace TooGoodEngine {
 			void MakeResident();
 			void MakeNonResident();
 
+			void GenerateMipmaps() const;
 			void Bind(uint32_t textureUnit) const;
 			void BindImage(uint32_t textureUnit, 
 						   uint32_t level, 

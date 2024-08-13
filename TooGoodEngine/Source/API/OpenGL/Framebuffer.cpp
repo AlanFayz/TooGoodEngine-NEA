@@ -72,14 +72,11 @@ namespace TooGoodEngine {
 					   info.SourceWidth > 0 &&
 					   info.SourceHeight > 0, "all dimensions have to be bigger than 0");
 
-			glNamedFramebufferReadBuffer(info.Source->GetHandle(), GL_COLOR_ATTACHMENT0 + (GLenum)info.SourceIndex);
-			glNamedFramebufferDrawBuffer(info.Destination->GetHandle(), GL_COLOR_ATTACHMENT0 + (GLenum)info.DestinationIndex);
-
 			glNamedFramebufferTextureLayer(info.Source->GetHandle(), GL_COLOR_ATTACHMENT0 + (GLenum)info.SourceIndex,
-				info.SourceTexture->GetHandle(), 0, info.SourceLayer);
+				info.SourceTexture->GetHandle(), (GLint)info.SourceMipLevel, (GLint)info.SourceLayer);
 
 			glNamedFramebufferTextureLayer(info.Destination->GetHandle(), GL_COLOR_ATTACHMENT0 + (GLenum)info.DestinationIndex,
-				info.DestinationTexture->GetHandle(), 0, info.DestinationLayer);
+				info.DestinationTexture->GetHandle(), (GLint)info.DestinationMipLevel, (GLint)info.DestinationLayer);
 			
 			glBlitNamedFramebuffer(
 				(GLuint)info.Source->GetHandle(), (GLuint)info.Destination->GetHandle(),

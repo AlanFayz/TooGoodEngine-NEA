@@ -7,6 +7,10 @@
 
 namespace TooGoodEngine {
 
+	inline constexpr uint32_t g_NumberOfMipMaps = 7;
+	inline constexpr uint32_t g_EnviormentMapWidth = 1024;
+	inline constexpr uint32_t g_EnviormentMapHeight = 1024;
+
 	class EnviormentMap : public Asset
 	{
 	public:
@@ -14,7 +18,6 @@ namespace TooGoodEngine {
 		~EnviormentMap() = default;
 
 		inline OpenGL::Texture2D& GetTexture() { return m_Texture; }
-		inline OpenGL::Texture2D& GetIrradianceMap() { return m_IrradianceMap; }
 
 		virtual const AssetType GetAssetType() const { return AssetType::EnviormentMap; }
 		static  const AssetType GetStaticAssetType() { return AssetType::EnviormentMap; }
@@ -27,7 +30,6 @@ namespace TooGoodEngine {
 
 	private:
 		OpenGL::Texture2D m_Texture;
-		OpenGL::Texture2D m_IrradianceMap;
 	};
 
 }

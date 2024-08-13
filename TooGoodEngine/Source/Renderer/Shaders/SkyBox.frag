@@ -6,7 +6,9 @@ in vec3 o_TextureCoordinate;
 
 uniform samplerCube u_EnviormentMap;
 
+uniform float u_LevelOfDetail;
+
 void main()
 {
-	OutColor = texture(u_EnviormentMap, o_TextureCoordinate);
+	OutColor = textureLod(u_EnviormentMap, o_TextureCoordinate, u_LevelOfDetail);
 }

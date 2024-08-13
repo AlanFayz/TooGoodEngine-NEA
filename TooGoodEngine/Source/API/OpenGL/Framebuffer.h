@@ -43,6 +43,7 @@ namespace TooGoodEngine {
 				uint32_t DestinationWidth, DestinationHeight;
 				uint32_t SourceIndex, DestinationIndex;
 				uint32_t SourceLayer, DestinationLayer;
+				uint32_t SourceMipLevel, DestinationMipLevel;
 			};
 
 			static void BlitColorAttachment(const BlitInfo& info); 

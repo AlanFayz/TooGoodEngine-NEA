@@ -44,7 +44,7 @@ namespace TooGoodEngine {
 		std::filesystem::path RuntimeShaderDirectory = ""; 
 		
 		DepthTestOption DepthTesting    = DepthTestOption::Less;
-		CullingOption Culling           = CullingOption::Back;
+		CullingOption Culling           = CullingOption::None;
 		WindingOrderOption WindingOrder = WindingOrderOption::CounterClockWise;
 		
 		//Note, if either is none then there will be no blending
@@ -55,6 +55,7 @@ namespace TooGoodEngine {
 		Ref<EnviormentMap> CurrentEnviormentMap = nullptr;
 
 		float Gradient = 1.0f;
+		float LevelOfDetail = 2.0f;
 	};
 
 	struct RenderData

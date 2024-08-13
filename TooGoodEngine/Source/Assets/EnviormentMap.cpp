@@ -102,6 +102,8 @@ namespace TooGoodEngine {
 			info.Paramaters[OpenGL::TextureParamater::MinFilter] = OpenGL::TextureParamaterOption::Linear;
 			info.Paramaters[OpenGL::TextureParamater::MagFilter] = OpenGL::TextureParamaterOption::Linear;
 
+
+
 			hdrTexture = CreateRef<OpenGL::Texture2D>(info);
 		}
 
@@ -113,21 +115,17 @@ namespace TooGoodEngine {
 			OpenGL::Texture2DInfo info{};
 			info.Type = OpenGL::Texture2DType::CubeMap;
 			info.Format = OpenGL::Texture2DFormat::RGBA32F;
-			info.Width = 1024; //May make variable in the future.
-			info.Height = 1024;
+			info.Width = g_EnviormentMapWidth; //May make variable in the future.
+			info.Height = g_EnviormentMapHeight;
+			info.MipMapLevels = g_NumberOfMipMaps;
 
 			info.Paramaters[OpenGL::TextureParamater::WrapModeS] = OpenGL::TextureParamaterOption::ClampToEdge;
 			info.Paramaters[OpenGL::TextureParamater::WrapModeT] = OpenGL::TextureParamaterOption::ClampToEdge;
 			info.Paramaters[OpenGL::TextureParamater::WrapModeR] = OpenGL::TextureParamaterOption::ClampToEdge;
-			info.Paramaters[OpenGL::TextureParamater::MinFilter] = OpenGL::TextureParamaterOption::Linear;
+			info.Paramaters[OpenGL::TextureParamater::MinFilter] = OpenGL::TextureParamaterOption::MipMapLinear;
 			info.Paramaters[OpenGL::TextureParamater::MagFilter] = OpenGL::TextureParamaterOption::Linear;
 
 			enviormentMap->m_Texture = OpenGL::Texture2D(info);
-
-			info.Width = 32;
-			info.Height = 32;
-
-			enviormentMap->m_IrradianceMap = OpenGL::Texture2D(info);
 		}
 
 		glm::mat4 projection = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 100.0f);
@@ -146,12 +144,7 @@ namespace TooGoodEngine {
 		info.DepthAttachment = nullptr;
 		OpenGL::Framebuffer framebuffer(info);
 
-		OpenGL::FramebufferInfo info2;
-		info2.ColorAttachments.push_back(&enviormentMap->m_IrradianceMap);
-
-		OpenGL::Framebuffer framebuffer2(info2);
-
-		OpenGL::Command::SetViewport(1024, 1024);
+		OpenGL::Command::SetViewport(g_EnviormentMapWidth, g_EnviormentMapHeight);
 
 		framebuffer.Bind();
 
@@ -160,14 +153,13 @@ namespace TooGoodEngine {
 
 		for (uint32_t i = 0; i < 6; i++)
 		{
-			//TODO: add this to framebuffer API
-			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
-				GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, enviormentMap->m_Texture.GetHandle(), 0);
+			//TODO: add as a part of the framebuffer api
+			glNamedFramebufferTextureLayer(framebuffer.GetHandle(), GL_COLOR_ATTACHMENT0, enviormentMap->m_Texture.GetHandle(), 0, i);
 
 			s_EnviormentProgram->Use();
 
 			hdrTexture->Bind(0);
-			s_EnviormentProgram->SetUniform("u_ViewProjection", projection * viewMatrices[i]);
+			s_EnviormentProgram->SetUniform("u_ViewProjection", projection* viewMatrices[i]);
 			s_EnviormentProgram->SetUniform("EquirectangularMap", 0);
 
 			_RenderCube(s_EnviormentProgram.get());
@@ -175,25 +167,8 @@ namespace TooGoodEngine {
 
 		framebuffer.Unbind();
 		
-		OpenGL::Framebuffer::BlitInfo blitInfo{};
-		blitInfo.Source = &framebuffer;
-		blitInfo.Destination = &framebuffer2;
-		blitInfo.SourceTexture = &enviormentMap->m_Texture;
-		blitInfo.DestinationTexture = &enviormentMap->m_IrradianceMap;
-		blitInfo.SourceWidth = 1024;
-		blitInfo.SourceHeight = 1024;
-		blitInfo.DestinationWidth = 32;
-		blitInfo.DestinationHeight = 32;
-		blitInfo.SourceIndex = 0;
-		blitInfo.DestinationIndex = 0;
 
-		for (uint32_t i = 0; i < 6; i++)
-		{
-			blitInfo.SourceLayer = i;
-			blitInfo.DestinationLayer = i;
-
-			OpenGL::Framebuffer::BlitColorAttachment(blitInfo);
-		}
+		enviormentMap->m_Texture.GenerateMipmaps();
 
 		return enviormentMap; 
 	}

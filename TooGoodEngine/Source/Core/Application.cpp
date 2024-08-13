@@ -70,6 +70,8 @@ namespace TooGoodEngine {
 	}
 	void Application::_UpdateImGui(double delta)
 	{
+		OpenGL::Command::ClearColor({0.0f, 0.0f, 0.0f, 1.0f});
+
 		ImGuiIO& io = ImGui::GetIO();
 
 		ImGui_ImplOpenGL3_NewFrame();

@@ -97,7 +97,7 @@ namespace GoodEditor {
 
 	void ScenePanel::_DrawSettings(const Ref<Scene>& scene)
 	{
-		auto renderSettings = scene->GetSceneRenderer()->GetSettings();
+		RenderSettings renderSettings = scene->GetSceneRenderer()->GetSettings();
 
 		bool changed = false;
 
@@ -176,6 +176,10 @@ namespace GoodEditor {
 		if (ImGui::DragFloat("Gradient", &renderSettings.Gradient, 0.01f, 0.0f, FLT_MAX / 2.0f))
 			changed = true;
 
+		ImGui::SeparatorText("Enviorment map");
+
+		if (ImGui::DragFloat("Level of detail", &renderSettings.LevelOfDetail, 0.01f, 0.0f, (float)g_NumberOfMipMaps - 1.0f))
+			changed = true;
 
 		if (changed)
 			scene->GetSceneRenderer()->ChangeSettings(renderSettings);

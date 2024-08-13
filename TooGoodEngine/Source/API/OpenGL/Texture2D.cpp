@@ -53,7 +53,6 @@ namespace TooGoodEngine {
 				}
 			}
 
-			glGenerateMipmap(GetTarget(info.Type));
 			m_TextureAddress = glGetTextureHandleARB(m_TextureHandle);
 		}
 
@@ -122,6 +121,10 @@ namespace TooGoodEngine {
 				glMakeTextureHandleNonResidentARB(m_TextureAddress);
 
 			m_Resident = false;
+		}
+		void Texture2D::GenerateMipmaps() const
+		{
+			glGenerateTextureMipmap(m_TextureHandle);
 		}
 		void Texture2D::Bind(uint32_t textureUnit) const
 		{
@@ -223,6 +226,7 @@ namespace TooGoodEngine {
 			{
 				case TextureParamaterOption::Nearest:		return GL_NEAREST;
 				case TextureParamaterOption::Linear:		return GL_LINEAR;
+				case TextureParamaterOption::MipMapLinear:	return GL_LINEAR_MIPMAP_LINEAR;
 				case TextureParamaterOption::ClampToBorder: return GL_CLAMP_TO_BORDER;
 				case TextureParamaterOption::ClampToEdge:   return GL_CLAMP_TO_EDGE;
 				case TextureParamaterOption::None:
