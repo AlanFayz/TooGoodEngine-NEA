@@ -93,7 +93,7 @@ namespace TooGoodEngine {
 					else
 					{
 						MaterialComponent& material = m_Registry.GetComponent<MaterialComponent>(entityID);
-						m_SceneRenderer->Draw(component.ID, transform.GetTransform(), material.ID);
+						m_SceneRenderer->Draw(component.ID, transform.GetTransform(), (uint32_t)material.ID);
 					}
 				});
 			

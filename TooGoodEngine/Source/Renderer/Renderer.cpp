@@ -134,7 +134,7 @@ namespace TooGoodEngine {
 		TGE_VERIFY(materialIndex < m_Data.Materials.Size, "index out of range");
 
 		Instance info{};
-		info.MaterialIndex = materialIndex == 0 ? m_Data.GeometryList[id].GetDefaultMaterialIndex() : materialIndex;
+		info.MaterialIndex = materialIndex == 0 ? (uint32_t)m_Data.GeometryList[id].GetDefaultMaterialIndex() : materialIndex;
 		info.Transform = transform;
 
 		m_Data.GeometryList[id].Push(info);
@@ -145,7 +145,7 @@ namespace TooGoodEngine {
 		for (size_t i = 0; i < info.Size; i++)
 		{
 			if (info.CustomMaterials.size() > i)
-				Draw(info.ID + i, transform, info.CustomMaterials[i]);
+				Draw(info.ID + i, transform, (uint32_t)info.CustomMaterials[i]);
 			else
 				Draw(info.ID + i, transform);
 		}

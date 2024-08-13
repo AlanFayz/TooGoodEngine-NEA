@@ -86,7 +86,7 @@ namespace TooGoodEngine {
 			material->Get(AI_MATKEY_COLOR_DIFFUSE, info.Emission);
 
 		info.EmissionTexture = _LoadImageFromAiMaterial(material, aiTextureType_EMISSION_COLOR, 0);
-		info.EmissionFactor = material->Get(AI_MATKEY_EMISSIVE_INTENSITY, info.EmissionFactor);
+		material->Get(AI_MATKEY_EMISSIVE_INTENSITY, info.EmissionFactor);
 
 		if (!info.EmissionTexture)
 			material->Get(AI_MATKEY_COLOR_EMISSIVE, info.Emission);

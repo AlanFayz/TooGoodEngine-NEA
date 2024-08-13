@@ -26,7 +26,7 @@ namespace GoodEditor {
 
             if (m_CurrentDirectory != g_SelectedProject->GetAssetDirectory())
             {
-                if (ImGui::ImageButton((void*)extensionMap["back"]->GetTexture().GetHandle(), ImVec2(buttonWidth, buttonHeight), ImVec2(0, 1), ImVec2(1, 0)))
+                if (ImGui::ImageButton((ImTextureID)(intptr_t)extensionMap["back"]->GetTexture().GetHandle(), ImVec2(buttonWidth, buttonHeight), ImVec2(0, 1), ImVec2(1, 0)))
                 {
                     m_CurrentDirectory = m_CurrentDirectory.parent_path();
                 }
@@ -55,7 +55,7 @@ namespace GoodEditor {
                 if (entry.is_directory())
                 {
                     ImGui::BeginGroup();
-                    bool pressed = ImGui::ImageButton((void*)extensionMap["folder"]->GetTexture().GetHandle(),
+                    bool pressed = ImGui::ImageButton((ImTextureID)(intptr_t)extensionMap["folder"]->GetTexture().GetHandle(),
                         ImVec2(buttonWidth, buttonHeight), ImVec2(0, 1), ImVec2(1, 0));
 
                     ImGui::Text(filename.c_str());
@@ -84,7 +84,7 @@ namespace GoodEditor {
 
                     ImGui::BeginGroup();
 
-                    ImGui::ImageButton((void*)extensionMap[path.extension()]->GetTexture().GetHandle(),
+                    ImGui::ImageButton((ImTextureID)(intptr_t)extensionMap[path.extension()]->GetTexture().GetHandle(),
                         ImVec2(buttonWidth, buttonHeight), ImVec2(0, 1), ImVec2(1, 0));
 
                     if (!m_CachedDirectories.contains(path))

@@ -17,7 +17,7 @@ namespace TooGoodEngine {
 		std::vector<float> scale = jsonComponent["Scale"].get<std::vector<float>>();
 		std::vector<float> rotation = jsonComponent["Rotation"].get<std::vector<float>>();
 
-		size_t i = 0;
+		int i = 0;
 		for (; i < position.size(); i++)
 		{
 			if (i >= 3) //too many
