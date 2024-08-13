@@ -67,9 +67,11 @@ namespace GoodEditor {
 		{
 			ViewportResizeEvent event((uint32_t)ImGui::GetWindowSize().x, (uint32_t)ImGui::GetWindowSize().y);
 			OnEvent(&event);
+
+			m_PreviousWindowSize = ImGui::GetWindowSize();
 		}
 		
-		Ref<OpenGL::Texture2D> image = currentSceneRenderer->GetImage();
+		auto& image = currentSceneRenderer->GetImage();
 
 		_RenderViewport(image);
 

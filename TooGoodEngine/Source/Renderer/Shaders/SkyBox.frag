@@ -8,5 +8,5 @@ uniform samplerCube u_EnviormentMap;
 
 void main()
 {
-	OutColor = texture(u_EnviormentMap, normalize(o_TextureCoordinate));
+	OutColor = texture(u_EnviormentMap, o_TextureCoordinate);
 }

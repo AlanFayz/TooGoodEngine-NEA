@@ -195,9 +195,6 @@ namespace TooGoodEngine {
 		TGE_VERIFY(m_Data.IsDrawing, "haven't drawn anything");
 		m_Data.IsDrawing = false;
 
-		OpenGL::Command::ClearColor(m_Settings.ClearColor);
-		OpenGL::Command::ClearDepth();
-
 		m_Data.FinalImageFramebuffer.Bind();
 
 		OpenGL::Command::SetViewport(m_Settings.ViewportWidth, m_Settings.ViewportHeight);
@@ -256,7 +253,7 @@ namespace TooGoodEngine {
 			glDisable(GL_CULL_FACE);
 
 			m_Data.SkyBoxShaderProgram.Use();
-			m_Data.CurrentEnviormentMap->GetIrradianceMap().Bind(0);
+			m_Data.CurrentEnviormentMap->GetTexture().Bind(0);
 												
 			glm::mat4 viewProjection = m_Data.CurrentCamera->GetProjection() *
 									   glm::mat4(glm::mat3(m_Data.CurrentCamera->GetView())); //(removes translation as translation is in the last column)
@@ -510,28 +507,28 @@ namespace TooGoodEngine {
 
 			cube.Indices = {
 				// Front face
-				0, 1, 2,
-				1, 3, 2,
+				0, 2, 1,
+				2, 3, 1,
 
 				// Back face
-				4, 5, 6,
-				5, 7, 6,
+				4, 6, 5,
+				6, 7, 5,
 
 				// Left face
-				8, 9, 10,
-				9, 11, 10,
+				8, 10, 9,
+				10, 11, 9,
 
 				// Right face
-				12, 13, 14,
-				13, 15, 14,
+				12, 14, 13,
+				14, 15, 13,
 
 				// Top face
-				16, 17, 18,
-				17, 19, 18,
+				16, 18, 17,
+				18, 19, 17,
 
 				// Bottom face
-				20, 21, 22,
-				21, 23, 22
+				20, 22, 21,
+				22, 23, 21
 			};
 
 			MaterialInfo info;

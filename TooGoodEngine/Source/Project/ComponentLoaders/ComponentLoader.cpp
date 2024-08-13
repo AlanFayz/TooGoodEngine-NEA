@@ -62,6 +62,13 @@ namespace TooGoodEngine {
 			component.PathToSource = "##Quad";
 			return component;
 		}
+		else if (jsonComponent.get<std::string>() == "##Cube")
+		{
+			component.ID = 1;
+			component.PathToSource = "##Cube";
+
+			return component;
+		}
 
 		component.PathToSource = "";
 		//TODO: load the source if there is one

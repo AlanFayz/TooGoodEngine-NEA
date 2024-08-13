@@ -1,7 +1,7 @@
 {
   "Project Name": "Sandbox",
   "Project Directory": "D:\\Dev\\TooGoodEngine-NEA\\GoodEditor",
-  "Last Build Date": "2024-08-12 11:21:26",
+  "Last Build Date": "2024-08-13 20:00:43",
   "Scenes": {
     "Scene 1": {
       "Entities": {
@@ -55,7 +55,7 @@
             "Emission Factor": 0.0,
             "Roughness": 0.0
           },
-          "PointLight": {
+          "Point Light": {
             "Color": [
               0.900355875492096,
               0.0,
@@ -68,7 +68,7 @@
               5.900000095367432
             ],
             "Radius": 112.9000015258789,
-            "Intensity": 146.6999969482422
+            "Intensity": 2.700000047683716
           }
         },
         "Entity 2": {
@@ -125,9 +125,18 @@
             "Roughness": 1.0
           },
           "Directional Light": {
-            "Color": [ 0.0, 0.0, 1.0, 1.0 ],
-            "Direction": [ 0.0, 0.0, 1.0 ],
-            "Intensity": 10.0
+            "Color": [
+              0.0,
+              2.384185791015625e-07,
+              1.0,
+              1.0
+            ],
+            "Direction": [
+              1.0,
+              0.9900000095367432,
+              -0.4300000071525574
+            ],
+            "Intensity": 32.0
           }
         }
       }
