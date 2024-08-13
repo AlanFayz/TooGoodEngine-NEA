@@ -1,7 +1,17 @@
 {
   "Project Name": "Sandbox",
   "Project Directory": "D:\\Dev\\TooGoodEngine-NEA\\GoodEditor",
-  "Last Build Date": "2024-08-13 20:00:43",
+  "Last Build Date": "2024-08-13 23:46:58",
+  "Assets": {
+    "5513717721719842451": {
+      "Type": "Image",
+      "Path": "D:\\Dev\\TooGoodEngine-NEA\\GoodEditor\\Assets\\Untitled.png"
+    },
+    "7388665359102454518": {
+      "Type": "Image",
+      "Path": "D:\\Dev\\TooGoodEngine-NEA\\GoodEditor\\Assets\\plywood_diff_1k.png"
+    }
+  },
   "Scenes": {
     "Scene 1": {
       "Entities": {
@@ -53,7 +63,7 @@
               0.8600000143051147
             ],
             "Emission Factor": 0.0,
-            "Roughness": 0.0
+            "Roughness": 1.0
           },
           "Point Light": {
             "Color": [
@@ -78,21 +88,21 @@
           "Transform": {
             "Position": [
               0.0,
-              0.0,
+              0.5,
               9.0
             ],
             "Scale": [
-              10.899999618530273,
-              9.100000381469727,
-              1.600000023841858
+              4.099999904632568,
+              3.299999952316284,
+              2.5999999046325684
             ],
             "Rotation": [
-              -18.100000381469727,
-              0.0,
-              359.6000061035156
+              -390.5,
+              143.60000610351563,
+              446.79998779296875
             ]
           },
-          "Mesh": "##Quad",
+          "Mesh": "##Cube",
           "Material": {
             "Ambient Image": "D:\\Dev\\TooGoodEngine-NEA\\GoodEditor\\Assets\\Untitled.png",
             "Ambient": [
@@ -122,7 +132,7 @@
               1.0
             ],
             "Emission Factor": 0.0,
-            "Roughness": 1.0
+            "Roughness": 0.0
           },
           "Directional Light": {
             "Color": [
@@ -134,7 +144,7 @@
             "Direction": [
               1.0,
               0.9900000095367432,
-              -0.4300000071525574
+              -0.27000001072883606
             ],
             "Intensity": 32.0
           }

@@ -24,6 +24,8 @@ namespace TooGoodEngine {
 
 		Ref<Scene> LoadScene(const json& jsonScene, const std::string& name);
 		void SaveScene(JsonWriter& writer, const Ref<Scene>& scene);
+		void SaveAssets(JsonWriter& writer);
+		void LoadAssets(JsonReader& reader);
 		void LoadAllScenes();
 
 		template<typename T>

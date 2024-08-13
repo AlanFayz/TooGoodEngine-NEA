@@ -44,7 +44,7 @@ namespace TooGoodEngine {
 		if (component.Material.Ambient.ImageComponent)
 		{
 			path.insert(path.end(), { "Material", "Ambient Image" });
-			writer.WriteGeneric(path, component.Material.Ambient.ImageComponent->GetPath().string());
+			writer.WriteGeneric(path, (uint64_t)component.Material.Ambient.ImageComponent->GetAssetID());
 		}
 		 
 		{
@@ -63,7 +63,7 @@ namespace TooGoodEngine {
 		if (component.Material.Albedo.ImageComponent)
 		{
 			path.insert(path.end(), { "Material", "Albedo Image" });
-			writer.WriteGeneric(path, component.Material.Albedo.ImageComponent->GetPath().string());
+			writer.WriteGeneric(path, (uint64_t)component.Material.Albedo.ImageComponent->GetAssetID());
 		}
 		
 		{
@@ -87,7 +87,7 @@ namespace TooGoodEngine {
 		if (component.Material.Metallic.ImageComponent)
 		{
 			path.insert(path.end(), { "Material", "Metallic Image" });
-			writer.WriteGeneric(path, component.Material.Metallic.ImageComponent->GetPath().string());
+			writer.WriteGeneric(path, (uint64_t)component.Material.Metallic.ImageComponent->GetAssetID());
 		}
 
 		{
@@ -112,7 +112,7 @@ namespace TooGoodEngine {
 		if (component.Material.Emission.ImageComponent)
 		{
 			path.insert(path.end(), { "Material", "Emission Image" });
-			writer.WriteGeneric(path, component.Material.Emission.ImageComponent->GetPath().string());
+			writer.WriteGeneric(path, (uint64_t)component.Material.Emission.ImageComponent->GetAssetID());
 		}
 
 		{
@@ -136,7 +136,7 @@ namespace TooGoodEngine {
 		if (component.Material.Roughness.ImageComponent)
 		{
 			path.insert(path.end(), { "Material", "Roughness Image" });
-			writer.WriteGeneric(path, component.Material.Roughness.ImageComponent->GetPath().string());
+			writer.WriteGeneric(path, (uint64_t)component.Material.Roughness.ImageComponent->GetAssetID());
 		}
 		
 		{

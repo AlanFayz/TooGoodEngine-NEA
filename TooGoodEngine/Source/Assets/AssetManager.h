@@ -50,23 +50,28 @@ namespace TooGoodEngine {
 		}
 
 		template<typename T>
-		Ref<T> FetchAndLoadAssetWithID(const std::filesystem::path& path, UUID id, bool isBinary)
+		Ref<T> FetchAndLoadAssetWithID(const std::filesystem::path& path, UUID id)
 		{
 			static_assert(std::is_base_of_v<Asset, T>, "not a valid asset");
-			TGE_VERIFY(!m_AssetCache.contains(path), "asset has already been loaded");
 
-			Ref<T> asset = Asset::LoadAssetFromFile(path, isBinary);
+			std::filesystem::path absolute = std::filesystem::absolute(path);
+
+			if (m_AssetCache.contains(absolute))
+				return FetchAssetAssuredType<T>(m_AssetCache[absolute]);
+
+			T type;
+			Ref<Asset> asset = Asset::LoadAssetFromFile(type.GetAssetType(), path);
 
 			if (!asset)
 			{
 				TGE_LOG_WARNING("Failed to load asset of type ", typeid(T).name(), " path ", path);
-				return asset;
+				return dynamic_pointer_cast<T>(asset);
 			}
 
 			asset->SetID(id);
-			m_AssetCache[std::filesystem::absolute(path)] = id;
+			m_AssetCache[absolute] = id;
 			m_AssetBank[id] = asset;
-			return asset;
+			return dynamic_pointer_cast<T>(asset);
 		}
 
 		Ref<Asset> FetchAsset(const std::filesystem::path& path);

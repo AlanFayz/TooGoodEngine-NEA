@@ -1,7 +1,7 @@
 {
     "Project Name": "Sandbox",
     "Project Directory": "D:\\Dev\\TooGoodEngine-NEA\\GoodEditor",
-    "Last Build Date": "2024-08-13 23:16:35",
+    "Last Build Date": "2024-08-13 23:59:05",
     "Scenes": {
         "Scene 1": {
             "Entities": {
@@ -25,7 +25,7 @@
                     },
                     "Mesh": "##Quad",
                     "Material": {
-                        "Ambient Image": "D:\\Dev\\TooGoodEngine-NEA\\GoodEditor\\Assets\\plywood_diff_1k.png",
+                        "Ambient Image": 7388665359102454518,
                         "Ambient": [
                             0.9679715037345886,
                             0.9679715037345886,
@@ -94,7 +94,7 @@
                     },
                     "Mesh": "##Cube",
                     "Material": {
-                        "Ambient Image": "D:\\Dev\\TooGoodEngine-NEA\\GoodEditor\\Assets\\Untitled.png",
+                        "Ambient Image": 2944804839229490741,
                         "Ambient": [
                             0.0,
                             0.8067274689674377,
@@ -140,6 +140,16 @@
                     }
                 }
             }
+        }
+    },
+    "Assets": {
+        "2944804839229490741": {
+            "Type": "Image",
+            "Path": "D:\\Dev\\TooGoodEngine-NEA\\GoodEditor\\Assets\\Untitled.png"
+        },
+        "7388665359102454518": {
+            "Type": "Image",
+            "Path": "D:\\Dev\\TooGoodEngine-NEA\\GoodEditor\\Assets\\plywood_diff_1k.png"
         }
     }
 }

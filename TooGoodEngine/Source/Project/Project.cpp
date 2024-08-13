@@ -12,6 +12,8 @@ namespace TooGoodEngine {
 
 		m_ProjectDirectory = std::filesystem::path(reader.Fetch<std::string>({ "Project Directory" }));
 		m_ProjectName	   = reader.Fetch<std::string>({ "Project Name" });
+
+		LoadAssets(reader);
 	}
 
 	Project::Project(const std::string& name, const std::filesystem::path& pathOfDirectory)
@@ -46,6 +48,8 @@ namespace TooGoodEngine {
 
 		for (const auto& scene: m_LoadedScenes)
 			SaveScene(writer, scene);
+
+		SaveAssets(writer);
 	}
 
 	Ref<Scene> Project::LoadScene(const json& jsonScene, const std::string& name)
@@ -179,6 +183,45 @@ namespace TooGoodEngine {
 				ComponentWriter::WriteDirectionalLight(writer, pathToEntity, component);
 			}
 		}
+	}
+
+	void Project::SaveAssets(JsonWriter& writer)
+	{
+		const auto& bank = m_AssetManager.GetBank();
+
+		for (const auto& [assetUUID, asset] : bank)
+		{
+			std::string handle    = std::to_string((uint64_t)assetUUID);
+			std::string_view type = GetAssetTypeString(asset->GetAssetType());
+
+			writer.WriteGeneric({ "Assets", handle, "Type" }, type);
+			writer.WriteGeneric({ "Assets", handle, "Path" }, asset->GetPath());
+		}
+	}
+
+	void Project::LoadAssets(JsonReader& reader)
+	{
+		json assets = reader.Fetch<json>({ "Assets" });
+
+		for (auto it = assets.begin(); it != assets.end(); it++)
+		{
+			auto& asset = *it;
+
+			UUID id = std::stoull(it.key());
+
+			AssetType type = GetAssetTypeFromString(asset["Type"].get<std::string>());
+			std::filesystem::path path = asset["Path"].get<std::filesystem::path>();
+
+			switch (type)
+			{
+				case AssetType::Image:			m_AssetManager.FetchAndLoadAssetWithID<Image>(path, id);		 break;
+				case AssetType::Model:			m_AssetManager.FetchAndLoadAssetWithID<Model>(path, id);		 break;
+				case AssetType::EnviormentMap:  m_AssetManager.FetchAndLoadAssetWithID<EnviormentMap>(path, id); break;
+				case AssetType::None:
+				default:
+					break;
+			}
+		}	
 	}
 
 	void Project::LoadAllScenes()

@@ -84,8 +84,8 @@ namespace TooGoodEngine {
 		// ---- Ambient ----
 		if (jsonComponent.contains("Ambient Image"))
 		{
-			std::filesystem::path path = jsonComponent["Ambient Image"].get<std::filesystem::path>();
-			info.AmbientTexture = g_SelectedProject->GetAssetManager().LoadAssetIntoBank<Image>(path);
+			UUID handle = jsonComponent["Ambient Image"].get<uint64_t>();
+			info.AmbientTexture = g_SelectedProject->GetAssetManager().FetchAssetAssuredType<Image>(handle);
 		}
 		
 		{
@@ -97,8 +97,8 @@ namespace TooGoodEngine {
 		// ---- Albedo ---- 
 		if (jsonComponent.contains("Albedo Image"))
 		{
-			std::filesystem::path path = jsonComponent["Albedo Image"].get<std::filesystem::path>();
-			info.AlbedoTexture = g_SelectedProject->GetAssetManager().LoadAssetIntoBank<Image>(path);
+			UUID handle = jsonComponent["Albedo Image"].get<uint64_t>();
+			info.AlbedoTexture = g_SelectedProject->GetAssetManager().FetchAssetAssuredType<Image>(handle);
 		}
 
 		{
@@ -112,8 +112,8 @@ namespace TooGoodEngine {
 		// ---- Metallic ----
 		if (jsonComponent.contains("Metallic Image"))
 		{
-			std::filesystem::path path = jsonComponent["Metallic Image"].get<std::filesystem::path>();
-			info.MetallicTexture = g_SelectedProject->GetAssetManager().LoadAssetIntoBank<Image>(path);
+			UUID handle = jsonComponent["Metallic Image"].get<uint64_t>();
+			info.MetallicTexture = g_SelectedProject->GetAssetManager().FetchAssetAssuredType<Image>(handle);
 		}
 
 		{
@@ -127,8 +127,8 @@ namespace TooGoodEngine {
 		// ---- Emission ----
 		if (jsonComponent.contains("Emission Image"))
 		{
-			std::filesystem::path path = jsonComponent["Emission Image"].get<std::filesystem::path>();
-			info.EmissionTexture = g_SelectedProject->GetAssetManager().LoadAssetIntoBank<Image>(path);
+			UUID handle = jsonComponent["Emission Image"].get<uint64_t>();
+			info.EmissionTexture = g_SelectedProject->GetAssetManager().FetchAssetAssuredType<Image>(handle);
 		}
 
 		{
@@ -142,8 +142,8 @@ namespace TooGoodEngine {
 		// ---- Roughness ----
 		if (jsonComponent.contains("Roughness Image"))
 		{
-			std::filesystem::path path = jsonComponent["Roughness Image"].get<std::filesystem::path>();
-			info.RoughnessTexture = g_SelectedProject->GetAssetManager().LoadAssetIntoBank<Image>(path);
+			UUID handle = jsonComponent["Roughness Image"].get<uint64_t>();
+			info.RoughnessTexture = g_SelectedProject->GetAssetManager().FetchAssetAssuredType<Image>(handle);
 		}
 
 		{

@@ -15,6 +15,7 @@ namespace TooGoodEngine {
 	};
 
 	std::string_view GetAssetTypeString(AssetType type);
+	AssetType GetAssetTypeFromString(const std::string& strType);
 
 	class Asset
 	{

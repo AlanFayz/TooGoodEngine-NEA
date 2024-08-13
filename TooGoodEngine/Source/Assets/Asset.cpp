@@ -48,13 +48,23 @@ namespace TooGoodEngine {
 	{
 		switch (type)
 		{
-			case AssetType::None:	return "None";
-			case AssetType::Image:	return "Image";
-			case AssetType::Model:	return "Model";
+			case AssetType::None:		   return "None";
+			case AssetType::Image:		   return "Image";
+			case AssetType::Model:		   return "Model";
 			case AssetType::EnviormentMap: return "EnviormentMap";
-			default:								return "None (INVALID)";
+			default:					   return "None";
 				break;
 		}
+	}
+
+	AssetType GetAssetTypeFromString(const std::string& strType)
+	{
+		if (strType == "None")			return AssetType::None;
+		if (strType == "Image")			return AssetType::Image;
+		if (strType == "Model")			return AssetType::Model;
+		if (strType == "EnviormentMap")	return AssetType::EnviormentMap;
+
+		return AssetType::None;
 	}
 
 }
