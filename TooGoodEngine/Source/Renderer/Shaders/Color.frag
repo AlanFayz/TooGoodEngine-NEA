@@ -207,46 +207,6 @@ vec4 Shade(in ShadeInfo info)
 }
 
 
-/*
-    Aces tone mapping designed to 
-	map colors from a high dynamic range into a 
-	low dynamic range.
-*/
-
-const mat3 AcesInputMatrix = mat3(
-    vec3(0.59719, 0.35458, 0.04823),
-    vec3(0.07600, 0.90834, 0.01566),
-    vec3(0.02840, 0.13383, 0.83777)
-);
-
-const mat3 AcesOutputMatrix = mat3(
-    vec3(1.60475, -0.53108, -0.07367),
-    vec3(-0.10208, 1.10813, -0.00605),
-    vec3(-0.00327, -0.07276, 1.07602)
-);
-
-vec3 Mul(in mat3 m, in vec3 v)
-{
-    float x = m[0][0] * v[0] + m[0][1] * v[1] + m[0][2] * v[2];
-    float y = m[1][0] * v[0] + m[1][1] * v[1] + m[1][2] * v[2];
-    float z = m[2][0] * v[0] + m[2][1] * v[1] + m[2][2] * v[2];
-    return vec3(x, y, z);
-}
-
-vec3 RttAndOdtFit(vec3 v)
-{
-    vec3 a = v * (v + 0.0245786) - 0.000090537;
-    vec3 b = v * (0.983729 * v + 0.4329510) + 0.238081;
-    return a / b;
-}
-
-vec3 AcesFitted(vec3 v)
-{
-    v = Mul(AcesInputMatrix, v);
-    v = RttAndOdtFit(v);
-    return Mul(AcesOutputMatrix, v);
-}
-
 in vec3 o_WorldPosition;
 in vec3 o_Normal;
 in vec2 o_TextureCoord;
@@ -290,8 +250,5 @@ void main()
 		Color += Shade(info);
 	}
 
-    OutColor.rgb = AcesFitted(Color.rgb);
-	OutColor.a = min(OutColor.a, 1.0);
-
-    OutColor = pow(OutColor, vec4(1.0/2.2));  
+    OutColor = Color;
 }

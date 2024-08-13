@@ -171,6 +171,12 @@ namespace GoodEditor {
 
 		renderSettings.FillingMode = (FillMode)s_RasterMode;
 
+		ImGui::SeparatorText("Tone mapping");
+
+		if (ImGui::DragFloat("Gradient", &renderSettings.Gradient, 0.01f, 0.0f, FLT_MAX / 2.0f))
+			changed = true;
+
+
 		if (changed)
 			scene->GetSceneRenderer()->ChangeSettings(renderSettings);
 	}
@@ -284,7 +290,7 @@ namespace GoodEditor {
 		if (image)
 		{
 			uint32_t handle = image->GetTexture().GetHandle();
-			if (ImGui::ImageButton((void*)handle, ImVec2(15, 15), ImVec2(0, 1), ImVec2(1, 0)))
+			if (ImGui::ImageButton((ImTextureID)(intptr_t)handle, ImVec2(15, 15), ImVec2(0, 1), ImVec2(1, 0)))
 			{
 				image = nullptr;
 				changed = true;
@@ -327,7 +333,7 @@ namespace GoodEditor {
 		if (image)
 		{
 			uint32_t handle = image->GetTexture().GetHandle();
-			if (ImGui::ImageButton((void*)handle, ImVec2(15, 15), ImVec2(0, 1), ImVec2(1, 0)))
+			if (ImGui::ImageButton((ImTextureID)(intptr_t)handle, ImVec2(15, 15), ImVec2(0, 1), ImVec2(1, 0)))
 			{
 				image = nullptr;
 				changed = true;

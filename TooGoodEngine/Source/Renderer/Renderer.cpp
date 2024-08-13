@@ -7,7 +7,7 @@ namespace TooGoodEngine {
 	Renderer::Renderer(const RenderSettings& settings)
 		: m_Settings(settings), m_Data()
 	{
-		if (settings.RuntimeShaderDirectory.empty()) //if not set then in the editor
+		if (settings.RuntimeShaderDirectory.empty()) //if not set then we are in the editor
 		{
 			m_Data.ShaderDirectory = __FILE__;
 			m_Data.ShaderDirectory = m_Data.ShaderDirectory.parent_path() / "Shaders";
@@ -18,31 +18,14 @@ namespace TooGoodEngine {
 		}
 
 		_ApplySettings();
-
-		// ---- init shaders ----
-		{
-			OpenGL::ShaderMap map
-			{ {OpenGL::ShaderType::FragmentShader, m_Data.ShaderDirectory / "Color.frag"}, 
-			  {OpenGL::ShaderType::VertexShader,   m_Data.ShaderDirectory / "Color.vert"} };
-
-			m_Data.ColorShaderProgram = OpenGL::Program(map);
-		}
-		
-		{
-			OpenGL::ShaderMap map
-			{ {OpenGL::ShaderType::FragmentShader, m_Data.ShaderDirectory / "SkyBox.frag"},
-			  {OpenGL::ShaderType::VertexShader, m_Data.ShaderDirectory / "SkyBox.vert"} };
-
-			m_Data.SkyBoxShaderProgram = OpenGL::Program(map);
-		}
-		
+		_CreatePrograms();
 		_CreateBuffers();
 		_CreateDefaultMaterialsAndMeshes();
-
-		m_Settings.CurrentEnviormentMap = EnviormentMap::LoadEnviromentMapAssetFromFile("Resources/test.hdr");
-
 		_CreateTextures();
 		_CreateFramebuffers();
+
+		//just for testing
+		m_Data.CurrentEnviormentMap = EnviormentMap::LoadEnviromentMapAssetFromFile("Resources/test.hdr");
 	}
 
 	Renderer::~Renderer()
@@ -77,7 +60,7 @@ namespace TooGoodEngine {
 	GeometryID Renderer::AddGeometry(const Geometry& data)
 	{
 		GeometryInstanceBufferInfo info{};
-		info.Program = &m_Data.ColorShaderProgram;
+		info.Program = &m_Data.GeometryShaderProgram;
 		
 		info.Indices = data.Indices.data();
 		info.IndexDataSize = data.Indices.size();
@@ -212,14 +195,18 @@ namespace TooGoodEngine {
 		TGE_VERIFY(m_Data.IsDrawing, "haven't drawn anything");
 		m_Data.IsDrawing = false;
 
+		OpenGL::Command::ClearColor(m_Settings.ClearColor);
+		OpenGL::Command::ClearDepth();
+
 		m_Data.FinalImageFramebuffer.Bind();
 
 		OpenGL::Command::SetViewport(m_Settings.ViewportWidth, m_Settings.ViewportHeight);
 		OpenGL::Command::ClearColor(m_Settings.ClearColor);
 		OpenGL::Command::ClearDepth();
 		
-		_RenderInstances();
+		_RenderGeometry();
 		_RenderSkyBox();
+		_RenderFinalPass();
 
 		m_Data.PointLights.Size = 0;
 		m_Data.DirectionalLights.Size = 0;
@@ -230,19 +217,19 @@ namespace TooGoodEngine {
 		m_Data.FinalImageFramebuffer.Unbind();
 	}
 
-	void Renderer::_RenderInstances()
+	void Renderer::_RenderGeometry()
 	{
-		m_Data.ColorShaderProgram.Use();
+		m_Data.GeometryShaderProgram.Use();
 
 		PerFrameData data{};
 		data.ViewProjection = m_Data.CurrentCamera->GetProjection() * m_Data.CurrentCamera->GetView();
 
 		for (auto& instanceBuffer : m_Data.GeometryList)
 		{
-			m_Data.ColorShaderProgram.SetUniform("u_ViewProjection",   data.ViewProjection);
-			m_Data.ColorShaderProgram.SetUniform("u_PointLightSize",   (int)m_Data.PointLights.Size);
-			m_Data.ColorShaderProgram.SetUniform("u_DirectionalLightSize", (int)m_Data.DirectionalLights.Size);
-			m_Data.ColorShaderProgram.SetUniform("u_CameraPosition", m_Data.CurrentCamera->GetCameraPosition());
+			m_Data.GeometryShaderProgram.SetUniform("u_ViewProjection",   data.ViewProjection);
+			m_Data.GeometryShaderProgram.SetUniform("u_PointLightSize",   (int)m_Data.PointLights.Size);
+			m_Data.GeometryShaderProgram.SetUniform("u_DirectionalLightSize", (int)m_Data.DirectionalLights.Size);
+			m_Data.GeometryShaderProgram.SetUniform("u_CameraPosition", m_Data.CurrentCamera->GetCameraPosition());
 
 			instanceBuffer.BeginBatch(0);
 			m_Data.Materials.Buffer.BindBase(1, OpenGL::BufferTypeShaderStorage);
@@ -251,7 +238,7 @@ namespace TooGoodEngine {
 
 
 			OpenGL::Command::DrawElementsInstanced(
-				&m_Data.ColorShaderProgram,
+				&m_Data.GeometryShaderProgram,
 				instanceBuffer.GetVertexArrayPointer(),
 				OpenGL::DrawMode::Triangle, instanceBuffer.GetIndexCount(),
 				instanceBuffer.GetInstanceCount());
@@ -262,14 +249,14 @@ namespace TooGoodEngine {
 
 	void Renderer::_RenderSkyBox()
 	{
-		if (m_Settings.CurrentEnviormentMap)
+		if (m_Data.CurrentEnviormentMap)
 		{
 			glDepthMask(GL_FALSE);
 			glDepthFunc(GL_LEQUAL);
 			glDisable(GL_CULL_FACE);
 
 			m_Data.SkyBoxShaderProgram.Use();
-			m_Settings.CurrentEnviormentMap->GetTexture().Bind(0);
+			m_Data.CurrentEnviormentMap->GetIrradianceMap().Bind(0);
 												
 			glm::mat4 viewProjection = m_Data.CurrentCamera->GetProjection() *
 									   glm::mat4(glm::mat3(m_Data.CurrentCamera->GetView())); //(removes translation as translation is in the last column)
@@ -293,6 +280,19 @@ namespace TooGoodEngine {
 			glDepthMask(GL_TRUE);
 			_ApplySettings();
 		}
+	}
+
+	void Renderer::_RenderFinalPass()
+	{
+		m_Data.FinalPass.Use();
+		m_Data.FinalImageTexture->BindImage(0, 0, 0, false);
+		m_Data.FinalPass.SetUniform("u_FinalImage", 0);
+		m_Data.FinalPass.SetUniform("u_Gradient", m_Settings.Gradient);
+
+		glDispatchCompute((GLuint)std::ceil((float)m_Settings.ViewportWidth  / 8.0f), 
+						  (GLuint)std::ceil((float)m_Settings.ViewportHeight / 8.0f), 
+						  1);
+		glMemoryBarrier(GL_ALL_SHADER_BITS);
 	}
 
 	void Renderer::_ApplySettings() 
@@ -604,6 +604,33 @@ namespace TooGoodEngine {
 			m_Data.FinalImageFramebuffer.~Framebuffer();
 			m_Data.FinalImageFramebuffer = OpenGL::Framebuffer(info);
 		}
+	}
+
+	void Renderer::_CreatePrograms()
+	{
+		{
+			OpenGL::ShaderMap map
+			{ {OpenGL::ShaderType::FragmentShader, m_Data.ShaderDirectory / "Color.frag"},
+			  {OpenGL::ShaderType::VertexShader,   m_Data.ShaderDirectory / "Color.vert"} };
+
+			m_Data.GeometryShaderProgram = OpenGL::Program(map);
+		}
+
+		{
+			OpenGL::ShaderMap map
+			{ {OpenGL::ShaderType::FragmentShader, m_Data.ShaderDirectory / "SkyBox.frag"},
+			  {OpenGL::ShaderType::VertexShader, m_Data.ShaderDirectory / "SkyBox.vert"} };
+
+			m_Data.SkyBoxShaderProgram = OpenGL::Program(map);
+		}
+
+		{
+			OpenGL::ShaderMap map
+			{ {OpenGL::ShaderType::ComputeShader, m_Data.ShaderDirectory / "FinalPass.comp"} };
+
+			m_Data.FinalPass = OpenGL::Program(map);
+		}
+
 	}
 
 	GLenum Renderer::GetBlendFactor(BlendingFactor factor)

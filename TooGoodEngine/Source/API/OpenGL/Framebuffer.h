@@ -11,7 +11,7 @@ namespace TooGoodEngine {
 		struct FramebufferInfo
 		{
 			std::vector<Texture2D*> ColorAttachments; 
-			Texture2D* DepthAttachment; //if needed will make this DepthStencil 
+			Texture2D* DepthAttachment = nullptr; //if needed will make this DepthStencil 
 		};
 
 		
@@ -37,10 +37,12 @@ namespace TooGoodEngine {
 			{
 				Framebuffer* Source;
 				Framebuffer* Destination;
+				Texture2D* SourceTexture;
+				Texture2D* DestinationTexture;
 				uint32_t SourceWidth, SourceHeight;
 				uint32_t DestinationWidth, DestinationHeight;
 				uint32_t SourceIndex, DestinationIndex;
-				TextureParamaterOption FilterType;
+				uint32_t SourceLayer, DestinationLayer;
 			};
 
 			static void BlitColorAttachment(const BlitInfo& info); 

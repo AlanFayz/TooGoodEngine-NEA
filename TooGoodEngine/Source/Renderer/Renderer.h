@@ -53,15 +53,21 @@ namespace TooGoodEngine {
 		FillMode FillingMode       = FillMode::Fill;
 
 		Ref<EnviormentMap> CurrentEnviormentMap = nullptr;
+
+		float Gradient = 1.0f;
 	};
 
 	struct RenderData
 	{
+		Ref<EnviormentMap> CurrentEnviormentMap = nullptr; //just for testing
+
+
 		std::filesystem::path ShaderDirectory;
 		bool IsDrawing = false;
 
-		OpenGL::Program ColorShaderProgram;
+		OpenGL::Program GeometryShaderProgram;
 		OpenGL::Program SkyBoxShaderProgram;
+		OpenGL::Program FinalPass;
 
 		std::vector<GeometryInstanceBuffer> GeometryList;
 
@@ -140,12 +146,13 @@ namespace TooGoodEngine {
 		void AddDirectionaLight(const glm::vec3& direction, const glm::vec4& color, float intensity);
 		void End();
 
-		inline const Ref<OpenGL::Texture2D> GetImage() const { return m_Data.FinalImageTexture; }
+		inline const Ref<OpenGL::Texture2D>& GetImage() const { return m_Data.FinalImageTexture; }
 		inline const RenderSettings& GetSettings() const { return m_Settings; }
 
 	private:
-		void _RenderInstances();
+		void _RenderGeometry();
 		void _RenderSkyBox();
+		void _RenderFinalPass();
 
 		void _ApplySettings();
 
@@ -154,6 +161,8 @@ namespace TooGoodEngine {
 
 		void _CreateTextures();
 		void _CreateFramebuffers();
+
+		void _CreatePrograms();
 		
 		GLenum GetBlendFactor(BlendingFactor factor);
 	private:

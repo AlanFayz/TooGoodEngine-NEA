@@ -62,7 +62,11 @@ namespace TooGoodEngine {
 
 		void Framebuffer::BlitColorAttachment(const BlitInfo& info)
 		{
-			TGE_VERIFY(info.Destination && info.Source, "destination or source was nullptr");
+			TGE_VERIFY(info.Destination && 
+					  info.Source && 
+					  info.SourceTexture && 
+					  info.DestinationTexture, "destination or source was nullptr");
+
 			TGE_VERIFY(info.DestinationWidth > 0 &&
 					   info.DestinationHeight > 0 &&
 					   info.SourceWidth > 0 &&
@@ -71,11 +75,17 @@ namespace TooGoodEngine {
 			glNamedFramebufferReadBuffer(info.Source->GetHandle(), GL_COLOR_ATTACHMENT0 + (GLenum)info.SourceIndex);
 			glNamedFramebufferDrawBuffer(info.Destination->GetHandle(), GL_COLOR_ATTACHMENT0 + (GLenum)info.DestinationIndex);
 
+			glNamedFramebufferTextureLayer(info.Source->GetHandle(), GL_COLOR_ATTACHMENT0 + (GLenum)info.SourceIndex,
+				info.SourceTexture->GetHandle(), 0, info.SourceLayer);
+
+			glNamedFramebufferTextureLayer(info.Destination->GetHandle(), GL_COLOR_ATTACHMENT0 + (GLenum)info.DestinationIndex,
+				info.DestinationTexture->GetHandle(), 0, info.DestinationLayer);
+			
 			glBlitNamedFramebuffer(
 				(GLuint)info.Source->GetHandle(), (GLuint)info.Destination->GetHandle(),
 				0, 0, (GLint)info.SourceWidth, (GLint)info.SourceHeight,
 				0, 0, (GLint)info.DestinationWidth, (GLint)info.DestinationHeight,
-				GL_COLOR_BUFFER_BIT, (GLenum)info.FilterType);
+				GL_COLOR_BUFFER_BIT, GL_LINEAR);
 					
 		}
 

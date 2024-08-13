@@ -59,9 +59,7 @@ namespace GoodEditor {
 
 		ImGui::DockSpaceOverViewport();
 
-		//
-		//get scene info
-
+		
 		Ref<Scene>    currentScene         = g_SelectedProject->GetCurrentScene();
 		Ref<Renderer> currentSceneRenderer = currentScene->GetSceneRenderer();
 		
@@ -145,7 +143,7 @@ namespace GoodEditor {
 		ImGui::Begin("Viewport", (bool*)0, ImGuiWindowFlags_MenuBar);
 		_RenderViewportMenuBar();
 		
-		ImGui::Image((void*)image->GetHandle(), ImGui::GetContentRegionAvail(), ImVec2(0, 1), ImVec2(1, 0));
+		ImGui::Image((ImTextureID)(intptr_t)image->GetHandle(), ImGui::GetContentRegionAvail(), ImVec2(0, 1), ImVec2(1, 0));
 		ImGui::End();
 	}
 	void Editor::_RenderViewportMenuBar()

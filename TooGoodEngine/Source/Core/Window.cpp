@@ -67,10 +67,10 @@ namespace TooGoodEngine {
 	{
 		switch (severity)
 		{
-			case GL_DEBUG_SEVERITY_LOW:    TGE_LOG_INFO(message);      break;
+			case GL_DEBUG_SEVERITY_LOW: break;
 			case GL_DEBUG_SEVERITY_MEDIUM: TGE_LOG_WARNING(message);   break;
 			case GL_DEBUG_SEVERITY_HIGH:   TGE_ASSERT(false, message); break;
-			default:					   TGE_LOG_INFO(message);      break;
+			default:  break;
 		}
 	}
 }

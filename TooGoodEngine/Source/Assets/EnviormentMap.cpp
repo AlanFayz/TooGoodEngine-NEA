@@ -123,6 +123,11 @@ namespace TooGoodEngine {
 			info.Paramaters[OpenGL::TextureParamater::MagFilter] = OpenGL::TextureParamaterOption::Linear;
 
 			enviormentMap->m_Texture = OpenGL::Texture2D(info);
+
+			info.Width = 32;
+			info.Height = 32;
+
+			enviormentMap->m_IrradianceMap = OpenGL::Texture2D(info);
 		}
 
 		glm::mat4 projection = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 100.0f);
@@ -140,6 +145,11 @@ namespace TooGoodEngine {
 		info.ColorAttachments.push_back(&enviormentMap->m_Texture);
 		info.DepthAttachment = nullptr;
 		OpenGL::Framebuffer framebuffer(info);
+
+		OpenGL::FramebufferInfo info2;
+		info2.ColorAttachments.push_back(&enviormentMap->m_IrradianceMap);
+
+		OpenGL::Framebuffer framebuffer2(info2);
 
 		OpenGL::Command::SetViewport(1024, 1024);
 
@@ -164,7 +174,26 @@ namespace TooGoodEngine {
 		}
 
 		framebuffer.Unbind();
+		
+		OpenGL::Framebuffer::BlitInfo blitInfo{};
+		blitInfo.Source = &framebuffer;
+		blitInfo.Destination = &framebuffer2;
+		blitInfo.SourceTexture = &enviormentMap->m_Texture;
+		blitInfo.DestinationTexture = &enviormentMap->m_IrradianceMap;
+		blitInfo.SourceWidth = 1024;
+		blitInfo.SourceHeight = 1024;
+		blitInfo.DestinationWidth = 32;
+		blitInfo.DestinationHeight = 32;
+		blitInfo.SourceIndex = 0;
+		blitInfo.DestinationIndex = 0;
 
+		for (uint32_t i = 0; i < 6; i++)
+		{
+			blitInfo.SourceLayer = i;
+			blitInfo.DestinationLayer = i;
+
+			OpenGL::Framebuffer::BlitColorAttachment(blitInfo);
+		}
 
 		return enviormentMap; 
 	}
@@ -215,6 +244,9 @@ namespace TooGoodEngine {
 			 1.0f, -1.0f,  1.0f
 		};
 
+		//i could initalize static buffers and vertex array
+		//but they are small and its not something thats
+		//going to affect frame rate, may change in the future
 		OpenGL::BufferInfo info{};
 		info.Capacity = sizeof(float) * 108;
 		info.Data = vertices;
