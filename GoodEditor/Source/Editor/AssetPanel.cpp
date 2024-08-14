@@ -7,7 +7,7 @@ namespace GoodEditor {
     std::set<std::filesystem::path> AssetPanel::m_CachedDirectories = {};
     std::filesystem::path           AssetPanel::m_CurrentDirectory = "";
 
-	void AssetPanel::DrawAssetPanel(std::map<std::filesystem::path, Ref<Image>>& extensionMap)
+	void AssetPanel::DrawPanel(std::map<std::filesystem::path, Ref<Image>>& extensionMap)
 	{
         if (ImGui::Begin("Asset Panel"))
         {

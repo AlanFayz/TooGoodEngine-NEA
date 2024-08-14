@@ -12,6 +12,9 @@ namespace TooGoodEngine {
 		virtual void OnUpdate(double delta) {};
 		virtual void OnGuiUpdate(double delta) {};
 		virtual void OnEvent(Event* event) {};
+
+	protected:
+		double p_OnUpdateTime = 0.0;
 	};
 
 }

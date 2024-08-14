@@ -12,7 +12,7 @@ namespace GoodEditor {
 	class AssetPanel
 	{
 	public:
-		static void DrawAssetPanel(std::map<std::filesystem::path, Ref<Image>>& extensionMap);
+		static void DrawPanel(std::map<std::filesystem::path, Ref<Image>>& extensionMap);
 
 	private:
 		static std::filesystem::path m_CurrentDirectory;

@@ -10,7 +10,7 @@ namespace GoodEditor {
 	int ScenePanel::m_IDCount = 0;
 	int ScenePanel::m_ColorEditFlags = ImGuiColorEditFlags_AlphaPreview | ImGuiColorEditFlags_NoInputs;
 
-	void ScenePanel::DrawScenePanel()
+	void ScenePanel::DrawPanel()
 	{
 		Ref<Scene> currentScene = g_SelectedProject->GetCurrentScene();
 		auto& registry = currentScene->GetRegistry();

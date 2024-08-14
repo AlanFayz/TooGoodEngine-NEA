@@ -5,6 +5,7 @@
 #include "Math/PerspectiveCamera.h"
 #include "Scenes/Scene.h"
 #include "Project/Project.h"
+#include "Utils/Statistics.h"
 
 #include <imgui.h>
 #include <backends/imgui_impl_glfw.h>
@@ -48,11 +49,19 @@ namespace TooGoodEngine {
 
 		while (m_Runnning)
 		{
+			TGE_PROFILE_SCOPE(Frame);
+
 			m_Timer.Start();
 
-			m_LayerStack.OnUpdateLayers(delta);
+			{
+				TGE_PROFILE_SCOPE(UpdateLayers);
+				m_LayerStack.OnUpdateLayers(delta);
+			}
 
-			_UpdateImGui(delta);
+			{
+				TGE_PROFILE_SCOPE(UpdateGui);
+				_UpdateImGui(delta);
+			}
 
 			m_Window.Update();
 
@@ -79,7 +88,6 @@ namespace TooGoodEngine {
 		ImGui::NewFrame();
 
 		m_LayerStack.OnGuiUpdateLayers(delta);
-
 
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

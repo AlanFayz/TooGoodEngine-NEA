@@ -1,6 +1,7 @@
 #include "Editor.h"
 #include "FileDialogs/FileDialog.h"
 #include "ScenePanel.h"
+#include "StatisticsPanel.h"
 
 #include <imgui.h>
 
@@ -76,8 +77,9 @@ namespace GoodEditor {
 
 		_RenderViewport(image);
 
-		AssetPanel::DrawAssetPanel(m_ExtensionMap);
-		ScenePanel::DrawScenePanel();
+		AssetPanel::DrawPanel(m_ExtensionMap);
+		ScenePanel::DrawPanel();
+		StatisticsPanel::DrawPanel();
 	}
 	void Editor::OnEvent(TooGoodEngine::Event* event)
 	{

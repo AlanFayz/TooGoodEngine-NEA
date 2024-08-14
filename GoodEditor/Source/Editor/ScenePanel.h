@@ -11,7 +11,7 @@ namespace GoodEditor {
 	class ScenePanel 
 	{
 	public:
-		static void DrawScenePanel();
+		static void DrawPanel();
 
 	private:
 		static void _DrawChildren(const Entity& entity,

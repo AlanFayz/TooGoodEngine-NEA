@@ -2,7 +2,7 @@
     "Project Name": "Sandbox",
     "Project Directory": "D:\\Dev\\TooGoodEngine-NEA\\GoodEditor",
     "Asset Directory": "D:\\Dev\\TooGoodEngine-NEA\\GoodEditor\\Assets",
-    "Last Build Date": "2024-08-14 16:04:16",
+    "Last Build Date": "2024-08-14 17:33:54",
     "Scenes": {
         "Scene 1": {
             "Scene Settings": {
@@ -157,7 +157,6 @@
                     }
                 },
                 "Entity2": {
-                    "Children": [],
                     "Directional Light": {
                         "Color": [
                             0.6569823026657104,

@@ -1,6 +1,7 @@
 #include "Renderer.h"
 
 #include "API/OpenGL/Command.h"
+#include "Utils/Statistics.h"
 
 namespace TooGoodEngine {
 
@@ -191,6 +192,7 @@ namespace TooGoodEngine {
 	void Renderer::End()
 	{
 		TGE_VERIFY(m_Data.IsDrawing, "haven't drawn anything");
+		TGE_PROFILE_SCOPE(RendererSubmit);
 		m_Data.IsDrawing = false;
 
 		m_Data.FinalImageFramebuffer.Bind();

@@ -1,6 +1,7 @@
 #include "Scene.h"
 
 #include "Project/Project.h"
+#include "Utils/Statistics.h"
 
 namespace TooGoodEngine {
 
@@ -39,19 +40,12 @@ namespace TooGoodEngine {
 
 	void Scene::Update(double delta)
 	{
+		TGE_PROFILE_SCOPE(SceneUpdate);
+
 		if (m_SceneView == SceneView::View3D)
 			m_CameraController.Update(delta);
 		else
 			m_CameraController2D.Update(delta);
-
-		// ---- run scripts ----
-		{
-			auto scriptComponents = m_Registry.View<ScriptComponent>();
-
-			for (auto& script : scriptComponents)
-				script.OnUpdate(delta);
-
-		}
 
 		// ---- renderer begin ----
 		if (m_SceneView == SceneView::View3D)
@@ -79,13 +73,11 @@ namespace TooGoodEngine {
 
 		// ---- Render Meshes ----
 		{
+			TGE_PROFILE_SCOPE(RenderGeometry);
 
 			m_Registry.ForEach<MeshComponent>(
 				[this](auto& component, const auto entityID) 
 				{
-					if (entityID == g_NullEntity)
-						return;
-
 					if (!m_Registry.HasComponent<TransformComponent>(entityID))
 						return;
 
