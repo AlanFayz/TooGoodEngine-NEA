@@ -122,7 +122,11 @@ namespace GoodEditor {
 
 		if (tree.HasComponent<DirectionalLightComponent>(entity))
 			_DrawComponent(tree.GetComponent<DirectionalLightComponent>(entity));
+
+		if (tree.HasComponent<ModelComponent>(entity))
+			_DrawComponent(tree.GetComponent<ModelComponent>(entity));
 	}
+
 	bool ScenePanel::_EntityPopup(const Entity& entity, Renderer& sceneRenderer, EntityTree& tree)
 	{
 		if (ImGui::BeginPopupContextItem())
@@ -168,6 +172,9 @@ namespace GoodEditor {
 			
 			if (ImGui::MenuItem("Add Directional Light") && !tree.HasComponent<DirectionalLightComponent>(entity))
 				tree.EmplaceComponent<DirectionalLightComponent>(entity);
+
+			if (ImGui::MenuItem("Add Model") && !tree.HasComponent<ModelComponent>(entity))
+				tree.EmplaceComponent<ModelComponent>(entity);
 
 			if (ImGui::MenuItem("Add Entity"))
 				tree.Add(entity, "Entity" + std::to_string(tree.GetCount()));
@@ -290,7 +297,7 @@ namespace GoodEditor {
 
 			if (ImGui::BeginDragDropTarget())
 			{
-				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Environment_MAP_TRANSFER_UUID"))
+				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ENVIRONMENT_MAP_TRANSFER_UUID"))
 				{
 					UUID id = *(UUID*)payload->Data;
 					renderSettings.CurrentEnvironmentMap = g_SelectedProject->GetAssetManager().FetchAssetAssuredType<EnvironmentMap>(id);
@@ -400,6 +407,42 @@ namespace GoodEditor {
 			ImGui::DragFloat("Intensity", &component.Intensity, 0.1f, -FLT_MAX / 2.0f, FLT_MAX / 2.0f);
 			ImGui::TreePop();
 		}
+	}
+	void ScenePanel::_DrawComponent(ModelComponent& component)
+	{ 
+		ImGui::PushID(m_IDCount++);
+
+		if (ImGui::TreeNode("Model"))
+		{
+			Ref<Asset> asset = g_SelectedProject->GetAssetManager().FetchAsset(component.ModelAssetId);
+			
+			if (asset)
+			{
+				std::filesystem::path path = asset->GetPath();
+				std::string pathString = path.string();
+
+				ImGui::Text("Path: %s", pathString.c_str());
+			}
+
+			ImGui::TreePop();
+		}
+
+		if (ImGui::BeginDragDropTarget())
+		{
+			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("MODEL_TRANSFER_UUID"))
+			{
+				UUID id = *(UUID*)payload->Data;
+				Ref<Model> asset = g_SelectedProject->GetAssetManager().FetchAssetAssuredType<Model>(id);
+
+				component.ModelAssetId = asset->GetAssetID();
+				component.Info = asset->GetInfo();
+			}
+
+			ImGui::EndDragDropTarget();
+		}
+
+
+		ImGui::PopID();
 	}
 	bool ScenePanel::_DrawMaterialAttribute(const char* name, glm::vec4& attribute, Ref<Image>& image)
 	{

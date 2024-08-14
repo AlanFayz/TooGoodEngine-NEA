@@ -14,8 +14,6 @@ namespace TooGoodEngine {
 		m_ProjectName	   = reader.Fetch<std::string>({ "Project Name" });
 
 		m_AssetManager = CreateRef<AssetManager>(reader.Fetch<std::string>({"Asset Directory"}));
-
-		LoadAssets(reader);
 	}
 
 	Project::Project(const std::string& name, const std::filesystem::path& pathOfDirectory)
@@ -261,6 +259,8 @@ namespace TooGoodEngine {
 
 	void Project::LoadAssets(JsonReader& reader)
 	{
+
+
 		json assets = reader.Fetch<json>({ "Assets" });
 
 		for (auto it = assets.begin(); it != assets.end(); it++)
@@ -288,6 +288,8 @@ namespace TooGoodEngine {
 	void Project::LoadAllScenes()
 	{
 		JsonReader reader(m_ProjectDirectory / (m_ProjectName + ".json"));
+
+		LoadAssets(reader);
 
 		auto scenes = reader.Fetch<json>({ "Scenes" });
 

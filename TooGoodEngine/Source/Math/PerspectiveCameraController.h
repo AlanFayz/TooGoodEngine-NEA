@@ -19,7 +19,7 @@ namespace TooGoodEngine {
 		Ref<PerspectiveCamera> m_Camera;
 
 		bool m_CursorDisabled = false;
-		float m_CameraSpeed = 1.0f;
+		float m_CameraSpeed = 10.0f;
 		float m_Sensitivity = 1.0f;
 		double m_LastX = 0, m_LastY = 0;
 

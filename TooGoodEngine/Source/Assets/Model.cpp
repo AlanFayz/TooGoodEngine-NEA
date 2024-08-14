@@ -114,9 +114,10 @@ namespace TooGoodEngine {
 		if (material->GetTexture(type, index, &path) == AI_SUCCESS)
 		{
 			std::filesystem::path filePath = path.C_Str();
+			std::filesystem::path assetPath = g_SelectedProject->GetAssetDirectory();
 			std::string strPath = filePath.string();
 
-			Ref<Image> image = g_SelectedProject->GetAssetManager().LoadAssetIntoBank<Image>(filePath);
+			Ref<Image> image = g_SelectedProject->GetAssetManager().LoadAssetIntoBank<Image>(assetPath / filePath);
 
 			if (!image)
 				return nullptr;

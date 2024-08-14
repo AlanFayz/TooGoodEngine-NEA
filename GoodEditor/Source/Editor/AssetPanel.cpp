@@ -93,7 +93,16 @@ namespace GoodEditor {
                         if (extension == ".png")
                             g_SelectedProject->GetAssetManager().LoadAssetIntoBank<Image>(path);
                         if (extension == ".fbx" || extension == ".obj")
-                            g_SelectedProject->GetAssetManager().LoadAssetIntoBank<Model>(path);
+                        {
+                            Ref<Model> model = g_SelectedProject->GetAssetManager().LoadAssetIntoBank<Model>(path);
+                          
+                            if (model)
+                            {
+                                ModelInfo info = g_SelectedProject->GetCurrentScene()->GetSceneRenderer()->AddModel(model);
+                                model->SetInfo(info);
+                            }
+                           
+                        }
                         if (extension == ".hdr")
                             g_SelectedProject->GetAssetManager().LoadAssetIntoBank<EnvironmentMap>(path);
 
@@ -109,18 +118,35 @@ namespace GoodEditor {
                             g_SelectedProject->GetAssetManager().RemoveAsset(path);
                             if (extension == ".png")
                                 asset = g_SelectedProject->GetAssetManager().LoadAssetIntoBank<Image>(path);
-                            else
+                            else if (extension == ".hdr")
                                 asset = g_SelectedProject->GetAssetManager().LoadAssetIntoBank<EnvironmentMap>(path);
+                            else
+                            {
+                                Ref<Model> model = g_SelectedProject->GetAssetManager().LoadAssetIntoBank<Model>(path);
+                              
+                                if (model)
+                                {
+                                    ModelInfo info = g_SelectedProject->GetCurrentScene()->GetSceneRenderer()->AddModel(model);
+                                    model->SetInfo(info);
+
+                                    asset = model;
+                                }
+      
+                            }
                         }
 
-                        TooGoodEngine::UUID id = asset->GetAssetID();
+                        if (asset)
+                        {
+                            TooGoodEngine::UUID id = asset->GetAssetID();
 
-                        if(extension == ".png")
-                            ImGui::SetDragDropPayload("IMAGE_TRANSFER_UUID", &id, sizeof(TooGoodEngine::UUID));
-                        else 
-                            ImGui::SetDragDropPayload("Environment_MAP_TRANSFER_UUID", &id, sizeof(TooGoodEngine::UUID));
-
-
+                            if (extension == ".png")
+                                ImGui::SetDragDropPayload("IMAGE_TRANSFER_UUID", &id, sizeof(TooGoodEngine::UUID));
+                            else if (extension == ".hdr")
+                                ImGui::SetDragDropPayload("ENVIRONMENT_MAP_TRANSFER_UUID", &id, sizeof(TooGoodEngine::UUID));
+                            else
+                                ImGui::SetDragDropPayload("MODEL_TRANSFER_UUID", &id, sizeof(TooGoodEngine::UUID));
+                        }
+                        
                         ImGui::Text(filename.c_str());
                         ImGui::EndDragDropSource();
                     }

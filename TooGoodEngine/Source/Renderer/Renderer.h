@@ -9,7 +9,6 @@
 
 namespace TooGoodEngine {
 
-	//TODO: more to add (such as blending operations, polygone mode etc...)
 	enum class DepthTestOption
 	{
 		None = 0, Less, LessOrEqual, Equal, Greater, Count
@@ -114,12 +113,6 @@ namespace TooGoodEngine {
 
 	inline constexpr size_t g_NullID = std::numeric_limits<size_t>::max();
 
-	struct ModelInfo
-	{
-		GeometryID ID;
-		size_t Size;
-		std::vector<MaterialID> CustomMaterials; //can leave blank and will use default. 
-	};
 
 	class Renderer
 	{

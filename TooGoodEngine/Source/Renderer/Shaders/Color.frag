@@ -247,7 +247,7 @@ void main()
 	for(int i = 0; i < u_DirectionalLightSize; i++)
 	{
 		info.LightDirection = DirectionalLights.Data[i].Direction.xyz;
-		info.LightColor = DirectionalLights.Data[i].Color.rgb * DirectionalLights.Data[i].Intensity;
+		info.LightColor = DirectionalLights.Data[i].Color.rgb * max(DirectionalLights.Data[i].Intensity, 0.0);
 		info.Attenuation = 1.0;
 
 		Color += Shade(info);
@@ -260,7 +260,5 @@ void main()
 		Color += CubeContribution;
 	}
 	
-
     OutColor = Color;
-	OutColor.a = 1.0;
 }

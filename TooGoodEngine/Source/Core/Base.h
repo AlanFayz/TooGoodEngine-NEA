@@ -56,7 +56,7 @@ namespace TooGoodEngine {
 	#ifdef DEBUG
 		#define TGE_ASSERT(condition, ...) if(!(condition)) {TGE_LOG_ERROR(__VA_ARGS__); TGE_HALT();}
 	#else 
-		#define TGE_ASSERT() 
+		#define TGE_ASSERT(condition, ...) 
 	#endif
 
 	#ifdef RELEASE 

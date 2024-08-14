@@ -123,7 +123,7 @@ project 'assimp'
         optimize "on"
 
     filter "configurations:Dist"
-       defines { "DIST" }
+       defines { "RELEASE" } 
        runtime "Release"
        optimize "On"
        symbols "Off"

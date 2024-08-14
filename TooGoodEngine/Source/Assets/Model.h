@@ -19,6 +19,8 @@ namespace TooGoodEngine {
 		Model(const std::vector<Geometry>& geometry);
 		~Model() = default;
 
+		inline void SetInfo(const ModelInfo& info) { m_Info = info; }
+		inline const ModelInfo& GetInfo() const { return m_Info; }
 		inline const std::vector<Geometry>& GetData() const { return m_GeometryData; }
 
 		virtual const AssetType GetAssetType() const { return AssetType::Model; };
@@ -34,6 +36,7 @@ namespace TooGoodEngine {
 		static Ref<Image>   _LoadImageFromAiMaterial(const aiMaterial* material, aiTextureType type, uint32_t index);
 	private:
 		std::vector<Geometry> m_GeometryData;
+		ModelInfo m_Info;
 	};
 
 }

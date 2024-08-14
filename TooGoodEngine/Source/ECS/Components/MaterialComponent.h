@@ -10,7 +10,6 @@ namespace TooGoodEngine {
 		~MaterialComponent() = default;
 
 		MaterialID ID;
-		//keeping a copy here so we can serialize it 
 		Material Material; 
 	};
 

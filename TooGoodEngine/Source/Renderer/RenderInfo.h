@@ -7,6 +7,9 @@
 
 namespace TooGoodEngine {
 
+	using GeometryID = size_t;
+	using MaterialID = size_t;
+
 	struct Vertex
 	{
 		glm::vec3 Position;
@@ -49,7 +52,13 @@ namespace TooGoodEngine {
 		float Intensity;
 	};
 
+	struct ModelInfo
+	{
+		GeometryID ID;
+		size_t Size;
+		std::vector<MaterialID> CustomMaterials; //can leave blank and will use default. 
+	};
 
-	using GeometryID = size_t;
-	using MaterialID = size_t;
+
+	
 }
