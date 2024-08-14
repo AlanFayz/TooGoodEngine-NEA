@@ -94,7 +94,6 @@ namespace GoodEditor {
 		if (tree.HasComponent<DirectionalLightComponent>(entity))
 			_DrawComponent(tree.GetComponent<DirectionalLightComponent>(entity));
 	}
-
 	void ScenePanel::_DrawSettings(const Ref<Scene>& scene)
 	{
 		RenderSettings renderSettings = scene->GetSceneRenderer()->GetSettings();
@@ -180,6 +179,41 @@ namespace GoodEditor {
 
 		if (ImGui::DragFloat("Level of detail", &renderSettings.LevelOfDetail, 0.01f, 0.0f, (float)g_NumberOfMipMaps - 1.0f))
 			changed = true;
+
+		if (renderSettings.CurrentEnviormentMap)
+		{
+			uint32_t handle = renderSettings.CurrentEnviormentMap->GetTexture().GetHandle();
+			if (ImGui::Button("Remove"))
+			{
+				renderSettings.CurrentEnviormentMap.reset();
+				renderSettings.CurrentEnviormentMap = nullptr;
+				changed = true;
+			}
+
+			ImGui::SameLine();
+			ImGui::Text("Enviorment Map");
+		}
+		else
+		{
+
+			float col[] = { 0.0f, 0.0f, 0.0f, 0.0f };
+			ImGui::ColorEdit4("Enviorment Map", col, ImGuiColorEditFlags_AlphaPreview |
+				ImGuiColorEditFlags_NoInputs |
+				ImGuiColorEditFlags_NoPicker);
+
+			if (ImGui::BeginDragDropTarget())
+			{
+				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ENVIORMENT_MAP_TRANSFER_UUID"))
+				{
+					UUID id = *(UUID*)payload->Data;
+					renderSettings.CurrentEnviormentMap = g_SelectedProject->GetAssetManager().FetchAssetAssuredType<EnviormentMap>(id);
+				}
+
+				changed = true;
+				ImGui::EndDragDropTarget();
+			}
+		}
+
 
 		if (changed)
 			scene->GetSceneRenderer()->ChangeSettings(renderSettings);
@@ -296,6 +330,7 @@ namespace GoodEditor {
 			uint32_t handle = image->GetTexture().GetHandle();
 			if (ImGui::ImageButton((ImTextureID)(intptr_t)handle, ImVec2(15, 15), ImVec2(0, 1), ImVec2(1, 0)))
 			{
+				image.reset();
 				image = nullptr;
 				changed = true;
 			}
@@ -339,6 +374,7 @@ namespace GoodEditor {
 			uint32_t handle = image->GetTexture().GetHandle();
 			if (ImGui::ImageButton((ImTextureID)(intptr_t)handle, ImVec2(15, 15), ImVec2(0, 1), ImVec2(1, 0)))
 			{
+				image.reset();
 				image = nullptr;
 				changed = true;
 			}

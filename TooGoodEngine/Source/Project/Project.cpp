@@ -10,14 +10,12 @@ namespace TooGoodEngine {
 	{
 		JsonReader reader(path);
 
-
 		m_ProjectDirectory = std::filesystem::path(reader.Fetch<std::string>({ "Project Directory" }));
 		m_ProjectName	   = reader.Fetch<std::string>({ "Project Name" });
 
 		m_AssetManager = CreateRef<AssetManager>(reader.Fetch<std::string>({"Asset Directory"}));
 
 		LoadAssets(reader);
-
 	}
 
 	Project::Project(const std::string& name, const std::filesystem::path& pathOfDirectory)
@@ -51,7 +49,6 @@ namespace TooGoodEngine {
 		writer.WriteGeneric({ "Asset Directory" },   m_AssetManager->GetPath());
 		writer.WriteGeneric({ "Last Build Date" },   timeStream.str());
 
-
 		for (const auto& scene: m_LoadedScenes)
 			SaveScene(writer, scene);
 
@@ -61,8 +58,9 @@ namespace TooGoodEngine {
 	Ref<Scene> Project::LoadScene(const json& jsonScene, const std::string& name)
 	{
 		Ref<Scene> scene = CreateRef<Scene>();
-	
 		scene->SetName(name);
+
+		LoadSceneSettings(scene, jsonScene);
 
 		auto& registry = scene->GetRegistry();
 		auto  renderer = scene->GetSceneRenderer();
@@ -109,7 +107,7 @@ namespace TooGoodEngine {
 			}
 		}
 
-		//order the heirarchy in the tree
+		//order the entity heirarchy 
 		uint64_t k = 0;
 		for (const auto& jsonEntity : jsonEntities)
 		{
@@ -130,8 +128,50 @@ namespace TooGoodEngine {
 		return scene;
 	}
 
+	void Project::LoadSceneSettings(Ref<Scene>& scene, const json& jsonScene)
+	{
+		RenderSettings renderSettings = scene->GetSceneRenderer()->GetSettings();
+
+		auto& jsonSettings = jsonScene["Scene Settings"];
+
+		/*
+			 "Depth Testing": 1,
+                "Culling": 0,
+                "Winding Order": 2,
+                "Blending Source": 0,
+                "Blending Destination": 0,
+                "Filling Mode": 3,
+                "Enviroment Map": 15850235946479761981,
+                "Level Of Detail": 2.0,
+                "Gradient": 1.0,
+                "Clear Color": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ]
+		*/
+		renderSettings.DepthTesting  = (DepthTestOption)jsonSettings["Depth Testing"].get<int>();
+		renderSettings.WindingOrder  = (WindingOrderOption)jsonSettings["Winding Order"].get<int>();
+		renderSettings.Source        = (BlendingFactor)jsonSettings["Blending Source"].get<int>();
+		renderSettings.Destination   = (BlendingFactor)jsonSettings["Blending Destination"].get<int>();
+		renderSettings.FillingMode   = (FillMode)jsonSettings["Filling Mode"].get<int>();
+		renderSettings.LevelOfDetail = jsonSettings["Level Of Detail"].get<float>();
+		renderSettings.Gradient      = jsonSettings["Gradient"].get<float>();
+
+		std::array<float, 4> clearColor = jsonSettings["Clear Color"].get<std::array<float, 4>>();
+		renderSettings.ClearColor = { clearColor[0], clearColor[1], clearColor[2], clearColor[3] };
+
+		UUID id = jsonSettings["Enviroment Map"].get<uint64_t>();
+		renderSettings.CurrentEnviormentMap = m_AssetManager->FetchAssetAssuredType<EnviormentMap>(id);
+
+		scene->GetSceneRenderer()->ChangeSettings(renderSettings);
+	}
+
 	void Project::SaveScene(JsonWriter& writer, const Ref<Scene>& scene)
 	{
+		SaveSceneSettings(writer, scene);
+
 		auto& registry = scene->GetRegistry();
 
 		for (EntityID entityId = 0; entityId < registry.GetCount(); entityId++)
@@ -189,6 +229,30 @@ namespace TooGoodEngine {
 				ComponentWriter::WriteDirectionalLight(writer, pathToEntity, component);
 			}
 		}
+	}
+
+	void Project::SaveSceneSettings(JsonWriter& writer, const Ref<Scene>& scene)
+	{
+		//currently only contains renderer settings. this may change in the future.
+		auto& renderSettings = scene->GetSceneRenderer()->GetSettings();
+		std::string sceneName = scene->GetName();
+
+		std::array<float, 4> clearColor = { renderSettings.ClearColor[0], renderSettings.ClearColor[1], renderSettings.ClearColor[2], renderSettings.ClearColor[3] };
+
+		writer.WriteGeneric({ "Scenes", sceneName, "Scene Settings", "Depth Testing" },        (int)renderSettings.DepthTesting);
+		writer.WriteGeneric({ "Scenes", sceneName, "Scene Settings", "Culling" },              (int)renderSettings.Culling);
+		writer.WriteGeneric({ "Scenes", sceneName, "Scene Settings", "Winding Order" },        (int)renderSettings.WindingOrder);
+		writer.WriteGeneric({ "Scenes", sceneName, "Scene Settings", "Blending Source" },      (int)renderSettings.Source);
+		writer.WriteGeneric({ "Scenes", sceneName, "Scene Settings", "Blending Destination" }, (int)renderSettings.Destination);
+		writer.WriteGeneric({ "Scenes", sceneName, "Scene Settings", "Filling Mode" },         (int)renderSettings.FillingMode);
+
+		if (renderSettings.CurrentEnviormentMap)
+			writer.WriteGeneric({ "Scenes", sceneName, "Scene Settings", "Enviroment Map" }, (uint64_t)renderSettings.CurrentEnviormentMap->GetAssetID());
+
+		writer.WriteGeneric({ "Scenes", sceneName, "Scene Settings", "Level Of Detail" }, renderSettings.LevelOfDetail);
+		writer.WriteGeneric({ "Scenes", sceneName, "Scene Settings", "Gradient" },		  renderSettings.Gradient);
+		writer.WriteGeneric({ "Scenes", sceneName, "Scene Settings", "Clear Color" },     clearColor);
+		
 	}
 
 	void Project::SaveAssets(JsonWriter& writer)

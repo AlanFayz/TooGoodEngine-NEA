@@ -60,9 +60,6 @@ namespace TooGoodEngine {
 
 	struct RenderData
 	{
-		Ref<EnviormentMap> CurrentEnviormentMap = nullptr; //just for testing
-
-
 		std::filesystem::path ShaderDirectory;
 		bool IsDrawing = false;
 

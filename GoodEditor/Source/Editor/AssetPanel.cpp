@@ -94,30 +94,36 @@ namespace GoodEditor {
                             g_SelectedProject->GetAssetManager().LoadAssetIntoBank<Image>(path);
                         if (extension == ".fbx" || extension == ".obj")
                             g_SelectedProject->GetAssetManager().LoadAssetIntoBank<Model>(path);
+                        if (extension == ".hdr")
+                            g_SelectedProject->GetAssetManager().LoadAssetIntoBank<EnviormentMap>(path);
 
                         m_CachedDirectories.insert(path);
                     }
 
                     if (ImGui::BeginDragDropSource())
                     {
-                        //sometimes can be invalid if user deletes/opens for some reason
-
                         Ref<Asset> asset = g_SelectedProject->GetAssetManager().FetchAsset(path);
 
                         if (!asset)
                         {
                             g_SelectedProject->GetAssetManager().RemoveAsset(path);
-                            asset = g_SelectedProject->GetAssetManager().LoadAssetIntoBank<Image>(path);
+                            if (extension == ".png")
+                                asset = g_SelectedProject->GetAssetManager().LoadAssetIntoBank<Image>(path);
+                            else
+                                asset = g_SelectedProject->GetAssetManager().LoadAssetIntoBank<EnviormentMap>(path);
                         }
 
                         TooGoodEngine::UUID id = asset->GetAssetID();
-                        ImGui::SetDragDropPayload("IMAGE_TRANSFER_UUID", &id, sizeof(TooGoodEngine::UUID));
+
+                        if(extension == ".png")
+                            ImGui::SetDragDropPayload("IMAGE_TRANSFER_UUID", &id, sizeof(TooGoodEngine::UUID));
+                        else 
+                            ImGui::SetDragDropPayload("ENVIORMENT_MAP_TRANSFER_UUID", &id, sizeof(TooGoodEngine::UUID));
+
 
                         ImGui::Text(filename.c_str());
                         ImGui::EndDragDropSource();
                     }
- 
-                    ImGui::PopID();
 
                     ImGui::Text(filename.c_str());
 
@@ -132,6 +138,7 @@ namespace GoodEditor {
                     
                 }
 
+                ImGui::PopID();
             }
 
             ImGui::End();

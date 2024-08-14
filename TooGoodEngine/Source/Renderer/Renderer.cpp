@@ -24,8 +24,6 @@ namespace TooGoodEngine {
 		_CreateTextures();
 		_CreateFramebuffers();
 
-		//just for testing
-		m_Data.CurrentEnviormentMap = EnviormentMap::LoadEnviromentMapAssetFromFile("Resources/test.hdr");
 	}
 
 	Renderer::~Renderer()
@@ -195,7 +193,6 @@ namespace TooGoodEngine {
 		TGE_VERIFY(m_Data.IsDrawing, "haven't drawn anything");
 		m_Data.IsDrawing = false;
 
-
 		m_Data.FinalImageFramebuffer.Bind();
 
 		OpenGL::Command::SetViewport(m_Settings.ViewportWidth, m_Settings.ViewportHeight);
@@ -228,11 +225,11 @@ namespace TooGoodEngine {
 		m_Data.GeometryShaderProgram.SetUniform("u_CameraPosition", m_Data.CurrentCamera->GetCameraPosition());
 		m_Data.GeometryShaderProgram.SetUniform("u_NumberOfMipMaps", (float)g_NumberOfMipMaps);
 		
-		if (m_Data.CurrentEnviormentMap)
+		if (m_Settings.CurrentEnviormentMap)
 		{
 			m_Data.GeometryShaderProgram.SetUniform("u_HasCubeMap", 1);
 			m_Data.GeometryShaderProgram.SetUniform("u_CubeMap", 0);
-			m_Data.CurrentEnviormentMap->GetTexture().Bind(0);
+			m_Settings.CurrentEnviormentMap->GetTexture().Bind(0);
 		}
 		else
 		{
@@ -260,14 +257,14 @@ namespace TooGoodEngine {
 
 	void Renderer::_RenderSkyBox()
 	{
-		if (m_Data.CurrentEnviormentMap)
+		if (m_Settings.CurrentEnviormentMap)
 		{
 			glDepthMask(GL_FALSE);
 			glDepthFunc(GL_LEQUAL);
 			glDisable(GL_CULL_FACE);
 
 			m_Data.SkyBoxShaderProgram.Use();
-			m_Data.CurrentEnviormentMap->GetTexture().Bind(0);
+			m_Settings.CurrentEnviormentMap->GetTexture().Bind(0);
 												
 			glm::mat4 viewProjection = m_Data.CurrentCamera->GetProjection() *
 									   glm::mat4(glm::mat3(m_Data.CurrentCamera->GetView())); //(removes translation as translation is in the last column)

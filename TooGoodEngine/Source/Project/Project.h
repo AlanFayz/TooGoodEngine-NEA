@@ -23,7 +23,9 @@ namespace TooGoodEngine {
 		void SaveState();
 
 		Ref<Scene> LoadScene(const json& jsonScene, const std::string& name);
+		void LoadSceneSettings(Ref<Scene>& scene, const json& jsonScene);
 		void SaveScene(JsonWriter& writer, const Ref<Scene>& scene);
+		void SaveSceneSettings(JsonWriter& writer, const Ref<Scene>& scene);
 		void SaveAssets(JsonWriter& writer);
 		void LoadAssets(JsonReader& reader);
 		void LoadAllScenes();
@@ -33,8 +35,6 @@ namespace TooGoodEngine {
 		{ 
 			return m_AssetManager->LoadAssetIntoBank<T>(path);
 		}
-
-		//TODO: change this to be fetched from project file (asset directory)
 
 		inline const std::filesystem::path  GetAssetDirectory() const { return m_AssetManager->GetPath(); }
 		inline const std::filesystem::path& GetDirectory() const { return m_ProjectDirectory; }

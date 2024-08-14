@@ -53,6 +53,7 @@ namespace TooGoodEngine {
 		for (auto& child : m_Nodes[nodeIndex].Children)
 			RemoveEntity(child);
 
+		nodeIndex = _Find(GetEntity(id)); //nodeIndex may have changed from previous erases
 		m_Nodes.erase(m_Nodes.begin() + nodeIndex);
 		m_Entites[id] = Entity("null entity", g_NullEntity);
 	}

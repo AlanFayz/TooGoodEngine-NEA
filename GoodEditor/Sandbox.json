@@ -2,9 +2,26 @@
     "Project Name": "Sandbox",
     "Project Directory": "D:\\Dev\\TooGoodEngine-NEA\\GoodEditor",
     "Asset Directory": "D:\\Dev\\TooGoodEngine-NEA\\GoodEditor\\Assets",
-    "Last Build Date": "2024-08-14 10:36:10",
+    "Last Build Date": "2024-08-14 13:45:40",
     "Scenes": {
         "Scene 1": {
+            "Scene Settings": {
+                "Depth Testing": 1,
+                "Culling": 0,
+                "Winding Order": 2,
+                "Blending Source": 0,
+                "Blending Destination": 0,
+                "Filling Mode": 3,
+                "Enviroment Map": 15850235946479761981,
+                "Level Of Detail": 2.0,
+                "Gradient": 1.0,
+                "Clear Color": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ]
+            },
             "Entities": {
                 "Entity 1": {
                     "Transform": {
@@ -107,7 +124,7 @@
                             0.982206404209137,
                             1.0
                         ],
-                        "Albedo Factor": 7.610000133514404,
+                        "Albedo Factor": 6.690000057220459,
                         "Metallic": [
                             0.0,
                             0.0,
@@ -122,7 +139,7 @@
                             1.0
                         ],
                         "Emission Factor": 0.0,
-                        "Roughness": 0.0
+                        "Roughness": 0.019999999552965164
                     },
                     "Directional Light": {
                         "Color": [
@@ -150,6 +167,10 @@
         "14939208089898045512": {
             "Type": "Image",
             "Path": "plywood_diff_1k.png"
+        },
+        "15850235946479761981": {
+            "Type": "EnviormentMap",
+            "Path": "test.hdr"
         }
     }
 }
