@@ -31,21 +31,21 @@ namespace TooGoodEngine {
 		template<typename T>
 		Ref<T> LoadAsset(const std::filesystem::path& path) 
 		{ 
-			return m_AssetManager.LoadAssetIntoBank<T>(path);
+			return m_AssetManager->LoadAssetIntoBank<T>(path);
 		}
 
 		//TODO: change this to be fetched from project file (asset directory)
 
-		inline const std::filesystem::path  GetAssetDirectory() const { return m_ProjectDirectory / "Assets"; }
+		inline const std::filesystem::path  GetAssetDirectory() const { return m_AssetManager->GetPath(); }
 		inline const std::filesystem::path& GetDirectory() const { return m_ProjectDirectory; }
 		inline Ref<Scene> GetCurrentScene() const { return m_CurrentScene; }
-		inline AssetManager& GetAssetManager() { return m_AssetManager; }
+		inline AssetManager& GetAssetManager() { return *m_AssetManager; }
 
 	private:
 		std::filesystem::path m_ProjectDirectory;
 		std::string m_ProjectName;
 
-		AssetManager m_AssetManager; 
+		Ref<AssetManager> m_AssetManager; 
 		Ref<Scene> m_CurrentScene = nullptr;
 		std::vector<Ref<Scene>> m_LoadedScenes;
 	};

@@ -14,7 +14,7 @@ namespace TooGoodEngine {
 	class AssetManager
 	{
 	public:
-		AssetManager() = default;
+		AssetManager(const std::filesystem::path& assetDirectory);
 		~AssetManager() = default;
 
 		template<typename T>
@@ -28,10 +28,10 @@ namespace TooGoodEngine {
 		{
 			static_assert(std::is_base_of_v<Asset, T>, "not a valid asset");
 
-			std::filesystem::path absolute = std::filesystem::absolute(path);
+			std::filesystem::path relative = std::filesystem::relative(path, GetPath());
 
-			if (m_AssetCache.contains(absolute))
-				return FetchAssetAssuredType<T>(m_AssetCache[absolute]);
+			if (m_AssetCache.contains(relative))
+				return FetchAssetAssuredType<T>(m_AssetCache[relative]);
 
 			T type;
 			Ref<Asset> asset = Asset::LoadAssetFromFile(type.GetAssetType(), path);
@@ -44,7 +44,7 @@ namespace TooGoodEngine {
 
 			UUID uuid = asset->GetAssetID();
 
-			m_AssetCache[absolute] = uuid;
+			m_AssetCache[relative] = uuid;
 			m_AssetBank[uuid] = asset;
 			return dynamic_pointer_cast<T>(asset);
 		}
@@ -54,10 +54,10 @@ namespace TooGoodEngine {
 		{
 			static_assert(std::is_base_of_v<Asset, T>, "not a valid asset");
 
-			std::filesystem::path absolute = std::filesystem::absolute(path);
+			std::filesystem::path relative = std::filesystem::relative(path, GetPath());
 
-			if (m_AssetCache.contains(absolute))
-				return FetchAssetAssuredType<T>(m_AssetCache[absolute]);
+			if (m_AssetCache.contains(relative))
+				return FetchAssetAssuredType<T>(m_AssetCache[relative]);
 
 			T type;
 			Ref<Asset> asset = Asset::LoadAssetFromFile(type.GetAssetType(), path);
@@ -69,7 +69,7 @@ namespace TooGoodEngine {
 			}
 
 			asset->SetID(id);
-			m_AssetCache[absolute] = id;
+			m_AssetCache[relative] = id;
 			m_AssetBank[id] = asset;
 			return dynamic_pointer_cast<T>(asset);
 		}
@@ -79,11 +79,15 @@ namespace TooGoodEngine {
 		void	   RemoveAsset(UUID uuid);
 		void       RemoveAsset(const std::filesystem::path& path);
 		
+		inline const std::filesystem::path& GetPath() const { return m_AssetDirectory; }
+		
 		const AssetBank& GetBank() const { return m_AssetBank; } //simply for rendering
 
 	private:
 		AssetBank m_AssetBank{};
 		AssetCache m_AssetCache;
+
+		std::filesystem::path m_AssetDirectory;
 	};
 
 }

@@ -1,7 +1,8 @@
 {
     "Project Name": "Sandbox",
     "Project Directory": "D:\\Dev\\TooGoodEngine-NEA\\GoodEditor",
-    "Last Build Date": "2024-08-13 23:59:05",
+    "Asset Directory": "D:\\Dev\\TooGoodEngine-NEA\\GoodEditor\\Assets",
+    "Last Build Date": "2024-08-14 10:36:10",
     "Scenes": {
         "Scene 1": {
             "Entities": {
@@ -25,7 +26,6 @@
                     },
                     "Mesh": "##Quad",
                     "Material": {
-                        "Ambient Image": 7388665359102454518,
                         "Ambient": [
                             0.9679715037345886,
                             0.9679715037345886,
@@ -94,11 +94,11 @@
                     },
                     "Mesh": "##Cube",
                     "Material": {
-                        "Ambient Image": 2944804839229490741,
+                        "Ambient Image": 7782581346362730783,
                         "Ambient": [
-                            0.0,
-                            0.8067274689674377,
-                            0.871886134147644,
+                            0.11667787283658981,
+                            0.8286183476448059,
+                            0.8861209750175476,
                             1.0
                         ],
                         "Albedo": [
@@ -126,30 +126,30 @@
                     },
                     "Directional Light": {
                         "Color": [
-                            0.0,
-                            2.384185791015625e-07,
+                            1.0,
+                            1.0,
                             1.0,
                             1.0
                         ],
                         "Direction": [
-                            1.0,
-                            0.9900000095367432,
+                            0.9100000262260437,
+                            0.18000000715255737,
                             -0.27000001072883606
                         ],
-                        "Intensity": 32.0
+                        "Intensity": 0.5
                     }
                 }
             }
         }
     },
     "Assets": {
-        "2944804839229490741": {
+        "7782581346362730783": {
             "Type": "Image",
-            "Path": "D:\\Dev\\TooGoodEngine-NEA\\GoodEditor\\Assets\\Untitled.png"
+            "Path": "Untitled.png"
         },
-        "7388665359102454518": {
+        "14939208089898045512": {
             "Type": "Image",
-            "Path": "D:\\Dev\\TooGoodEngine-NEA\\GoodEditor\\Assets\\plywood_diff_1k.png"
+            "Path": "plywood_diff_1k.png"
         }
     }
 }

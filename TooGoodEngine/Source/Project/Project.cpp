@@ -10,10 +10,14 @@ namespace TooGoodEngine {
 	{
 		JsonReader reader(path);
 
+
 		m_ProjectDirectory = std::filesystem::path(reader.Fetch<std::string>({ "Project Directory" }));
 		m_ProjectName	   = reader.Fetch<std::string>({ "Project Name" });
 
+		m_AssetManager = CreateRef<AssetManager>(reader.Fetch<std::string>({"Asset Directory"}));
+
 		LoadAssets(reader);
+
 	}
 
 	Project::Project(const std::string& name, const std::filesystem::path& pathOfDirectory)
@@ -42,9 +46,11 @@ namespace TooGoodEngine {
 		std::stringstream timeStream;
 		timeStream << std::put_time(nowTime, "%Y-%m-%d %H:%M:%S");
 
-		writer.WriteGeneric<std::string>({ "Project Name" },     m_ProjectName);
-		writer.WriteGeneric<std::string>({ "Project Directory" }, m_ProjectDirectory.string());
-		writer.WriteGeneric<std::string>({ "Last Build Date" }, timeStream.str());
+		writer.WriteGeneric({ "Project Name" },      m_ProjectName);
+		writer.WriteGeneric({ "Project Directory" }, m_ProjectDirectory);
+		writer.WriteGeneric({ "Asset Directory" },   m_AssetManager->GetPath());
+		writer.WriteGeneric({ "Last Build Date" },   timeStream.str());
+
 
 		for (const auto& scene: m_LoadedScenes)
 			SaveScene(writer, scene);
@@ -187,15 +193,16 @@ namespace TooGoodEngine {
 
 	void Project::SaveAssets(JsonWriter& writer)
 	{
-		const auto& bank = m_AssetManager.GetBank();
+		const auto& bank = m_AssetManager->GetBank();
 
 		for (const auto& [assetUUID, asset] : bank)
 		{
 			std::string handle    = std::to_string((uint64_t)assetUUID);
 			std::string_view type = GetAssetTypeString(asset->GetAssetType());
+			std::filesystem::path relativePath = std::filesystem::relative(asset->GetPath(), m_AssetManager->GetPath());
 
 			writer.WriteGeneric({ "Assets", handle, "Type" }, type);
-			writer.WriteGeneric({ "Assets", handle, "Path" }, asset->GetPath());
+			writer.WriteGeneric({ "Assets", handle, "Path" }, relativePath);
 		}
 	}
 
@@ -211,12 +218,13 @@ namespace TooGoodEngine {
 
 			AssetType type = GetAssetTypeFromString(asset["Type"].get<std::string>());
 			std::filesystem::path path = asset["Path"].get<std::filesystem::path>();
+			path = m_AssetManager->GetPath() / path;
 
 			switch (type)
 			{
-				case AssetType::Image:			m_AssetManager.FetchAndLoadAssetWithID<Image>(path, id);		 break;
-				case AssetType::Model:			m_AssetManager.FetchAndLoadAssetWithID<Model>(path, id);		 break;
-				case AssetType::EnviormentMap:  m_AssetManager.FetchAndLoadAssetWithID<EnviormentMap>(path, id); break;
+				case AssetType::Image:			m_AssetManager->FetchAndLoadAssetWithID<Image>(path, id);		  break;
+				case AssetType::Model:			m_AssetManager->FetchAndLoadAssetWithID<Model>(path, id);		  break;
+				case AssetType::EnviormentMap:  m_AssetManager->FetchAndLoadAssetWithID<EnviormentMap>(path, id); break;
 				case AssetType::None:
 				default:
 					break;

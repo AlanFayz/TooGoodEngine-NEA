@@ -1,11 +1,16 @@
 #include "AssetManager.h"
+#include "Project/Project.h"
 
 namespace TooGoodEngine {
+	AssetManager::AssetManager(const std::filesystem::path& assetDirectory)
+		: m_AssetDirectory(assetDirectory)
+	{
+	}
 	Ref<Asset> AssetManager::FetchAsset(const std::filesystem::path& path)
 	{
-		std::filesystem::path abosolute = std::filesystem::absolute(path);
-		if(m_AssetCache.contains(abosolute))
-			return FetchAsset(m_AssetCache[abosolute]);
+		std::filesystem::path relative = std::filesystem::relative(path, GetPath());
+		if(m_AssetCache.contains(relative))
+			return FetchAsset(m_AssetCache[relative]);
 
 		return nullptr;
 	}
@@ -20,12 +25,13 @@ namespace TooGoodEngine {
 	}
 	void AssetManager::RemoveAsset(const std::filesystem::path& path)
 	{
-		std::filesystem::path absolute = std::filesystem::absolute(path);
+		std::filesystem::path relative = std::filesystem::relative(path, GetPath());
 		
-		if (m_AssetCache.contains(absolute))
+		if (m_AssetCache.contains(relative))
 		{
-			RemoveAsset(m_AssetCache[absolute]);
-			m_AssetCache.erase(absolute);
+			RemoveAsset(m_AssetCache[relative]);
+			m_AssetCache.erase(relative);
 		}
 	}
+
 }
