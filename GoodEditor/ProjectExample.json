@@ -1,19 +1,26 @@
 {
   "Project Name": "Sandbox",
   "Project Directory": "D:\\Dev\\TooGoodEngine-NEA\\GoodEditor",
-  "Last Build Date": "2024-08-13 23:46:58",
-  "Assets": {
-    "5513717721719842451": {
-      "Type": "Image",
-      "Path": "D:\\Dev\\TooGoodEngine-NEA\\GoodEditor\\Assets\\Untitled.png"
-    },
-    "7388665359102454518": {
-      "Type": "Image",
-      "Path": "D:\\Dev\\TooGoodEngine-NEA\\GoodEditor\\Assets\\plywood_diff_1k.png"
-    }
-  },
+  "Asset Directory": "D:\\Dev\\TooGoodEngine-NEA\\GoodEditor\\Assets",
+  "Last Build Date": "2024-08-14 15:07:19",
   "Scenes": {
     "Scene 1": {
+      "Scene Settings": {
+        "Depth Testing": 1,
+        "Culling": 0,
+        "Winding Order": 2,
+        "Blending Source": 0,
+        "Blending Destination": 0,
+        "Filling Mode": 3,
+        "Level Of Detail": 0.0,
+        "Gradient": 1.0,
+        "Clear Color": [
+          0.23622047901153564,
+          0.1599603295326233,
+          0.1599603295326233,
+          1.0
+        ]
+      },
       "Entities": {
         "Entity 1": {
           "Transform": {
@@ -35,7 +42,6 @@
           },
           "Mesh": "##Quad",
           "Material": {
-            "Ambient Image": "D:\\Dev\\TooGoodEngine-NEA\\GoodEditor\\Assets\\plywood_diff_1k.png",
             "Ambient": [
               0.9679715037345886,
               0.9679715037345886,
@@ -97,18 +103,18 @@
               2.5999999046325684
             ],
             "Rotation": [
-              -390.5,
+              -235.3000030517578,
               143.60000610351563,
-              446.79998779296875
+              536.2999877929688
             ]
           },
           "Mesh": "##Cube",
           "Material": {
-            "Ambient Image": "D:\\Dev\\TooGoodEngine-NEA\\GoodEditor\\Assets\\Untitled.png",
+            "Ambient Image": 7782581346362730783,
             "Ambient": [
-              0.0,
-              0.8067274689674377,
-              0.871886134147644,
+              0.11667787283658981,
+              0.8286183476448059,
+              0.8861209750175476,
               1.0
             ],
             "Albedo": [
@@ -117,7 +123,7 @@
               0.982206404209137,
               1.0
             ],
-            "Albedo Factor": 7.610000133514404,
+            "Albedo Factor": 6.690000057220459,
             "Metallic": [
               0.0,
               0.0,
@@ -132,24 +138,38 @@
               1.0
             ],
             "Emission Factor": 0.0,
-            "Roughness": 0.0
+            "Roughness": 0.019999999552965164
           },
           "Directional Light": {
             "Color": [
-              0.0,
-              2.384185791015625e-07,
+              1.0,
+              1.0,
               1.0,
               1.0
             ],
             "Direction": [
-              1.0,
-              0.9900000095367432,
+              0.9100000262260437,
+              0.18000000715255737,
               -0.27000001072883606
             ],
-            "Intensity": 32.0
+            "Intensity": 0.5
           }
         }
       }
+    }
+  },
+  "Assets": {
+    "7782581346362730783": {
+      "Type": "Image",
+      "Path": "Untitled.png"
+    },
+    "14939208089898045512": {
+      "Type": "Image",
+      "Path": "plywood_diff_1k.png"
+    },
+    "15850235946479761981": {
+      "Type": "EnviormentMap",
+      "Path": "test.hdr"
     }
   }
 }

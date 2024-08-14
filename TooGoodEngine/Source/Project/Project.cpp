@@ -121,7 +121,8 @@ namespace TooGoodEngine {
 			for (auto& child : children)
 			{
 				Entity childEntity = registry.GetEntityByName(child);
-				registry.Move(childEntity, parent);
+				if(childEntity)
+					registry.Move(childEntity, parent);
 			}
 		}
 
@@ -134,23 +135,6 @@ namespace TooGoodEngine {
 
 		auto& jsonSettings = jsonScene["Scene Settings"];
 
-		/*
-			 "Depth Testing": 1,
-                "Culling": 0,
-                "Winding Order": 2,
-                "Blending Source": 0,
-                "Blending Destination": 0,
-                "Filling Mode": 3,
-                "Enviroment Map": 15850235946479761981,
-                "Level Of Detail": 2.0,
-                "Gradient": 1.0,
-                "Clear Color": [
-                    0.0,
-                    0.0,
-                    0.0,
-                    1.0
-                ]
-		*/
 		renderSettings.DepthTesting  = (DepthTestOption)jsonSettings["Depth Testing"].get<int>();
 		renderSettings.WindingOrder  = (WindingOrderOption)jsonSettings["Winding Order"].get<int>();
 		renderSettings.Source        = (BlendingFactor)jsonSettings["Blending Source"].get<int>();
@@ -162,8 +146,12 @@ namespace TooGoodEngine {
 		std::array<float, 4> clearColor = jsonSettings["Clear Color"].get<std::array<float, 4>>();
 		renderSettings.ClearColor = { clearColor[0], clearColor[1], clearColor[2], clearColor[3] };
 
-		UUID id = jsonSettings["Enviroment Map"].get<uint64_t>();
-		renderSettings.CurrentEnviormentMap = m_AssetManager->FetchAssetAssuredType<EnviormentMap>(id);
+		if (jsonSettings.contains("Environment Map"))
+		{
+			UUID id = jsonSettings["Environment Map"].get<uint64_t>();
+			renderSettings.CurrentEnvironmentMap = m_AssetManager->FetchAssetAssuredType<EnvironmentMap>(id);
+		}
+		
 
 		scene->GetSceneRenderer()->ChangeSettings(renderSettings);
 	}
@@ -194,7 +182,8 @@ namespace TooGoodEngine {
 				for (auto& child : node.Children)
 				{
 					Entity ent = scene->GetRegistry().GetEntity(child);
-					strChildren.push_back(ent.GetName());
+					if(ent)
+						strChildren.push_back(ent.GetName());
 				}
 
 				writer.WriteGeneric(pathToChildren, strChildren);
@@ -246,8 +235,8 @@ namespace TooGoodEngine {
 		writer.WriteGeneric({ "Scenes", sceneName, "Scene Settings", "Blending Destination" }, (int)renderSettings.Destination);
 		writer.WriteGeneric({ "Scenes", sceneName, "Scene Settings", "Filling Mode" },         (int)renderSettings.FillingMode);
 
-		if (renderSettings.CurrentEnviormentMap)
-			writer.WriteGeneric({ "Scenes", sceneName, "Scene Settings", "Enviroment Map" }, (uint64_t)renderSettings.CurrentEnviormentMap->GetAssetID());
+		if (renderSettings.CurrentEnvironmentMap)
+			writer.WriteGeneric({ "Scenes", sceneName, "Scene Settings", "Environment Map" }, (uint64_t)renderSettings.CurrentEnvironmentMap->GetAssetID());
 
 		writer.WriteGeneric({ "Scenes", sceneName, "Scene Settings", "Level Of Detail" }, renderSettings.LevelOfDetail);
 		writer.WriteGeneric({ "Scenes", sceneName, "Scene Settings", "Gradient" },		  renderSettings.Gradient);
@@ -288,7 +277,7 @@ namespace TooGoodEngine {
 			{
 				case AssetType::Image:			m_AssetManager->FetchAndLoadAssetWithID<Image>(path, id);		  break;
 				case AssetType::Model:			m_AssetManager->FetchAndLoadAssetWithID<Model>(path, id);		  break;
-				case AssetType::EnviormentMap:  m_AssetManager->FetchAndLoadAssetWithID<EnviormentMap>(path, id); break;
+				case AssetType::EnvironmentMap:  m_AssetManager->FetchAndLoadAssetWithID<EnvironmentMap>(path, id); break;
 				case AssetType::None:
 				default:
 					break;

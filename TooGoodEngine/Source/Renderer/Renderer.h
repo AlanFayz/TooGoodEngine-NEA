@@ -5,7 +5,7 @@
 #include "Math/Camera.h"
 #include "Assets/Model.h"
 #include "API/OpenGL/Framebuffer.h"
-#include "Assets/EnviormentMap.h"
+#include "Assets/EnvironmentMap.h"
 
 namespace TooGoodEngine {
 
@@ -52,7 +52,7 @@ namespace TooGoodEngine {
 		BlendingFactor Destination = BlendingFactor::None;
 		FillMode FillingMode       = FillMode::Fill;
 
-		Ref<EnviormentMap> CurrentEnviormentMap = nullptr;
+		Ref<EnvironmentMap> CurrentEnvironmentMap = nullptr;
 
 		float Gradient = 1.0f;
 		float LevelOfDetail = 2.0f;

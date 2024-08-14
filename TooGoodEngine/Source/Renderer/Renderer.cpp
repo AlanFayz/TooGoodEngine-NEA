@@ -225,11 +225,11 @@ namespace TooGoodEngine {
 		m_Data.GeometryShaderProgram.SetUniform("u_CameraPosition", m_Data.CurrentCamera->GetCameraPosition());
 		m_Data.GeometryShaderProgram.SetUniform("u_NumberOfMipMaps", (float)g_NumberOfMipMaps);
 		
-		if (m_Settings.CurrentEnviormentMap)
+		if (m_Settings.CurrentEnvironmentMap)
 		{
 			m_Data.GeometryShaderProgram.SetUniform("u_HasCubeMap", 1);
 			m_Data.GeometryShaderProgram.SetUniform("u_CubeMap", 0);
-			m_Settings.CurrentEnviormentMap->GetTexture().Bind(0);
+			m_Settings.CurrentEnvironmentMap->GetTexture().Bind(0);
 		}
 		else
 		{
@@ -257,20 +257,20 @@ namespace TooGoodEngine {
 
 	void Renderer::_RenderSkyBox()
 	{
-		if (m_Settings.CurrentEnviormentMap)
+		if (m_Settings.CurrentEnvironmentMap)
 		{
 			glDepthMask(GL_FALSE);
 			glDepthFunc(GL_LEQUAL);
 			glDisable(GL_CULL_FACE);
 
 			m_Data.SkyBoxShaderProgram.Use();
-			m_Settings.CurrentEnviormentMap->GetTexture().Bind(0);
+			m_Settings.CurrentEnvironmentMap->GetTexture().Bind(0);
 												
 			glm::mat4 viewProjection = m_Data.CurrentCamera->GetProjection() *
 									   glm::mat4(glm::mat3(m_Data.CurrentCamera->GetView())); //(removes translation as translation is in the last column)
 
 			m_Data.SkyBoxShaderProgram.SetUniform("u_ViewProjection", viewProjection);
-			m_Data.SkyBoxShaderProgram.SetUniform("u_EnviormentMap", 0);
+			m_Data.SkyBoxShaderProgram.SetUniform("u_EnvironmentMap", 0);
 			m_Data.SkyBoxShaderProgram.SetUniform("u_LevelOfDetail", m_Settings.LevelOfDetail);
 
 			Draw(m_Data.CubeGeometryIndex, glm::identity<glm::mat4>());

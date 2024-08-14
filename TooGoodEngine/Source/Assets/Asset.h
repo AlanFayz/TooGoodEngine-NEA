@@ -11,7 +11,7 @@ namespace TooGoodEngine {
 		None = 0, //more to add
 		Image,
 		Model, 
-		EnviormentMap
+		EnvironmentMap
 	};
 
 	std::string_view GetAssetTypeString(AssetType type);

@@ -97,8 +97,6 @@ namespace TooGoodEngine {
 		auto bucket = GetBucketAssuredType<Type>();
 		if (bucket->Contains(entity))
 			bucket->Remove(entity);
-
-		TGE_LOG_WARNING("entity ", entity.GetName(), " doesn't contain component ", typeid(Type).name());
 	}
 
 	template<typename Type>

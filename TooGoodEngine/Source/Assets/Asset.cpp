@@ -5,7 +5,7 @@
 
 #include "Image.h"
 #include "Model.h"
-#include "EnviormentMap.h"
+#include "EnvironmentMap.h"
 
 namespace TooGoodEngine {
 
@@ -21,7 +21,7 @@ namespace TooGoodEngine {
 		{AssetType::None,		   LoadUntypedAsset}, 
 		{AssetType::Image,		   Image::LoadImageAssetFromFile}, 
 		{AssetType::Model,		   Model::LoadModelAssetFromFile}, 
-		{AssetType::EnviormentMap, EnviormentMap::LoadEnviromentMapAssetFromFile}
+		{AssetType::EnvironmentMap, EnvironmentMap::LoadEnviromentMapAssetFromFile}
 	};
 
 	Ref<Asset> Asset::LoadAssetFromFile(AssetType type, const std::filesystem::path& path)
@@ -51,7 +51,7 @@ namespace TooGoodEngine {
 			case AssetType::None:		   return "None";
 			case AssetType::Image:		   return "Image";
 			case AssetType::Model:		   return "Model";
-			case AssetType::EnviormentMap: return "EnviormentMap";
+			case AssetType::EnvironmentMap: return "EnvironmentMap";
 			default:					   return "None";
 				break;
 		}
@@ -62,7 +62,7 @@ namespace TooGoodEngine {
 		if (strType == "None")			return AssetType::None;
 		if (strType == "Image")			return AssetType::Image;
 		if (strType == "Model")			return AssetType::Model;
-		if (strType == "EnviormentMap")	return AssetType::EnviormentMap;
+		if (strType == "EnvironmentMap")	return AssetType::EnvironmentMap;
 
 		return AssetType::None;
 	}

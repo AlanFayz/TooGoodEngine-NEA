@@ -1,5 +1,7 @@
 #include "EntityTree.h"
 
+#include "Components/Components.h"
+
 namespace TooGoodEngine {
 
 	Entity EntityTree::Add(const std::string& name)
@@ -38,6 +40,7 @@ namespace TooGoodEngine {
 		Node& parentNode = m_Nodes[index];
 		parentNode.Children.push_back(m_Nodes.size() - 1);
 
+
 		return entity;
 	}
 
@@ -53,7 +56,15 @@ namespace TooGoodEngine {
 		for (auto& child : m_Nodes[nodeIndex].Children)
 			RemoveEntity(child);
 
-		nodeIndex = _Find(GetEntity(id)); //nodeIndex may have changed from previous erases
+		Entity entity = GetEntity(id);
+		nodeIndex = _Find(entity); //nodeIndex may have changed from previous erases
+
+		RemoveComponent<MeshComponent>(entity);
+		RemoveComponent<TransformComponent>(entity);
+		RemoveComponent<MaterialComponent>(entity);
+		RemoveComponent<DirectionalLightComponent>(entity);
+		RemoveComponent<PointLightComponent>(entity);
+
 		m_Nodes.erase(m_Nodes.begin() + nodeIndex);
 		m_Entites[id] = Entity("null entity", g_NullEntity);
 	}

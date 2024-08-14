@@ -95,7 +95,7 @@ namespace GoodEditor {
                         if (extension == ".fbx" || extension == ".obj")
                             g_SelectedProject->GetAssetManager().LoadAssetIntoBank<Model>(path);
                         if (extension == ".hdr")
-                            g_SelectedProject->GetAssetManager().LoadAssetIntoBank<EnviormentMap>(path);
+                            g_SelectedProject->GetAssetManager().LoadAssetIntoBank<EnvironmentMap>(path);
 
                         m_CachedDirectories.insert(path);
                     }
@@ -110,7 +110,7 @@ namespace GoodEditor {
                             if (extension == ".png")
                                 asset = g_SelectedProject->GetAssetManager().LoadAssetIntoBank<Image>(path);
                             else
-                                asset = g_SelectedProject->GetAssetManager().LoadAssetIntoBank<EnviormentMap>(path);
+                                asset = g_SelectedProject->GetAssetManager().LoadAssetIntoBank<EnvironmentMap>(path);
                         }
 
                         TooGoodEngine::UUID id = asset->GetAssetID();
@@ -118,7 +118,7 @@ namespace GoodEditor {
                         if(extension == ".png")
                             ImGui::SetDragDropPayload("IMAGE_TRANSFER_UUID", &id, sizeof(TooGoodEngine::UUID));
                         else 
-                            ImGui::SetDragDropPayload("ENVIORMENT_MAP_TRANSFER_UUID", &id, sizeof(TooGoodEngine::UUID));
+                            ImGui::SetDragDropPayload("Environment_MAP_TRANSFER_UUID", &id, sizeof(TooGoodEngine::UUID));
 
 
                         ImGui::Text(filename.c_str());

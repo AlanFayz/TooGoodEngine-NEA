@@ -2,7 +2,7 @@
     "Project Name": "Sandbox",
     "Project Directory": "D:\\Dev\\TooGoodEngine-NEA\\GoodEditor",
     "Asset Directory": "D:\\Dev\\TooGoodEngine-NEA\\GoodEditor\\Assets",
-    "Last Build Date": "2024-08-14 13:45:40",
+    "Last Build Date": "2024-08-14 16:04:16",
     "Scenes": {
         "Scene 1": {
             "Scene Settings": {
@@ -12,13 +12,13 @@
                 "Blending Source": 0,
                 "Blending Destination": 0,
                 "Filling Mode": 3,
-                "Enviroment Map": 15850235946479761981,
-                "Level Of Detail": 2.0,
+                "Environment Map": 5228753685964222354,
+                "Level Of Detail": 0.0,
                 "Gradient": 1.0,
                 "Clear Color": [
-                    0.0,
-                    0.0,
-                    0.0,
+                    0.23622047901153564,
+                    0.1599603295326233,
+                    0.1599603295326233,
                     1.0
                 ]
             },
@@ -104,9 +104,9 @@
                             2.5999999046325684
                         ],
                         "Rotation": [
-                            -390.5,
+                            -235.3000030517578,
                             143.60000610351563,
-                            446.79998779296875
+                            536.2999877929688
                         ]
                     },
                     "Mesh": "##Cube",
@@ -155,11 +155,32 @@
                         ],
                         "Intensity": 0.5
                     }
+                },
+                "Entity2": {
+                    "Children": [],
+                    "Directional Light": {
+                        "Color": [
+                            0.6569823026657104,
+                            0.0,
+                            0.7046263217926025,
+                            1.0
+                        ],
+                        "Direction": [
+                            -1.0,
+                            0.9900000095367432,
+                            -1.0
+                        ],
+                        "Intensity": 52.0
+                    }
                 }
             }
         }
     },
     "Assets": {
+        "5228753685964222354": {
+            "Type": "EnvironmentMap",
+            "Path": "test.hdr"
+        },
         "7782581346362730783": {
             "Type": "Image",
             "Path": "Untitled.png"
@@ -167,10 +188,6 @@
         "14939208089898045512": {
             "Type": "Image",
             "Path": "plywood_diff_1k.png"
-        },
-        "15850235946479761981": {
-            "Type": "EnviormentMap",
-            "Path": "test.hdr"
         }
     }
 }

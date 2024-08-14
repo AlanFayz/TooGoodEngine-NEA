@@ -1,4 +1,4 @@
-#include "EnviormentMap.h"
+#include "EnvironmentMap.h"
 
 #include "API/OpenGL/Program.h"
 #include "API/OpenGL/Framebuffer.h"
@@ -10,9 +10,9 @@
 
 namespace TooGoodEngine {
 
-	static Ref<OpenGL::Program> s_EnviormentProgram;
+	static Ref<OpenGL::Program> s_EnvironmentProgram;
 
-	static const char* s_EnviormentMapSourceVertex =
+	static const char* s_EnvironmentMapSourceVertex =
 	R"(
 		#version 460 core
 		
@@ -57,18 +57,18 @@ namespace TooGoodEngine {
 		}
 	)";
 
-	Ref<EnviormentMap> EnviormentMap::LoadEnviromentMapAssetFromFile(const std::filesystem::path& path)
+	Ref<EnvironmentMap> EnvironmentMap::LoadEnviromentMapAssetFromFile(const std::filesystem::path& path)
 	{
-		if (!s_EnviormentProgram)
+		if (!s_EnvironmentProgram)
 		{
 			OpenGL::ShaderSourceMap shaderMap;
 			shaderMap[OpenGL::ShaderType::FragmentShader] = s_EnviromentMapSourceFragment;
-			shaderMap[OpenGL::ShaderType::VertexShader] = s_EnviormentMapSourceVertex;
+			shaderMap[OpenGL::ShaderType::VertexShader] = s_EnvironmentMapSourceVertex;
 
-			s_EnviormentProgram = CreateRef<OpenGL::Program>(shaderMap);
+			s_EnvironmentProgram = CreateRef<OpenGL::Program>(shaderMap);
 		}
 
-		Ref<EnviormentMap> enviormentMap = CreateRef<EnviormentMap>();
+		Ref<EnvironmentMap> enviormentMap = CreateRef<EnvironmentMap>();
 
 		const int desiredChannels = 4;
 		int channels = 0;
@@ -115,8 +115,8 @@ namespace TooGoodEngine {
 			OpenGL::Texture2DInfo info{};
 			info.Type = OpenGL::Texture2DType::CubeMap;
 			info.Format = OpenGL::Texture2DFormat::RGBA32F;
-			info.Width = g_EnviormentMapWidth; //May make variable in the future.
-			info.Height = g_EnviormentMapHeight;
+			info.Width = g_EnvironmentMapWidth; //May make variable in the future.
+			info.Height = g_EnvironmentMapHeight;
 			info.MipMapLevels = g_NumberOfMipMaps;
 
 			info.Paramaters[OpenGL::TextureParamater::WrapModeS] = OpenGL::TextureParamaterOption::ClampToEdge;
@@ -144,7 +144,7 @@ namespace TooGoodEngine {
 		info.DepthAttachment = nullptr;
 		OpenGL::Framebuffer framebuffer(info);
 
-		OpenGL::Command::SetViewport(g_EnviormentMapWidth, g_EnviormentMapHeight);
+		OpenGL::Command::SetViewport(g_EnvironmentMapWidth, g_EnvironmentMapHeight);
 
 		framebuffer.Bind();
 
@@ -156,13 +156,13 @@ namespace TooGoodEngine {
 			//TODO: add as a part of the framebuffer api
 			glNamedFramebufferTextureLayer(framebuffer.GetHandle(), GL_COLOR_ATTACHMENT0, enviormentMap->m_Texture.GetHandle(), 0, i);
 
-			s_EnviormentProgram->Use();
+			s_EnvironmentProgram->Use();
 
 			hdrTexture->Bind(0);
-			s_EnviormentProgram->SetUniform("u_ViewProjection", projection* viewMatrices[i]);
-			s_EnviormentProgram->SetUniform("EquirectangularMap", 0);
+			s_EnvironmentProgram->SetUniform("u_ViewProjection", projection* viewMatrices[i]);
+			s_EnvironmentProgram->SetUniform("EquirectangularMap", 0);
 
-			_RenderCube(s_EnviormentProgram.get());
+			_RenderCube(s_EnvironmentProgram.get());
 		}
 
 		framebuffer.Unbind();
@@ -170,9 +170,9 @@ namespace TooGoodEngine {
 
 		enviormentMap->m_Texture.GenerateMipmaps();
 
-		return enviormentMap; 
+		return enviormentMap;
 	}
-	void EnviormentMap::_RenderCube(OpenGL::Program* program)
+	void EnvironmentMap::_RenderCube(OpenGL::Program* program)
 	{
 		static float vertices[] = {
 			// positions          

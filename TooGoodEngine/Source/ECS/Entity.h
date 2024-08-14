@@ -21,6 +21,7 @@ namespace TooGoodEngine {
 		inline operator size_t() const { return m_ID; }
 		inline operator std::string_view() const { return m_Name; }
 		inline operator const char* () const { return m_Name.data(); }
+		inline operator bool() const { return m_ID != g_NullEntity; }
 
 	private:
 		std::string m_Name;

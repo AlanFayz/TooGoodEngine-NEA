@@ -83,6 +83,9 @@ namespace TooGoodEngine {
 			m_Registry.ForEach<MeshComponent>(
 				[this](auto& component, const auto entityID) 
 				{
+					if (entityID == g_NullEntity)
+						return;
+
 					if (!m_Registry.HasComponent<TransformComponent>(entityID))
 						return;
 

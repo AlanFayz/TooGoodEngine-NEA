@@ -15,13 +15,14 @@ namespace GoodEditor {
 
 	private:
 		static void _DrawChildren(const Entity& entity,
-								  EntityTree& tree,
+								  EntityTree& tree, Renderer& sceneRenderer,
 								  std::unordered_set<EntityID>& displayed);
 
 
 		//will display the actual components of the entity
 		static void _DrawEntity(const Entity& entity, EntityTree& tree);
-
+		static bool _EntityPopup(const Entity& entity, Renderer& sceneRenderer, EntityTree& tree);
+		static bool _EntityPopup(const Entity& parent, const Entity& child, Renderer& sceneRenderer, EntityTree& tree);
 		static void _DrawSettings(const Ref<Scene>& scene);
 		
 		static void _DrawComponent(TransformComponent& component);

@@ -27,9 +27,22 @@ namespace GoodEditor {
 
 		if (ImGui::TreeNode("Entities"))
 		{
+			if (ImGui::BeginPopupContextItem())
+			{
+				if (ImGui::MenuItem("Add Entity"))
+					registry.Add("Entity" + std::to_string(currentScene->GetRegistry().GetCount()));
+				
+				ImGui::EndPopup();
+			}
+
 			for (EntityID i = 0; i < registry.GetCount(); i++)
 			{
 				Entity entity = registry.GetEntity(i);
+
+				//deleted or null entity
+				if (!entity)
+					continue;
+
 				auto& node    = registry.GetNode(entity);
 
 				//already displayed or going to be displayed from parent
@@ -38,25 +51,35 @@ namespace GoodEditor {
 
 				displayedEntities.insert(i); 
 
+				ImGui::PushID(m_IDCount++);
+					
 				if (ImGui::TreeNode(entity.GetName().c_str()))
 				{
-					_DrawEntity(entity, registry);
-					_DrawChildren(entity, registry, displayedEntities); //recursively call
+					if (!_EntityPopup(entity, *currentScene->GetSceneRenderer(), registry)) //returns true if entity has been deleted
+					{
+						_DrawEntity(entity, registry);
+						_DrawChildren(entity, registry, *currentScene->GetSceneRenderer(), displayedEntities); //recursively call
+					}
+					
 
 					ImGui::TreePop();
 				}
+			
+				ImGui::PopID();
 			}
 
 			ImGui::TreePop();
 		}
-
-	
+		
 		ImGui::End();
 
 		m_IDCount = 1000;
 	}
-	void ScenePanel::_DrawChildren(const Entity& entity, EntityTree& tree, std::unordered_set<EntityID>& displayed)
+	void ScenePanel::_DrawChildren(const Entity& entity, EntityTree& tree, Renderer& sceneRenderer, std::unordered_set<EntityID>& displayed)
 	{
+		if (!entity)
+			return;
+
 		auto& node = tree.GetNode(entity);
 
 		for (size_t i = 0; i < node.Children.size(); i++)
@@ -66,12 +89,18 @@ namespace GoodEditor {
 
 			Entity childEntity = tree.GetEntity(node.Children[i]);
 
+			if (!childEntity)
+				continue;
+
 			displayed.insert(node.Children[i]);
 
 			if (ImGui::TreeNode(childEntity.GetName().c_str()))
 			{
-				_DrawEntity(childEntity, tree);
-				_DrawChildren(childEntity, tree, displayed);
+				if (!_EntityPopup(childEntity, sceneRenderer, tree))
+				{
+					_DrawEntity(childEntity, tree);
+					_DrawChildren(childEntity, tree, sceneRenderer, displayed);
+				}
 
 				ImGui::TreePop();
 			}
@@ -93,6 +122,64 @@ namespace GoodEditor {
 
 		if (tree.HasComponent<DirectionalLightComponent>(entity))
 			_DrawComponent(tree.GetComponent<DirectionalLightComponent>(entity));
+	}
+	bool ScenePanel::_EntityPopup(const Entity& entity, Renderer& sceneRenderer, EntityTree& tree)
+	{
+		if (ImGui::BeginPopupContextItem())
+		{
+			if (ImGui::MenuItem("Remove"))
+			{
+				tree.RemoveEntity(entity);
+				ImGui::EndPopup();
+				return true;
+			}
+
+			if (ImGui::MenuItem("Add Quad") && !tree.HasComponent<MeshComponent>(entity))
+			{
+				MeshComponent component{};
+				component.ID = 0;
+				component.PathToSource = "##Quad";
+				tree.AddComponent(entity, component);
+			}
+
+			if(ImGui::MenuItem("Add Cube") && !tree.HasComponent<MeshComponent>(entity))
+			{
+				MeshComponent component{};
+				component.ID = 1;
+				component.PathToSource = "##Cube";
+				tree.AddComponent(entity, component);
+			}
+
+			if (ImGui::MenuItem("Add Transform") && !tree.HasComponent<TransformComponent>(entity))
+				tree.EmplaceComponent<TransformComponent>(entity);
+			
+			if (ImGui::MenuItem("Add Material") && !tree.HasComponent<MaterialComponent>(entity))
+			{
+				MaterialComponent component{};
+				Material material{};
+				component.ID = sceneRenderer.AddMaterial(material);
+				component.Material = material;
+
+				tree.AddComponent(entity, component);
+			}
+
+			if (ImGui::MenuItem("Add Point Light") && !tree.HasComponent<PointLightComponent>(entity))
+				tree.EmplaceComponent<PointLightComponent>(entity);
+			
+			if (ImGui::MenuItem("Add Directional Light") && !tree.HasComponent<DirectionalLightComponent>(entity))
+				tree.EmplaceComponent<DirectionalLightComponent>(entity);
+
+			if (ImGui::MenuItem("Add Entity"))
+				tree.Add(entity, "Entity" + std::to_string(tree.GetCount()));
+
+			ImGui::EndPopup();
+		}
+
+		return false;
+	}
+	bool ScenePanel::_EntityPopup(const Entity& parent, const Entity& child, Renderer& sceneRenderer, EntityTree& tree)
+	{
+		return false;
 	}
 	void ScenePanel::_DrawSettings(const Ref<Scene>& scene)
 	{
@@ -175,38 +262,38 @@ namespace GoodEditor {
 		if (ImGui::DragFloat("Gradient", &renderSettings.Gradient, 0.01f, 0.0f, FLT_MAX / 2.0f))
 			changed = true;
 
-		ImGui::SeparatorText("Enviorment map");
+		ImGui::SeparatorText("Environment map");
 
 		if (ImGui::DragFloat("Level of detail", &renderSettings.LevelOfDetail, 0.01f, 0.0f, (float)g_NumberOfMipMaps - 1.0f))
 			changed = true;
 
-		if (renderSettings.CurrentEnviormentMap)
+		if (renderSettings.CurrentEnvironmentMap)
 		{
-			uint32_t handle = renderSettings.CurrentEnviormentMap->GetTexture().GetHandle();
+			uint32_t handle = renderSettings.CurrentEnvironmentMap->GetTexture().GetHandle();
 			if (ImGui::Button("Remove"))
 			{
-				renderSettings.CurrentEnviormentMap.reset();
-				renderSettings.CurrentEnviormentMap = nullptr;
+				renderSettings.CurrentEnvironmentMap.reset();
+				renderSettings.CurrentEnvironmentMap = nullptr;
 				changed = true;
 			}
 
 			ImGui::SameLine();
-			ImGui::Text("Enviorment Map");
+			ImGui::Text("Environment Map");
 		}
 		else
 		{
 
 			float col[] = { 0.0f, 0.0f, 0.0f, 0.0f };
-			ImGui::ColorEdit4("Enviorment Map", col, ImGuiColorEditFlags_AlphaPreview |
+			ImGui::ColorEdit4("Environment Map", col, ImGuiColorEditFlags_AlphaPreview |
 				ImGuiColorEditFlags_NoInputs |
 				ImGuiColorEditFlags_NoPicker);
 
 			if (ImGui::BeginDragDropTarget())
 			{
-				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ENVIORMENT_MAP_TRANSFER_UUID"))
+				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Environment_MAP_TRANSFER_UUID"))
 				{
 					UUID id = *(UUID*)payload->Data;
-					renderSettings.CurrentEnviormentMap = g_SelectedProject->GetAssetManager().FetchAssetAssuredType<EnviormentMap>(id);
+					renderSettings.CurrentEnvironmentMap = g_SelectedProject->GetAssetManager().FetchAssetAssuredType<EnvironmentMap>(id);
 				}
 
 				changed = true;
