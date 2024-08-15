@@ -8,7 +8,7 @@ const int MATERIAL_TYPE_IMAGE  = 1;
 const int MATERIAL_TYPE_VECTOR = 2;
 
 const float PI = 3.1415926535897932384626433832795;
-const float EPSILON = 1.192092896e-07;
+const float EPSILON = 0.001;
 
 const float FLOAT_MAX = 3.402823466e+38;
 const float FLOAT_MIN = 1.175494351e-38;
@@ -121,7 +121,7 @@ float DistributionGGX(float NdotH, float roughness)
     float denom = (NdotH2 * (a2 - 1.0) + 1.0);
     denom = PI * denom * denom;
 	
-    return a2 / denom; 
+    return a2 / max(denom, EPSILON); 
 }
 
 /*
@@ -150,7 +150,7 @@ float GeometryFun(float NdotV, float NdotL, float roughness)
 
 vec4 FresnelApproximation(float NdotL, vec4 reflectivity)
 {
-	return reflectivity + (1.0 - reflectivity) * pow(1.0 - NdotL, 5.0);
+	return reflectivity + (1.0 - reflectivity) * pow(clamp(1.0 - NdotL, 0.0, 1.0), 5.0);
 }
 
 float Attenuate(float radius, float dist)
@@ -198,12 +198,13 @@ vec4 Shade(in ShadeInfo info)
 							ks.rgb;
 
     float cookTorranceDenom = (4.0 * NdotL * NdotV) + EPSILON;
-
 	vec4 Specular = vec4(cookTorranceNum / cookTorranceDenom, 1.0);
 
 	vec4 BRDF = kd * lambertianDiffuse + Specular; 
 
-	return BRDF * vec4(radiance, 1.0) * NdotL;
+	vec4 color = BRDF * vec4(radiance, 1.0) * NdotL;
+
+	return color;
 }
 
 
@@ -247,6 +248,7 @@ void main()
 	for(int i = 0; i < u_DirectionalLightSize; i++)
 	{
 		info.LightDirection = DirectionalLights.Data[i].Direction.xyz;
+
 		info.LightColor = DirectionalLights.Data[i].Color.rgb * max(DirectionalLights.Data[i].Intensity, 0.0);
 		info.Attenuation = 1.0;
 

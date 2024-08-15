@@ -2,7 +2,7 @@
     "Project Name": "Sandbox",
     "Project Directory": "D:\\Dev\\TooGoodEngine-NEA\\GoodEditor",
     "Asset Directory": "D:\\Dev\\TooGoodEngine-NEA\\GoodEditor\\Assets",
-    "Last Build Date": "2024-08-14 22:54:02",
+    "Last Build Date": "2024-08-15 11:14:49",
     "Scenes": {
         "Scene 1": {
             "Scene Settings": {
@@ -125,9 +125,9 @@
                         ],
                         "Albedo Factor": 6.690000057220459,
                         "Metallic": [
-                            0.0,
-                            0.0,
-                            0.0,
+                            1.0,
+                            1.0,
+                            1.0,
                             1.0
                         ],
                         "Metallic Factor": 0.0,

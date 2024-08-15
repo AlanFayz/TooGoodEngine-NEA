@@ -58,6 +58,7 @@ namespace TooGoodEngine {
 				m_LayerStack.OnUpdateLayers(delta);
 			}
 
+
 			{
 				TGE_PROFILE_SCOPE(UpdateGui);
 				_UpdateImGui(delta);
