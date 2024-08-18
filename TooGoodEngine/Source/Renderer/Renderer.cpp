@@ -575,6 +575,7 @@ namespace TooGoodEngine {
 			info.Format = OpenGL::Texture2DFormat::RGBA32F;
 			info.Width = m_Settings.ViewportWidth;
 			info.Height = m_Settings.ViewportHeight;
+			info.MipMapLevels = RenderData::BloomMipLevelCount;
 
 			info.Paramaters[OpenGL::TextureParamater::MinFilter] = OpenGL::TextureParamaterOption::Linear;
 			info.Paramaters[OpenGL::TextureParamater::MagFilter] = OpenGL::TextureParamaterOption::Linear;
@@ -632,6 +633,13 @@ namespace TooGoodEngine {
 			  {OpenGL::ShaderType::VertexShader, m_Data.ShaderDirectory / "SkyBox.vert"} };
 
 			m_Data.SkyBoxShaderProgram = OpenGL::Program(map);
+		}
+
+		{
+			OpenGL::ShaderMap map
+			{ {OpenGL::ShaderType::ComputeShader, m_Data.ShaderDirectory / "Bloom.comp"} };
+			
+			m_Data.BloomPass = OpenGL::Program(map);
 		}
 
 		{

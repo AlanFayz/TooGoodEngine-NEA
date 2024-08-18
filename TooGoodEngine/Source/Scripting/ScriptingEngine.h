@@ -26,5 +26,6 @@ namespace TooGoodEngine {
 		static void Shutdown();
 
 		static ScriptData ExtractScript(const std::filesystem::path& path);
+		static ScriptData CreateModuleFromData(const char* name, const char* data);
 	};
 }

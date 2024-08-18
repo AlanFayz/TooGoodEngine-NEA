@@ -63,19 +63,28 @@ namespace TooGoodEngine {
 		}
 
 		PyObject* pyOnCreate = PyObject_GetAttrString(module, "on_create");
-		PyErr_Print();
 		PyObject* pyOnUpdate = PyObject_GetAttrString(module, "on_update");
-		PyErr_Print();
 
 		//ownership is passed onto the user (Script Component)
 		if (pyOnCreate && PyCallable_Check(pyOnCreate))
 			data.PyOnCreate = pyOnCreate;
+		else
+			PyErr_Print();
 
 		if (pyOnUpdate && PyCallable_Check(pyOnUpdate))
 			data.PyOnUpdate = pyOnUpdate;
-
+		else
+			PyErr_Print();
 
 		Py_XDECREF(module);
 		return data;
+	}
+	ScriptData ScriptingEngine::CreateModuleFromData(const char* name, const char* data)
+	{
+		ScriptData scriptData{};
+
+		//TODO:
+
+		return scriptData;
 	}
 }

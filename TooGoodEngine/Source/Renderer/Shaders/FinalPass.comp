@@ -6,19 +6,29 @@ layout(rgba32f, binding = 0) uniform image2D u_FinalImage;
 
 /*
    Tone mapping algorithm maps values from hdr to ldr
+   http://filmicworlds.com/blog/filmic-tonemapping-operators/
 */
 
 uniform float u_Gradient;
 
-float Map(float x)
+vec3 Uncharted2TonemapPartial(vec3 x)
 {
-   float t = u_Gradient * log(x + 0.97) / log(x+5);
-   return t; 
-}   
+    float A = 0.15f;
+    float B = 0.50f;
+    float C = 0.10f;
+    float D = 0.20f;
+    float E = 0.02f;
+    float F = 0.30f;
+    return ((x*(A*x+C*B)+D*E)/(x*(A*x+B)+D*F))-E/F;
+}
 
-vec3 ToneMap(in vec3 color)
+vec3 Uncharted2Filmic(vec3 v)
 {
-    return vec3(Map(color.r), Map(color.g), Map(color.b));
+    vec3 curr = Uncharted2TonemapPartial(v * u_Gradient);
+
+    vec3 W = vec3(11.2f);
+    vec3 whiteScale = vec3(1.0f) / Uncharted2TonemapPartial(W);
+    return curr * whiteScale;
 }
 
 void main()
@@ -27,7 +37,7 @@ void main()
 
     vec4 currentColor = imageLoad(u_FinalImage, coordinate);
 
-    currentColor.rgb = ToneMap(currentColor.rgb);
+    currentColor.rgb = Uncharted2Filmic(currentColor.rgb);
 
     //converts color from linear to non linear 
     currentColor = pow(currentColor, vec4(1.0/2.2));  

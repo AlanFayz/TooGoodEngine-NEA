@@ -156,7 +156,7 @@ vec4 FresnelApproximation(float NdotL, vec4 reflectivity)
 float Attenuate(float radius, float dist)
 {
 	if(radius >= dist)
-		return 1.0 / ((dist * dist) + EPSILON);
+		return 1.0;
 
 	return 0.0;
 }
@@ -232,6 +232,9 @@ void main()
 	info.Normal = o_Normal;
 	info.CameraPosition = u_CameraPosition;
 
+	//
+	// ---- Point Light Contribution ---- 
+
 	for(int i = 0; i < u_PointLightSize; i++)
 	{
 		float attenuation = Attenuate(PointLights.Data[i].Radius, distance(PointLights.Data[i].Position.xyz, o_WorldPosition));
@@ -245,6 +248,10 @@ void main()
 		Color += Shade(info);
 	}
 
+	
+	//
+	// ---- Directional Light Contribution ---- 
+
 	for(int i = 0; i < u_DirectionalLightSize; i++)
 	{
 		info.LightDirection = DirectionalLights.Data[i].Direction.xyz;
@@ -255,11 +262,17 @@ void main()
 		Color += Shade(info);
 	}
 
+	//
+	// ---- Enviorment Map Contribution ---- 
+
 	if(u_HasCubeMap == 1)
 	{
-		vec3 coordinate = reflect(o_WorldPosition - u_CameraPosition, o_Normal);
-		vec4 CubeContribution = textureLod(u_CubeMap, normalize(coordinate), (u_NumberOfMipMaps - 1) * materialData.Roughness);
-		Color += CubeContribution;
+		info.LightDirection = normalize(reflect(o_WorldPosition - u_CameraPosition, o_Normal));
+		info.LightColor = textureLod(u_CubeMap, info.LightDirection, (u_NumberOfMipMaps - 1) * materialData.Roughness).rgb;
+		
+		info.Attenuation = 1.0;
+
+		Color += Shade(info);
 	}
 	
     OutColor = Color;

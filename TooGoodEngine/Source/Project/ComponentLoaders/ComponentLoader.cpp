@@ -5,6 +5,10 @@
 
 namespace TooGoodEngine {
 		
+	//TODO: should take in the current project as a pointer to its paramters.
+
+	static std::unordered_map<uint64_t, ModelInfo> s_ModelCache;
+
 	TransformComponent ComponentLoader::LoadTransform(const json& jsonComponent)
 	{
 		TransformComponent component{};
@@ -69,10 +73,27 @@ namespace TooGoodEngine {
 
 			return component;
 		}
-
-		component.PathToSource = "";
-		//TODO: load the source if there is one
 		
+		return component;
+	}
+
+	ModelComponent ComponentLoader::LoadModel(const json& jsonComponent, Renderer& sceneRenderer)
+	{
+		ModelComponent component{};
+
+		component.ModelAssetId = jsonComponent.get<uint64_t>();
+
+		if (s_ModelCache.contains(component.ModelAssetId))
+		{
+			component.Info = s_ModelCache[component.ModelAssetId];
+			return component;
+		}
+
+		Ref<Model> model = g_SelectedProject->GetAssetManager().FetchAssetAssuredType<Model>(component.ModelAssetId);
+		component.Info = sceneRenderer.AddModel(model);
+
+		s_ModelCache[component.ModelAssetId] = component.Info;
+
 		return component;
 	}
 

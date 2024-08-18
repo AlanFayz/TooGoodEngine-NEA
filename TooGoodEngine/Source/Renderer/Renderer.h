@@ -19,7 +19,6 @@ namespace TooGoodEngine {
 		None = 0, Back, Front, FrontAndBack, Count
 	};
 
-	//order to process triangle vertices
 	enum class WindingOrderOption
 	{
 		None = 0, ClockWise, CounterClockWise, Count
@@ -59,11 +58,14 @@ namespace TooGoodEngine {
 
 	struct RenderData
 	{
+		static const uint32_t BloomMipLevelCount = 10;
+
 		std::filesystem::path ShaderDirectory;
 		bool IsDrawing = false;
 
 		OpenGL::Program GeometryShaderProgram;
 		OpenGL::Program SkyBoxShaderProgram;
+		OpenGL::Program BloomPass;
 		OpenGL::Program FinalPass;
 
 		std::vector<GeometryInstanceBuffer> GeometryList;
@@ -112,7 +114,6 @@ namespace TooGoodEngine {
 	};
 
 	inline constexpr size_t g_NullID = std::numeric_limits<size_t>::max();
-
 
 	class Renderer
 	{

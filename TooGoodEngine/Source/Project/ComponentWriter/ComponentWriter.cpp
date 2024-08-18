@@ -33,6 +33,14 @@ namespace TooGoodEngine {
 		writer.WriteGeneric(path, component.PathToSource);
 	}
 
+	void ComponentWriter::WriteModel(JsonWriter& writer, const JsonPath& entityPath, ModelComponent& component)
+	{
+		JsonPath path = entityPath;
+		path.insert(path.end(), { "Model" });
+
+		writer.WriteGeneric(path, (uint64_t)component.ModelAssetId);
+	}
+
 	void ComponentWriter::WriteMaterial(JsonWriter& writer, const JsonPath& entityPath, MaterialComponent& component)
 	{
 		//TODO: change from image path to UUID once asset manager is seriliazed.

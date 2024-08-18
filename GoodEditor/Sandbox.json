@@ -2,7 +2,7 @@
     "Project Name": "Sandbox",
     "Project Directory": "D:\\Dev\\TooGoodEngine-NEA\\GoodEditor",
     "Asset Directory": "D:\\Dev\\TooGoodEngine-NEA\\GoodEditor\\Assets",
-    "Last Build Date": "2024-08-15 11:14:49",
+    "Last Build Date": "2024-08-18 21:55:00",
     "Scenes": {
         "Scene 1": {
             "Scene Settings": {
@@ -14,7 +14,7 @@
                 "Filling Mode": 3,
                 "Environment Map": 9944323375055699610,
                 "Level Of Detail": 0.0,
-                "Gradient": 1.0,
+                "Gradient": 2.0,
                 "Clear Color": [
                     0.23622047901153564,
                     0.1599603295326233,
@@ -74,18 +74,18 @@
                     },
                     "Point Light": {
                         "Color": [
-                            0.900355875492096,
-                            0.0,
-                            0.0,
+                            0.2704879641532898,
+                            1.0,
+                            0.028469741344451904,
                             1.0
                         ],
                         "Position": [
                             0.20000000298023224,
-                            0.0,
-                            5.900000095367432
+                            5.699999809265137,
+                            -3.4000000953674316
                         ],
-                        "Radius": 112.9000015258789,
-                        "Intensity": 2.700000047683716
+                        "Radius": 6.0,
+                        "Intensity": 10.0
                     }
                 },
                 "Entity 2": {
@@ -118,9 +118,9 @@
                             0.9843137264251709
                         ],
                         "Albedo": [
-                            1.0,
-                            0.0,
-                            0.0,
+                            0.2241992950439453,
+                            0.04946745187044144,
+                            0.1875118464231491,
                             1.0
                         ],
                         "Albedo Factor": 6.690000057220459,
@@ -142,20 +142,20 @@
                     },
                     "Directional Light": {
                         "Color": [
-                            0.9786477088928223,
-                            0.17065384984016418,
-                            0.17065384984016418,
+                            0.008966442197561264,
+                            0.8398576378822327,
+                            0.8132454752922058,
                             1.0
                         ],
                         "Direction": [
                             -1.0,
                             1.0,
-                            0.0
+                            -0.12999999523162842
                         ],
-                        "Intensity": 98.0
+                        "Intensity": 10.0
                     }
                 },
-                "Entity2": {
+                "Entity3": {
                     "Transform": {
                         "Position": [
                             0.0,
@@ -173,20 +173,37 @@
                             0.0
                         ]
                     },
-                    "Directional Light": {
-                        "Color": [
-                            0.6569823026657104,
+                    "Material": {
+                        "Ambient": [
                             0.0,
-                            0.7046263217926025,
-                            1.0
+                            0.0,
+                            0.0,
+                            0.0
                         ],
-                        "Direction": [
-                            -1.0,
-                            1.0,
-                            -1.0
+                        "Albedo": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
                         ],
-                        "Intensity": 52.0
-                    }
+                        "Albedo Factor": 0.0,
+                        "Metallic": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ],
+                        "Metallic Factor": 0.0,
+                        "Emission": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ],
+                        "Emission Factor": 0.0,
+                        "Roughness": 0.0
+                    },
+                    "Model": 8765043499549219097
                 }
             }
         }

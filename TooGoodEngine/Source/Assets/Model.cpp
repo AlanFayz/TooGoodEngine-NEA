@@ -73,36 +73,56 @@ namespace TooGoodEngine {
 	MaterialInfo Model::_ConstructMaterialInfoFromAiMaterial(const aiMaterial* material)
 	{
 		MaterialInfo info{};
-		
+
 		info.AmbientTexture = _LoadImageFromAiMaterial(material, aiTextureType_AMBIENT, 0);
 
 		if (!info.AmbientTexture)
-			material->Get(AI_MATKEY_COLOR_AMBIENT, info.Ambient);
+		{
+			aiColor4D aiAmbient{};
+			material->Get(AI_MATKEY_COLOR_AMBIENT, aiAmbient);
+			memcpy(&info.Ambient, &aiAmbient, sizeof(glm::vec4));
+		}
 
 		info.AlbedoTexture = _LoadImageFromAiMaterial(material, aiTextureType_DIFFUSE, 0);
-		info.AlbedoFactor  = 1.0f;
+		info.AlbedoFactor = 1.0f;
 
 		if (!info.AlbedoTexture)
-			material->Get(AI_MATKEY_COLOR_DIFFUSE, info.Emission);
+		{
+			aiColor4D aiAlbedo;
+			material->Get(AI_MATKEY_COLOR_DIFFUSE, aiAlbedo);
+			memcpy(&info.Albedo, &aiAlbedo, sizeof(glm::vec4));
+		}
 
 		info.EmissionTexture = _LoadImageFromAiMaterial(material, aiTextureType_EMISSION_COLOR, 0);
 		material->Get(AI_MATKEY_EMISSIVE_INTENSITY, info.EmissionFactor);
 
 		if (!info.EmissionTexture)
-			material->Get(AI_MATKEY_COLOR_EMISSIVE, info.Emission);
+		{
+			aiColor4D aiEmission;
+			material->Get(AI_MATKEY_COLOR_EMISSIVE, aiEmission);
+			memcpy(&info.Emission, &aiEmission, sizeof(glm::vec4));
+		}
 		
 
 		info.MetallicTexture = _LoadImageFromAiMaterial(material, aiTextureType_METALNESS, 0);
 		info.MetallicFactor = 1.0f;
 
 		if (!info.MetallicFactor)
-			material->Get(AI_MATKEY_METALLIC_FACTOR, info.Metallic);
+		{
+			aiColor4D aiMetallic;
+			material->Get(AI_MATKEY_METALLIC_FACTOR, aiMetallic);
+			memcpy(&info.Metallic, &aiMetallic, sizeof(glm::vec4));
+		}
 		
 
 		info.RoughnessTexture = _LoadImageFromAiMaterial(material, aiTextureType_DIFFUSE_ROUGHNESS, 0);
 
 		if (!info.RoughnessTexture)
-			material->Get(AI_MATKEY_ROUGHNESS_FACTOR, info.Roughness);
+		{
+			material->Get(AI_MATKEY_SHININESS, info.Roughness);
+			info.Roughness += FLT_EPSILON;
+			info.Roughness = sqrt(2.0f / (info.Roughness + 2.0f)); //Shininess to roughness
+		}
 
 
 		return info;

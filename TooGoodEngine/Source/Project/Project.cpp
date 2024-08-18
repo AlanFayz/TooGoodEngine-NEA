@@ -87,6 +87,11 @@ namespace TooGoodEngine {
 					MeshComponent component = ComponentLoader::LoadMesh(jsonComponent, *renderer);
 					registry.AddComponent(entity, component);
 				}
+				else if (secondIt.key() == "Model")
+				{
+					ModelComponent component = ComponentLoader::LoadModel(jsonComponent, *renderer);
+					registry.AddComponent(entity, component);
+				}
 				else if (secondIt.key() == "Material")
 				{
 					MaterialComponent component = ComponentLoader::LoadMaterial(jsonComponent, *renderer);
@@ -102,6 +107,7 @@ namespace TooGoodEngine {
 					DirectionalLightComponent component = ComponentLoader::LoadDirectionalLight(jsonComponent);
 					registry.AddComponent(entity, component);
 				}
+				
 			}
 		}
 
@@ -214,6 +220,12 @@ namespace TooGoodEngine {
 			{
 				DirectionalLightComponent& component = registry.GetComponent<DirectionalLightComponent>(entity);
 				ComponentWriter::WriteDirectionalLight(writer, pathToEntity, component);
+			}
+
+			if (registry.HasComponent<ModelComponent>(entity))
+			{
+				ModelComponent& component = registry.GetComponent<ModelComponent>(entity);
+				ComponentWriter::WriteModel(writer, pathToEntity, component);
 			}
 		}
 	}
