@@ -1,0 +1,113 @@
+#version 460 core 
+
+layout(local_size_x = 8, local_size_y = 8, local_size_z = 1) in;
+
+layout(binding = 0) uniform sampler2D u_Source;
+layout(rgba32f, binding = 1) uniform image2D u_Destination;
+
+const int BLOOM_DOWN_SAMPLE = 0;
+const int BLOOM_UP_SAMPLE = 1;
+
+const float EPSILON = 0.0000001;
+
+uniform int   u_SampleOption;
+uniform int   u_SourceMip;
+uniform float u_Threshold;
+uniform float u_Intensity;
+
+/*
+    algorithm is from this article 
+    https://www.iryoku.com/next-generation-post-processing-in-call-of-duty-advanced-warfare/
+*/
+
+vec3 Prefilter(in vec3 color)
+{
+    float brightness   = max(color.r, max(color.g, color.b));
+    float contribution = max(0, brightness - u_Threshold); 
+    contribution /= max(brightness, EPSILON);
+    return color * contribution;
+}
+
+vec3 DownSample(in vec2 texCoord)
+{   
+    float x = 1.0 / textureSize(u_Source, u_SourceMip).x; 
+    float y = 1.0 / textureSize(u_Source, u_SourceMip).y;
+    
+    float levelOfDetail = float(u_SourceMip);
+
+	vec3 a = textureLod(u_Source, vec2(texCoord.x - 2*x, texCoord.y + 2*y), levelOfDetail).rgb;
+    vec3 b = textureLod(u_Source, vec2(texCoord.x,       texCoord.y + 2*y), levelOfDetail).rgb;
+    vec3 c = textureLod(u_Source, vec2(texCoord.x + 2*x, texCoord.y + 2*y), levelOfDetail).rgb;
+
+    vec3 d = textureLod(u_Source, vec2(texCoord.x - 2*x,  texCoord.y), levelOfDetail).rgb;
+    vec3 e = textureLod(u_Source, vec2(texCoord.x,        texCoord.y), levelOfDetail).rgb;
+    vec3 f = textureLod(u_Source, vec2(texCoord.x + 2*x,  texCoord.y), levelOfDetail).rgb;
+
+    vec3 g = textureLod(u_Source, vec2(texCoord.x - 2*x, texCoord.y - 2*y), levelOfDetail).rgb;
+    vec3 h = textureLod(u_Source, vec2(texCoord.x,       texCoord.y - 2*y), levelOfDetail).rgb;
+    vec3 i = textureLod(u_Source, vec2(texCoord.x + 2*x, texCoord.y - 2*y), levelOfDetail).rgb;
+
+    vec3 j = textureLod(u_Source, vec2(texCoord.x - x, texCoord.y + y), levelOfDetail).rgb;
+    vec3 k = textureLod(u_Source, vec2(texCoord.x + x, texCoord.y + y), levelOfDetail).rgb;
+    vec3 l = textureLod(u_Source, vec2(texCoord.x - x, texCoord.y - y), levelOfDetail).rgb;
+    vec3 m = textureLod(u_Source, vec2(texCoord.x + x, texCoord.y - y), levelOfDetail).rgb;
+
+    vec3 color = e*0.125;
+    color += (a+c+g+i)*0.03125;
+    color += (b+d+f+h)*0.0625;
+    color += (j+k+l+m)*0.125;
+
+    return color;
+}
+
+vec3 UpSample(in vec2 texCoord)
+{    
+    float levelOfDetail = float(u_SourceMip);
+
+    float x = 0.005; 
+    float y = 0.005;
+
+    vec3 a = textureLod(u_Source, vec2(texCoord.x - x, texCoord.y + y), levelOfDetail).rgb;
+    vec3 b = textureLod(u_Source, vec2(texCoord.x,     texCoord.y + y), levelOfDetail).rgb;
+    vec3 c = textureLod(u_Source, vec2(texCoord.x + x, texCoord.y + y), levelOfDetail).rgb;
+
+    vec3 d = textureLod(u_Source, vec2(texCoord.x - x, texCoord.y), levelOfDetail).rgb;
+    vec3 e = textureLod(u_Source, vec2(texCoord.x,     texCoord.y), levelOfDetail).rgb;
+    vec3 f = textureLod(u_Source, vec2(texCoord.x + x, texCoord.y), levelOfDetail).rgb;
+
+    vec3 g = textureLod(u_Source, vec2(texCoord.x - x, texCoord.y - y), levelOfDetail).rgb;
+    vec3 h = textureLod(u_Source, vec2(texCoord.x,     texCoord.y - y), levelOfDetail).rgb;
+    vec3 i = textureLod(u_Source, vec2(texCoord.x + x, texCoord.y - y), levelOfDetail).rgb;
+
+    vec3 color = e*4.0;
+    color += (b+d+f+h)*2.0;
+    color += (a+c+g+i);
+    color *= 1.0 / 16.0;
+
+    color = max(color, 0.0001);
+    return Prefilter(color);
+}
+
+
+void main()
+{
+	ivec2 coordinate = ivec2(gl_GlobalInvocationID);
+
+    vec3 destinationColor = vec3(0.0, 1.0, 1.0);
+
+    vec2 texCoord = (vec2(coordinate) + vec2(0.5)) / imageSize(u_Destination);
+
+    if(u_SampleOption == BLOOM_DOWN_SAMPLE)
+    {
+        destinationColor = u_Intensity * DownSample(texCoord);
+        if(u_SourceMip == 0)
+            destinationColor = Prefilter(destinationColor);
+    }
+    else if (u_SampleOption == BLOOM_UP_SAMPLE)
+    {
+       destinationColor = UpSample(texCoord);
+       destinationColor += imageLoad(u_Destination, coordinate).rgb;
+    }
+        
+    imageStore(u_Destination, coordinate, vec4(destinationColor, 1.0));
+}

@@ -54,11 +54,14 @@ namespace TooGoodEngine {
 
 		float Gradient = 1.0f;
 		float LevelOfDetail = 2.0f;
+
+		float Threshold = 1.0f; 
+		float Intensity = 1.0f;
 	};
 
 	struct RenderData
 	{
-		static const uint32_t BloomMipLevelCount = 10;
+		static const uint32_t BloomMipLevelCount = 8;
 
 		std::filesystem::path ShaderDirectory;
 		bool IsDrawing = false;
@@ -144,6 +147,7 @@ namespace TooGoodEngine {
 	private:
 		void _RenderGeometry();
 		void _RenderSkyBox();
+		void _RenderBloom();
 		void _RenderFinalPass();
 
 		void _ApplySettings();

@@ -157,7 +157,7 @@ namespace TooGoodEngine {
 			info.Emission = { emissionCol[0], emissionCol[1], emissionCol[2], emissionCol[3] };
 		}
 
-		info.MetallicFactor = jsonComponent["Emission Factor"].get<float>();
+		info.EmissionFactor = jsonComponent["Emission Factor"].get<float>();
 
 		//
 		// ---- Roughness ----

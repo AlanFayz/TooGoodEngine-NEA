@@ -308,6 +308,13 @@ namespace GoodEditor {
 			}
 		}
 
+		ImGui::SeparatorText("Bloom Settings");
+
+		if (ImGui::DragFloat("Threshold", &renderSettings.Threshold, 0.01f, 0.0f, FLT_MAX / 2.0f))
+			changed = true;
+
+		if (ImGui::DragFloat("Intensity", &renderSettings.Intensity, 0.01f, 0.0f, FLT_MAX / 2.0f))
+			changed = true;
 
 		if (changed)
 			scene->GetSceneRenderer()->ChangeSettings(renderSettings);

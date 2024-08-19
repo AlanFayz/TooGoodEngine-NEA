@@ -203,6 +203,7 @@ namespace TooGoodEngine {
 		
 		_RenderGeometry();
 		_RenderSkyBox();
+		_RenderBloom();
 		_RenderFinalPass();
 
 		m_Data.PointLights.Size = 0;
@@ -290,6 +291,80 @@ namespace TooGoodEngine {
 			glDepthMask(GL_TRUE);
 			_ApplySettings();
 		}
+	}
+
+	void Renderer::_RenderBloom()
+	{
+		m_Data.BloomPass.Use();
+
+		uint32_t width  = m_Settings.ViewportWidth;
+		uint32_t height = m_Settings.ViewportHeight;
+
+		static constexpr int DownSample = 0;
+		static constexpr int UpSample   = 1;
+
+		//
+		// ---- down sampling ----
+
+		for (uint32_t i = 1; i < RenderData::BloomMipLevelCount; i++)
+		{
+			uint32_t source = i - 1;
+			uint32_t destination = i;
+
+			uint32_t sourceWidth = width >> source;
+			uint32_t sourceHeight = height >> source;
+
+			uint32_t destinationWidth = width >> destination;
+			uint32_t destinationHeight = height >> destination;
+
+			float groupX = std::ceil((float)destinationWidth / 8.0f);
+			float groupY = std::ceil((float)destinationHeight / 8.0f);
+
+			m_Data.BloomPass.SetUniform("u_SampleOption", DownSample);
+			m_Data.BloomPass.SetUniform("u_SourceMip", (int)source);
+			m_Data.BloomPass.SetUniform("u_Source", 0);
+			m_Data.BloomPass.SetUniform("u_Destination", 1);
+
+			m_Data.FinalImageTexture->Bind(0);
+			m_Data.FinalImageTexture->BindImage(1, destination, 0, false);
+
+			glDispatchCompute((GLuint)groupX, (GLuint)groupY, 1);
+			glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
+		}
+
+		//
+		// ---- up sampling ----
+
+		m_Data.BloomPass.Use();
+
+		for (uint32_t i = RenderData::BloomMipLevelCount - 1; i > 0; i--)
+		{
+			uint32_t source = i;
+			uint32_t destination = i - 1;
+
+			uint32_t sourceWidth = width >> source;
+			uint32_t sourceHeight = height >> source;
+
+			uint32_t destinationWidth = width >> destination;
+			uint32_t destinationHeight = height >> destination;
+
+			float groupX = std::ceil((float)destinationWidth / 8.0f);
+			float groupY = std::ceil((float)destinationHeight / 8.0f);
+
+			m_Data.BloomPass.SetUniform("u_SampleOption", UpSample);
+			m_Data.BloomPass.SetUniform("u_SourceMip", (int)source);
+			m_Data.BloomPass.SetUniform("u_Source", 0);
+			m_Data.BloomPass.SetUniform("u_Destination", 1);
+			m_Data.BloomPass.SetUniform("u_Threshold", m_Settings.Threshold);
+			m_Data.BloomPass.SetUniform("u_Intensity", m_Settings.Intensity);
+
+			m_Data.FinalImageTexture->Bind(0);
+			m_Data.FinalImageTexture->BindImage(1, destination, 0, false);
+
+			glDispatchCompute((GLuint)groupX, (GLuint)groupY, 1);
+			glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
+		}
+
 	}
 
 	void Renderer::_RenderFinalPass()
@@ -577,11 +652,10 @@ namespace TooGoodEngine {
 			info.Height = m_Settings.ViewportHeight;
 			info.MipMapLevels = RenderData::BloomMipLevelCount;
 
-			info.Paramaters[OpenGL::TextureParamater::MinFilter] = OpenGL::TextureParamaterOption::Linear;
+			info.Paramaters[OpenGL::TextureParamater::MinFilter] = OpenGL::TextureParamaterOption::MipMapLinear;
 			info.Paramaters[OpenGL::TextureParamater::MagFilter] = OpenGL::TextureParamaterOption::Linear;
-
-			info.Paramaters[OpenGL::TextureParamater::WrapModeS] = OpenGL::TextureParamaterOption::ClampToBorder;
-			info.Paramaters[OpenGL::TextureParamater::WrapModeT] = OpenGL::TextureParamaterOption::ClampToBorder;
+			info.Paramaters[OpenGL::TextureParamater::WrapModeS] = OpenGL::TextureParamaterOption::ClampToEdge;
+			info.Paramaters[OpenGL::TextureParamater::WrapModeT] = OpenGL::TextureParamaterOption::ClampToEdge;
 
 			m_Data.FinalImageTexture.reset();
 			m_Data.FinalImageTexture = CreateRef<OpenGL::Texture2D>(info);
@@ -596,7 +670,6 @@ namespace TooGoodEngine {
 
 			info.Paramaters[OpenGL::TextureParamater::MinFilter] = OpenGL::TextureParamaterOption::Linear;
 			info.Paramaters[OpenGL::TextureParamater::MagFilter] = OpenGL::TextureParamaterOption::Linear;
-
 			info.Paramaters[OpenGL::TextureParamater::WrapModeS] = OpenGL::TextureParamaterOption::ClampToBorder;
 			info.Paramaters[OpenGL::TextureParamater::WrapModeT] = OpenGL::TextureParamaterOption::ClampToBorder;
 
