@@ -28,7 +28,7 @@ namespace TooGoodEngine {
 		void SaveSceneSettings(JsonWriter& writer, const Ref<Scene>& scene);
 		void SaveAssets(JsonWriter& writer);
 		void LoadAssets(JsonReader& reader);
-		void LoadAllScenes();
+		void LoadProject();
 
 		template<typename T>
 		Ref<T> LoadAsset(const std::filesystem::path& path) 
@@ -36,7 +36,7 @@ namespace TooGoodEngine {
 			return m_AssetManager->LoadAssetIntoBank<T>(path);
 		}
 
-		inline const std::filesystem::path  GetAssetDirectory() const { return m_AssetManager->GetPath(); }
+		inline const std::filesystem::path&  GetAssetDirectory() const { return m_AssetManager->GetPath(); }
 		inline const std::filesystem::path& GetDirectory() const { return m_ProjectDirectory; }
 		inline Ref<Scene> GetCurrentScene() const { return m_CurrentScene; }
 		inline AssetManager& GetAssetManager() { return *m_AssetManager; }

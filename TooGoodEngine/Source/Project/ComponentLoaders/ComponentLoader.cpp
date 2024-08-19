@@ -5,9 +5,7 @@
 
 namespace TooGoodEngine {
 		
-	//TODO: should take in the current project as a pointer to its paramters.
-
-	static std::unordered_map<uint64_t, ModelInfo> s_ModelCache;
+	Ref<ModelCache> ComponentLoader::m_ModelCache = CreateRef<ModelCache>();
 
 	TransformComponent ComponentLoader::LoadTransform(const json& jsonComponent)
 	{
@@ -81,18 +79,20 @@ namespace TooGoodEngine {
 	{
 		ModelComponent component{};
 
+		auto& cache = *m_ModelCache;
+
 		component.ModelAssetId = jsonComponent.get<uint64_t>();
 
-		if (s_ModelCache.contains(component.ModelAssetId))
+		if (cache.contains(component.ModelAssetId))
 		{
-			component.Info = s_ModelCache[component.ModelAssetId];
+			component.Info = cache[component.ModelAssetId];
 			return component;
 		}
 
 		Ref<Model> model = g_SelectedProject->GetAssetManager().FetchAssetAssuredType<Model>(component.ModelAssetId);
 		component.Info = sceneRenderer.AddModel(model);
 
-		s_ModelCache[component.ModelAssetId] = component.Info;
+		cache[component.ModelAssetId] = component.Info;
 
 		return component;
 	}
@@ -207,6 +207,12 @@ namespace TooGoodEngine {
 		component.Intensity = jsonComponent["Intensity"].get<float>();
 
 		return component;
+	}
+
+	void ComponentLoader::ClearCaches()
+	{
+		m_ModelCache.reset();
+		m_ModelCache = CreateRef<ModelCache>();
 	}
 
 }

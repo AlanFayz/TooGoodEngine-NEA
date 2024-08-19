@@ -55,6 +55,7 @@ namespace TooGoodEngine {
 		float Gradient = 1.0f;
 		float LevelOfDetail = 2.0f;
 
+		bool Bloom = true;
 		float Threshold = 1.0f; 
 		float Intensity = 1.0f;
 	};
@@ -114,6 +115,10 @@ namespace TooGoodEngine {
 		Ref<OpenGL::Texture2D> FinalImageTexture;
 		Ref<OpenGL::Texture2D> DepthTexture;
 
+
+		//for displaying the image produced by the renderer to the screen (may make an engine utility instead)
+		OpenGL::Program DisplayProgram;
+		OpenGL::VertexArray Dummy;
 	};
 
 	inline constexpr size_t g_NullID = std::numeric_limits<size_t>::max();
@@ -132,6 +137,7 @@ namespace TooGoodEngine {
 		void ChangeSettings(const RenderSettings& settings);
 		void OnWindowResize(uint32_t newWidth, uint32_t newHeight);
 		void ChangeMaterialData(MaterialID id, const Material& material);
+		void ApplySettings();
 
 		void Begin(Camera* camera);
 		void Draw(GeometryID id, const glm::mat4& transform, uint32_t materialIndex = 0);
@@ -141,16 +147,17 @@ namespace TooGoodEngine {
 		void AddDirectionaLight(const glm::vec3& direction, const glm::vec4& color, float intensity);
 		void End();
 
+		void RenderImageToScreen(uint32_t width, uint32_t height);
+
 		inline const Ref<OpenGL::Texture2D>& GetImage() const { return m_Data.FinalImageTexture; }
 		inline const RenderSettings& GetSettings() const { return m_Settings; }
+
 
 	private:
 		void _RenderGeometry();
 		void _RenderSkyBox();
 		void _RenderBloom();
 		void _RenderFinalPass();
-
-		void _ApplySettings();
 
 		void _CreateBuffers();
 		void _CreateDefaultMaterialsAndMeshes();

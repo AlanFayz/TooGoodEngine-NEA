@@ -6,7 +6,7 @@ namespace TooGoodEngine {
 	
 	enum class KeyCode
 	{
-		None = 0, W, A, S, D, Q, E, X //will add rest later
+		None = 0, W, A, S, D, Q, E, X, Esc //will add rest later
 	};
 
 	enum class ButtonCode

@@ -2,6 +2,7 @@
 #include "FileDialogs/FileDialog.h"
 #include "ScenePanel.h"
 #include "StatisticsPanel.h"
+#include "Utils/Input.h"
 
 #include <imgui.h>
 
@@ -15,16 +16,16 @@ namespace GoodEditor {
 		io.Fonts->AddFontFromFileTTF("Resources/Fonts/Open_Sans/static/OpenSans-Regular.ttf", 20.0f);
 
 		ImGuiStyle& style = ImGui::GetStyle();
-		style.FrameRounding    = 12;
-		style.WindowRounding   = 12;
-		style.ChildRounding    = 12;
+		style.FrameRounding = 12;
+		style.WindowRounding = 12;
+		style.ChildRounding = 12;
 		style.WindowTitleAlign = ImVec2(0.5, 0.5);
 
-		style.Colors[2]  = ImColor(7, 0, 8, 255);       //window bg
-		style.Colors[5]  = ImColor(0, 0, 0, 255);       //window border 
-		style.Colors[7]  = ImColor(3, 29, 66, 128);     //frame bg 
-		style.Colors[8]  = ImColor(103, 173, 255, 102); //frame bg hovered
-		style.Colors[9]  = ImColor(148, 183, 255, 171); //frame bg active
+		style.Colors[2] = ImColor(7, 0, 8, 255);       //window bg
+		style.Colors[5] = ImColor(0, 0, 0, 255);       //window border 
+		style.Colors[7] = ImColor(3, 29, 66, 128);     //frame bg 
+		style.Colors[8] = ImColor(103, 173, 255, 102); //frame bg hovered
+		style.Colors[9] = ImColor(148, 183, 255, 171); //frame bg active
 		style.Colors[11] = ImColor(36, 36, 45, 255);    //title bg active
 		style.Colors[18] = ImColor(146, 172, 203, 255); //check mark
 		style.Colors[21] = ImColor(69, 71, 75, 102);    //button
@@ -37,19 +38,37 @@ namespace GoodEditor {
 
 		m_ExtensionMap["folder"] = Image::LoadImageAssetFromFile("Resources/Textures/folder_icon.png");
 		m_ExtensionMap["back"]	 = Image::LoadImageAssetFromFile("Resources/Textures/back_icon.png");
-		m_ExtensionMap[".png"]   = Image::LoadImageAssetFromFile("Resources/Textures/image_icon.png");
-		m_ExtensionMap[".obj"]   = Image::LoadImageAssetFromFile("Resources/Textures/obj_icon.png");
-		m_ExtensionMap[".fbx"]   = Image::LoadImageAssetFromFile("Resources/Textures/fbx_icon.png");
+		m_ExtensionMap[".png"]	 = Image::LoadImageAssetFromFile("Resources/Textures/image_icon.png");
+		m_ExtensionMap[".obj"]	 = Image::LoadImageAssetFromFile("Resources/Textures/obj_icon.png");
+		m_ExtensionMap[".fbx"]	 = Image::LoadImageAssetFromFile("Resources/Textures/fbx_icon.png");
 		m_ExtensionMap[".hdr"]	 = Image::LoadImageAssetFromFile("Resources/Textures/hdr_icon.png");
+
 	}
 	void Editor::OnDestroy()
 	{
+		g_SelectedProject->SaveState();
 	}
 	void Editor::OnUpdate(double delta)
 	{
-		if(g_SelectedProject)
+		if (g_SelectedProject && !m_Playing)
 			g_SelectedProject->GetCurrentScene()->Update(delta);
+		else if (g_SelectedProject && m_Playing)
+			g_SelectedProject->GetCurrentScene()->Play(delta);
 
+		if (Input::IsKeyPressed(KeyCode::Esc))
+		{
+			if (m_Playing)
+			{
+				//when played project gets saved to disk. The player can completly mess
+				//every single scene. We destroy the current project without saving. Then reload from disk
+				//preserving the state.
+
+				g_SelectedProject.reset();
+				g_SelectedProject = CreateRef<Project>(m_ProjectPath);
+				g_SelectedProject->LoadProject();
+			}
+			m_Playing = false;
+		}
 	}
 	void Editor::OnGuiUpdate(double delta)
 	{
@@ -59,11 +78,16 @@ namespace GoodEditor {
 			return;
 		}
 
-		ImGui::DockSpaceOverViewport();
-
-		
-		Ref<Scene>    currentScene         = g_SelectedProject->GetCurrentScene();
+		Ref<Scene>    currentScene = g_SelectedProject->GetCurrentScene();
 		Ref<Renderer> currentSceneRenderer = currentScene->GetSceneRenderer();
+
+		if (m_Playing)
+		{
+			currentSceneRenderer->RenderImageToScreen(m_CurrentWidth, m_CurrentHeight);
+			return;
+		}
+
+		ImGui::DockSpaceOverViewport();
 		
 		if (m_PreviousWindowSize.x != ImGui::GetWindowSize().x || m_PreviousWindowSize.y != ImGui::GetWindowSize().y)
 		{
@@ -81,10 +105,17 @@ namespace GoodEditor {
 		ScenePanel::DrawPanel();
 		StatisticsPanel::DrawPanel();
 	}
-	void Editor::OnEvent(TooGoodEngine::Event* event)
+	void Editor::OnEvent(Event* event)
 	{
 		if(g_SelectedProject)
 			g_SelectedProject->GetCurrentScene()->OnEvent(event);
+
+		if (event->GetType() == EventType::WindowResize)
+		{
+			WindowResizeEvent* resizeEvent = (WindowResizeEvent*)event;
+			m_CurrentWidth = resizeEvent->GetWidth();
+			m_CurrentHeight = resizeEvent->GetHeight();
+		}
 	}
 	void Editor::_TryGetProjectName()
 	{
@@ -105,7 +136,7 @@ namespace GoodEditor {
 					try
 					{
 						g_SelectedProject = CreateRef<Project>(m_ProjectPath);
-						g_SelectedProject->LoadAllScenes();
+						g_SelectedProject->LoadProject();
 					}
 					catch (const std::exception& e)
 					{
@@ -128,7 +159,7 @@ namespace GoodEditor {
 					try
 					{
 						g_SelectedProject = CreateRef<Project>(m_ProjectPath);
-						g_SelectedProject->LoadAllScenes();
+						g_SelectedProject->LoadProject();
 					}
 					catch (const std::exception& e)
 					{
@@ -163,6 +194,12 @@ namespace GoodEditor {
 			if (ImGui::Button("3D View"))
 			{
 				g_SelectedProject->GetCurrentScene()->SetSceneView(SceneView::View3D);
+			}
+
+			if (ImGui::Button("Play"))
+			{
+				g_SelectedProject->SaveState();
+				m_Playing = true;
 			}
 
 			ImGui::EndMenuBar();

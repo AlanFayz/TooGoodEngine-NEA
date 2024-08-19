@@ -10,7 +10,6 @@
 
 namespace TooGoodEngine {
 
-	
 	//(from the scene camera not a user camera)
 	enum class SceneView
 	{
@@ -23,7 +22,7 @@ namespace TooGoodEngine {
 		Scene();
 		~Scene() = default;
 
-		void Play() {}; //TODO: render scene in context of chosen camera from registry
+		void Play(double delta);
 		void Update(double delta);
 
 		virtual void OnEvent(Event* event) override;

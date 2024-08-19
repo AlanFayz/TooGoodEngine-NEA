@@ -2,7 +2,7 @@
     "Project Name": "Sandbox",
     "Project Directory": "D:\\Dev\\TooGoodEngine-NEA\\GoodEditor",
     "Asset Directory": "D:\\Dev\\TooGoodEngine-NEA\\GoodEditor\\Assets",
-    "Last Build Date": "2024-08-19 18:22:42",
+    "Last Build Date": "2024-08-19 22:11:41",
     "Scenes": {
         "Scene 1": {
             "Scene Settings": {
@@ -14,13 +14,16 @@
                 "Filling Mode": 3,
                 "Environment Map": 9944323375055699610,
                 "Level Of Detail": 0.0,
-                "Gradient": 2.0,
+                "Gradient": 1.0,
                 "Clear Color": [
-                    0.23622047901153564,
-                    0.1599603295326233,
-                    0.1599603295326233,
+                    0.6274510025978088,
+                    0.4156862795352936,
+                    0.4156862795352936,
                     1.0
-                ]
+                ],
+                "Bloom Enabled": false,
+                "Bloom Threshold": 1.0,
+                "Bloom Intensity": 1.0
             },
             "Entities": {
                 "Entity 1": {

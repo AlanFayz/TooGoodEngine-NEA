@@ -18,7 +18,7 @@ namespace TooGoodEngine {
 			m_Data.ShaderDirectory = settings.RuntimeShaderDirectory;
 		}
 
-		_ApplySettings();
+		ApplySettings();
 		_CreatePrograms();
 		_CreateBuffers();
 		_CreateDefaultMaterialsAndMeshes();
@@ -96,8 +96,18 @@ namespace TooGoodEngine {
 
 	void Renderer::ChangeSettings(const RenderSettings& settings)
 	{
-		m_Settings = settings;
-		_ApplySettings();
+		if (settings.Bloom != m_Settings.Bloom)
+		{
+			m_Settings = settings;
+			_CreateTextures();
+			_CreateFramebuffers();
+		}
+		else
+		{
+			m_Settings = settings;
+		}
+
+		ApplySettings();
 	}
 
 	void Renderer::OnWindowResize(uint32_t newWidth, uint32_t newHeight)
@@ -215,6 +225,23 @@ namespace TooGoodEngine {
 		m_Data.FinalImageFramebuffer.Unbind();
 	}
 
+	void Renderer::RenderImageToScreen(uint32_t width, uint32_t height)
+	{
+		OpenGL::Command::SetViewport(width, height);
+
+		m_Data.DisplayProgram.Use();
+		glDisable(GL_DEPTH_TEST);
+
+		m_Data.FinalImageTexture->Bind(0);
+		m_Data.DisplayProgram.SetUniform("u_Image", 0);
+
+		//vertex array not used so just pass a dummy to make opengl happy.
+		OpenGL::Command::DrawArrays(&m_Data.DisplayProgram, &m_Data.Dummy, OpenGL::DrawMode::Triangle, 0, 3);
+
+		if (m_Settings.DepthTesting != DepthTestOption::None)
+			ApplySettings();
+	}
+
 	void Renderer::_RenderGeometry()
 	{
 		m_Data.GeometryShaderProgram.Use();
@@ -289,12 +316,15 @@ namespace TooGoodEngine {
 			m_Data.GeometryList[m_Data.CubeGeometryIndex].EndBatch();
 
 			glDepthMask(GL_TRUE);
-			_ApplySettings();
+			ApplySettings();
 		}
 	}
 
 	void Renderer::_RenderBloom()
 	{
+		if (!m_Settings.Bloom)
+			return;
+
 		m_Data.BloomPass.Use();
 
 		uint32_t width  = m_Settings.ViewportWidth;
@@ -377,10 +407,11 @@ namespace TooGoodEngine {
 		glDispatchCompute((GLuint)std::ceil((float)m_Settings.ViewportWidth  / 8.0f), 
 						  (GLuint)std::ceil((float)m_Settings.ViewportHeight / 8.0f), 
 						  1);
-		glMemoryBarrier(GL_ALL_SHADER_BITS);
+
+		glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 	}
 
-	void Renderer::_ApplySettings() 
+	void Renderer::ApplySettings() 
 	{
 		glEnable(GL_DEPTH_TEST);
 
@@ -650,9 +681,18 @@ namespace TooGoodEngine {
 			info.Format = OpenGL::Texture2DFormat::RGBA32F;
 			info.Width = m_Settings.ViewportWidth;
 			info.Height = m_Settings.ViewportHeight;
-			info.MipMapLevels = RenderData::BloomMipLevelCount;
 
-			info.Paramaters[OpenGL::TextureParamater::MinFilter] = OpenGL::TextureParamaterOption::MipMapLinear;
+			if (m_Settings.Bloom)
+			{
+				info.MipMapLevels = RenderData::BloomMipLevelCount;
+				info.Paramaters[OpenGL::TextureParamater::MinFilter] = OpenGL::TextureParamaterOption::MipMapLinear;
+			}
+			else
+			{
+				info.MipMapLevels = 1;
+				info.Paramaters[OpenGL::TextureParamater::MinFilter] = OpenGL::TextureParamaterOption::Linear;
+			}
+
 			info.Paramaters[OpenGL::TextureParamater::MagFilter] = OpenGL::TextureParamaterOption::Linear;
 			info.Paramaters[OpenGL::TextureParamater::WrapModeS] = OpenGL::TextureParamaterOption::ClampToEdge;
 			info.Paramaters[OpenGL::TextureParamater::WrapModeT] = OpenGL::TextureParamaterOption::ClampToEdge;
@@ -720,6 +760,14 @@ namespace TooGoodEngine {
 			{ {OpenGL::ShaderType::ComputeShader, m_Data.ShaderDirectory / "FinalPass.comp"} };
 
 			m_Data.FinalPass = OpenGL::Program(map);
+		}
+
+		{
+			OpenGL::ShaderMap shaderMap
+			{ {OpenGL::ShaderType::FragmentShader, m_Data.ShaderDirectory / "Display.frag"},
+			  {OpenGL::ShaderType::VertexShader,   m_Data.ShaderDirectory / "Display.vert"} };
+
+			m_Data.DisplayProgram = OpenGL::Program(shaderMap);
 		}
 
 	}

@@ -24,7 +24,7 @@ namespace TooGoodEngine {
 
 		void Create(const ScriptData& data);
 		void OnCreate();
-		void OnUpdate(double delta);
+		void OnUpdate(double delta) const;
 
 	private:
 		void _PrintDebugInfo();

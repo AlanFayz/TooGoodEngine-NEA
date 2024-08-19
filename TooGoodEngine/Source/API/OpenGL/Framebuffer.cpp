@@ -31,7 +31,6 @@ namespace TooGoodEngine {
 			GLenum status = glCheckNamedFramebufferStatus(m_FramebufferHandle, GL_FRAMEBUFFER);
 			TGE_VERIFY(status == GL_FRAMEBUFFER_COMPLETE, "framebuffer incomplete with code ", status);
 		
-			
 			glNamedFramebufferDrawBuffers(m_FramebufferHandle, (GLsizei)drawBuffers.size(), drawBuffers.data());
 		}
 

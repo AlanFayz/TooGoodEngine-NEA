@@ -97,6 +97,7 @@ namespace TooGoodEngine {
 			case KeyCode::Q:    return GLFW_KEY_Q;
 			case KeyCode::E:    return GLFW_KEY_E;
 			case KeyCode::X:	return GLFW_KEY_X;
+			case KeyCode::Esc:  return GLFW_KEY_ESCAPE;
 			case KeyCode::None: 
 			default:	return 0;
 		}

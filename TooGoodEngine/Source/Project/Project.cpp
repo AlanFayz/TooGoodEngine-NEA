@@ -27,7 +27,7 @@ namespace TooGoodEngine {
 
 	Project::~Project()
 	{
-		SaveState();
+		ComponentLoader::ClearCaches();
 	}
 
 	void Project::SaveState()
@@ -146,6 +146,9 @@ namespace TooGoodEngine {
 		renderSettings.FillingMode   = (FillMode)jsonSettings["Filling Mode"].get<int>();
 		renderSettings.LevelOfDetail = jsonSettings["Level Of Detail"].get<float>();
 		renderSettings.Gradient      = jsonSettings["Gradient"].get<float>();
+		renderSettings.Bloom         = jsonSettings["Bloom Enabled"].get<bool>();
+		renderSettings.Threshold     = jsonSettings["Bloom Threshold"].get<float>();
+		renderSettings.Intensity     = jsonSettings["Bloom Intensity"].get<float>();
 
 		std::array<float, 4> clearColor = jsonSettings["Clear Color"].get<std::array<float, 4>>();
 		renderSettings.ClearColor = { clearColor[0], clearColor[1], clearColor[2], clearColor[3] };
@@ -155,7 +158,6 @@ namespace TooGoodEngine {
 			UUID id = jsonSettings["Environment Map"].get<uint64_t>();
 			renderSettings.CurrentEnvironmentMap = m_AssetManager->FetchAssetAssuredType<EnvironmentMap>(id);
 		}
-		
 
 		scene->GetSceneRenderer()->ChangeSettings(renderSettings);
 	}
@@ -252,6 +254,9 @@ namespace TooGoodEngine {
 		writer.WriteGeneric({ "Scenes", sceneName, "Scene Settings", "Gradient" },		  renderSettings.Gradient);
 		writer.WriteGeneric({ "Scenes", sceneName, "Scene Settings", "Clear Color" },     clearColor);
 		
+		writer.WriteGeneric({ "Scenes", sceneName, "Scene Settings", "Bloom Enabled" },   renderSettings.Bloom);
+		writer.WriteGeneric({ "Scenes", sceneName, "Scene Settings", "Bloom Threshold" }, renderSettings.Threshold);
+		writer.WriteGeneric({ "Scenes", sceneName, "Scene Settings", "Bloom Intensity" }, renderSettings.Intensity);
 	}
 
 	void Project::SaveAssets(JsonWriter& writer)
@@ -297,7 +302,7 @@ namespace TooGoodEngine {
 		}	
 	}
 
-	void Project::LoadAllScenes()
+	void Project::LoadProject()
 	{
 		JsonReader reader(m_ProjectDirectory / (m_ProjectName + ".json"));
 

@@ -196,7 +196,7 @@ namespace GoodEditor {
 
 		ImGui::SeparatorText("Clear Color");
 
-		if (ImGui::ColorPicker4("##ClearColor", glm::value_ptr(renderSettings.ClearColor)))
+		if (ImGui::ColorEdit4("##ClearColor", glm::value_ptr(renderSettings.ClearColor), ImGuiColorEditFlags_AlphaPreview |ImGuiColorEditFlags_NoInputs))
 			changed = true;
 
 		ImGui::SeparatorText("Depth Testing");
@@ -309,6 +309,9 @@ namespace GoodEditor {
 		}
 
 		ImGui::SeparatorText("Bloom Settings");
+
+		if (ImGui::Checkbox("Enable Bloom", &renderSettings.Bloom))
+			changed = true;
 
 		if (ImGui::DragFloat("Threshold", &renderSettings.Threshold, 0.01f, 0.0f, FLT_MAX / 2.0f))
 			changed = true;

@@ -6,6 +6,9 @@
 
 namespace TooGoodEngine {
 
+	using ModelCache = std::map<uint64_t, ModelInfo>;
+
+	//TODO: should take in the current project as a pointer to its paramters.
 	class ComponentLoader
 	{
 	public:
@@ -15,6 +18,13 @@ namespace TooGoodEngine {
 		static MaterialComponent		 LoadMaterial(const json& jsonComponent, Renderer& sceneRenderer);
 		static PointLightComponent		 LoadPointLight(const json& jsonComponent);
 		static DirectionalLightComponent LoadDirectionalLight(const json& jsonComponent);
+
+		static void ClearCaches();
+
+	private:
+		//using ref instead of stack allocation because was having wierd errors when calling clearcaches.
+		//probably a lifetime issue may look into it further
+		static Ref<ModelCache> m_ModelCache;
 	};
 
 }

@@ -55,7 +55,7 @@ namespace TooGoodEngine {
 		m_OnScriptCreate();
 	}
 
-	void ScriptComponent::OnUpdate(double delta)
+	void ScriptComponent::OnUpdate(double delta) const
 	{
 		m_OnScriptUpdate(delta);
 	}
