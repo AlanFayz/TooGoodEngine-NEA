@@ -64,6 +64,8 @@ namespace TooGoodEngine {
 		RemoveComponent<MaterialComponent>(entity);
 		RemoveComponent<DirectionalLightComponent>(entity);
 		RemoveComponent<PointLightComponent>(entity);
+		RemoveComponent<ModelComponent>(entity);
+		RemoveComponent<ScriptComponent>(entity);
 
 		m_Nodes.erase(m_Nodes.begin() + nodeIndex);
 		m_Entites[id] = Entity("null entity", g_NullEntity);

@@ -6,6 +6,7 @@
 #include "Image.h"
 #include "Model.h"
 #include "EnvironmentMap.h"
+#include "Script.h"
 
 namespace TooGoodEngine {
 
@@ -18,10 +19,11 @@ namespace TooGoodEngine {
 	
 	static const FunctionMap s_FunctionMap
 	{
-		{AssetType::None,		   LoadUntypedAsset}, 
-		{AssetType::Image,		   Image::LoadImageAssetFromFile}, 
-		{AssetType::Model,		   Model::LoadModelAssetFromFile}, 
-		{AssetType::EnvironmentMap, EnvironmentMap::LoadEnviromentMapAssetFromFile}
+		{AssetType::None,		    LoadUntypedAsset}, 
+		{AssetType::Image,		    Image::LoadImageAssetFromFile}, 
+		{AssetType::Model,		    Model::LoadModelAssetFromFile}, 
+		{AssetType::EnvironmentMap, EnvironmentMap::LoadEnviromentMapAssetFromFile},
+		{AssetType::Script,			Script::LoadScriptAssetFromFile}
 	};
 
 	Ref<Asset> Asset::LoadAssetFromFile(AssetType type, const std::filesystem::path& path)
@@ -48,21 +50,23 @@ namespace TooGoodEngine {
 	{
 		switch (type)
 		{
-			case AssetType::None:		   return "None";
-			case AssetType::Image:		   return "Image";
-			case AssetType::Model:		   return "Model";
+			case AssetType::None:		    return "None";
+			case AssetType::Image:		    return "Image";
+			case AssetType::Model:		    return "Model";
 			case AssetType::EnvironmentMap: return "EnvironmentMap";
-			default:					   return "None";
+			case AssetType::Script:		    return "Script";
+			default:					    return "None";
 				break;
 		}
 	}
 
 	AssetType GetAssetTypeFromString(const std::string& strType)
 	{
-		if (strType == "None")			return AssetType::None;
-		if (strType == "Image")			return AssetType::Image;
-		if (strType == "Model")			return AssetType::Model;
+		if (strType == "None")				return AssetType::None;
+		if (strType == "Image")				return AssetType::Image;
+		if (strType == "Model")				return AssetType::Model;
 		if (strType == "EnvironmentMap")	return AssetType::EnvironmentMap;
+		if (strType == "Script")			return AssetType::Script;
 
 		return AssetType::None;
 	}

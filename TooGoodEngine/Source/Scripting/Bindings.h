@@ -5,37 +5,58 @@
 
 namespace TooGoodEngine {
 
-	namespace PythonBindings {
+	class PythonBindings
+	{
+	public:
 
-		static PyObject* LogMsg(PyObject* self, PyObject* args)
-		{
-			const char* val;
-			if (!PyArg_ParseTuple(args, "s", &val))
-				return nullptr;
+		//
+		// ---- user api ----
+		//
+		static PyObject* LogMsg(PyObject* self, PyObject* args);
+		static PyObject* LogWarn(PyObject* self, PyObject* args);
+		static PyObject* LogError(PyObject* self, PyObject* args);
 
-			TGE_LOG_INFO(val);
-			return PyLong_FromUnsignedLongLong(1);
-		}
+		static PyObject* IsKeyPressed(PyObject* self, PyObject* args);
+		static PyObject* IsKeyReleased(PyObject* self, PyObject* args);
+		static PyObject* IsKeyDown(PyObject* self, PyObject* args);
 
-		static PyObject* LogWarn(PyObject* self, PyObject* args)
-		{
-			const char* val;
-			if (!PyArg_ParseTuple(args, "s", &val))
-				return nullptr;
+		static PyObject* IsMouseButtonPressed(PyObject* self, PyObject* args);
+		static PyObject* IsMouseButtonReleased(PyObject* self, PyObject* args);
+		static PyObject* IsMouseButtonDown(PyObject* self, PyObject* args);
+
+		static PyObject* GetMouseCoordinates(PyObject* self, PyObject* args);
+		static PyObject* GetScrollWheel(PyObject* self, PyObject* args);
+		
+		static PyObject* DisableCursor(PyObject* self, PyObject* args);
+		static PyObject* EnableCursor(PyObject* self, PyObject* args);
+
+		// 
+		// ---- internal ----
+		//
+
+		static void      InternalCleanEntity(PyObject* capsule);
+		static PyObject* InternalCreateEntity(PyObject* self, PyObject* args);
+		static PyObject* InternalGetEntityByName(PyObject* self, PyObject* args);
+		static PyObject* InternalGetEntityName(PyObject* self, PyObject* args);
+		static PyObject* InternalGetEntityID(PyObject* self, PyObject* args);
+		static PyObject* InternalAddComponentToEntity(PyObject* self, PyObject* args);
+		static PyObject* InternalRemoveComponentFromEntity(PyObject* self, PyObject* args);
+		static PyObject* InternalRemoveEntityFromTree(PyObject* self, PyObject* args);
+		static PyObject* InternalGetComponentFromEntity(PyObject* self, PyObject* args);
+
+		static void      InternalCleanTransform(PyObject* capsule);
+		static PyObject* InternalTranslateTransform(PyObject* self, PyObject* args);
+		static PyObject* InternalRotateTransform(PyObject* self, PyObject* args);
+		static PyObject* InternalScaleTransform(PyObject* self, PyObject* args);
+		static PyObject* InternalGetTranslationFromTransform(PyObject* self, PyObject* args);
+		static PyObject* InternalGetRotationFromTransform(PyObject* self, PyObject* args);
+		static PyObject* InternalGetScaleFromTransform(PyObject* self, PyObject* args);
+
+		static void		 InternalCleanMaterial(PyObject* capsule);
+		static void		 InternalCleanPointLight(PyObject* capsule);
+		static void      InternalCleanDirectionalLight(PyObject* capsule);
+		
+	};	
 
 
-			TGE_LOG_WARNING(val);
-			return PyLong_FromUnsignedLongLong(1);
-		}
-
-		static PyObject* LogError(PyObject* self, PyObject* args)
-		{
-			const char* val;
-			if (!PyArg_ParseTuple(args, "s", &val))
-				return nullptr;
-
-			TGE_LOG_ERROR(val);
-			return PyLong_FromUnsignedLongLong(1);
-		}
-	}
 }

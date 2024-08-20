@@ -7,6 +7,8 @@
 
 namespace TooGoodEngine {
 
+	//TODO: should probably make variable.
+
 	inline constexpr uint32_t g_NumberOfMipMaps = 7;
 	inline constexpr uint32_t g_EnvironmentMapWidth = 1024;
 	inline constexpr uint32_t g_EnvironmentMapHeight = 1024;

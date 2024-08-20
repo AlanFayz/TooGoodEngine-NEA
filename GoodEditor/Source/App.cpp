@@ -1,12 +1,10 @@
 #include "Core/EntryPoint.h"
 #include "Editor/Editor.h"
 
-using namespace TooGoodEngine;
-
 int main()
 {
-	ApplicationData data{};
-	data.Layers.push_back(CreateRef<GoodEditor::Editor>());
+	TooGoodEngine::ApplicationData data{};
+	data.Layers.push_back(TooGoodEngine::CreateRef<GoodEditor::Editor>());
 	data.Title        = "Good Editor";
 	data.WindowWidth  = 1200;
 	data.WindowHeight = 800;

@@ -6,7 +6,13 @@ namespace TooGoodEngine {
 	
 	enum class KeyCode
 	{
-		None = 0, W, A, S, D, Q, E, X, Esc //will add rest later
+		None = 0, Esc,
+		One, Two, Three, Four, Five, Six, Seven, Eight, Nine, Zero,
+		Tab, Enter, Backspace, Space, Minus, Equal, LeftBracket, RightBracket, Backslash,
+		Semicolon, Apostrophe, Comma, Period, Slash, F1, F2, F3, F4, F5, F6, F7, F8, F9, F10, F11, F12,
+		PrintScreen, ScrollLock, Pause, Insert, Home, PageUp, Delete, End, PageDown, Right, Left, Down, Up,
+		LeftControl, LeftShift, LeftAlt, LeftSuper, RightControl, RightShift, RightAlt, RightSuper, Menu,
+		A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z
 	};
 
 	enum class ButtonCode

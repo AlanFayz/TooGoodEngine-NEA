@@ -45,10 +45,17 @@ namespace TooGoodEngine {
 		else
 			m_CameraController2D.Update(delta);
 
-
 		// ---- call scripts ----
 		{
 			auto scripts = m_Registry.View<ScriptComponent>();
+
+			if (m_FirstPlay)
+			{
+				for (const auto& script : scripts)
+					script.OnCreate();
+
+				m_FirstPlay = false;
+			}
 
 			for (const auto& script : scripts)
 				script.OnUpdate(delta);
@@ -118,6 +125,9 @@ namespace TooGoodEngine {
 	void Scene::Update(double delta)
 	{
 		TGE_PROFILE_SCOPE(SceneUpdate);
+
+		m_FirstPlay = true;
+
 
 		if (m_SceneView == SceneView::View3D)
 			m_CameraController.Update(delta);
@@ -201,5 +211,9 @@ namespace TooGoodEngine {
 	void Scene::SetSceneView(SceneView view)
 	{
 		m_SceneView = view;
+	}
+	Entity Scene::Add(const std::string& name)
+	{
+		return m_Registry.Add(name);
 	}
 }

@@ -42,11 +42,13 @@ namespace GoodEditor {
 		m_ExtensionMap[".obj"]	 = Image::LoadImageAssetFromFile("Resources/Textures/obj_icon.png");
 		m_ExtensionMap[".fbx"]	 = Image::LoadImageAssetFromFile("Resources/Textures/fbx_icon.png");
 		m_ExtensionMap[".hdr"]	 = Image::LoadImageAssetFromFile("Resources/Textures/hdr_icon.png");
+		m_ExtensionMap[".py"]	 = Image::LoadImageAssetFromFile("Resources/Textures/python_icon.png");
 
 	}
 	void Editor::OnDestroy()
 	{
-		g_SelectedProject->SaveState();
+		if(g_SelectedProject)
+			g_SelectedProject->SaveState();
 	}
 	void Editor::OnUpdate(double delta)
 	{
@@ -55,13 +57,15 @@ namespace GoodEditor {
 		else if (g_SelectedProject && m_Playing)
 			g_SelectedProject->GetCurrentScene()->Play(delta);
 
-		if (Input::IsKeyPressed(KeyCode::Esc))
+		//may make this changeable in the editor settings if i get the chance to make one
+
+		if (Input::IsKeyPressed(KeyCode::Esc)) 
 		{
 			if (m_Playing)
 			{
-				//when played project gets saved to disk. The player can completly mess
-				//every single scene. We destroy the current project without saving. Then reload from disk
-				//preserving the state.
+				//when played project gets saved to disk. The player can completly mess up
+				//every single scene. We then destroy the current project without saving. Then reload from disk
+				//preserving the state before it was played.
 
 				g_SelectedProject.reset();
 				g_SelectedProject = CreateRef<Project>(m_ProjectPath);

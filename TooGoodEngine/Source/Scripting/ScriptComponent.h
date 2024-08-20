@@ -1,6 +1,7 @@
 #pragma once
 
 #include "PythonBase.h"
+#include "Core/UUID.h"
 
 #include <corecrt.h>
 #include <functional>
@@ -14,7 +15,6 @@ namespace TooGoodEngine {
 		PyObject* PyOnUpdate;
 	};
 
-	//container for a python script
 	class ScriptComponent
 	{
 	public:
@@ -23,8 +23,11 @@ namespace TooGoodEngine {
 		~ScriptComponent();
 
 		void Create(const ScriptData& data);
-		void OnCreate();
+		void OnCreate() const;
 		void OnUpdate(double delta) const;
+
+		inline void SetHandle(UUID other) { m_AssetHandle = other; }
+		inline const UUID GetHandle() const { return m_AssetHandle; }
 
 	private:
 		void _PrintDebugInfo();
@@ -35,5 +38,7 @@ namespace TooGoodEngine {
 
 		PyObject* m_PyOnScriptCreate = nullptr;
 		PyObject* m_PyOnScriptUpdate = nullptr;
+
+		UUID m_AssetHandle; //for serialization
 	};
 }

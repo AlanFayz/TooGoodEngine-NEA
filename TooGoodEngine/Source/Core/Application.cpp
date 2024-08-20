@@ -16,7 +16,6 @@ namespace TooGoodEngine {
 	Application::Application(ApplicationData& data)
 		: m_Dispatcher(this), m_Window(data.WindowWidth, data.WindowHeight, data.Title, m_Dispatcher)
 	{
-		ScriptingEngine::Init();
 		Input::Init(m_Window.GetWindow());
 
 		_InitImGui();
@@ -30,7 +29,6 @@ namespace TooGoodEngine {
 	Application::~Application()
 	{
 		_ShutdownImGui();
-		ScriptingEngine::Shutdown();
 	}
 
 	void Application::AddLayer(const Ref<Layer>& layer)
@@ -115,6 +113,7 @@ namespace TooGoodEngine {
 		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 
+		//default style, actual style is set in the editor.
 		ImGui::StyleColorsDark();
 
 		ImGuiStyle& style = ImGui::GetStyle();

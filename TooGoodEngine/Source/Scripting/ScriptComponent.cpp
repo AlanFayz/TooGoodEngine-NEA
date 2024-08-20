@@ -18,6 +18,7 @@ namespace TooGoodEngine {
 		Py_XDECREF(m_PyOnScriptUpdate);
 	}
 
+
 	void ScriptComponent::Create(const ScriptData& data)
 	{
 		m_PyOnScriptCreate = data.PyOnCreate;
@@ -27,7 +28,7 @@ namespace TooGoodEngine {
 
 		m_OnScriptCreate = [this]()
 			{
-				PyObject* success = PyObject_CallObject(m_PyOnScriptUpdate, nullptr);
+				PyObject* success = PyObject_CallObject(m_PyOnScriptCreate, nullptr);
 
 				if (!success)
 					_PrintDebugInfo();
@@ -48,9 +49,10 @@ namespace TooGoodEngine {
 				Py_XDECREF(args);
 				Py_XDECREF(pyFloat);
 			};
+
 	}
 
-	void ScriptComponent::OnCreate()
+	void ScriptComponent::OnCreate() const
 	{
 		m_OnScriptCreate();
 	}
@@ -62,7 +64,7 @@ namespace TooGoodEngine {
 
 	void ScriptComponent::_PrintDebugInfo()
 	{
-		PyErr_Print(); //provides more information than below currently
+		PyErr_Print(); //provides more useful information than below currently
 
 		//PyObject* type      = nullptr; 
 		//PyObject* value     = nullptr;

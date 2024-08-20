@@ -31,6 +31,7 @@ namespace GoodEditor {
 		static void _DrawComponent(PointLightComponent& component);
 		static void _DrawComponent(DirectionalLightComponent& component);
 		static void _DrawComponent(ModelComponent& component);
+		static void _DrawComponent(ScriptComponent& component);
 
 		static bool _DrawMaterialAttribute(const char* name, glm::vec4& attribute, Ref<Image>& image);
 		static bool _DrawMaterialRoughness(float& roughness, Ref<Image>& image);

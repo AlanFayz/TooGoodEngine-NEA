@@ -8,10 +8,11 @@ namespace TooGoodEngine {
 	
 	enum class AssetType
 	{
-		None = 0, //more to add
+		None = 0, 
 		Image,
 		Model, 
-		EnvironmentMap
+		EnvironmentMap, 
+		Script
 	};
 
 	std::string_view GetAssetTypeString(AssetType type);

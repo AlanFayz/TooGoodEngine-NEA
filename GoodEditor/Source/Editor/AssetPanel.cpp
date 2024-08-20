@@ -1,6 +1,7 @@
 #include "AssetPanel.h"
 
 #include "FileDialogs/FileDialog.h"
+#include "Assets/Script.h"
 
 namespace GoodEditor {
 
@@ -43,6 +44,7 @@ namespace GoodEditor {
                 m_CurrentDirectory = m_CurrentDirectory.parent_path();
 
             int k = 10000;
+
             for (const auto& entry : std::filesystem::directory_iterator(m_CurrentDirectory))
             {
                 std::filesystem::path path = entry.path();
@@ -89,7 +91,6 @@ namespace GoodEditor {
 
                     if (!m_CachedDirectories.contains(path))
                     {
-                        //TODO: audio asset when supported needs to be here as well
                         if (extension == ".png")
                             g_SelectedProject->GetAssetManager().LoadAssetIntoBank<Image>(path);
                         if (extension == ".fbx" || extension == ".obj")
@@ -106,6 +107,9 @@ namespace GoodEditor {
                         if (extension == ".hdr")
                             g_SelectedProject->GetAssetManager().LoadAssetIntoBank<EnvironmentMap>(path);
 
+                        if (extension == ".py")
+                            g_SelectedProject->GetAssetManager().LoadAssetIntoBank<Script>(path);
+
                         m_CachedDirectories.insert(path);
                     }
 
@@ -116,11 +120,12 @@ namespace GoodEditor {
                         if (!asset)
                         {
                             g_SelectedProject->GetAssetManager().RemoveAsset(path);
+
                             if (extension == ".png")
                                 asset = g_SelectedProject->GetAssetManager().LoadAssetIntoBank<Image>(path);
                             else if (extension == ".hdr")
                                 asset = g_SelectedProject->GetAssetManager().LoadAssetIntoBank<EnvironmentMap>(path);
-                            else
+                            else if (extension == ".fbx" || extension == ".obj")
                             {
                                 Ref<Model> model = g_SelectedProject->GetAssetManager().LoadAssetIntoBank<Model>(path);
                               
@@ -131,7 +136,10 @@ namespace GoodEditor {
 
                                     asset = model;
                                 }
-      
+                            }
+                            else
+                            {
+                                asset = g_SelectedProject->GetAssetManager().LoadAssetIntoBank<Script>(path);
                             }
                         }
 
@@ -143,10 +151,13 @@ namespace GoodEditor {
                                 ImGui::SetDragDropPayload("IMAGE_TRANSFER_UUID", &id, sizeof(TooGoodEngine::UUID));
                             else if (extension == ".hdr")
                                 ImGui::SetDragDropPayload("ENVIRONMENT_MAP_TRANSFER_UUID", &id, sizeof(TooGoodEngine::UUID));
-                            else
+                            else if (extension == ".fbx" || extension == ".obj")
                                 ImGui::SetDragDropPayload("MODEL_TRANSFER_UUID", &id, sizeof(TooGoodEngine::UUID));
+                            else
+                                ImGui::SetDragDropPayload("SCRIPT_TRANSFER_UUID", &id, sizeof(TooGoodEngine::UUID));
                         }
                         
+
                         ImGui::Text(filename.c_str());
                         ImGui::EndDragDropSource();
                     }
@@ -171,7 +182,6 @@ namespace GoodEditor {
 
             for (const auto& directory : m_CachedDirectories)
             {
-                //check if file has been deleted
                 if (!std::filesystem::exists(directory))
                 {
                     g_SelectedProject->GetAssetManager().RemoveAsset(directory);

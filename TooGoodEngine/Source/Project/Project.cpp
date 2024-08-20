@@ -1,6 +1,7 @@
 #include "Project.h"
 #include "ComponentLoaders/ComponentLoader.h"
 #include "ComponentWriter/ComponentWriter.h"
+#include "Scripting/ScriptingEngine.h"
 
 #include <chrono>
 
@@ -14,6 +15,8 @@ namespace TooGoodEngine {
 		m_ProjectName	   = reader.Fetch<std::string>({ "Project Name" });
 
 		m_AssetManager = CreateRef<AssetManager>(reader.Fetch<std::string>({"Asset Directory"}));
+
+		ScriptingEngine::Init(m_AssetManager->GetPath());
 	}
 
 	Project::Project(const std::string& name, const std::filesystem::path& pathOfDirectory)
@@ -27,6 +30,7 @@ namespace TooGoodEngine {
 
 	Project::~Project()
 	{
+		ScriptingEngine::Shutdown();
 		ComponentLoader::ClearCaches();
 	}
 

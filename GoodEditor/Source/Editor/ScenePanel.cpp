@@ -1,6 +1,8 @@
 #include "ScenePanel.h"
 
 #include "ECS/Components/Components.h"
+#include "Assets/Script.h"
+#include "Scripting/ScriptingEngine.h"
 
 #include <imgui.h>
 #include <glm/gtc/type_ptr.hpp>
@@ -125,6 +127,9 @@ namespace GoodEditor {
 
 		if (tree.HasComponent<ModelComponent>(entity))
 			_DrawComponent(tree.GetComponent<ModelComponent>(entity));
+
+		if (tree.HasComponent<ScriptComponent>(entity))
+			_DrawComponent(tree.GetComponent<ScriptComponent>(entity));
 	}
 
 	bool ScenePanel::_EntityPopup(const Entity& entity, Renderer& sceneRenderer, EntityTree& tree)
@@ -176,16 +181,15 @@ namespace GoodEditor {
 			if (ImGui::MenuItem("Add Model") && !tree.HasComponent<ModelComponent>(entity))
 				tree.EmplaceComponent<ModelComponent>(entity);
 
+			if (ImGui::MenuItem("Add Script") && !tree.HasComponent<ScriptComponent>(entity))
+				tree.EmplaceComponent<ScriptComponent>(entity);
+
 			if (ImGui::MenuItem("Add Entity"))
 				tree.Add(entity, "Entity" + std::to_string(tree.GetCount()));
 
 			ImGui::EndPopup();
 		}
 
-		return false;
-	}
-	bool ScenePanel::_EntityPopup(const Entity& parent, const Entity& child, Renderer& sceneRenderer, EntityTree& tree)
-	{
 		return false;
 	}
 	void ScenePanel::_DrawSettings(const Ref<Scene>& scene)
@@ -451,6 +455,47 @@ namespace GoodEditor {
 			ImGui::EndDragDropTarget();
 		}
 
+
+		ImGui::PopID();
+	}
+	void ScenePanel::_DrawComponent(ScriptComponent& component)
+	{
+		ImGui::PushID(m_IDCount++);
+
+		if (ImGui::TreeNode("Script"))
+		{
+			Ref<Asset> asset = g_SelectedProject->GetAssetManager().FetchAsset(component.GetHandle());
+
+			if (asset)
+			{
+				std::filesystem::path path = asset->GetPath();
+				std::string pathString = path.string();
+
+				ImGui::Text("Path: %s", pathString.c_str());
+			}
+
+			ImGui::TreePop();
+		}
+
+		if (ImGui::BeginDragDropTarget())
+		{
+			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("SCRIPT_TRANSFER_UUID"))
+			{
+				UUID id = *(UUID*)payload->Data;
+				Ref<Script> asset = g_SelectedProject->GetAssetManager().FetchAssetAssuredType<Script>(id);
+
+
+				ScriptData data = ScriptingEngine::ExtractScript(asset->GetPath());
+
+				if (data.PyOnCreate && data.PyOnUpdate)
+				{
+					component.Create(data);
+					component.SetHandle(id);
+				}
+			}
+
+			ImGui::EndDragDropTarget();
+		}
 
 		ImGui::PopID();
 	}

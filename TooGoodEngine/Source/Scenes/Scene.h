@@ -35,6 +35,8 @@ namespace TooGoodEngine {
 		inline const std::string& GetName() const { return m_SceneName; }
 		inline void SetName(const std::string& name) { m_SceneName = name; }
 
+		Entity Add(const std::string& name);
+
 	private:
 		EntityTree m_Registry;
 		Ref<Renderer> m_SceneRenderer;
@@ -49,6 +51,8 @@ namespace TooGoodEngine {
 		ModelInfo m_TestModel;
 
 		SceneView m_SceneView = SceneView::View3D;
+
+		bool m_FirstPlay = true;
 	};
 
 }

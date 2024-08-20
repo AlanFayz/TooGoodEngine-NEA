@@ -1,0 +1,556 @@
+#include "Bindings.h"
+
+#include "Project/Project.h"
+#include "Utils/Input.h"
+
+namespace TooGoodEngine {
+
+	//
+	// -------- Logging -------
+	//
+
+	PyObject* PythonBindings::LogMsg(PyObject* self, PyObject* args)
+	{
+		const char* val;
+		if (!PyArg_ParseTuple(args, "s", &val))
+			return nullptr;
+
+		TGE_LOG_INFO(val);
+		return Py_None;
+	}
+
+	PyObject* PythonBindings::LogWarn(PyObject* self, PyObject* args)
+	{
+		const char* val;
+		if (!PyArg_ParseTuple(args, "s", &val))
+			return nullptr;
+
+
+		TGE_LOG_WARNING(val);
+		return Py_None;
+	}
+
+	PyObject* PythonBindings::LogError(PyObject* self, PyObject* args)
+	{
+		const char* val;
+		if (!PyArg_ParseTuple(args, "s", &val))
+			return nullptr;
+
+		TGE_LOG_ERROR(val);
+		return Py_None;
+	}
+
+	//
+	// -------- Input -------
+	//
+
+	PyObject* PythonBindings::IsKeyPressed(PyObject* self, PyObject* args)
+	{
+		int keyCode = 0;
+
+		if (!PyArg_ParseTuple(args, "i", &keyCode))
+			return nullptr;
+
+		return PyBool_FromLong(Input::IsKeyPressed((KeyCode)keyCode));
+	}
+
+	PyObject* PythonBindings::IsKeyReleased(PyObject* self, PyObject* args)
+	{
+		int keyCode = 0;
+
+		if (!PyArg_ParseTuple(args, "i", &keyCode))
+			return nullptr;
+
+		return PyBool_FromLong(Input::IsKeyReleased((KeyCode)keyCode));
+	}
+
+	PyObject* PythonBindings::IsKeyDown(PyObject* self, PyObject* args)
+	{
+		int keyCode = 0;
+
+		if (!PyArg_ParseTuple(args, "i", &keyCode))
+			return nullptr;
+
+		return PyBool_FromLong(Input::IsKeyDown((KeyCode)keyCode));
+	}
+
+	PyObject* PythonBindings::IsMouseButtonPressed(PyObject* self, PyObject* args)
+	{
+		int mouseCode = 0;
+
+		if (!PyArg_ParseTuple(args, "i", &mouseCode))
+			return nullptr;
+
+		return PyBool_FromLong(Input::IsMouseButtonPressed((ButtonCode)mouseCode));
+	}
+
+	PyObject* PythonBindings::IsMouseButtonReleased(PyObject* self, PyObject* args)
+	{
+		int mouseCode = 0;
+
+		if (!PyArg_ParseTuple(args, "i", &mouseCode))
+			return nullptr;
+
+		return PyBool_FromLong(Input::IsMouseButtonReleased((ButtonCode)mouseCode));
+	}
+
+	PyObject* PythonBindings::IsMouseButtonDown(PyObject* self, PyObject* args)
+	{
+		int mouseCode = 0;
+
+		if (!PyArg_ParseTuple(args, "i", &mouseCode))
+			return nullptr;
+
+		return PyBool_FromLong(Input::IsMouseButtonDown((ButtonCode)mouseCode));
+	}
+
+	PyObject* PythonBindings::GetMouseCoordinates(PyObject* self, PyObject* args)
+	{
+		double x = 0, y = 0;
+		Input::GetMouseCoordinates(x, y);
+
+		PyObject* pyX = PyFloat_FromDouble(x);
+		PyObject* pyY = PyFloat_FromDouble(y);
+
+		PyObject* tuple = PyTuple_New(2);
+
+		PyTuple_SetItem(tuple, 0, pyX); 
+		PyTuple_SetItem(tuple, 1, pyY);
+
+		return tuple;
+	}
+
+	PyObject* PythonBindings::GetScrollWheel(PyObject* self, PyObject* args)
+	{
+		double x = 0, y = 0;
+		Input::GetScrollWheel(x, y);
+
+		PyObject* pyX = PyFloat_FromDouble(x);
+		PyObject* pyY = PyFloat_FromDouble(y);
+
+		PyObject* tuple = PyTuple_New(2);
+
+		PyTuple_SetItem(tuple, 0, pyX);
+		PyTuple_SetItem(tuple, 1, pyY);
+
+		return tuple;
+	}
+
+	PyObject* PythonBindings::DisableCursor(PyObject* self, PyObject* args)
+	{
+		Input::DisableCursor();
+		return Py_None;
+	}
+
+	PyObject* PythonBindings::EnableCursor(PyObject* self, PyObject* args)
+	{
+		Input::EnableCursor();
+		return Py_None;
+	}
+	
+	//
+	// ---- Internal Entity -----
+	//
+
+	void PythonBindings::InternalCleanEntity(PyObject* capsule)
+	{
+		//not the best to be using heap memory directly. TODO: switch to using MemoryAllocator<> class
+		Entity* container = (Entity*)(PyCapsule_GetPointer(capsule, "InternalEntity"));
+		if (container)
+			delete container;
+
+		container = nullptr;
+	}
+
+	PyObject* PythonBindings::InternalCreateEntity(PyObject* self, PyObject* args)
+	{
+		const char* val;
+		if (!PyArg_ParseTuple(args, "s", &val))
+			return nullptr;
+
+		Entity entity = g_SelectedProject->GetCurrentScene()->Add(val);
+
+		Entity* container = new Entity(entity);
+		return PyCapsule_New(container, "InternalEntity", InternalCleanEntity);
+	}
+
+	PyObject* PythonBindings::InternalGetEntityByName(PyObject* self, PyObject* args)
+	{
+		const char* val;
+		if (!PyArg_ParseTuple(args, "s", &val))
+			return nullptr;
+
+		auto& registry = g_SelectedProject->GetCurrentScene()->GetRegistry();
+		
+		Entity entity = registry.GetEntityByName(val);
+		if (!entity)
+			return nullptr;
+
+		Entity* container = new Entity(entity);
+		return PyCapsule_New(container, "InternalEntity", InternalCleanEntity);
+	}
+
+	PyObject* PythonBindings::InternalGetEntityName(PyObject* self, PyObject* args)
+	{
+		PyObject* capsule;
+		if (!PyArg_ParseTuple(args, "O", &capsule))
+			return nullptr;
+
+		Entity* container = (Entity*)(PyCapsule_GetPointer(capsule, "InternalEntity"));
+		if (!container)
+			return nullptr;
+
+		return PyUnicode_FromString(container->GetName().c_str());
+	}
+
+	PyObject* PythonBindings::InternalGetEntityID(PyObject* self, PyObject* args)
+	{
+		PyObject* capsule;
+		if (!PyArg_ParseTuple(args, "O", &capsule))
+			return nullptr;
+
+		Entity* container = (Entity*)(PyCapsule_GetPointer(capsule, "InternalEntity"));
+		if (!container)
+			return nullptr;
+
+		return PyLong_FromUnsignedLongLong((uint64_t)container->GetID());
+	}
+
+	PyObject* PythonBindings::InternalAddComponentToEntity(PyObject* self, PyObject* args)
+	{
+		PyObject* capsule = nullptr;
+		const char* name = nullptr;
+		if (!PyArg_ParseTuple(args, "Os", &capsule, &name))
+			return nullptr;
+
+		auto& registry = g_SelectedProject->GetCurrentScene()->GetRegistry();
+		auto renderer  = g_SelectedProject->GetCurrentScene()->GetSceneRenderer();
+		
+		Entity* container = (Entity*)(PyCapsule_GetPointer(capsule, "InternalEntity"));
+
+		if (!container)
+			return nullptr;
+		
+		if (name == "Transform" && !registry.HasComponent<TransformComponent>(*container))
+			registry.EmplaceComponent<TransformComponent>(*container);
+		
+		else if (name == "Material" && !registry.HasComponent<MaterialComponent>(*container))
+		{
+			MaterialComponent component{};
+			component.ID = renderer->AddMaterial(component.Material);
+			registry.AddComponent(*container, component);
+
+		}
+		
+		else if (name == "Directional Light" && !registry.HasComponent<DirectionalLightComponent>(*container))
+			registry.EmplaceComponent<DirectionalLightComponent>(*container);
+		
+		else if (name == "Point Light" && !registry.HasComponent<PointLightComponent>(*container))
+			registry.EmplaceComponent<PointLightComponent>(*container);
+		
+		else if (name == "Quad")
+		{
+			MeshComponent component;
+			component.ID = 0;
+			component.PathToSource = "##Quad";
+
+			registry.AddComponent(*container, component);
+		}
+
+		else if (name == "Cube")
+		{
+			MeshComponent component;
+			component.ID = 1;
+			component.PathToSource = "##Cube";
+
+			registry.AddComponent(*container, component);
+		}
+
+		return Py_None;
+	}
+
+	PyObject* PythonBindings::InternalRemoveComponentFromEntity(PyObject* self, PyObject* args)
+	{
+		PyObject* capsule = nullptr;
+		const char* name = nullptr;
+		if (!PyArg_ParseTuple(args, "Os", &capsule, &name))
+			return nullptr;
+
+		auto& registry = g_SelectedProject->GetCurrentScene()->GetRegistry();
+
+		Entity* container = (Entity*)(PyCapsule_GetPointer(capsule, "InternalEntity"));
+
+		if (!container)
+			return nullptr;
+
+		if (name == "Transform" && registry.HasComponent<TransformComponent>(*container))
+			registry.RemoveComponent<TransformComponent>(*container);
+
+		else if (name == "Material" && registry.HasComponent<MaterialComponent>(*container))
+			registry.RemoveComponent<MaterialComponent>(*container);
+
+		else if (name == "Directional Light" && registry.HasComponent<DirectionalLightComponent>(*container))
+			registry.RemoveComponent<DirectionalLightComponent>(*container);
+
+		else if (name == "Point Light" && registry.HasComponent<PointLightComponent>(*container))
+			registry.RemoveComponent<PointLightComponent>(*container);
+
+		else if (name == "Quad" || name == "Cube" && registry.HasComponent<MeshComponent>(*container))
+			registry.RemoveComponent<MeshComponent>(*container);
+
+		return Py_None;
+	}
+
+	PyObject* PythonBindings::InternalRemoveEntityFromTree(PyObject* self, PyObject* args)
+	{
+		PyObject* capsule = nullptr;
+		if (!PyArg_ParseTuple(args, "O", &capsule))
+			return nullptr;
+
+		Entity* container = (Entity*)(PyCapsule_GetPointer(capsule, "InternalEntity"));
+
+		if (!container)
+			return nullptr;
+
+		auto& registry = g_SelectedProject->GetCurrentScene()->GetRegistry();
+		registry.RemoveEntity(*container);
+
+		return Py_None;
+	}
+
+	PyObject* PythonBindings::InternalGetComponentFromEntity(PyObject* self, PyObject* args)
+	{
+		PyObject* capsule = nullptr;
+		const char* name = nullptr;
+		if (!PyArg_ParseTuple(args, "Os", &capsule, &name))
+			return nullptr;
+
+		auto& registry = g_SelectedProject->GetCurrentScene()->GetRegistry();
+
+		Entity* container = (Entity*)(PyCapsule_GetPointer(capsule, "InternalEntity"));
+
+		if (!container || !*container)
+			return nullptr;
+
+		std::string stringName = name;
+
+		if (stringName == "Transform" && registry.HasComponent<TransformComponent>(*container))
+		{
+			auto& transform = registry.GetComponent<TransformComponent>(*container);
+
+			Entity* componentContainer = container;
+
+			return PyCapsule_New(componentContainer, "InternalTransform", InternalCleanTransform);
+		}
+
+		else if (name == "Material" && registry.HasComponent<MaterialComponent>(*container))
+		{
+			auto& material = registry.GetComponent<MaterialComponent>(*container);
+
+			Entity* componentContainer = container;
+
+			return PyCapsule_New(componentContainer, "InternalMaterial", InternalCleanMaterial);
+		}
+
+		else if (name == "Directional Light" && registry.HasComponent<DirectionalLightComponent>(*container))
+		{
+			auto& light = registry.GetComponent<DirectionalLightComponent>(*container);
+
+			Entity* componentContainer = container;
+
+			return PyCapsule_New(componentContainer, "InternalDirectionalLight", InternalCleanDirectionalLight);
+		}
+
+		else if (name == "Point Light" && registry.HasComponent<PointLightComponent>(*container))
+		{
+			auto& light = registry.GetComponent<PointLightComponent>(*container);
+
+			Entity* componentContainer = container;
+			return PyCapsule_New(componentContainer, "InternalPointLight", InternalCleanPointLight);
+		}
+	
+		return nullptr;
+	}
+
+	//
+	// ---- Internal Transform -----
+	//
+	
+	void PythonBindings::InternalCleanTransform(PyObject* capsule)
+	{
+		
+	}
+
+	PyObject* PythonBindings::InternalTranslateTransform(PyObject* self, PyObject* args)
+	{
+		PyObject* capsule = nullptr;
+		float x = 0.0f;
+		float y = 0.0f;
+		float z = 0.0f;
+
+		if (!PyArg_ParseTuple(args, "Offf", &capsule, &x, &y, &z))
+			return nullptr;
+
+		Entity* container = (Entity*)(PyCapsule_GetPointer(capsule, "InternalTransform"));
+		
+		auto& registry = g_SelectedProject->GetCurrentScene()->GetRegistry();
+
+		if (!container || !*container || !registry.HasComponent<TransformComponent>(*container))
+			return nullptr;
+
+		auto& component = registry.GetComponent<TransformComponent>(*container);
+		component.Translate({ x, y, z });
+
+		return Py_None;
+	}
+
+	PyObject* PythonBindings::InternalRotateTransform(PyObject* self, PyObject* args)
+	{
+		PyObject* capsule = nullptr;
+		float x = 0.0f;
+		float y = 0.0f;
+		float z = 0.0f;
+
+		if (!PyArg_ParseTuple(args, "Offf", &capsule, &x, &y, &z))
+			return nullptr;
+
+		Entity* container = (Entity*)(PyCapsule_GetPointer(capsule, "InternalTransform"));
+
+		auto& registry = g_SelectedProject->GetCurrentScene()->GetRegistry();
+
+		if (!container || !*container || !registry.HasComponent<TransformComponent>(*container))
+			return nullptr;
+
+		auto& component = registry.GetComponent<TransformComponent>(*container);
+		component.Rotate({ x, y, z });
+
+		return Py_None;
+	}
+
+	PyObject* PythonBindings::InternalScaleTransform(PyObject* self, PyObject* args)
+	{
+		PyObject* capsule = nullptr;
+		float x = 0.0f;
+		float y = 0.0f;
+		float z = 0.0f;
+
+		if (!PyArg_ParseTuple(args, "Offf", &capsule, &x, &y, &z))
+			return nullptr;
+
+		Entity* container = (Entity*)(PyCapsule_GetPointer(capsule, "InternalTransform"));
+
+		auto& registry = g_SelectedProject->GetCurrentScene()->GetRegistry();
+
+		if (!container || !*container || !registry.HasComponent<TransformComponent>(*container))
+			return nullptr;
+
+		auto& component = registry.GetComponent<TransformComponent>(*container);
+		component.Scale({ x, y, z });
+
+		return Py_None;
+	}
+
+	PyObject* PythonBindings::InternalGetTranslationFromTransform(PyObject* self, PyObject* args)
+	{
+		PyObject* capsule = nullptr;
+
+		if (!PyArg_ParseTuple(args, "O", &capsule))
+			return nullptr;
+
+		Entity* container = (Entity*)(PyCapsule_GetPointer(capsule, "InternalTransform"));
+
+		auto& registry = g_SelectedProject->GetCurrentScene()->GetRegistry();
+
+		if (!container || !*container || !registry.HasComponent<TransformComponent>(*container))
+			return nullptr;
+
+		auto& component = registry.GetComponent<TransformComponent>(*container);
+		auto& position = component.GetPosition();
+
+		PyObject* pyX = PyFloat_FromDouble(position.x);
+		PyObject* pyY = PyFloat_FromDouble(position.y);
+		PyObject* pyZ = PyFloat_FromDouble(position.z);
+
+		PyObject* tuple = PyTuple_New(3);
+
+		PyTuple_SetItem(tuple, 0, pyX);
+		PyTuple_SetItem(tuple, 1, pyY);
+		PyTuple_SetItem(tuple, 2, pyZ);
+
+		return tuple;
+	}
+
+	PyObject* PythonBindings::InternalGetRotationFromTransform(PyObject* self, PyObject* args)
+	{
+		PyObject* capsule = nullptr;
+
+		if (!PyArg_ParseTuple(args, "O", &capsule))
+			return nullptr;
+
+		Entity* container = (Entity*)(PyCapsule_GetPointer(capsule, "InternalTransform"));
+
+		auto& registry = g_SelectedProject->GetCurrentScene()->GetRegistry();
+
+		if (!container || !*container || !registry.HasComponent<TransformComponent>(*container))
+			return nullptr;
+
+		auto& component = registry.GetComponent<TransformComponent>(*container);
+		auto& rotation = component.GetRotation();
+
+		PyObject* pyX = PyFloat_FromDouble(rotation.x);
+		PyObject* pyY = PyFloat_FromDouble(rotation.y);
+		PyObject* pyZ = PyFloat_FromDouble(rotation.z);
+
+		PyObject* tuple = PyTuple_New(3);
+
+		PyTuple_SetItem(tuple, 0, pyX);
+		PyTuple_SetItem(tuple, 1, pyY);
+		PyTuple_SetItem(tuple, 2, pyZ);
+
+		return tuple;
+	}
+
+	PyObject* PythonBindings::InternalGetScaleFromTransform(PyObject* self, PyObject* args)
+	{
+		PyObject* capsule = nullptr;
+
+		if (!PyArg_ParseTuple(args, "O", &capsule))
+			return nullptr;
+
+		Entity* container = (Entity*)(PyCapsule_GetPointer(capsule, "InternalTransform"));
+
+		auto& registry = g_SelectedProject->GetCurrentScene()->GetRegistry();
+
+		if (!container || !*container || !registry.HasComponent<TransformComponent>(*container))
+			return nullptr;
+
+		auto& component = registry.GetComponent<TransformComponent>(*container);
+		auto& scale = component.GetScale();
+
+		PyObject* pyX = PyFloat_FromDouble(scale.x);
+		PyObject* pyY = PyFloat_FromDouble(scale.y);
+		PyObject* pyZ = PyFloat_FromDouble(scale.z);
+
+		PyObject* tuple = PyTuple_New(3);
+
+		PyTuple_SetItem(tuple, 0, pyX);
+		PyTuple_SetItem(tuple, 1, pyY);
+		PyTuple_SetItem(tuple, 2, pyZ);
+
+		return tuple;
+	}
+
+	void PythonBindings::InternalCleanMaterial(PyObject* capsule)
+	{
+	}
+
+	void PythonBindings::InternalCleanPointLight(PyObject* capsule)
+	{
+	}
+
+	void PythonBindings::InternalCleanDirectionalLight(PyObject* capsule)
+	{
+	}
+
+
+}
