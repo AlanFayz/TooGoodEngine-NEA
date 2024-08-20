@@ -1,6 +1,7 @@
 #pragma once
 
-#include <string_view>
+#include <string>
+#include <limits>
 
 namespace TooGoodEngine {
 	
@@ -19,7 +20,7 @@ namespace TooGoodEngine {
 		inline const EntityID GetID() const { return m_ID; }
 
 		inline operator size_t() const { return m_ID; }
-		inline operator std::string_view() const { return m_Name; }
+		inline operator std::string() const { return m_Name; }
 		inline operator const char* () const { return m_Name.data(); }
 		inline operator bool() const { return m_ID != g_NullEntity; }
 

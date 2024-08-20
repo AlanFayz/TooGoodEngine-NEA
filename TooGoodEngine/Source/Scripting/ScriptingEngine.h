@@ -10,13 +10,13 @@ namespace TooGoodEngine {
 
 	struct ScriptingEngineData
 	{
-		static constexpr size_t MethodCount = 29;
+		static constexpr size_t MethodCount = 30;
 		static constexpr const char* Delimiter = ".";
 		static constexpr size_t DelimiterSize = 1;
 
 		bool Initialized = false;
 		PyObject*   EngineModule = nullptr;
-		PyModuleDef EngineModuleDefinition{};
+		PyModuleDef EngineModuleDefinition;
 		std::filesystem::path ScriptDirectory;
 
 		std::array<PyMethodDef, MethodCount> MethodDefinitions{};

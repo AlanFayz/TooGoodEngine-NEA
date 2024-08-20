@@ -9,7 +9,7 @@ namespace TooGoodEngine {
 		Entity entity = CreateEntity(name);
 
 		Node node{};
-		node.Name = entity;
+		node.Name = entity.GetName();
 		node.Entity = entity;
 		node.ParentIndex = g_NullNode;
 
@@ -31,7 +31,7 @@ namespace TooGoodEngine {
 		Entity entity = CreateEntity(name);
 	
 		Node child{};
-		child.Name = entity;
+		child.Name = entity.GetName();
 		child.Entity = entity;
 		child.ParentIndex = index;
 		

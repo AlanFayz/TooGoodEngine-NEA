@@ -10,7 +10,7 @@ namespace TooGoodEngine {
 
 	struct Node
 	{
-		std::string_view Name;
+		std::string Name;
 		EntityID Entity;
 		size_t ParentIndex = g_NullNode;
 		std::vector<size_t> Children;

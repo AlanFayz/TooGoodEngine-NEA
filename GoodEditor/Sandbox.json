@@ -2,7 +2,7 @@
     "Project Name": "Sandbox",
     "Project Directory": "D:\\Dev\\TooGoodEngine-NEA\\GoodEditor",
     "Asset Directory": "D:\\Dev\\TooGoodEngine-NEA\\GoodEditor\\Assets",
-    "Last Build Date": "2024-08-21 00:56:30",
+    "Last Build Date": "2024-08-21 01:40:48",
     "Scenes": {
         "Scene 1": {
             "Scene Settings": {
@@ -21,14 +21,14 @@
                     1.0
                 ],
                 "Bloom Enabled": true,
-                "Bloom Threshold": 0.4000000059604645,
-                "Bloom Intensity": 0.7699999809265137
+                "Bloom Threshold": 1.0,
+                "Bloom Intensity": 0.5
             },
             "Entities": {
                 "Entity 1": {
                     "Transform": {
                         "Position": [
-                            7.790083408355713,
+                            -1.409999966621399,
                             6.300000190734863,
                             1.2999999523162842
                         ],
@@ -96,7 +96,7 @@
                     ],
                     "Transform": {
                         "Position": [
-                            -5.300000190734863,
+                            5.800000190734863,
                             2.5999999046325684,
                             -3.4000000953674316
                         ],
