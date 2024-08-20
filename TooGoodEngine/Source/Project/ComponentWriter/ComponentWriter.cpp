@@ -217,4 +217,144 @@ namespace TooGoodEngine {
 		
 	}
 
+	void ComponentWriter::WriteScript(JsonWriter& writer, const JsonPath& entityPath, ScriptComponent& component)
+	{
+		JsonPath path = entityPath;
+
+		path.insert(path.end(), { "Script" });
+		writer.WriteGeneric(path, (uint64_t)component.GetHandle());
+	}
+
+	void ComponentWriter::WritePerspectiveCamera(JsonWriter& writer, const JsonPath& entityPath, PerspectiveCameraComponent& component)
+	{
+		JsonPath path = entityPath;
+
+		{
+			path.insert(path.end(), { "Perspective Camera", "Fov"});
+			writer.WriteGeneric(path, component.data.Fov);
+		}
+
+		path = entityPath;
+
+		{
+			path.insert(path.end(), { "Perspective Camera", "Aspect Ratio" });
+			writer.WriteGeneric(path, component.data.AspectRatio);
+		}
+
+
+		path = entityPath;
+
+		{
+			path.insert(path.end(), { "Perspective Camera", "Near" });
+			writer.WriteGeneric(path, component.data.Near);
+		}
+
+		path = entityPath;
+
+		{
+			path.insert(path.end(), { "Perspective Camera", "Far" });
+			writer.WriteGeneric(path, component.data.Far);
+		}
+
+		path = entityPath;
+
+		{
+			path.insert(path.end(), { "Perspective Camera", "Position" });
+
+			std::array<float, 3> position = { component.data.Position.x, component.data.Position.y, component.data.Position.z };
+			writer.WriteGeneric(path, position);
+		}
+
+		path = entityPath;
+
+		{
+			path.insert(path.end(), { "Perspective Camera", "Front" });
+
+			std::array<float, 3> front = { component.data.Front.x, component.data.Front.y, component.data.Front.z };
+			writer.WriteGeneric(path, front);
+		}
+
+		path = entityPath;
+
+		{
+			path.insert(path.end(), { "Perspective Camera", "Up" });
+
+			std::array<float, 3> up = { component.data.Up.x, component.data.Up.y, component.data.Up.z };
+			writer.WriteGeneric(path, up);
+		}
+
+		path = entityPath;
+
+		{
+			path.insert(path.end(), { "Perspective Camera", "In Use" });
+			writer.WriteGeneric(path, component.InUse);
+		}
+	}
+
+	void ComponentWriter::WriteOrthographicCamera(JsonWriter& writer, const JsonPath& entityPath, OrthographicCameraComponent& component)
+	{
+		JsonPath path = entityPath;
+
+		{
+			path.insert(path.end(), { "Orthographic Camera", "Bottom" });
+			writer.WriteGeneric(path, component.data.Bottom);
+		}
+
+		path = entityPath;
+
+		{
+			path.insert(path.end(), { "Orthographic Camera", "Top" });
+			writer.WriteGeneric(path, component.data.Top);
+		}
+
+
+		path = entityPath;
+
+		{
+			path.insert(path.end(), { "Orthographic Camera", "Left" });
+			writer.WriteGeneric(path, component.data.Left);
+		}
+
+		path = entityPath;
+
+		{
+			path.insert(path.end(), { "Orthographic Camera", "Right" });
+			writer.WriteGeneric(path, component.data.Right);
+		}
+
+		path = entityPath;
+
+		{
+			path.insert(path.end(), { "Orthographic Camera", "Position" });
+
+			std::array<float, 3> position = { component.data.Position.x, component.data.Position.y, component.data.Position.z };
+			writer.WriteGeneric(path, position);
+		}
+
+		path = entityPath;
+
+		{
+			path.insert(path.end(), { "Orthographic Camera", "Front" });
+
+			std::array<float, 3> front = { component.data.Front.x, component.data.Front.y, component.data.Front.z };
+			writer.WriteGeneric(path, front);
+		}
+
+		path = entityPath;
+
+		{
+			path.insert(path.end(), { "Orthographic Camera", "Up" });
+
+			std::array<float, 3> up = { component.data.Up.x, component.data.Up.y, component.data.Up.z };
+			writer.WriteGeneric(path, up);
+		}
+
+		path = entityPath;
+
+		{
+			path.insert(path.end(), { "Orthographic Camera", "In Use" });
+			writer.WriteGeneric(path, component.InUse);
+		}
+	}
+
 }

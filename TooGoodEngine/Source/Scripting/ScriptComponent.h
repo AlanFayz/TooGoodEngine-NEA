@@ -22,6 +22,9 @@ namespace TooGoodEngine {
 		ScriptComponent() = default;
 		~ScriptComponent();
 
+		ScriptComponent(const ScriptComponent& other);
+		ScriptComponent& operator=(const ScriptComponent& other);
+
 		void Create(const ScriptData& data);
 		void OnCreate() const;
 		void OnUpdate(double delta) const;

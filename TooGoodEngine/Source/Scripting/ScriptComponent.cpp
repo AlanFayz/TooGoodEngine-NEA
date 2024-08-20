@@ -18,6 +18,80 @@ namespace TooGoodEngine {
 		Py_XDECREF(m_PyOnScriptUpdate);
 	}
 
+	ScriptComponent::ScriptComponent(const ScriptComponent& other)
+		: m_PyOnScriptCreate(other.m_PyOnScriptCreate), m_PyOnScriptUpdate(other.m_PyOnScriptUpdate),
+		m_OnScriptCreate(other.m_OnScriptCreate), m_OnScriptUpdate(other.m_OnScriptUpdate), 
+		m_AssetHandle(other.m_AssetHandle)
+	{
+		m_OnScriptCreate = [this]()
+			{
+				PyObject* success = PyObject_CallObject(m_PyOnScriptCreate, nullptr);
+
+				if (!success)
+					_PrintDebugInfo();
+			};
+
+		m_OnScriptUpdate = [this](double delta)
+			{
+				PyObject* args = PyTuple_New(1);
+				PyObject* pyFloat = PyFloat_FromDouble(delta);
+
+				PyTuple_SetItem(args, 0, pyFloat);
+
+				PyObject* success = PyObject_CallObject(m_PyOnScriptUpdate, args);
+
+				if (!success)
+					_PrintDebugInfo();
+
+				Py_XDECREF(args);
+				Py_XDECREF(pyFloat);
+			};
+
+
+		Py_XINCREF(m_PyOnScriptCreate);
+		Py_XINCREF(m_PyOnScriptUpdate);
+	}
+
+	ScriptComponent& ScriptComponent::operator=(const ScriptComponent& other)
+	{
+		if (this != &other)
+		{
+			m_PyOnScriptCreate = other.m_PyOnScriptCreate;
+			m_PyOnScriptUpdate = other.m_PyOnScriptUpdate;
+		
+			m_OnScriptCreate = [this]()
+				{
+					PyObject* success = PyObject_CallObject(m_PyOnScriptCreate, nullptr);
+
+					if (!success)
+						_PrintDebugInfo();
+				};
+
+			m_OnScriptUpdate = [this](double delta)
+				{
+					PyObject* args = PyTuple_New(1);
+					PyObject* pyFloat = PyFloat_FromDouble(delta);
+
+					PyTuple_SetItem(args, 0, pyFloat);
+
+					PyObject* success = PyObject_CallObject(m_PyOnScriptUpdate, args);
+
+					if (!success)
+						_PrintDebugInfo();
+
+					Py_XDECREF(args);
+					Py_XDECREF(pyFloat);
+				};
+
+			m_AssetHandle = other.m_AssetHandle;
+
+			Py_XINCREF(m_PyOnScriptCreate);
+			Py_XINCREF(m_PyOnScriptUpdate);
+		}
+
+		return *this;
+	}
+
 
 	void ScriptComponent::Create(const ScriptData& data)
 	{

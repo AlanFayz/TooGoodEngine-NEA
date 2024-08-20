@@ -2,6 +2,7 @@
 #include "ComponentLoaders/ComponentLoader.h"
 #include "ComponentWriter/ComponentWriter.h"
 #include "Scripting/ScriptingEngine.h"
+#include "Assets/Script.h"
 
 #include <chrono>
 
@@ -83,6 +84,7 @@ namespace TooGoodEngine {
 			{
 				auto& jsonComponent = *secondIt;
 
+
 				if (secondIt.key() == "Transform")
 					registry.AddComponent(entity, ComponentLoader::LoadTransform(jsonComponent));
 
@@ -109,6 +111,21 @@ namespace TooGoodEngine {
 				else if (secondIt.key() == "Directional Light")
 				{
 					DirectionalLightComponent component = ComponentLoader::LoadDirectionalLight(jsonComponent);
+					registry.AddComponent(entity, component);
+				}
+				else if (secondIt.key() == "Script")
+				{
+					ScriptComponent component = ComponentLoader::LoadScript(jsonComponent);
+					registry.AddComponent(entity, component);
+				}
+				else if (secondIt.key() == "Perspective Camera")
+				{
+					PerspectiveCameraComponent component = ComponentLoader::LoadPerspectiveCamera(jsonComponent);
+					registry.AddComponent(entity, component);
+				}
+				else if (secondIt.key() == "Orthographic Camera")
+				{
+					OrthographicCameraComponent component = ComponentLoader::LoadOrthographicCamera(jsonComponent);
 					registry.AddComponent(entity, component);
 				}
 				
@@ -233,6 +250,25 @@ namespace TooGoodEngine {
 				ModelComponent& component = registry.GetComponent<ModelComponent>(entity);
 				ComponentWriter::WriteModel(writer, pathToEntity, component);
 			}
+
+			if (registry.HasComponent<ScriptComponent>(entity))
+			{
+				ScriptComponent& component = registry.GetComponent<ScriptComponent>(entity);
+				ComponentWriter::WriteScript(writer, pathToEntity, component);
+			}
+
+			if (registry.HasComponent<PerspectiveCameraComponent>(entity))
+			{
+				PerspectiveCameraComponent& component = registry.GetComponent<PerspectiveCameraComponent>(entity);
+				ComponentWriter::WritePerspectiveCamera(writer, pathToEntity, component);
+			}
+
+			if (registry.HasComponent<OrthographicCameraComponent>(entity))
+			{
+				OrthographicCameraComponent& component = registry.GetComponent<OrthographicCameraComponent>(entity);
+				ComponentWriter::WriteOrthographicCamera(writer, pathToEntity, component);
+			}
+
 		}
 	}
 
@@ -280,8 +316,6 @@ namespace TooGoodEngine {
 
 	void Project::LoadAssets(JsonReader& reader)
 	{
-
-
 		json assets = reader.Fetch<json>({ "Assets" });
 
 		for (auto it = assets.begin(); it != assets.end(); it++)
@@ -299,6 +333,7 @@ namespace TooGoodEngine {
 				case AssetType::Image:			m_AssetManager->FetchAndLoadAssetWithID<Image>(path, id);		  break;
 				case AssetType::Model:			m_AssetManager->FetchAndLoadAssetWithID<Model>(path, id);		  break;
 				case AssetType::EnvironmentMap:  m_AssetManager->FetchAndLoadAssetWithID<EnvironmentMap>(path, id); break;
+				case AssetType::Script:			m_AssetManager->FetchAndLoadAssetWithID<Script>(path, id);			break;
 				case AssetType::None:
 				default:
 					break;

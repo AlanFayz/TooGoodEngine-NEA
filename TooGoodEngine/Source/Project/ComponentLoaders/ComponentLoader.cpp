@@ -1,6 +1,8 @@
 #include "ComponentLoader.h"
 
 #include "Project/Project.h"
+#include "Scripting/ScriptingEngine.h"
+#include "Assets/Script.h"
 
 
 namespace TooGoodEngine {
@@ -205,6 +207,68 @@ namespace TooGoodEngine {
 		component.Direction = { direction[0], direction[1], direction[2] };
 
 		component.Intensity = jsonComponent["Intensity"].get<float>();
+
+		return component;
+	}
+
+	ScriptComponent ComponentLoader::LoadScript(const json& jsonComponent)
+	{
+		ScriptComponent component;
+
+		UUID id = jsonComponent.get<uint64_t>();
+		Ref<Script> asset = g_SelectedProject->GetAssetManager().FetchAssetAssuredType<Script>(id);
+
+		if (asset)
+		{
+			ScriptData data = ScriptingEngine::ExtractScript(asset->GetPath());
+
+			component.SetHandle(id);
+			component.Create(data);
+		}
+		
+		return component;
+	}
+
+	PerspectiveCameraComponent ComponentLoader::LoadPerspectiveCamera(const json& jsonComponent)
+	{
+		PerspectiveCameraComponent component;
+		component.data.Fov         = jsonComponent["Fov"].get<float>();
+		component.data.AspectRatio = jsonComponent["Aspect Ratio"].get<float>();
+		component.data.Near		   = jsonComponent["Near"].get<float>();
+		component.data.Far		   = jsonComponent["Far"].get<float>();
+		component.InUse			   = jsonComponent["In Use"].get<bool>();
+
+		std::array<float, 3> position = jsonComponent["Position"].get<std::array<float, 3>>();
+		std::array<float, 3> front    = jsonComponent["Front"].get<std::array<float, 3>>();
+		std::array<float, 3> up		  = jsonComponent["Up"].get<std::array<float, 3>>();
+
+		component.data.Position = { position[0], position[1], position[2] };
+		component.data.Front    = { front[0],    front[1],    front[2] };
+		component.data.Up       = { up[0],		 up[1],		  up[2] };
+		
+		component.Camera.SetData(component.data);
+
+		return component;
+	}
+
+	OrthographicCameraComponent ComponentLoader::LoadOrthographicCamera(const json& jsonComponent)
+	{
+		OrthographicCameraComponent component;
+		component.data.Bottom = jsonComponent["Bottom"].get<float>();
+		component.data.Top    = jsonComponent["Top"].get<float>();
+		component.data.Left   = jsonComponent["Left"].get<float>();
+		component.data.Right  = jsonComponent["Right"].get<float>();
+		component.InUse		  = jsonComponent["In Use"].get<bool>();
+
+		std::array<float, 3> position = jsonComponent["Position"].get<std::array<float, 3>>();
+		std::array<float, 3> front	  = jsonComponent["Front"].get<std::array<float, 3>>();
+		std::array<float, 3> up       = jsonComponent["Up"].get<std::array<float, 3>>();
+
+		component.data.Position = { position[0], position[1], position[2] };
+		component.data.Front    = { front[0],    front[1],    front[2] };
+		component.data.Up       = { up[0],		 up[1],		  up[2] };
+
+		component.Camera.SetData(component.data);
 
 		return component;
 	}

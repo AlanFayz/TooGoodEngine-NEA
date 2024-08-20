@@ -10,7 +10,7 @@ namespace TooGoodEngine {
 
 	struct ScriptingEngineData
 	{
-		static constexpr size_t MethodCount = 27;
+		static constexpr size_t MethodCount = 29;
 		static constexpr const char* Delimiter = ".";
 		static constexpr size_t DelimiterSize = 1;
 

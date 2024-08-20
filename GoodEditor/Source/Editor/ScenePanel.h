@@ -19,10 +19,8 @@ namespace GoodEditor {
 								  std::unordered_set<EntityID>& displayed);
 
 
-		//will display the actual components of the entity
 		static void _DrawEntity(const Entity& entity, EntityTree& tree);
 		static bool _EntityPopup(const Entity& entity, Renderer& sceneRenderer, EntityTree& tree);
-		static bool _EntityPopup(const Entity& parent, const Entity& child, Renderer& sceneRenderer, EntityTree& tree);
 		static void _DrawSettings(const Ref<Scene>& scene);
 		
 		static void _DrawComponent(TransformComponent& component);
@@ -32,6 +30,8 @@ namespace GoodEditor {
 		static void _DrawComponent(DirectionalLightComponent& component);
 		static void _DrawComponent(ModelComponent& component);
 		static void _DrawComponent(ScriptComponent& component);
+		static void _DrawComponent(PerspectiveCameraComponent& component);
+		static void _DrawComponent(OrthographicCameraComponent& component);
 
 		static bool _DrawMaterialAttribute(const char* name, glm::vec4& attribute, Ref<Image>& image);
 		static bool _DrawMaterialRoughness(float& roughness, Ref<Image>& image);

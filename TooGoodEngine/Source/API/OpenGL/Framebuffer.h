@@ -8,13 +8,15 @@
 namespace TooGoodEngine {
 	namespace OpenGL {
 
+		//never going to use render buffers 
+		//so not going to bother adding an option
+		//for them
+
 		struct FramebufferInfo
 		{
 			std::vector<Texture2D*> ColorAttachments; 
 			Texture2D* DepthAttachment = nullptr; //if needed will make this DepthStencil 
 		};
-
-		
 
 		class Framebuffer
 		{

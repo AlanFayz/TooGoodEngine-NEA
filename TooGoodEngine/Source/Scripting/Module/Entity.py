@@ -5,7 +5,8 @@ g_null_entity = 0xFFFFFFFFFFFFFFFF
 
 #TODO: more to add
 g_component_dictionary = {
-	"Transform": Components.Transform
+	"Transform": Components.Transform,
+	"Material": Components.Material
 }
 
 class Entity:

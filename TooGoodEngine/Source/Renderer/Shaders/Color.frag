@@ -8,10 +8,9 @@ const int MATERIAL_TYPE_IMAGE  = 1;
 const int MATERIAL_TYPE_VECTOR = 2;
 
 const float PI = 3.1415926535897932384626433832795;
-const float EPSILON = 0.001;
+const float EPSILON = 0.0000001;
 
 const float FLOAT_MAX = 3.402823466e+38;
-const float FLOAT_MIN = 1.175494351e-38;
 
 struct MaterialAttribute 
 {
@@ -156,7 +155,7 @@ vec4 FresnelApproximation(float NdotL, vec4 reflectivity)
 float Attenuate(float radius, float dist)
 {
 	if(radius >= dist)
-		return 1.0;
+		return 1.0 / max(dist * dist, EPSILON);
 
 	return 0.0;
 }
@@ -234,6 +233,7 @@ void main()
 
 	//
 	// ---- Point Light Contribution ---- 
+	//
 
 	for(int i = 0; i < u_PointLightSize; i++)
 	{
@@ -251,6 +251,7 @@ void main()
 	
 	//
 	// ---- Directional Light Contribution ---- 
+	//
 
 	for(int i = 0; i < u_DirectionalLightSize; i++)
 	{
@@ -264,6 +265,7 @@ void main()
 
 	//
 	// ---- Enviorment Map Contribution ---- 
+	//
 
 	if(u_HasCubeMap == 1)
 	{

@@ -5,13 +5,6 @@
 #include "Scenes/Scene.h"
 
 namespace TooGoodEngine {
-
-	/*
-		Contains most of the serilization and desirlization of projects
-		from json files. There will be a runtime version of this which will 
-		be be built from the editor and simply dump data as is (in binary)
-		in files and have a optimized json file for locations to all.
-	*/
 	
 	class Project
 	{

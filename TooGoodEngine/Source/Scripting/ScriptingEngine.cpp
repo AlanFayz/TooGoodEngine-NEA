@@ -59,7 +59,7 @@ namespace TooGoodEngine {
 		s_Data.MethodDefinitions[8] = { "is_mouse_button_down",		PythonBindings::IsMouseButtonDown,	   METH_VARARGS, "returns true if a mouse button is down" };
 
 		s_Data.MethodDefinitions[9]  = { "get_mouse_coordinates", PythonBindings::GetMouseCoordinates, METH_NOARGS, "returns a tuple containing the mouse coordinates" };
-		s_Data.MethodDefinitions[10] = { "get_scroll_wheel",      PythonBindings::GetScrollWheel,	   METH_NOARGS, "returns a tuple of scroll wheel" };
+		s_Data.MethodDefinitions[10] = { "get_scroll_wheel",      PythonBindings::GetScrollWheel,	   METH_NOARGS, "returns a tuple of scroll wheel x,y" };
 
 		s_Data.MethodDefinitions[11] = { "disable_cursor", PythonBindings::DisableCursor, METH_NOARGS,  "hides and locks the cursor" };
 		s_Data.MethodDefinitions[12] = { "enable_cursor",  PythonBindings::EnableCursor,  METH_NOARGS,  "returns the cursor to normal" };
@@ -85,7 +85,10 @@ namespace TooGoodEngine {
 		s_Data.MethodDefinitions[25] = { "internal_get_rotation_from_transform",    PythonBindings::InternalGetRotationFromTransform,    METH_VARARGS, "internal" };
 		s_Data.MethodDefinitions[26] = { "internal_get_scale_from_transform",       PythonBindings::InternalGetScaleFromTransform,       METH_VARARGS, "internal" };
 
+		s_Data.MethodDefinitions[27] = { "internal_update_material_attribute",  PythonBindings::InternalUpdateMaterialAttribute, METH_VARARGS, "internal" };
+		s_Data.MethodDefinitions[28] = { "internal_get_material_attribute",		PythonBindings::InternalGetMaterialAttribute,    METH_VARARGS, "internal" };
 
+		
 		s_Data.EngineModuleDefinition.m_base    = PyModuleDef_HEAD_INIT;
 		s_Data.EngineModuleDefinition.m_name    = "TooGoodEngine";
 		s_Data.EngineModuleDefinition.m_doc     = nullptr;

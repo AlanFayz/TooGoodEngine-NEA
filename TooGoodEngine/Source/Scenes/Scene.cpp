@@ -24,7 +24,7 @@ namespace TooGoodEngine {
 
 		m_CameraController.SetCamera(m_SceneCamera);
 
-		OrthoGraphicCameraData orthoCameraData{};
+		OrthographicCameraData orthoCameraData{};
 		orthoCameraData.Position = glm::vec3(0.0f, 0.0f, 0.0f);
 		orthoCameraData.Front = glm::vec3(0.0f, 0.0f, 1.0f);
 		orthoCameraData.Up = glm::vec3(0.0f, 1.0f, 0.0f);
@@ -33,21 +33,64 @@ namespace TooGoodEngine {
 		orthoCameraData.Bottom = -4.0f;
 		orthoCameraData.Top = 4.0f;
 
-		m_SceneCamera2D = CreateRef<OrthoGraphicCamera>(orthoCameraData);
+		m_SceneCamera2D = CreateRef<OrthographicCamera>(orthoCameraData);
 		m_CameraController2D.SetCamera(m_SceneCamera2D);
 	}
 
 	void Scene::Play(double delta)
-	{
-		//TODO: this should look for a camera from the camera components.
-		if (m_SceneView == SceneView::View3D)
-			m_CameraController.Update(delta);
-		else
-			m_CameraController2D.Update(delta);
+	{   
+		//
+		// --- search for a camera that is in use ---
+		//
 
+		Camera* sceneCamera = nullptr;
+
+		{
+			//first search perspective cameras
+
+			auto perspectiveView = m_Registry.View<PerspectiveCameraComponent>();
+
+			for (auto& camera : perspectiveView)
+			{
+				if (camera.InUse)
+				{
+					sceneCamera = &camera.Camera;
+					break;
+				}
+			}
+
+			//then search Orthographic cameras if one is not found
+
+			if (!sceneCamera)
+			{
+				auto OrthographicView = m_Registry.View<OrthographicCameraComponent>();
+
+				for (auto& camera : OrthographicView)
+				{
+					if (camera.InUse)
+					{
+						sceneCamera = &camera.Camera;
+						break;
+					}
+				}
+			}
+
+		}
+
+		//if there are no cameras then just use scene default camera
+		if (!sceneCamera)
+			sceneCamera = m_SceneCamera.get();
+
+
+		//
 		// ---- call scripts ----
+		//
 		{
 			auto scripts = m_Registry.View<ScriptComponent>();
+
+			//if its the time playing then call
+			//script init code. OnCreate() should really
+			//be called OnReady() here or OnPlay() TODO
 
 			if (m_FirstPlay)
 			{
@@ -61,11 +104,7 @@ namespace TooGoodEngine {
 				script.OnUpdate(delta);
 		}
 
-		// ---- renderer begin ----
-		if (m_SceneView == SceneView::View3D)
-			m_SceneRenderer->Begin(m_SceneCamera.get());
-		else
-			m_SceneRenderer->Begin(m_SceneCamera2D.get());
+		m_SceneRenderer->Begin(sceneCamera);
 
 		// ---- add point lights ----
 
@@ -127,7 +166,6 @@ namespace TooGoodEngine {
 		TGE_PROFILE_SCOPE(SceneUpdate);
 
 		m_FirstPlay = true;
-
 
 		if (m_SceneView == SceneView::View3D)
 			m_CameraController.Update(delta);

@@ -53,6 +53,10 @@ namespace TooGoodEngine {
 		static PyObject* InternalGetScaleFromTransform(PyObject* self, PyObject* args);
 
 		static void		 InternalCleanMaterial(PyObject* capsule);
+		static PyObject* InternalUpdateMaterialAttribute(PyObject* self, PyObject* args);
+		static PyObject* InternalGetMaterialAttribute(PyObject* self, PyObject* args);
+		//static PyObject* InternalUpdateMaterialTexture(PyObject* self, PyObject* args); TODO once bindings for images have been added
+
 		static void		 InternalCleanPointLight(PyObject* capsule);
 		static void      InternalCleanDirectionalLight(PyObject* capsule);
 		

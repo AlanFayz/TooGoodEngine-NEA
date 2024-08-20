@@ -335,6 +335,7 @@ namespace TooGoodEngine {
 
 		//
 		// ---- down sampling ----
+		//
 
 		for (uint32_t i = 1; i < RenderData::BloomMipLevelCount; i++)
 		{
@@ -364,6 +365,7 @@ namespace TooGoodEngine {
 
 		//
 		// ---- up sampling ----
+		//
 
 		m_Data.BloomPass.Use();
 

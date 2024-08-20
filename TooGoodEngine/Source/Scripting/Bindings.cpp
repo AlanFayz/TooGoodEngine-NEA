@@ -343,7 +343,7 @@ namespace TooGoodEngine {
 			return PyCapsule_New(componentContainer, "InternalTransform", InternalCleanTransform);
 		}
 
-		else if (name == "Material" && registry.HasComponent<MaterialComponent>(*container))
+		else if (stringName == "Material" && registry.HasComponent<MaterialComponent>(*container))
 		{
 			auto& material = registry.GetComponent<MaterialComponent>(*container);
 
@@ -352,7 +352,7 @@ namespace TooGoodEngine {
 			return PyCapsule_New(componentContainer, "InternalMaterial", InternalCleanMaterial);
 		}
 
-		else if (name == "Directional Light" && registry.HasComponent<DirectionalLightComponent>(*container))
+		else if (stringName == "Directional Light" && registry.HasComponent<DirectionalLightComponent>(*container))
 		{
 			auto& light = registry.GetComponent<DirectionalLightComponent>(*container);
 
@@ -361,7 +361,7 @@ namespace TooGoodEngine {
 			return PyCapsule_New(componentContainer, "InternalDirectionalLight", InternalCleanDirectionalLight);
 		}
 
-		else if (name == "Point Light" && registry.HasComponent<PointLightComponent>(*container))
+		else if (stringName == "Point Light" && registry.HasComponent<PointLightComponent>(*container))
 		{
 			auto& light = registry.GetComponent<PointLightComponent>(*container);
 
@@ -542,6 +542,171 @@ namespace TooGoodEngine {
 
 	void PythonBindings::InternalCleanMaterial(PyObject* capsule)
 	{
+	}
+
+	//TODO: future me, make sure to copy this somewhere in python
+	enum class InternalMaterialAttribute
+	{
+		None = 0, Ambient, Albedo, AlbedoFactor, Metallic, MetallicFactor,
+		Emission, EmissionFactor, Roughness
+	};
+
+	PyObject* PythonBindings::InternalUpdateMaterialAttribute(PyObject* self, PyObject* args)
+	{
+		PyObject* capsule = nullptr;
+		int materialCode = 0;
+
+		float r = 0.0f, g = 0.0f, b = 0.0f, a = 0.0f;
+
+		if (!PyArg_ParseTuple(args, "Oiffff", &capsule, &materialCode, &r, &g, &b, &a))
+			return nullptr;
+
+		Entity* container = (Entity*)(PyCapsule_GetPointer(capsule, "InternalMaterial"));
+
+		auto& registry = g_SelectedProject->GetCurrentScene()->GetRegistry();
+		auto  renderer = g_SelectedProject->GetCurrentScene()->GetSceneRenderer();
+
+		if (!container || !*container || !registry.HasComponent<TransformComponent>(*container))
+			return nullptr;
+
+		MaterialComponent& component = registry.GetComponent<MaterialComponent>(*container);
+
+		InternalMaterialAttribute attribute = (InternalMaterialAttribute)materialCode;
+
+		switch (attribute)
+		{
+			case  InternalMaterialAttribute::Ambient:		 component.Material.Ambient.Component   = { r, g, b, a }; break;
+			case  InternalMaterialAttribute::Albedo:		 component.Material.Albedo.Component    = { r, g, b, a }; break;
+			case  InternalMaterialAttribute::Metallic:	     component.Material.Metallic.Component  = { r, g, b, a }; break;
+			case  InternalMaterialAttribute::Emission:		 component.Material.Emission.Component  = { r, g, b, a }; break;
+			case  InternalMaterialAttribute::Roughness:	     component.Material.Roughness.Component = { r, g, b, a }; break; //only r is used
+			case  InternalMaterialAttribute::AlbedoFactor:   component.Material.AlbedoFactor = r;    break;
+			case  InternalMaterialAttribute::MetallicFactor: component.Material.MetallicFactor = r;  break;
+			case  InternalMaterialAttribute::EmissionFactor: component.Material.EmissionFactor = r;  break;
+			case  InternalMaterialAttribute::None:
+			default:
+				TGE_LOG_WARNING("no attribute edited of material");
+				break;
+		}
+
+		renderer->ChangeMaterialData(component.ID, component.Material);
+
+		return Py_None;
+	}
+
+	PyObject* PythonBindings::InternalGetMaterialAttribute(PyObject* self, PyObject* args)
+	{
+		PyObject* capsule = nullptr;
+		int materialCode = 0;
+
+
+		if (!PyArg_ParseTuple(args, "Oi", &capsule, &materialCode))
+			return nullptr;
+
+		Entity* container = (Entity*)(PyCapsule_GetPointer(capsule, "InternalMaterial"));
+
+		auto& registry = g_SelectedProject->GetCurrentScene()->GetRegistry();
+
+		if (!container || !*container || !registry.HasComponent<TransformComponent>(*container))
+			return nullptr;
+
+		MaterialComponent& component = registry.GetComponent<MaterialComponent>(*container);
+
+		InternalMaterialAttribute attribute = (InternalMaterialAttribute)materialCode;
+
+		PyObject* pyR = nullptr;
+		PyObject* pyG = nullptr;
+		PyObject* pyB = nullptr;
+		PyObject* pyA = nullptr;
+
+		switch (attribute)
+		{
+		case  InternalMaterialAttribute::Ambient:	
+
+			 pyR = PyFloat_FromDouble(component.Material.Ambient.Component.r);
+			 pyG = PyFloat_FromDouble(component.Material.Ambient.Component.g);
+			 pyB = PyFloat_FromDouble(component.Material.Ambient.Component.b);
+			 pyA = PyFloat_FromDouble(component.Material.Ambient.Component.a);
+
+
+			break;
+		case  InternalMaterialAttribute::Albedo:		 
+
+			pyR = PyFloat_FromDouble(component.Material.Albedo.Component.r);
+			pyG = PyFloat_FromDouble(component.Material.Albedo.Component.g);
+			pyB = PyFloat_FromDouble(component.Material.Albedo.Component.b);
+			pyA = PyFloat_FromDouble(component.Material.Albedo.Component.a);
+
+
+			break;
+		case  InternalMaterialAttribute::Metallic:	     
+			
+			pyR = PyFloat_FromDouble(component.Material.Metallic.Component.r);
+			pyG = PyFloat_FromDouble(component.Material.Metallic.Component.g);
+			pyB = PyFloat_FromDouble(component.Material.Metallic.Component.b);
+			pyA = PyFloat_FromDouble(component.Material.Metallic.Component.a);
+
+			break;
+
+		case  InternalMaterialAttribute::Emission:		 
+			
+			pyR = PyFloat_FromDouble(component.Material.Emission.Component.r);
+			pyG = PyFloat_FromDouble(component.Material.Emission.Component.g);
+			pyB = PyFloat_FromDouble(component.Material.Emission.Component.g);
+			pyA = PyFloat_FromDouble(component.Material.Emission.Component.a);
+
+
+			break;
+		case  InternalMaterialAttribute::Roughness:	     
+			
+			pyR = PyFloat_FromDouble(component.Material.Roughness.Component.r);
+
+			break; 
+		case  InternalMaterialAttribute::AlbedoFactor:   
+			
+			pyR = PyFloat_FromDouble(component.Material.AlbedoFactor);
+
+			break;
+		case  InternalMaterialAttribute::MetallicFactor: 
+
+			pyR = PyFloat_FromDouble(component.Material.MetallicFactor);
+
+			break;
+		case  InternalMaterialAttribute::EmissionFactor: 
+
+			pyR = PyFloat_FromDouble(component.Material.EmissionFactor);
+
+			break;
+		case  InternalMaterialAttribute::None:
+		default:
+			TGE_LOG_WARNING("material attribute not found");
+			break;
+		}
+
+		if (pyR && pyG && pyB && pyA)
+		{
+			PyObject* tuple = PyTuple_New(4);
+
+			PyTuple_SetItem(tuple, 0, pyR);
+			PyTuple_SetItem(tuple, 1, pyG);
+			PyTuple_SetItem(tuple, 2, pyB);
+			PyTuple_SetItem(tuple, 3, pyA);
+
+			return tuple;
+		}
+		else if (pyR)
+		{
+			//still returning a tuple just so we can have a consistent type
+			//for the game dev
+
+			PyObject* tuple = PyTuple_New(1);
+			PyTuple_SetItem(tuple, 0, pyR);
+
+			return tuple;
+		}
+
+
+		return nullptr;
 	}
 
 	void PythonBindings::InternalCleanPointLight(PyObject* capsule)

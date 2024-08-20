@@ -7,3 +7,4 @@
 #include "PointLightComponent.h"
 #include "DirectionalLightComponent.h"
 #include "ModelComponent.h"
+#include "CameraComponents.h"

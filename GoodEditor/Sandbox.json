@@ -2,7 +2,7 @@
     "Project Name": "Sandbox",
     "Project Directory": "D:\\Dev\\TooGoodEngine-NEA\\GoodEditor",
     "Asset Directory": "D:\\Dev\\TooGoodEngine-NEA\\GoodEditor\\Assets",
-    "Last Build Date": "2024-08-20 16:34:34",
+    "Last Build Date": "2024-08-21 00:56:30",
     "Scenes": {
         "Scene 1": {
             "Scene Settings": {
@@ -12,7 +12,6 @@
                 "Blending Source": 0,
                 "Blending Destination": 0,
                 "Filling Mode": 3,
-                "Environment Map": 9944323375055699610,
                 "Level Of Detail": 0.0,
                 "Gradient": 1.0,
                 "Clear Color": [
@@ -21,15 +20,15 @@
                     0.4156862795352936,
                     1.0
                 ],
-                "Bloom Enabled": false,
-                "Bloom Threshold": 0.1599999964237213,
-                "Bloom Intensity": 0.6299999952316284
+                "Bloom Enabled": true,
+                "Bloom Threshold": 0.4000000059604645,
+                "Bloom Intensity": 0.7699999809265137
             },
             "Entities": {
                 "Entity 1": {
                     "Transform": {
                         "Position": [
-                            0.10000000149011612,
+                            7.790083408355713,
                             6.300000190734863,
                             1.2999999523162842
                         ],
@@ -47,9 +46,9 @@
                     "Mesh": "##Quad",
                     "Material": {
                         "Ambient": [
-                            0.0,
-                            0.1560770571231842,
-                            0.2775800824165344,
+                            1.0,
+                            1.0,
+                            5.810999870300293,
                             1.0
                         ],
                         "Albedo": [
@@ -83,12 +82,12 @@
                             1.0
                         ],
                         "Position": [
-                            0.20000000298023224,
-                            5.699999809265137,
+                            2.5999999046325684,
+                            3.799999952316284,
                             -3.4000000953674316
                         ],
-                        "Radius": 6.699999809265137,
-                        "Intensity": 4.0
+                        "Radius": 5.599999904632568,
+                        "Intensity": 50.599998474121094
                     }
                 },
                 "Entity 2": {
@@ -153,10 +152,10 @@
                         ],
                         "Direction": [
                             -1.0,
-                            1.0,
+                            0.2199999988079071,
                             -0.12999999523162842
                         ],
-                        "Intensity": 0.10000000149011612
+                        "Intensity": 24.399999618530273
                     }
                 },
                 "Entity3": {
@@ -207,12 +206,61 @@
                         "Emission Factor": 0.0,
                         "Roughness": 0.0
                     },
-                    "Model": 8765043499549219097
+                    "Model": 8765043499549219097,
+                    "Script": 902092566008785236,
+                    "Perspective Camera": {
+                        "Fov": 90.0,
+                        "Aspect Ratio": 1.7777777910232544,
+                        "Near": 0.10000000149011612,
+                        "Far": 100.0,
+                        "Position": [
+                            0.0,
+                            4.829999923706055,
+                            -3.75
+                        ],
+                        "Front": [
+                            0.0,
+                            0.0,
+                            1.0
+                        ],
+                        "Up": [
+                            0.0,
+                            1.0,
+                            0.0
+                        ],
+                        "In Use": true
+                    },
+                    "Orthographic Camera": {
+                        "Bottom": 0.009999999776482582,
+                        "Top": 1.9800000190734863,
+                        "Left": 1.5800000429153442,
+                        "Right": 0.5400000214576721,
+                        "Position": [
+                            0.0,
+                            0.0,
+                            0.0
+                        ],
+                        "Front": [
+                            0.0,
+                            0.0,
+                            0.6299999952316284
+                        ],
+                        "Up": [
+                            0.0,
+                            0.0,
+                            0.0
+                        ],
+                        "In Use": false
+                    }
                 }
             }
         }
     },
     "Assets": {
+        "902092566008785236": {
+            "Type": "Script",
+            "Path": "NewFolder1\\sandbox.py"
+        },
         "4685489096643726146": {
             "Type": "Image",
             "Path": "Untitled.png"

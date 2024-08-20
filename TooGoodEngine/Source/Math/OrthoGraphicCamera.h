@@ -4,7 +4,7 @@
 
 namespace TooGoodEngine {
 
-	struct OrthoGraphicCameraData
+	struct OrthographicCameraData
 	{
 		glm::vec3 Position;
 		glm::vec3 Front;
@@ -16,15 +16,16 @@ namespace TooGoodEngine {
 		float Bottom;
 	};
 
-	class OrthoGraphicCameraController;
+	class OrthographicCameraController;
 
-	class OrthoGraphicCamera : public Camera
+	class OrthographicCamera : public Camera
 	{
 	public:
-		OrthoGraphicCamera(const OrthoGraphicCameraData& data);
-		~OrthoGraphicCamera() = default;
+		OrthographicCamera() = default;
+		OrthographicCamera(const OrthographicCameraData& data);
+		~OrthographicCamera() = default;
 
-		void SetData(const OrthoGraphicCameraData& data);
+		void SetData(const OrthographicCameraData& data);
 		virtual void OnWindowResize(float newWidth, float newHeight) override;
 
 		void UpdateViewProjection();
@@ -48,7 +49,7 @@ namespace TooGoodEngine {
 
 		float m_Top, m_Bottom, m_Left, m_Right;
 
-		friend class OrthoGraphicCameraController;
+		friend class OrthographicCameraController;
 	};
 
 }

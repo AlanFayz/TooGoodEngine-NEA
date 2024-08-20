@@ -5,31 +5,26 @@ namespace TooGoodEngine {
 
 		void Command::DrawArrays(Program* program, VertexArray* vertexArray, DrawMode mode, uint32_t first, uint32_t count)
 		{
-			TGE_VERIFY(program, "vertex array or program was nullptr");
+			TGE_VERIFY(program && vertexArray, "vertex array or program was nullptr");
 			program->Use();
-
-			if (vertexArray)
-				vertexArray->Bind();
+			vertexArray->Bind();
 
 			glDrawArrays((GLenum)mode, (GLint)first, (GLsizei)count);
 		}
 		void Command::DrawElements(Program* program, VertexArray* vertexArray, DrawMode mode, uint32_t count)
 		{
-			TGE_VERIFY(program, "vertex array or program was nullptr");
+			TGE_VERIFY(program && vertexArray, "vertex array or program was nullptr");
 			program->Use();
-
-			if(vertexArray)
-				vertexArray->Bind();
+			vertexArray->Bind();
 
 			glDrawElements((GLenum)mode, (GLsizei)count, GL_UNSIGNED_INT, nullptr);
 		}
 		void Command::DrawElementsInstanced(Program* program, VertexArray* vertexArray, DrawMode mode, uint32_t count, uint32_t instanceCount)
 		{
-			TGE_VERIFY(program, "vertex array or program was nullptr");
+			TGE_VERIFY(program && vertexArray, "vertex array or program was nullptr");
 			program->Use();
+			vertexArray->Bind();
 
-			if(vertexArray)
-				vertexArray->Bind();
 			glDrawElementsInstanced((GLenum)mode, (GLsizei)count, GL_UNSIGNED_INT, nullptr, (GLsizei)instanceCount);
 		}
 		void Command::ClearColor(const glm::vec4& color)

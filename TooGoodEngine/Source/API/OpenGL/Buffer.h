@@ -9,6 +9,9 @@
 namespace TooGoodEngine {
 	namespace OpenGL {
 
+		//enums instead of enum class so we can use the OR operator
+		//without creating a bunch of operator overloads
+
 		enum BufferOptions : uint32_t
 		{
 			BufferOptionNone = 0,

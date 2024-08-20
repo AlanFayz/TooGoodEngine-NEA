@@ -115,8 +115,6 @@ namespace TooGoodEngine {
 		Ref<OpenGL::Texture2D> FinalImageTexture;
 		Ref<OpenGL::Texture2D> DepthTexture;
 
-
-		//for displaying the image produced by the renderer to the screen (may make an engine utility instead)
 		OpenGL::Program DisplayProgram;
 		OpenGL::VertexArray Dummy;
 	};

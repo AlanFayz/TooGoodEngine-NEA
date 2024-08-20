@@ -1,17 +1,17 @@
-#include "OrthoGraphicCameraController.h"
+#include "OrthographicCameraController.h"
 
 #include "Utils/Input.h"
 
 namespace TooGoodEngine {
-	OrthoGraphicCameraController::OrthoGraphicCameraController(const Ref<OrthoGraphicCamera>& camera)
+	OrthographicCameraController::OrthographicCameraController(const Ref<OrthographicCamera>& camera)
 		: m_Camera(camera), m_ZoomFactor(1.0f)
 	{
 	}
-	void OrthoGraphicCameraController::SetCamera(const Ref<OrthoGraphicCamera>& camera)
+	void OrthographicCameraController::SetCamera(const Ref<OrthographicCamera>& camera)
 	{
 		m_Camera = camera;
 	}
-	void OrthoGraphicCameraController::Update(double delta)
+	void OrthographicCameraController::Update(double delta)
 	{
 		const bool keyWPressed = Input::IsKeyDown(KeyCode::W);
 		const bool keySPressed = Input::IsKeyDown(KeyCode::S);

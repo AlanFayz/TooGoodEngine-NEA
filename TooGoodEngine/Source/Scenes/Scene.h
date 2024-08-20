@@ -6,7 +6,7 @@
 #include "Renderer/Renderer.h"
 #include "ECS/Components/Components.h"
 #include "Math/PerspectiveCameraController.h"
-#include "Math/OrthoGraphicCameraController.h"
+#include "Math/OrthographicCameraController.h"
 
 namespace TooGoodEngine {
 
@@ -45,8 +45,8 @@ namespace TooGoodEngine {
 		Ref<PerspectiveCamera> m_SceneCamera;
 		PerspectiveCameraController m_CameraController;
 
-		Ref<OrthoGraphicCamera> m_SceneCamera2D;
-		OrthoGraphicCameraController m_CameraController2D;
+		Ref<OrthographicCamera> m_SceneCamera2D;
+		OrthographicCameraController m_CameraController2D;
 
 		ModelInfo m_TestModel;
 

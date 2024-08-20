@@ -97,6 +97,9 @@ void main()
 
     vec2 texCoord = (vec2(coordinate) + vec2(0.5)) / imageSize(u_Destination);
 
+
+    //NOTE: using one texture here just going through each mip 
+
     if(u_SampleOption == BLOOM_DOWN_SAMPLE)
     {
         destinationColor = u_Intensity * DownSample(texCoord);

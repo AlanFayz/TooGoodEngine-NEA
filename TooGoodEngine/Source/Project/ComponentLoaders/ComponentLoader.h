@@ -12,12 +12,16 @@ namespace TooGoodEngine {
 	class ComponentLoader
 	{
 	public:
-		static TransformComponent		 LoadTransform(const json& jsonComponent);
-		static MeshComponent			 LoadMesh(const json& jsonComponent, Renderer& sceneRenderer);
-		static ModelComponent            LoadModel(const json& jsonComponent, Renderer& sceneRenderer);
-		static MaterialComponent		 LoadMaterial(const json& jsonComponent, Renderer& sceneRenderer);
-		static PointLightComponent		 LoadPointLight(const json& jsonComponent);
-		static DirectionalLightComponent LoadDirectionalLight(const json& jsonComponent);
+		static TransformComponent		   LoadTransform(const json& jsonComponent);
+		static MeshComponent			   LoadMesh(const json& jsonComponent, Renderer& sceneRenderer);
+		static ModelComponent			   LoadModel(const json& jsonComponent, Renderer& sceneRenderer);
+		static MaterialComponent		   LoadMaterial(const json& jsonComponent, Renderer& sceneRenderer);
+		static PointLightComponent		   LoadPointLight(const json& jsonComponent);
+		static DirectionalLightComponent   LoadDirectionalLight(const json& jsonComponent);
+		static ScriptComponent			   LoadScript(const json& jsonComponent);
+		static PerspectiveCameraComponent  LoadPerspectiveCamera(const json& jsonComponent);
+		static OrthographicCameraComponent LoadOrthographicCamera(const json& jsonComponent);
+
 
 		static void ClearCaches();
 

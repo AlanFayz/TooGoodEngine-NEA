@@ -130,6 +130,12 @@ namespace GoodEditor {
 
 		if (tree.HasComponent<ScriptComponent>(entity))
 			_DrawComponent(tree.GetComponent<ScriptComponent>(entity));
+
+		if (tree.HasComponent<OrthographicCameraComponent>(entity))
+			_DrawComponent(tree.GetComponent<OrthographicCameraComponent>(entity));
+
+		if (tree.HasComponent<PerspectiveCameraComponent>(entity))
+			_DrawComponent(tree.GetComponent<PerspectiveCameraComponent>(entity));
 	}
 
 	bool ScenePanel::_EntityPopup(const Entity& entity, Renderer& sceneRenderer, EntityTree& tree)
@@ -183,6 +189,12 @@ namespace GoodEditor {
 
 			if (ImGui::MenuItem("Add Script") && !tree.HasComponent<ScriptComponent>(entity))
 				tree.EmplaceComponent<ScriptComponent>(entity);
+
+			if (ImGui::MenuItem("Add Perspective Camera") && !tree.HasComponent<PerspectiveCameraComponent>(entity))
+				tree.EmplaceComponent<PerspectiveCameraComponent>(entity);
+
+			if (ImGui::MenuItem("Add Orthographic Camera") && !tree.HasComponent<OrthographicCameraComponent>(entity))
+				tree.EmplaceComponent<OrthographicCameraComponent>(entity);
 
 			if (ImGui::MenuItem("Add Entity"))
 				tree.Add(entity, "Entity" + std::to_string(tree.GetCount()));
@@ -499,6 +511,86 @@ namespace GoodEditor {
 
 		ImGui::PopID();
 	}
+	void ScenePanel::_DrawComponent(PerspectiveCameraComponent& component)
+	{
+		ImGui::PushID(m_IDCount++);
+
+		if (ImGui::TreeNode("Perspective Camera"))
+		{
+			bool changed = false;
+
+			if (ImGui::DragFloat("Fov", &component.data.Fov, 0.1f, 1.0f, 180.0f))
+				changed = true;
+
+			if (ImGui::DragFloat("Aspect Ratio", &component.data.AspectRatio, 0.1f, 0.001f, 10.0f))
+				changed = true;
+
+			if (ImGui::DragFloat("Near", &component.data.Near, 0.01f, 0.01f, FLT_MAX / 2.0f))
+				changed = true;
+
+			if (ImGui::DragFloat("Far", &component.data.Far, 0.01f, 0.01f, FLT_MAX / 2.0f))
+				changed = true;
+
+			if (ImGui::DragFloat3("Position", glm::value_ptr(component.data.Position), 0.01f, -FLT_MAX / 2.0f, FLT_MAX / 2.0f))
+				changed = true;
+
+			if (ImGui::DragFloat3("Front", glm::value_ptr(component.data.Front), 0.01f, -FLT_MAX / 2.0f, FLT_MAX / 2.0f))
+				changed = true;
+
+			if (ImGui::DragFloat3("Up", glm::value_ptr(component.data.Up), 0.01f, -FLT_MAX / 2.0f, FLT_MAX / 2.0f))
+				changed = true;
+
+			ImGui::Checkbox("Use", &component.InUse);
+
+			if (changed)
+				component.Camera.SetData(component.data);
+
+			ImGui::TreePop();
+		}
+
+		ImGui::PopID();
+	}
+
+	void ScenePanel::_DrawComponent(OrthographicCameraComponent& component)
+	{
+		ImGui::PushID(m_IDCount++);
+
+		if (ImGui::TreeNode("Orthographic Camera"))
+		{
+			bool changed = false;
+
+			if (ImGui::DragFloat("Left",   &component.data.Left, 0.01f, -FLT_MAX / 2.0, FLT_MAX / 2.0))
+				changed = true;
+
+			if (ImGui::DragFloat("Right",  &component.data.Right, 0.01f, -FLT_MAX / 2.0, FLT_MAX / 2.0))
+				changed = true;
+
+			if (ImGui::DragFloat("Top", &component.data.Top, 0.01f, 0.01f, FLT_MAX / 2.0f))
+				changed = true;
+
+			if (ImGui::DragFloat("Bottom", &component.data.Bottom, 0.01f, 0.01f, FLT_MAX / 2.0f))
+				changed = true;
+
+			if (ImGui::DragFloat3("Position", glm::value_ptr(component.data.Position), 0.01f, -FLT_MAX / 2.0f, FLT_MAX / 2.0f))
+				changed = true;
+
+			if (ImGui::DragFloat3("Front", glm::value_ptr(component.data.Front), 0.01f, -FLT_MAX / 2.0f, FLT_MAX / 2.0f))
+				changed = true;
+
+			if (ImGui::DragFloat3("Up", glm::value_ptr(component.data.Up), 0.01f, -FLT_MAX / 2.0f, FLT_MAX / 2.0f))
+				changed = true;
+
+			ImGui::Checkbox("Use", &component.InUse);
+
+			if (changed)
+				component.Camera.SetData(component.data);
+
+			ImGui::TreePop();
+		}
+
+		ImGui::PopID();
+	}
+
 	bool ScenePanel::_DrawMaterialAttribute(const char* name, glm::vec4& attribute, Ref<Image>& image)
 	{
 		bool changed = false;
