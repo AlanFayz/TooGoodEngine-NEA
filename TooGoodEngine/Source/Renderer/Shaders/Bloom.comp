@@ -14,6 +14,7 @@ uniform int   u_SampleOption;
 uniform int   u_SourceMip;
 uniform float u_Threshold;
 uniform float u_Intensity;
+uniform float u_FilterRadius;
 
 /*
     algorithm is from this article 
@@ -64,8 +65,8 @@ vec3 UpSample(in vec2 texCoord)
 {    
     float levelOfDetail = float(u_SourceMip);
 
-    float x = 0.005; 
-    float y = 0.005;
+    float x = u_FilterRadius; 
+    float y = u_FilterRadius;
 
     vec3 a = textureLod(u_Source, vec2(texCoord.x - x, texCoord.y + y), levelOfDetail).rgb;
     vec3 b = textureLod(u_Source, vec2(texCoord.x,     texCoord.y + y), levelOfDetail).rgb;
@@ -85,7 +86,7 @@ vec3 UpSample(in vec2 texCoord)
     color *= 1.0 / 16.0;
 
     color = max(color, 0.0001);
-    return Prefilter(color);
+    return color;
 }
 
 

@@ -58,6 +58,7 @@ namespace TooGoodEngine {
 		bool Bloom = true;
 		float Threshold = 1.0f; 
 		float Intensity = 1.0f;
+		float FilterRadius = 0.005f;
 	};
 
 	struct RenderData

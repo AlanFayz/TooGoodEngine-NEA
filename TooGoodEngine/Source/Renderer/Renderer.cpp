@@ -383,12 +383,14 @@ namespace TooGoodEngine {
 			float groupX = std::ceil((float)destinationWidth / 8.0f);
 			float groupY = std::ceil((float)destinationHeight / 8.0f);
 
+			//TODO: package in struct 
 			m_Data.BloomPass.SetUniform("u_SampleOption", UpSample);
 			m_Data.BloomPass.SetUniform("u_SourceMip", (int)source);
 			m_Data.BloomPass.SetUniform("u_Source", 0);
 			m_Data.BloomPass.SetUniform("u_Destination", 1);
 			m_Data.BloomPass.SetUniform("u_Threshold", m_Settings.Threshold);
 			m_Data.BloomPass.SetUniform("u_Intensity", m_Settings.Intensity);
+			m_Data.BloomPass.SetUniform("u_FilterRadius", m_Settings.FilterRadius);
 
 			m_Data.FinalImageTexture->Bind(0);
 			m_Data.FinalImageTexture->BindImage(1, destination, 0, false);

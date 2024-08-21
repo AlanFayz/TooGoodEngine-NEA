@@ -174,6 +174,16 @@ namespace GoodEditor {
 				}
 			}
 
+			if (ImGui::Button("Create New"))
+			{
+				std::filesystem::path path = FileDialog::GetDirectoryFromDialog();
+				if (!path.empty())
+				{
+					m_ProjectLoader = false;
+					g_SelectedProject = CreateRef<Project>(path.filename().string(), path);
+				}
+			}
+
 			ImGui::End();
 		}
 

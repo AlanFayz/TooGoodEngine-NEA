@@ -2,7 +2,7 @@
     "Project Name": "Sandbox",
     "Project Directory": "D:\\Dev\\TooGoodEngine-NEA\\GoodEditor",
     "Asset Directory": "D:\\Dev\\TooGoodEngine-NEA\\GoodEditor\\Assets",
-    "Last Build Date": "2024-08-21 17:27:56",
+    "Last Build Date": "2024-08-21 20:18:04",
     "Scenes": {
         "Scene 1": {
             "Scene Settings": {
@@ -21,8 +21,9 @@
                     1.0
                 ],
                 "Bloom Enabled": true,
-                "Bloom Threshold": 0.6299999952316284,
-                "Bloom Intensity": 0.33000001311302185
+                "Bloom Threshold": 0.4000000059604645,
+                "Bloom Intensity": 0.33000001311302185,
+                "Bloom Filter Radius": 0.009999999776482582
             },
             "Entities": {
                 "testing testing": {
@@ -87,7 +88,7 @@
                             -3.4000000953674316
                         ],
                         "Radius": 5.599999904632568,
-                        "Intensity": 50.599998474121094
+                        "Intensity": 37.20000076293945
                     }
                 },
                 "Cube": {
@@ -145,17 +146,17 @@
                     },
                     "Directional Light": {
                         "Color": [
-                            0.008966442197561264,
-                            0.8398576378822327,
-                            0.8132454752922058,
+                            1.0,
+                            1.0,
+                            1.0,
                             1.0
                         ],
                         "Direction": [
-                            -1.0,
-                            0.2199999988079071,
-                            -0.12999999523162842
+                            -0.46000000834465027,
+                            1.0,
+                            -0.20000000298023224
                         ],
-                        "Intensity": 24.399999618530273
+                        "Intensity": 5.0
                     }
                 },
                 "nice": {
@@ -252,6 +253,26 @@
                         ],
                         "In Use": true
                     }
+                },
+                "duck": {
+                    "Transform": {
+                        "Position": [
+                            0.0,
+                            14.100000381469727,
+                            0.0
+                        ],
+                        "Scale": [
+                            10.0,
+                            10.0,
+                            10.0
+                        ],
+                        "Rotation": [
+                            270.0,
+                            0.0,
+                            -180.0
+                        ]
+                    },
+                    "Model": 17475466270224521183
                 }
             }
         }
@@ -264,6 +285,10 @@
         "4685489096643726146": {
             "Type": "Image",
             "Path": "Untitled.png"
+        },
+        "6649806485738378799": {
+            "Type": "Image",
+            "Path": "textures\\rubber_duck_toy_diff_1k.jpg"
         },
         "8765043499549219097": {
             "Type": "Model",
@@ -280,6 +305,10 @@
         "15661027670790162587": {
             "Type": "Image",
             "Path": "plywood_diff_1k.png"
+        },
+        "17475466270224521183": {
+            "Type": "Model",
+            "Path": "rubber_duck_toy_1k.fbx"
         }
     }
 }

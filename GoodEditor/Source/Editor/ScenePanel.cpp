@@ -386,6 +386,9 @@ namespace GoodEditor {
 		if (ImGui::DragFloat("Intensity", &renderSettings.Intensity, 0.01f, 0.0f, FLT_MAX / 2.0f))
 			changed = true;
 
+		if (ImGui::DragFloat("Filter Radius", &renderSettings.FilterRadius, 0.001f, 0.0f, 1.0f))
+			changed = true;
+
 		if (changed)
 			scene->GetSceneRenderer()->ChangeSettings(renderSettings);
 	}
@@ -537,16 +540,20 @@ namespace GoodEditor {
 				ImGui::Text("Path: %s", pathString.c_str());
 			}
 
-			if (ImGui::Button("Refresh"))
+			if (asset)
 			{
-				component.~ScriptComponent();
+				if (ImGui::Button("Refresh"))
+				{
+					component.~ScriptComponent();
 
-				ScriptData data = ScriptingEngine::ExtractScript(asset->GetPath());
+					ScriptData data = ScriptingEngine::ExtractScript(asset->GetPath());
 
-				component = ScriptComponent(data);
-				component.SetHandle(asset->GetAssetID());
+					component = ScriptComponent(data);
+					component.SetHandle(asset->GetAssetID());
+				}
+
 			}
-
+			
 
 			ImGui::TreePop();
 		}
@@ -557,7 +564,6 @@ namespace GoodEditor {
 			{
 				UUID id = *(UUID*)payload->Data;
 				Ref<Script> asset = g_SelectedProject->GetAssetManager().FetchAssetAssuredType<Script>(id);
-
 
 				ScriptData data = ScriptingEngine::ExtractScript(asset->GetPath());
 

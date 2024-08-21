@@ -8,5 +8,6 @@ namespace GoodEditor {
 	{
 	public:
 		static std::filesystem::path GetPathFromDialog();
+		static std::filesystem::path GetDirectoryFromDialog();
 	};
 }
