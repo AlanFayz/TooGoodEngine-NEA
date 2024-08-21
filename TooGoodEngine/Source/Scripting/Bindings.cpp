@@ -857,5 +857,157 @@ namespace TooGoodEngine {
 		return Py_None;
 	}
 
+	void PythonBindings::InternalCleanOrthographicCameraController(PyObject* capsule)
+	{
+		OrthographicCameraController* container = (OrthographicCameraController*)(PyCapsule_GetPointer(capsule, "InternalOrthographicCameraController"));
+		
+		if (container)
+			delete container;
 
+		container = nullptr;
+	}
+
+	PyObject* PythonBindings::InternalCreateOrthographicCameraController(PyObject* self, PyObject* args)
+	{
+		PyObject* capsule = nullptr;
+
+		if (!PyArg_ParseTuple(args, "O", &capsule))
+			return nullptr;
+
+		Entity* container = (Entity*)(PyCapsule_GetPointer(capsule, "InternalEntity"));
+		auto& registry = g_SelectedProject->GetCurrentScene()->GetRegistry();
+
+		if (!container || !*container || !registry.HasComponent<OrthographicCameraComponent>(*container))
+			return nullptr;
+
+		auto& component = registry.GetComponent<OrthographicCameraComponent>(*container);
+
+		OrthographicCameraController* cameraControllerContainer = new OrthographicCameraController(component.Camera);
+		return PyCapsule_New(cameraControllerContainer, "InternalOrthographicCameraController", InternalCleanOrthographicCameraController);
+	}
+
+	PyObject* PythonBindings::InternalSetBottomOrthographicCameraController(PyObject* self, PyObject* args)
+	{
+		PyObject* capsule = nullptr;
+		float bottom = 0.0f;
+
+		if (!PyArg_ParseTuple(args, "Of", &capsule, &bottom))
+			return nullptr;
+
+		OrthographicCameraController* container = (OrthographicCameraController*)(PyCapsule_GetPointer(capsule, "InternalOrthographicCameraController"));
+	
+		if (!container)
+			return nullptr;
+		
+		container->SetBottom(bottom);
+
+		return Py_None;
+	}
+
+	PyObject* PythonBindings::InternalSetTopOrthographicCameraController(PyObject* self, PyObject* args)
+	{
+		PyObject* capsule = nullptr;
+		float top = 0.0f;
+
+		if (!PyArg_ParseTuple(args, "Of", &capsule, &top))
+			return nullptr;
+
+		OrthographicCameraController* container = (OrthographicCameraController*)(PyCapsule_GetPointer(capsule, "InternalOrthographicCameraController"));
+		
+		if (!container)
+			return nullptr;
+		
+		container->SetTop(top);
+
+		return Py_None;
+	}
+
+	PyObject* PythonBindings::InternalSetLeftOrthographicCameraController(PyObject* self, PyObject* args)
+	{
+		PyObject* capsule = nullptr;
+		float left = 0.0f;
+
+		if (!PyArg_ParseTuple(args, "Of", &capsule, &left))
+			return nullptr;
+
+		OrthographicCameraController* container = (OrthographicCameraController*)(PyCapsule_GetPointer(capsule, "InternalOrthographicCameraController"));
+
+		if (!container)
+			return nullptr;
+
+		container->SetLeft(left);
+
+		return Py_None;
+	}
+
+	PyObject* PythonBindings::InternalSetRightOrthographicCameraController(PyObject* self, PyObject* args)
+	{
+		PyObject* capsule = nullptr;
+		float right = 0.0f;
+
+		if (!PyArg_ParseTuple(args, "Of", &capsule, &right))
+			return nullptr;
+
+		OrthographicCameraController* container = (OrthographicCameraController*)(PyCapsule_GetPointer(capsule, "InternalOrthographicCameraController"));
+
+		if (!container)
+			return nullptr;
+
+		container->SetTop(right);
+
+		return Py_None;
+	}
+
+	PyObject* PythonBindings::InternalUpdatePositionOrthographicCameraController(PyObject* self, PyObject* args)
+	{
+		PyObject* capsule = nullptr;
+		float x = 0.0f, y = 0.0f, z = 0.0f;
+
+		if (!PyArg_ParseTuple(args, "Offf", &capsule, &x, &y, &z))
+			return nullptr;
+
+		OrthographicCameraController* container = (OrthographicCameraController*)(PyCapsule_GetPointer(capsule, "InternalOrthographicCameraController"));
+
+		if (!container)
+			return nullptr;
+
+		container->UpdatePosition(glm::vec3(x, y, z));
+
+		return Py_None;
+	}
+
+	PyObject* PythonBindings::InternalUpdateUpOrthographicCameraController(PyObject* self, PyObject* args)
+	{
+		PyObject* capsule = nullptr;
+		float x = 0.0f, y = 0.0f, z = 0.0f;
+
+		if (!PyArg_ParseTuple(args, "Offf", &capsule, &x, &y, &z))
+			return nullptr;
+
+		OrthographicCameraController* container = (OrthographicCameraController*)(PyCapsule_GetPointer(capsule, "InternalOrthographicCameraController"));
+
+		if (!container)
+			return nullptr;
+
+		container->UpdateUp(glm::vec3(x, y, z));
+
+		return Py_None;
+	}
+
+	PyObject* PythonBindings::InternalUpdateFrontOrthographicCameraController(PyObject* self, PyObject* args)
+	{
+		PyObject* capsule = nullptr;
+		float x = 0.0f, y = 0.0f, z = 0.0f;
+
+		if (!PyArg_ParseTuple(args, "Offf", &capsule, &x, &y, &z))
+			return nullptr;
+
+		OrthographicCameraController* container = (OrthographicCameraController*)(PyCapsule_GetPointer(capsule, "InternalOrthographicCameraController"));
+
+		if (!container)
+			return nullptr;
+
+		container->UpdateFront(glm::vec3(x, y, z));
+		return Py_None;
+	}
 }

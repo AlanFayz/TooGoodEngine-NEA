@@ -67,7 +67,17 @@ namespace TooGoodEngine {
 		static PyObject* InternalUpdateDirectionalLightDirection(PyObject* self, PyObject* args);
 		static PyObject* InternalUpdateDirectionalLightColor(PyObject* self, PyObject* args);
 		static PyObject* InternalUpdateDirectionalLightIntensity(PyObject* self, PyObject* args);
-		
+
+		static void      InternalCleanOrthographicCameraController(PyObject* capsule);
+		static PyObject* InternalCreateOrthographicCameraController(PyObject* self, PyObject* args);
+		static PyObject* InternalSetBottomOrthographicCameraController(PyObject* self, PyObject* args);
+		static PyObject* InternalSetTopOrthographicCameraController(PyObject* self, PyObject* args);
+		static PyObject* InternalSetLeftOrthographicCameraController(PyObject* self, PyObject* args);
+		static PyObject* InternalSetRightOrthographicCameraController(PyObject* self, PyObject* args);
+		static PyObject* InternalUpdatePositionOrthographicCameraController(PyObject* self, PyObject* args);
+		static PyObject* InternalUpdateUpOrthographicCameraController(PyObject* self, PyObject* args);
+		static PyObject* InternalUpdateFrontOrthographicCameraController(PyObject* self, PyObject* args);
+
 	};	
 
 

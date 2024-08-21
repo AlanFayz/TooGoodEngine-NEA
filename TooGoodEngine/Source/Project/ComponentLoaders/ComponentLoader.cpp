@@ -223,7 +223,8 @@ namespace TooGoodEngine {
 			ScriptData data = ScriptingEngine::ExtractScript(asset->GetPath());
 
 			component.SetHandle(id);
-			component.Create(data);
+			if(data.PyOnCreate && data.PyOnUpdate)
+				component.Create(data);
 		}
 		
 		return component;

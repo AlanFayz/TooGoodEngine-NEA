@@ -11,10 +11,13 @@ g_component_dictionary = {
 
 class Entity:
 	def __init__(self, name: str):
-		self.__handle = TooGoodEngine.internal_create_entity(name)	
+		self.__handle = TooGoodEngine.internal_create_entity(name)
 
 	def __init__(self, handle):
 		self.__handle = handle
+
+	def internal_get(self):
+		return self.__handle
 
 	def get_name(self) -> str:
 		if self.__handle is not None:

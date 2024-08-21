@@ -2,7 +2,7 @@
     "Project Name": "Sandbox",
     "Project Directory": "D:\\Dev\\TooGoodEngine-NEA\\GoodEditor",
     "Asset Directory": "D:\\Dev\\TooGoodEngine-NEA\\GoodEditor\\Assets",
-    "Last Build Date": "2024-08-21 15:11:56",
+    "Last Build Date": "2024-08-21 17:27:56",
     "Scenes": {
         "Scene 1": {
             "Scene Settings": {
@@ -13,7 +13,7 @@
                 "Blending Destination": 0,
                 "Filling Mode": 3,
                 "Level Of Detail": 0.0,
-                "Gradient": 1.0,
+                "Gradient": 0.36000001430511475,
                 "Clear Color": [
                     0.6274510025978088,
                     0.4156862795352936,
@@ -21,14 +21,14 @@
                     1.0
                 ],
                 "Bloom Enabled": true,
-                "Bloom Threshold": 1.0,
-                "Bloom Intensity": 0.5199999809265137
+                "Bloom Threshold": 0.6299999952316284,
+                "Bloom Intensity": 0.33000001311302185
             },
             "Entities": {
                 "testing testing": {
                     "Transform": {
                         "Position": [
-                            -1.0300003290176392,
+                            0.4099988639354706,
                             6.300000190734863,
                             1.2999999523162842
                         ],
@@ -46,9 +46,9 @@
                     "Mesh": "##Quad",
                     "Material": {
                         "Ambient": [
-                            0.5412165522575378,
-                            0.5412166118621826,
-                            0.9217081665992737,
+                            1.0,
+                            1.0,
+                            5.243000030517578,
                             1.0
                         ],
                         "Albedo": [
@@ -76,9 +76,9 @@
                     },
                     "Point Light": {
                         "Color": [
-                            0.2704879641532898,
                             1.0,
-                            0.028469741344451904,
+                            1.0,
+                            5.243000030517578,
                             1.0
                         ],
                         "Position": [
@@ -90,13 +90,13 @@
                         "Intensity": 50.599998474121094
                     }
                 },
-                "yo": {
+                "Cube": {
                     "Children": [
                         "testing testing"
                     ],
                     "Transform": {
                         "Position": [
-                            -3.200000047683716,
+                            -2.799999952316284,
                             2.5999999046325684,
                             -3.4000000953674316
                         ],
@@ -126,22 +126,22 @@
                             1.0,
                             1.0
                         ],
-                        "Albedo Factor": 0.800000011920929,
+                        "Albedo Factor": 0.28999999165534973,
                         "Metallic": [
                             0.5338078737258911,
                             0.4787173867225647,
                             0.4787173867225647,
                             1.0
                         ],
-                        "Metallic Factor": 1.0,
+                        "Metallic Factor": 0.0,
                         "Emission": [
                             0.0,
                             0.0,
                             0.0,
                             1.0
                         ],
-                        "Emission Factor": 4.0,
-                        "Roughness": 0.0
+                        "Emission Factor": 8.699999809265137,
+                        "Roughness": 0.009999999776482582
                     },
                     "Directional Light": {
                         "Color": [
@@ -238,7 +238,7 @@
                         "Position": [
                             0.0,
                             4.829999923706055,
-                            -3.75
+                            -5.630000114440918
                         ],
                         "Front": [
                             0.0,

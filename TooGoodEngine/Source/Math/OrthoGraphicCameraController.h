@@ -5,7 +5,6 @@
 
 namespace TooGoodEngine {
 
-
 	class OrthographicCameraController
 	{
 	public:
@@ -16,15 +15,14 @@ namespace TooGoodEngine {
 		void SetCamera(const Ref<OrthographicCamera>& camera);
 		void Update(double delta); //for default camera controls
 
-		void TranslatePosition(const glm::vec3& translation);
-		void TranslateUp(const glm::vec3& translation);
-		void TranslateFront(const glm::vec3& translation);
+		void UpdatePosition(const glm::vec3& translation);
+		void UpdateUp(const glm::vec3& translation);
+		void UpdateFront(const glm::vec3& translation);
 
 		void SetLeft(float left);
 		void SetRight(float right);
 		void SetTop(float top);
 		void SetBottom(float bottom);
-		void SetZoomFactor(float zoom);
 
 	private:
 		Ref<OrthographicCamera> m_Camera;

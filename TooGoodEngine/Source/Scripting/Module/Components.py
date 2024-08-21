@@ -103,3 +103,4 @@ class DirectionalLight:
 		if self.__handle is not None:
 			TooGoodEngine.internal_update_directional_light_intensity(self.__handle, new_intensity)
 
+

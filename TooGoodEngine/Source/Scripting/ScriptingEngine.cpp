@@ -40,17 +40,10 @@ namespace TooGoodEngine {
 
 		//NOTE: remember to update MethodCount when adding new methods
 
-
-		//
-		// ---- logging ----
-		//
 		s_Data->MethodDefinitions[0] = { "log",         PythonBindings::LogMsg,   METH_VARARGS, "prints to console"};
 		s_Data->MethodDefinitions[1] = { "log_error",   PythonBindings::LogError, METH_VARARGS, "prints error to console" };
 		s_Data->MethodDefinitions[2] = { "log_warning", PythonBindings::LogWarn,  METH_VARARGS, "prints warning to console" };
-		
-		//
-		// ---- input ----
-		//
+
 
 		s_Data->MethodDefinitions[3] = { "is_key_pressed",  PythonBindings::IsKeyPressed,  METH_VARARGS, "returns true if a key is pressed" };
 		s_Data->MethodDefinitions[4] = { "is_key_released", PythonBindings::IsKeyReleased, METH_VARARGS, "returns true if a key is released" };
@@ -66,11 +59,7 @@ namespace TooGoodEngine {
 		s_Data->MethodDefinitions[11] = { "disable_cursor", PythonBindings::DisableCursor, METH_NOARGS,  "hides and locks the cursor" };
 		s_Data->MethodDefinitions[12] = { "enable_cursor",  PythonBindings::EnableCursor,  METH_NOARGS,  "returns the cursor to normal" };
 
-		// (NOTE: no documentation with internal functions)
-		// 
-		// ---- internal ---- 
-		//
-		
+
 		s_Data->MethodDefinitions[13] = { "internal_create_entity",				   PythonBindings::InternalCreateEntity,			  METH_VARARGS, "internal" };
 		s_Data->MethodDefinitions[14] = { "internal_get_entity_name",              PythonBindings::InternalGetEntityName,		      METH_VARARGS, "internal" };
 		s_Data->MethodDefinitions[15] = { "internal_get_entity_by_name",           PythonBindings::InternalGetEntityByName,		      METH_VARARGS, "internal" };
@@ -99,6 +88,14 @@ namespace TooGoodEngine {
 		s_Data->MethodDefinitions[34] = { "internal_update_directional_light_color",     PythonBindings::InternalUpdateDirectionalLightColor,     METH_VARARGS, "internal" };
 		s_Data->MethodDefinitions[35] = { "internal_update_directional_light_intensity", PythonBindings::InternalUpdateDirectionalLightIntensity, METH_VARARGS, "internal" };
 
+		s_Data->MethodDefinitions[36] = { "internal_create_orthographic_camera_controller",			 PythonBindings::InternalCreateOrthographicCameraController,		METH_VARARGS, "internal" };
+		s_Data->MethodDefinitions[37] = { "internal_set_bottom_orthographic_camera_controller",		 PythonBindings::InternalSetBottomOrthographicCameraController,		METH_VARARGS, "internal" };
+		s_Data->MethodDefinitions[38] = { "internal_set_top_orthographic_camera_controller",		 PythonBindings::InternalSetTopOrthographicCameraController,		METH_VARARGS, "internal" };
+		s_Data->MethodDefinitions[39] = { "internal_set_left_orthographic_camera_controller",		 PythonBindings::InternalSetLeftOrthographicCameraController,		METH_VARARGS, "internal" };
+		s_Data->MethodDefinitions[40] = { "internal_set_right_orthographic_camera_controller",       PythonBindings::InternalSetRightOrthographicCameraController,		METH_VARARGS, "internal" };
+		s_Data->MethodDefinitions[41] = { "internal_update_position_orthographic_camera_controller", PythonBindings::InternalUpdatePositionOrthographicCameraController,METH_VARARGS, "internal" };
+		s_Data->MethodDefinitions[42] = { "internal_update_up_orthographic_camera_controller",		 PythonBindings::InternalUpdateUpOrthographicCameraController,	    METH_VARARGS, "internal" };
+		s_Data->MethodDefinitions[43] = { "internal_update_front_orthographic_camera_controller",	 PythonBindings::InternalUpdateFrontOrthographicCameraController,   METH_VARARGS, "internal" };
 
 		// ---- END ----
 		s_Data->MethodDefinitions[49] = { nullptr, nullptr, 0, nullptr };

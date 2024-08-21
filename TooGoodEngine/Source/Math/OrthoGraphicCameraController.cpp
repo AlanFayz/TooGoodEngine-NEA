@@ -36,28 +36,40 @@ namespace TooGoodEngine {
 		m_Camera->UpdateViewProjection();
 	}
 
-	void OrthographicCameraController::TranslatePosition(const glm::vec3& translation)
+	void OrthographicCameraController::UpdatePosition(const glm::vec3& position)
 	{
+		m_Camera->m_Position = position;
+		m_Camera->UpdateViewProjection();
 	}
-	void OrthographicCameraController::TranslateUp(const glm::vec3& translation)
+	void OrthographicCameraController::UpdateUp(const glm::vec3& up)
 	{
+		m_Camera->m_Up = up;
+		m_Camera->UpdateViewProjection();
 	}
-	void OrthographicCameraController::TranslateFront(const glm::vec3& translation)
+	void OrthographicCameraController::UpdateFront(const glm::vec3& front)
 	{
+		m_Camera->m_Front = front;
+		m_Camera->UpdateViewProjection();
 	}
 	void OrthographicCameraController::SetLeft(float left)
 	{
+		m_Camera->m_Left = left;
+		m_Camera->UpdateViewProjection();
 	}
 	void OrthographicCameraController::SetRight(float right)
 	{
+		m_Camera->m_Right = right;
+		m_Camera->UpdateViewProjection();
 	}
 	void OrthographicCameraController::SetTop(float top)
 	{
+		m_Camera->m_Top = top;
+		m_Camera->UpdateViewProjection();
 	}
 	void OrthographicCameraController::SetBottom(float bottom)
 	{
+		m_Camera->m_Bottom = bottom;
+		m_Camera->UpdateViewProjection();
 	}
-	void OrthographicCameraController::SetZoomFactor(float zoom)
-	{
-	}
+
 }
