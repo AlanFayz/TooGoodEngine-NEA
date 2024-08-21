@@ -22,12 +22,14 @@ namespace TooGoodEngine {
 		}
 		inline const size_t GetCount() const { return (size_t)m_Count; }
 
-		inline Entity GetEntity(EntityID id)
+		inline Entity& GetEntity(EntityID id)
 		{
 			if (id < m_Entites.size())
 				return m_Entites[id];
 
-			return Entity("null entity", g_NullEntity);
+			static Entity s_NullEntity("null", g_NullEntity);
+
+			return s_NullEntity;
 		}
 
 		virtual void RemoveEntity(EntityID id);

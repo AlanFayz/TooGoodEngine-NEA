@@ -12,14 +12,14 @@ namespace TooGoodEngine {
 
 	struct OrthographicCameraComponent
 	{
-		OrthographicCamera Camera;
+		Ref<OrthographicCamera> Camera = nullptr;
 		bool InUse = true; 
 		OrthographicCameraData data;
 	};
 
 	struct PerspectiveCameraComponent
 	{
-		PerspectiveCamera Camera;
+		Ref<PerspectiveCamera> Camera = nullptr;
 		bool InUse = true;
 		PerspectiveCameraData data;
 	};

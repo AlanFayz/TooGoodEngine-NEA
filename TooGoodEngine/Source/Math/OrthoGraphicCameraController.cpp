@@ -4,7 +4,7 @@
 
 namespace TooGoodEngine {
 	OrthographicCameraController::OrthographicCameraController(const Ref<OrthographicCamera>& camera)
-		: m_Camera(camera), m_ZoomFactor(1.0f)
+		: m_Camera(camera)
 	{
 	}
 	void OrthographicCameraController::SetCamera(const Ref<OrthographicCamera>& camera)
@@ -34,5 +34,30 @@ namespace TooGoodEngine {
 		m_Camera->m_Position += movement;
 
 		m_Camera->UpdateViewProjection();
+	}
+
+	void OrthographicCameraController::TranslatePosition(const glm::vec3& translation)
+	{
+	}
+	void OrthographicCameraController::TranslateUp(const glm::vec3& translation)
+	{
+	}
+	void OrthographicCameraController::TranslateFront(const glm::vec3& translation)
+	{
+	}
+	void OrthographicCameraController::SetLeft(float left)
+	{
+	}
+	void OrthographicCameraController::SetRight(float right)
+	{
+	}
+	void OrthographicCameraController::SetTop(float top)
+	{
+	}
+	void OrthographicCameraController::SetBottom(float bottom)
+	{
+	}
+	void OrthographicCameraController::SetZoomFactor(float zoom)
+	{
 	}
 }

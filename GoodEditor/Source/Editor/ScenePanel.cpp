@@ -11,6 +11,8 @@ namespace GoodEditor {
 
 	int ScenePanel::m_IDCount = 0;
 	int ScenePanel::m_ColorEditFlags = ImGuiColorEditFlags_AlphaPreview | ImGuiColorEditFlags_NoInputs;
+	EntityID ScenePanel::m_CurrentEntity = g_NullEntity;
+	bool ScenePanel::m_EntityNamePopup = false;
 
 	void ScenePanel::DrawPanel()
 	{
@@ -39,7 +41,7 @@ namespace GoodEditor {
 
 			for (EntityID i = 0; i < registry.GetCount(); i++)
 			{
-				Entity entity = registry.GetEntity(i);
+				Entity& entity = registry.GetEntity(i);
 
 				//deleted or null entity
 				if (!entity)
@@ -72,12 +74,44 @@ namespace GoodEditor {
 
 			ImGui::TreePop();
 		}
+
+
+		if (m_CurrentEntity != g_NullEntity && ImGui::Begin("Entity Name", &m_EntityNamePopup))
+		{
+			static char buf[50];
+
+			ImGui::InputText("##Name", buf, 50);
+			
+			if (ImGui::Button("Enter"))
+			{
+				std::string name = buf;
+				Entity& entity = registry.GetEntity(m_CurrentEntity);
+				if (name.length() > 0)
+					entity.SetName(name);
+
+				m_EntityNamePopup = false;
+				m_CurrentEntity = g_NullEntity;
+			}
+
+			if (ImGui::Button("Close"))
+			{
+				m_EntityNamePopup = false;
+				m_CurrentEntity = g_NullEntity;
+			}
+
+			ImGui::End();
+		}
+		else
+		{
+			m_CurrentEntity = g_NullEntity;
+		}
+
 		
 		ImGui::End();
 
 		m_IDCount = 1000;
 	}
-	void ScenePanel::_DrawChildren(const Entity& entity, EntityTree& tree, Renderer& sceneRenderer, std::unordered_set<EntityID>& displayed)
+	void ScenePanel::_DrawChildren(Entity& entity, EntityTree& tree, Renderer& sceneRenderer, std::unordered_set<EntityID>& displayed)
 	{
 		if (!entity)
 			return;
@@ -108,8 +142,14 @@ namespace GoodEditor {
 			}
 		}
 	}
-	void ScenePanel::_DrawEntity(const Entity& entity, EntityTree& tree)
+	void ScenePanel::_DrawEntity(Entity& entity, EntityTree& tree)
 	{
+		if (ImGui::Button("Rename"))
+		{
+			m_CurrentEntity = entity.GetID();
+			m_EntityNamePopup = true;
+		}
+
 		if (tree.HasComponent<TransformComponent>(entity))
 			_DrawComponent(tree.GetComponent<TransformComponent>(entity));
 
@@ -138,7 +178,7 @@ namespace GoodEditor {
 			_DrawComponent(tree.GetComponent<PerspectiveCameraComponent>(entity));
 	}
 
-	bool ScenePanel::_EntityPopup(const Entity& entity, Renderer& sceneRenderer, EntityTree& tree)
+	bool ScenePanel::_EntityPopup(Entity& entity, Renderer& sceneRenderer, EntityTree& tree)
 	{
 		if (ImGui::BeginPopupContextItem())
 		{
@@ -157,7 +197,7 @@ namespace GoodEditor {
 				tree.AddComponent(entity, component);
 			}
 
-			if(ImGui::MenuItem("Add Cube") && !tree.HasComponent<MeshComponent>(entity))
+			if (ImGui::MenuItem("Add Cube") && !tree.HasComponent<MeshComponent>(entity))
 			{
 				MeshComponent component{};
 				component.ID = 1;
@@ -167,7 +207,7 @@ namespace GoodEditor {
 
 			if (ImGui::MenuItem("Add Transform") && !tree.HasComponent<TransformComponent>(entity))
 				tree.EmplaceComponent<TransformComponent>(entity);
-			
+
 			if (ImGui::MenuItem("Add Material") && !tree.HasComponent<MaterialComponent>(entity))
 			{
 				MaterialComponent component{};
@@ -180,7 +220,7 @@ namespace GoodEditor {
 
 			if (ImGui::MenuItem("Add Point Light") && !tree.HasComponent<PointLightComponent>(entity))
 				tree.EmplaceComponent<PointLightComponent>(entity);
-			
+
 			if (ImGui::MenuItem("Add Directional Light") && !tree.HasComponent<DirectionalLightComponent>(entity))
 				tree.EmplaceComponent<DirectionalLightComponent>(entity);
 
@@ -191,10 +231,21 @@ namespace GoodEditor {
 				tree.EmplaceComponent<ScriptComponent>(entity);
 
 			if (ImGui::MenuItem("Add Perspective Camera") && !tree.HasComponent<PerspectiveCameraComponent>(entity))
-				tree.EmplaceComponent<PerspectiveCameraComponent>(entity);
+			{
+				PerspectiveCameraComponent component;
+				component.Camera = CreateRef<PerspectiveCamera>(component.data);
+
+				tree.AddComponent(entity, component);
+			}
 
 			if (ImGui::MenuItem("Add Orthographic Camera") && !tree.HasComponent<OrthographicCameraComponent>(entity))
-				tree.EmplaceComponent<OrthographicCameraComponent>(entity);
+			{
+				OrthographicCameraComponent component;
+				component.Camera = CreateRef<OrthographicCamera>(component.data);
+
+				tree.AddComponent(entity, component);
+			}
+
 
 			if (ImGui::MenuItem("Add Entity"))
 				tree.Add(entity, "Entity" + std::to_string(tree.GetCount()));
@@ -486,6 +537,17 @@ namespace GoodEditor {
 				ImGui::Text("Path: %s", pathString.c_str());
 			}
 
+			if (ImGui::Button("Refresh"))
+			{
+				component.~ScriptComponent();
+
+				ScriptData data = ScriptingEngine::ExtractScript(asset->GetPath());
+
+				component = ScriptComponent(data);
+				component.SetHandle(asset->GetAssetID());
+			}
+
+
 			ImGui::TreePop();
 		}
 
@@ -543,14 +605,13 @@ namespace GoodEditor {
 			ImGui::Checkbox("Use", &component.InUse);
 
 			if (changed)
-				component.Camera.SetData(component.data);
+				component.Camera->SetData(component.data);
 
 			ImGui::TreePop();
 		}
 
 		ImGui::PopID();
 	}
-
 	void ScenePanel::_DrawComponent(OrthographicCameraComponent& component)
 	{
 		ImGui::PushID(m_IDCount++);
@@ -583,7 +644,7 @@ namespace GoodEditor {
 			ImGui::Checkbox("Use", &component.InUse);
 
 			if (changed)
-				component.Camera.SetData(component.data);
+				component.Camera->SetData(component.data);
 
 			ImGui::TreePop();
 		}

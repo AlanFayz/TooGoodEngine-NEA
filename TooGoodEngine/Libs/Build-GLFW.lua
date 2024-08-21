@@ -86,7 +86,7 @@ project "glfw"
     filter "configurations:Release"
         defines { "RELEASE" }
         runtime "Release"
-        optimize "on"
+        optimize "Speed"
 
     filter "configurations:Dist"
        defines { "DIST" }

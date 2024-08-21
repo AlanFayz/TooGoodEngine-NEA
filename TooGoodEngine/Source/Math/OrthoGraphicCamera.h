@@ -50,6 +50,7 @@ namespace TooGoodEngine {
 		float m_Top, m_Bottom, m_Left, m_Right;
 
 		friend class OrthographicCameraController;
+		friend class CustomOrthographicController;
 	};
 
 }

@@ -46,15 +46,15 @@ project "ImGui"
         	runtime "Debug"
         	symbols "on"
 
-    	filter "configurations:Release"
-        	defines { "RELEASE" }
-        	runtime "Release"
-        	optimize "on"
+    filter "configurations:Release"
+       	defines { "RELEASE" }
+       	runtime "Release"
+       	optimize "Speed"
 
-    	filter "configurations:Dist"
-       		defines { "DIST" }
-       		runtime "Release"
-       		optimize "On"
-       		symbols "Off"
+    filter "configurations:Dist"
+       	defines { "DIST" }
+       	runtime "Release"
+       	optimize "On"
+       	symbols "Off"
 	
 	

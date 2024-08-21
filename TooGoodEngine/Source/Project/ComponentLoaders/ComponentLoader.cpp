@@ -246,7 +246,7 @@ namespace TooGoodEngine {
 		component.data.Front    = { front[0],    front[1],    front[2] };
 		component.data.Up       = { up[0],		 up[1],		  up[2] };
 		
-		component.Camera.SetData(component.data);
+		component.Camera = CreateRef<PerspectiveCamera>(component.data);
 
 		return component;
 	}
@@ -268,7 +268,7 @@ namespace TooGoodEngine {
 		component.data.Front    = { front[0],    front[1],    front[2] };
 		component.data.Up       = { up[0],		 up[1],		  up[2] };
 
-		component.Camera.SetData(component.data);
+		component.Camera = CreateRef<OrthographicCamera>(component.data);
 
 		return component;
 	}

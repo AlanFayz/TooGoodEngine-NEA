@@ -54,7 +54,7 @@ namespace TooGoodEngine {
 			{
 				if (camera.InUse)
 				{
-					sceneCamera = &camera.Camera;
+					sceneCamera = camera.Camera.get();
 					break;
 				}
 			}
@@ -69,7 +69,7 @@ namespace TooGoodEngine {
 				{
 					if (camera.InUse)
 					{
-						sceneCamera = &camera.Camera;
+						sceneCamera = camera.Camera.get();
 						break;
 					}
 				}
@@ -95,13 +95,19 @@ namespace TooGoodEngine {
 			if (m_FirstPlay)
 			{
 				for (const auto& script : scripts)
-					script.OnCreate();
+				{
+					if(script)
+						script.OnCreate();
+				}
 
 				m_FirstPlay = false;
 			}
 
 			for (const auto& script : scripts)
-				script.OnUpdate(delta);
+			{
+				if(script)
+					script.OnUpdate(delta);
+			}
 		}
 
 		m_SceneRenderer->Begin(sceneCamera);

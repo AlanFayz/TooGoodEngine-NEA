@@ -18,6 +18,7 @@ namespace TooGoodEngine {
 
 		inline const std::string& GetName() const { return m_Name; }
 		inline const EntityID GetID() const { return m_ID; }
+		inline void SetName(const std::string& other) { m_Name = other; }
 
 		inline operator size_t() const { return m_ID; }
 		inline operator std::string() const { return m_Name; }

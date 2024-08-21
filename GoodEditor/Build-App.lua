@@ -53,7 +53,7 @@ project "GoodEditor"
    filter "configurations:Release"
        defines { "RELEASE" }
        runtime "Release"
-       optimize "On"
+       optimize "Speed"
        symbols "On"
 
        libdirs
@@ -61,6 +61,7 @@ project "GoodEditor"
            libDir .. "/Binaries/Release"
        }
 
+    
    filter "configurations:Dist"
        defines { "DIST" }
        runtime "Release"

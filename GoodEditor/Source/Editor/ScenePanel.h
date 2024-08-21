@@ -14,13 +14,13 @@ namespace GoodEditor {
 		static void DrawPanel();
 
 	private:
-		static void _DrawChildren(const Entity& entity,
+		static void _DrawChildren(Entity& entity,
 								  EntityTree& tree, Renderer& sceneRenderer,
 								  std::unordered_set<EntityID>& displayed);
 
 
-		static void _DrawEntity(const Entity& entity, EntityTree& tree);
-		static bool _EntityPopup(const Entity& entity, Renderer& sceneRenderer, EntityTree& tree);
+		static void _DrawEntity(Entity& entity, EntityTree& tree);
+		static bool _EntityPopup(Entity& entity, Renderer& sceneRenderer, EntityTree& tree);
 		static void _DrawSettings(const Ref<Scene>& scene);
 		
 		static void _DrawComponent(TransformComponent& component);
@@ -38,6 +38,8 @@ namespace GoodEditor {
 	private:
 		static int m_IDCount;
 		static int m_ColorEditFlags;
+		static EntityID m_CurrentEntity;
+		static bool m_EntityNamePopup;
 	};
 
 	

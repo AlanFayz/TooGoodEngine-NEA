@@ -31,6 +31,8 @@ namespace TooGoodEngine {
 
 		inline void SetHandle(UUID other) { m_AssetHandle = other; }
 		inline const UUID GetHandle() const { return m_AssetHandle; }
+		
+		inline operator bool() const { return m_PyOnScriptCreate && m_PyOnScriptUpdate; }
 
 	private:
 		void _PrintDebugInfo();
