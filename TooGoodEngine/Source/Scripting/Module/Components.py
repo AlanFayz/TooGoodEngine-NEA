@@ -1,5 +1,10 @@
 import TooGoodEngine
 
+#NOTE: users should never try to construct
+#a component by itself. always construct it
+#from an entity and then retrieve it, so
+#never use these constructors
+
 class Transform:
 	def __init__(self, handle):
 		self.__handle = handle
@@ -59,3 +64,42 @@ class Material:
 	def get_attribute(self, name: int) -> tuple:
 		if self.__handle is not None:
 			return TooGoodEngine.internal_get_material_attribute(self.__handle, name)
+
+
+class PointLight:
+	def __init__(self, handle):
+		self.__handle = handle
+
+	def translate_position(self, offset: tuple) -> None:
+		if self.__handle is not None:
+			TooGoodEngine.internal_translate_point_light(self.__handle, offset[0], offset[1], offset[2])
+
+	def update_color(self, new_color: tuple) -> None:
+		if self.__handle is not None:
+			TooGoodEngine.internal_update_point_light_color(self.__handle, new_color[0], new_color[1], new_color[2])
+
+	def update_intensity(self, new_intensity: float) -> None:
+		if self.__handle is not None:
+			TooGoodEngine.internal_update_point_light_intensity(self.__handle, new_intensity)
+
+	def update_radius(self, new_radius: float) -> None:
+		if self.__handle is not None:
+			TooGoodEngine.internal_update_point_light_radius(self.__handle, new_radius)
+
+
+class DirectionalLight:
+	def __init__(self, handle):
+		self.__handle = handle 
+
+	def update_direction(self, new_direction: tuple) -> None: 
+		if self.__handle is not None:
+			TooGoodEngine.internal_update_directional_light_direction(self.__handle, new_direction[0], new_direction[1], new_direction[2])
+
+	def update_color(self, new_color: tuple) -> None:
+		if self.__handle is not None:
+			TooGoodEngine.internal_update_directional_light_color(self.__handle, new_color[0], new_color[1]. new_color[2])
+		
+	def update_intensity(self, new_intensity: float) -> None: 
+		if self.__handle is not None:
+			TooGoodEngine.internal_update_directional_light_intensity(self.__handle, new_intensity)
+

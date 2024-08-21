@@ -54,14 +54,14 @@ namespace TooGoodEngine {
 
 		s_Data->MethodDefinitions[3] = { "is_key_pressed",  PythonBindings::IsKeyPressed,  METH_VARARGS, "returns true if a key is pressed" };
 		s_Data->MethodDefinitions[4] = { "is_key_released", PythonBindings::IsKeyReleased, METH_VARARGS, "returns true if a key is released" };
-		s_Data->MethodDefinitions[5] = { "is_key_down",     PythonBindings::IsKeyDown,	  METH_VARARGS, "returns true if a key is down" };
+		s_Data->MethodDefinitions[5] = { "is_key_down",     PythonBindings::IsKeyDown,	   METH_VARARGS, "returns true if a key is down" };
 		
 		s_Data->MethodDefinitions[6] = { "is_mouse_button_pressed",  PythonBindings::IsMouseButtonPressed,  METH_VARARGS, "returns true if a mouse button is pressed" };
-		s_Data->MethodDefinitions[7] = { "is_mouse_button_released",	PythonBindings::IsMouseButtonReleased, METH_VARARGS, "returns true if a mouse button is released" };
-		s_Data->MethodDefinitions[8] = { "is_mouse_button_down",		PythonBindings::IsMouseButtonDown,	   METH_VARARGS, "returns true if a mouse button is down" };
+		s_Data->MethodDefinitions[7] = { "is_mouse_button_released", PythonBindings::IsMouseButtonReleased, METH_VARARGS, "returns true if a mouse button is released" };
+		s_Data->MethodDefinitions[8] = { "is_mouse_button_down",	 PythonBindings::IsMouseButtonDown,	    METH_VARARGS, "returns true if a mouse button is down" };
 
 		s_Data->MethodDefinitions[9]  = { "get_mouse_coordinates", PythonBindings::GetMouseCoordinates, METH_NOARGS, "returns a tuple containing the mouse coordinates" };
-		s_Data->MethodDefinitions[10] = { "get_scroll_wheel",      PythonBindings::GetScrollWheel,	   METH_NOARGS, "returns a tuple of scroll wheel x,y" };
+		s_Data->MethodDefinitions[10] = { "get_scroll_wheel",      PythonBindings::GetScrollWheel,	    METH_NOARGS, "returns a tuple of scroll wheel x,y" };
 
 		s_Data->MethodDefinitions[11] = { "disable_cursor", PythonBindings::DisableCursor, METH_NOARGS,  "hides and locks the cursor" };
 		s_Data->MethodDefinitions[12] = { "enable_cursor",  PythonBindings::EnableCursor,  METH_NOARGS,  "returns the cursor to normal" };
@@ -71,25 +71,37 @@ namespace TooGoodEngine {
 		// ---- internal ---- 
 		//
 		
-		s_Data->MethodDefinitions[13] = { "internal_create_entity",				   PythonBindings::InternalCreateEntity,			     METH_VARARGS, "internal" };
-		s_Data->MethodDefinitions[14] = { "internal_get_entity_name",              PythonBindings::InternalGetEntityName,		     METH_VARARGS, "internal" };
-		s_Data->MethodDefinitions[15] = { "internal_get_entity_by_name",           PythonBindings::InternalGetEntityByName,		     METH_VARARGS, "internal" };
-		s_Data->MethodDefinitions[16] = { "internal_get_entity_id",			       PythonBindings::InternalGetEntityID,		         METH_VARARGS, "internal" };
+		s_Data->MethodDefinitions[13] = { "internal_create_entity",				   PythonBindings::InternalCreateEntity,			  METH_VARARGS, "internal" };
+		s_Data->MethodDefinitions[14] = { "internal_get_entity_name",              PythonBindings::InternalGetEntityName,		      METH_VARARGS, "internal" };
+		s_Data->MethodDefinitions[15] = { "internal_get_entity_by_name",           PythonBindings::InternalGetEntityByName,		      METH_VARARGS, "internal" };
+		s_Data->MethodDefinitions[16] = { "internal_get_entity_id",			       PythonBindings::InternalGetEntityID,		          METH_VARARGS, "internal" };
 		s_Data->MethodDefinitions[17] = { "internal_add_component_to_entity",      PythonBindings::InternalAddComponentToEntity,      METH_VARARGS, "internal" };
 		s_Data->MethodDefinitions[18] = { "internal_remove_component_from_entity", PythonBindings::InternalRemoveComponentFromEntity, METH_VARARGS, "internal" };
 		s_Data->MethodDefinitions[19] = { "internal_remove_entity_from_tree",      PythonBindings::InternalRemoveEntityFromTree,      METH_VARARGS, "internal" };
-		s_Data->MethodDefinitions[20] = { "internal_get_component_from_entity",    PythonBindings::InternalGetComponentFromEntity, METH_VARARGS, "internal" };
+		s_Data->MethodDefinitions[20] = { "internal_get_component_from_entity",    PythonBindings::InternalGetComponentFromEntity,    METH_VARARGS, "internal" };
 		
-		s_Data->MethodDefinitions[21] = { "internal_translate_transform",			 PythonBindings::InternalTranslateTransform,			 METH_VARARGS, "internal" };
-		s_Data->MethodDefinitions[22] = { "internal_rotate_transform",				 PythonBindings::InternalRotateTransform,			 METH_VARARGS, "internal" };
-		s_Data->MethodDefinitions[23] = { "internal_scale_transform",				 PythonBindings::InternalScaleTransform,				 METH_VARARGS, "internal" };
+		s_Data->MethodDefinitions[21] = { "internal_translate_transform",			 PythonBindings::InternalTranslateTransform,		  METH_VARARGS, "internal" };
+		s_Data->MethodDefinitions[22] = { "internal_rotate_transform",				 PythonBindings::InternalRotateTransform,			  METH_VARARGS, "internal" };
+		s_Data->MethodDefinitions[23] = { "internal_scale_transform",				 PythonBindings::InternalScaleTransform,		      METH_VARARGS, "internal" };
 		s_Data->MethodDefinitions[24] = { "internal_get_translation_from_transform", PythonBindings::InternalGetTranslationFromTransform, METH_VARARGS, "internal" };
 		s_Data->MethodDefinitions[25] = { "internal_get_rotation_from_transform",    PythonBindings::InternalGetRotationFromTransform,    METH_VARARGS, "internal" };
 		s_Data->MethodDefinitions[26] = { "internal_get_scale_from_transform",       PythonBindings::InternalGetScaleFromTransform,       METH_VARARGS, "internal" };
 
-		s_Data->MethodDefinitions[27] = { "internal_update_material_attribute",  PythonBindings::InternalUpdateMaterialAttribute, METH_VARARGS, "internal" };
-		s_Data->MethodDefinitions[28] = { "internal_get_material_attribute",     PythonBindings::InternalGetMaterialAttribute,    METH_VARARGS, "internal" };
-		s_Data->MethodDefinitions[29] = { nullptr, nullptr, 0, nullptr };
+		s_Data->MethodDefinitions[27] = { "internal_update_material_attribute",   PythonBindings::InternalUpdateMaterialAttribute,   METH_VARARGS, "internal" };
+		s_Data->MethodDefinitions[28] = { "internal_get_material_attribute",      PythonBindings::InternalGetMaterialAttribute,      METH_VARARGS, "internal" };
+		
+		s_Data->MethodDefinitions[29] = { "internal_translate_point_light",		  PythonBindings::InternalTranslatePointLight,       METH_VARARGS, "internal" };
+		s_Data->MethodDefinitions[30] = { "internal_update_point_light_color",	  PythonBindings::InternalUpdatePointLightColor,     METH_VARARGS, "internal" };
+		s_Data->MethodDefinitions[31] = { "internal_update_point_light_intensity",PythonBindings::InternalUpdatePointLightIntensity, METH_VARARGS, "internal" };
+		s_Data->MethodDefinitions[32] = { "internal_update_point_light_radius",   PythonBindings::InternalUpdatePointLightRadius,    METH_VARARGS, "internal" };
+
+		s_Data->MethodDefinitions[33] = { "internal_update_directional_light_direction", PythonBindings::InternalUpdateDirectionalLightDirection, METH_VARARGS, "internal" };
+		s_Data->MethodDefinitions[34] = { "internal_update_directional_light_color",     PythonBindings::InternalUpdateDirectionalLightColor,     METH_VARARGS, "internal" };
+		s_Data->MethodDefinitions[35] = { "internal_update_directional_light_intensity", PythonBindings::InternalUpdateDirectionalLightIntensity, METH_VARARGS, "internal" };
+
+
+		// ---- END ----
+		s_Data->MethodDefinitions[49] = { nullptr, nullptr, 0, nullptr };
 		
 		s_Data->EngineModuleDefinition.m_base    = PyModuleDef_HEAD_INIT;
 		s_Data->EngineModuleDefinition.m_name    = "TooGoodEngine";

@@ -336,8 +336,6 @@ namespace TooGoodEngine {
 
 		if (stringName == "Transform" && registry.HasComponent<TransformComponent>(*container))
 		{
-			auto& transform = registry.GetComponent<TransformComponent>(*container);
-
 			Entity* componentContainer = container;
 
 			return PyCapsule_New(componentContainer, "InternalTransform", InternalCleanTransform);
@@ -345,8 +343,6 @@ namespace TooGoodEngine {
 
 		else if (stringName == "Material" && registry.HasComponent<MaterialComponent>(*container))
 		{
-			auto& material = registry.GetComponent<MaterialComponent>(*container);
-
 			Entity* componentContainer = container;
 
 			return PyCapsule_New(componentContainer, "InternalMaterial", InternalCleanMaterial);
@@ -354,8 +350,6 @@ namespace TooGoodEngine {
 
 		else if (stringName == "Directional Light" && registry.HasComponent<DirectionalLightComponent>(*container))
 		{
-			auto& light = registry.GetComponent<DirectionalLightComponent>(*container);
-
 			Entity* componentContainer = container;
 
 			return PyCapsule_New(componentContainer, "InternalDirectionalLight", InternalCleanDirectionalLight);
@@ -363,12 +357,11 @@ namespace TooGoodEngine {
 
 		else if (stringName == "Point Light" && registry.HasComponent<PointLightComponent>(*container))
 		{
-			auto& light = registry.GetComponent<PointLightComponent>(*container);
-
 			Entity* componentContainer = container;
 			return PyCapsule_New(componentContainer, "InternalPointLight", InternalCleanPointLight);
 		}
 	
+		PyErr_Format(PyExc_NameError, "Not a valid component %s", name);
 		return nullptr;
 	}
 
@@ -713,8 +706,155 @@ namespace TooGoodEngine {
 	{
 	}
 
+	PyObject* PythonBindings::InternalTranslatePointLight(PyObject* self, PyObject* args)
+	{
+		PyObject* capsule = nullptr;
+		float x = 0.0f, y = 0.0f, z = 0.0f;
+
+		if (!PyArg_ParseTuple(args, "Offf", &capsule, &x, &y, &z))
+			return nullptr;
+
+		Entity* container = (Entity*)(PyCapsule_GetPointer(capsule, "InternalPointLight"));
+
+		auto& registry = g_SelectedProject->GetCurrentScene()->GetRegistry();
+
+		if (!container || !*container || !registry.HasComponent<PointLightComponent>(*container))
+			return nullptr;
+
+		PointLightComponent& component = registry.GetComponent<PointLightComponent>(*container);
+		component.Position += glm::vec3(x, y, z);
+
+		return Py_None;
+	}
+
+	PyObject* PythonBindings::InternalUpdatePointLightColor(PyObject* self, PyObject* args)
+	{
+		PyObject* capsule = nullptr;
+		float r = 0.0f, g = 0.0f, b = 0.0f;
+
+		if (!PyArg_ParseTuple(args, "Offf", &capsule, &r, &g, &b))
+			return nullptr;
+
+		Entity* container = (Entity*)(PyCapsule_GetPointer(capsule, "InternalPointLight"));
+
+		auto& registry = g_SelectedProject->GetCurrentScene()->GetRegistry();
+
+		if (!container || !*container || !registry.HasComponent<PointLightComponent>(*container))
+			return nullptr;
+
+		PointLightComponent& component = registry.GetComponent<PointLightComponent>(*container);
+		component.Color = { r, g ,b, 1.0 };
+
+		return Py_None;
+	}
+
+	PyObject* PythonBindings::InternalUpdatePointLightIntensity(PyObject* self, PyObject* args)
+	{
+		PyObject* capsule = nullptr;
+		float intensity = 0.0f;
+
+		if (!PyArg_ParseTuple(args, "Of", &capsule, &intensity))
+			return nullptr;
+
+		Entity* container = (Entity*)(PyCapsule_GetPointer(capsule, "InternalPointLight"));
+
+		auto& registry = g_SelectedProject->GetCurrentScene()->GetRegistry();
+
+		if (!container || !*container || !registry.HasComponent<PointLightComponent>(*container))
+			return nullptr;
+
+		PointLightComponent& component = registry.GetComponent<PointLightComponent>(*container);
+		component.Intensity = intensity;
+
+		return Py_None;
+	}
+
+	PyObject* PythonBindings::InternalUpdatePointLightRadius(PyObject* self, PyObject* args)
+	{
+		PyObject* capsule = nullptr;
+		float radius = 0.0f;
+
+		if (!PyArg_ParseTuple(args, "Of", &capsule, &radius))
+			return nullptr;
+
+		Entity* container = (Entity*)(PyCapsule_GetPointer(capsule, "InternalPointLight"));
+
+		auto& registry = g_SelectedProject->GetCurrentScene()->GetRegistry();
+
+		if (!container || !*container || !registry.HasComponent<PointLightComponent>(*container))
+			return nullptr;
+
+		PointLightComponent& component = registry.GetComponent<PointLightComponent>(*container);
+		component.Radius = radius;
+
+		return Py_None;
+	}
+
 	void PythonBindings::InternalCleanDirectionalLight(PyObject* capsule)
 	{
+	}
+
+	PyObject* PythonBindings::InternalUpdateDirectionalLightDirection(PyObject* self, PyObject* args)
+	{
+		PyObject* capsule = nullptr;
+		float x = 0.0f, y = 0.0f, z = 0.0f;
+
+		if (!PyArg_ParseTuple(args, "Offf", &capsule, &x, &y, &z))
+			return nullptr;
+
+		Entity* container = (Entity*)(PyCapsule_GetPointer(capsule, "InternalDirectionalLight"));
+
+		auto& registry = g_SelectedProject->GetCurrentScene()->GetRegistry();
+
+		if (!container || !*container || !registry.HasComponent<DirectionalLightComponent>(*container))
+			return nullptr;
+
+		DirectionalLightComponent& component = registry.GetComponent<DirectionalLightComponent>(*container);
+		component.Direction = glm::vec3(x, y, z);
+
+		return Py_None;
+	}
+
+	PyObject* PythonBindings::InternalUpdateDirectionalLightColor(PyObject* self, PyObject* args)
+	{
+		PyObject* capsule = nullptr;
+		float r = 0.0f, g = 0.0f, b = 0.0f;
+
+		if (!PyArg_ParseTuple(args, "Offf", &capsule, &r, &g, &b))
+			return nullptr;
+
+		Entity* container = (Entity*)(PyCapsule_GetPointer(capsule, "InternalDirectionalLight"));
+
+		auto& registry = g_SelectedProject->GetCurrentScene()->GetRegistry();
+
+		if (!container || !*container || !registry.HasComponent<DirectionalLightComponent>(*container))
+			return nullptr;
+
+		DirectionalLightComponent& component = registry.GetComponent<DirectionalLightComponent>(*container);
+		component.Color = glm::vec4(r, g, b, 1.0f);
+	
+		return Py_None;
+	}
+
+	PyObject* PythonBindings::InternalUpdateDirectionalLightIntensity(PyObject* self, PyObject* args)
+	{
+		PyObject* capsule = nullptr;
+		float intensity = 0.0f;
+
+		if (!PyArg_ParseTuple(args, "Of", &capsule, &intensity))
+			return nullptr;
+
+		Entity* container = (Entity*)(PyCapsule_GetPointer(capsule, "InternalDirectionalLight"));
+
+		auto& registry = g_SelectedProject->GetCurrentScene()->GetRegistry();
+
+		if (!container || !*container || !registry.HasComponent<DirectionalLightComponent>(*container))
+			return nullptr;
+
+		DirectionalLightComponent& component = registry.GetComponent<DirectionalLightComponent>(*container);
+		component.Intensity = intensity;
+
+		return Py_None;
 	}
 
 

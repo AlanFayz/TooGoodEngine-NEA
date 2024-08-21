@@ -3,11 +3,11 @@ import Components
 
 g_null_entity = 0xFFFFFFFFFFFFFFFF
 
-#more to add
 g_component_dictionary = {
-	"Transform": Components.Transform,
-	"Material": Components.Material
-}
+	"Transform":		 Components.Transform,
+	"Material":			 Components.Material, 
+	"Directional Light": Components.DirectionalLight,
+	"Point Light":       Components.PointLight }
 
 class Entity:
 	def __init__(self, name: str):
@@ -37,7 +37,6 @@ class Entity:
 			TooGoodEngine.internal_remove_component_from_entity(self.__handle, name)
 
 	def get_component(self, name: str) -> any:
-	
 		if self.__handle is not None and name in g_component_dictionary:
 			handle = TooGoodEngine.internal_get_component_from_entity(self.__handle, name)
 

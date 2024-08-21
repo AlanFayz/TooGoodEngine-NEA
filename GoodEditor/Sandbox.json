@@ -2,7 +2,7 @@
     "Project Name": "Sandbox",
     "Project Directory": "D:\\Dev\\TooGoodEngine-NEA\\GoodEditor",
     "Asset Directory": "D:\\Dev\\TooGoodEngine-NEA\\GoodEditor\\Assets",
-    "Last Build Date": "2024-08-21 14:03:25",
+    "Last Build Date": "2024-08-21 15:11:56",
     "Scenes": {
         "Scene 1": {
             "Scene Settings": {
@@ -46,9 +46,9 @@
                     "Mesh": "##Quad",
                     "Material": {
                         "Ambient": [
-                            1.0,
-                            1.0,
-                            1.5269999504089355,
+                            0.5412165522575378,
+                            0.5412166118621826,
+                            0.9217081665992737,
                             1.0
                         ],
                         "Albedo": [
@@ -178,18 +178,18 @@
                     },
                     "Material": {
                         "Ambient": [
-                            0.0,
-                            0.0,
-                            0.0,
-                            0.0
+                            0.8823529481887817,
+                            0.0470588244497776,
+                            0.0470588244497776,
+                            0.9803921580314636
                         ],
                         "Albedo": [
+                            1.0,
                             0.0,
                             0.0,
-                            0.0,
-                            0.0
+                            1.0
                         ],
-                        "Albedo Factor": 0.0,
+                        "Albedo Factor": 8.5600004196167,
                         "Metallic": [
                             0.0,
                             0.0,

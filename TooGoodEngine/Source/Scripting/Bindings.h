@@ -58,7 +58,15 @@ namespace TooGoodEngine {
 		//static PyObject* InternalUpdateMaterialTexture(PyObject* self, PyObject* args); TODO once bindings for images have been added
 
 		static void		 InternalCleanPointLight(PyObject* capsule);
+		static PyObject* InternalTranslatePointLight(PyObject* self, PyObject* args);
+		static PyObject* InternalUpdatePointLightColor(PyObject* self, PyObject* args);
+		static PyObject* InternalUpdatePointLightIntensity(PyObject* self, PyObject* args);
+		static PyObject* InternalUpdatePointLightRadius(PyObject* self, PyObject* args);
+
 		static void      InternalCleanDirectionalLight(PyObject* capsule);
+		static PyObject* InternalUpdateDirectionalLightDirection(PyObject* self, PyObject* args);
+		static PyObject* InternalUpdateDirectionalLightColor(PyObject* self, PyObject* args);
+		static PyObject* InternalUpdateDirectionalLightIntensity(PyObject* self, PyObject* args);
 		
 	};	
 
