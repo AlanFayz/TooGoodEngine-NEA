@@ -2,7 +2,7 @@
     "Project Name": "mytestproject",
     "Project Directory": "../Example/",
     "Asset Directory": "../Example/Assets",
-    "Last Build Date": "2024-08-22 17:46:06",
+    "Last Build Date": "2024-08-22 19:11:14",
     "Scenes": {
         "": {
             "Scene Settings": {
@@ -31,7 +31,7 @@
                         "Position": [
                             0.0,
                             0.0,
-                            0.0
+                            -0.4000000059604645
                         ],
                         "Scale": [
                             5.0,

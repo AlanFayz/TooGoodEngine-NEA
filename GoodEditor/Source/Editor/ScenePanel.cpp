@@ -548,7 +548,11 @@ namespace GoodEditor {
 
 					ScriptData data = ScriptingEngine::ExtractScript(asset->GetPath());
 
-					component = ScriptComponent(data);
+					if (data.PyOnCreate && data.PyOnUpdate)
+						component = ScriptComponent(data);
+					else
+						component = ScriptComponent();
+
 					component.SetHandle(asset->GetAssetID());
 				}
 

@@ -10,11 +10,12 @@ g_component_dictionary = {
 	"Point Light":       Components.PointLight }
 
 class Entity:
-	def __init__(self, name: str):
-		self.__handle = TooGoodEngine.internal_create_entity(name)
+	def __init__(self, name: str, handle = None):
+		if handle is None:
+			self.__handle = TooGoodEngine.internal_create_entity(name)
+		else:
+			self.__handle = handle
 
-	def __init__(self, handle):
-		self.__handle = handle
 
 	def internal_get(self):
 		return self.__handle
@@ -58,6 +59,6 @@ class Entity:
 def get_entity_by_name(name: str):
 	handle = TooGoodEngine.internal_get_entity_by_name(name)
 	if handle is not None:
-		return Entity(handle)
+		return Entity("", handle)
 
 	return None

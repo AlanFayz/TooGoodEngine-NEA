@@ -168,7 +168,7 @@ namespace TooGoodEngine {
 		if (!PyArg_ParseTuple(args, "s", &val))
 			return nullptr;
 
-		Entity entity = g_SelectedProject->GetCurrentScene()->Add(val);
+		Entity entity = g_SelectedProject->GetCurrentScene()->Add(std::string(val));
 
 		Entity* container = new Entity(entity);
 		return PyCapsule_New(container, "InternalEntity", InternalCleanEntity);
@@ -231,10 +231,13 @@ namespace TooGoodEngine {
 		if (!container)
 			return nullptr;
 		
-		if (name == "Transform" && !registry.HasComponent<TransformComponent>(*container))
+
+		std::string stringName = std::string(name);
+
+		if (stringName == "Transform" && !registry.HasComponent<TransformComponent>(*container))
 			registry.EmplaceComponent<TransformComponent>(*container);
 		
-		else if (name == "Material" && !registry.HasComponent<MaterialComponent>(*container))
+		else if (stringName == "Material" && !registry.HasComponent<MaterialComponent>(*container))
 		{
 			MaterialComponent component{};
 			component.ID = renderer->AddMaterial(component.Material);
@@ -242,13 +245,13 @@ namespace TooGoodEngine {
 
 		}
 		
-		else if (name == "Directional Light" && !registry.HasComponent<DirectionalLightComponent>(*container))
+		else if (stringName == "Directional Light" && !registry.HasComponent<DirectionalLightComponent>(*container))
 			registry.EmplaceComponent<DirectionalLightComponent>(*container);
 		
-		else if (name == "Point Light" && !registry.HasComponent<PointLightComponent>(*container))
+		else if (stringName == "Point Light" && !registry.HasComponent<PointLightComponent>(*container))
 			registry.EmplaceComponent<PointLightComponent>(*container);
 		
-		else if (name == "Quad")
+		else if (stringName == "Quad")
 		{
 			MeshComponent component;
 			component.ID = 0;
@@ -257,7 +260,7 @@ namespace TooGoodEngine {
 			registry.AddComponent(*container, component);
 		}
 
-		else if (name == "Cube")
+		else if (stringName == "Cube")
 		{
 			MeshComponent component;
 			component.ID = 1;
