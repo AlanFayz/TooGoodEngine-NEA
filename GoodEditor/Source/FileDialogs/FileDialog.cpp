@@ -49,18 +49,21 @@ namespace GoodEditor {
 		
 		IShellItem* pItem = nullptr;
 		pfd->GetResult(&pItem);
+
+		if (pItem)
+		{
+			PWSTR pszFolderPath = nullptr;
+			result = pItem->GetDisplayName(SIGDN_FILESYSPATH, &pszFolderPath);
+
+			if (SUCCEEDED(result))
+			{
+				path = std::filesystem::path(pszFolderPath);
+				CoTaskMemFree(pszFolderPath);
+			}
+
+			pItem->Release();
+		}
 		
-	    PWSTR pszFolderPath = nullptr;
-	    result = pItem->GetDisplayName(SIGDN_FILESYSPATH, &pszFolderPath);
-	    
-	    if (SUCCEEDED(result)) 
-	    {
-	        path = std::filesystem::path(pszFolderPath);
-	        CoTaskMemFree(pszFolderPath);
-	    }
-		
-		pItem->Release();
-         
 
         pfd->Release();
 

@@ -75,6 +75,9 @@ namespace TooGoodEngine {
 		auto& registry = scene->GetRegistry();
 		auto  renderer = scene->GetSceneRenderer();
 
+		if (!jsonScene.contains("Entites"))
+			return scene;
+
 		auto& jsonEntities = jsonScene["Entities"];
 
 		//first pass is to create all the entities and their components
