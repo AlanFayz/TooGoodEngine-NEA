@@ -113,8 +113,11 @@ namespace TooGoodEngine {
 		GeometryID CubeGeometryIndex;
 
 		OpenGL::Framebuffer FinalImageFramebuffer;
+		OpenGL::Framebuffer BloomFramebuffer;
+
 		Ref<OpenGL::Texture2D> FinalImageTexture;
 		Ref<OpenGL::Texture2D> DepthTexture;
+		Ref<OpenGL::Texture2D> BloomTexture;
 
 		OpenGL::Program DisplayProgram;
 		OpenGL::VertexArray Dummy;

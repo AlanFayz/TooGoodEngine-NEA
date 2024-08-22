@@ -44,17 +44,14 @@ struct MaterialData
 
 struct PointLight
 {
-	vec4 Position;
-	vec4 Color;
-	float Intensity;
-	float Radius;
+	vec4 PositionAndIntensity; // x y z intensity
+	vec4 ColorAndRadius; //r g b radius
 };
 
 struct DirectionalLight
 {
-	vec4 Direction;
+	vec4 DirectionAndIntensity; //x y z intensity
 	vec4 Color;
-	float Intensity;
 };
 
 readonly layout(std430, binding = 1) buffer u_MaterialBuffer 
@@ -237,12 +234,17 @@ void main()
 
 	for(int i = 0; i < u_PointLightSize; i++)
 	{
-		float attenuation = Attenuate(PointLights.Data[i].Radius, distance(PointLights.Data[i].Position.xyz, o_WorldPosition));
+		float radius = PointLights.Data[i].ColorAndRadius.a;
+		float intensity = PointLights.Data[i].PositionAndIntensity.a;
+		vec3 position = PointLights.Data[i].PositionAndIntensity.rgb;
+		vec3 color = PointLights.Data[i].ColorAndRadius.rgb;
+
+		float attenuation = Attenuate(radius, distance(position, o_WorldPosition));
 		if(attenuation <= 0.0)
 			continue;
 
-		info.LightDirection = normalize(PointLights.Data[i].Position.xyz - o_WorldPosition); 
-		info.LightColor = PointLights.Data[i].Color.rgb * PointLights.Data[i].Intensity;
+		info.LightDirection = normalize(position - o_WorldPosition); 
+		info.LightColor = color * intensity;
 		info.Attenuation = attenuation;
 		
 		Color += Shade(info);
@@ -255,9 +257,9 @@ void main()
 
 	for(int i = 0; i < u_DirectionalLightSize; i++)
 	{
-		info.LightDirection = DirectionalLights.Data[i].Direction.xyz;
+		info.LightDirection = DirectionalLights.Data[i].DirectionAndIntensity.xyz;
 
-		info.LightColor = DirectionalLights.Data[i].Color.rgb * max(DirectionalLights.Data[i].Intensity, 0.0);
+		info.LightColor = DirectionalLights.Data[i].Color.rgb * max(DirectionalLights.Data[i].DirectionAndIntensity.a, 0.0);
 		info.Attenuation = 1.0;
 
 		Color += Shade(info);

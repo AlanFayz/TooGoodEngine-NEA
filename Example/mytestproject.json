@@ -1,0 +1,124 @@
+{
+    "Project Name": "mytestproject",
+    "Project Directory": "../Example/",
+    "Asset Directory": "../Example/Assets",
+    "Last Build Date": "2024-08-22 17:46:06",
+    "Scenes": {
+        "": {
+            "Scene Settings": {
+                "Depth Testing": 1,
+                "Culling": 0,
+                "Winding Order": 2,
+                "Blending Source": 0,
+                "Blending Destination": 0,
+                "Filling Mode": 3,
+                "Level Of Detail": 2.0,
+                "Gradient": 0.5400000214576721,
+                "Clear Color": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "Bloom Enabled": true,
+                "Bloom Threshold": 1.0,
+                "Bloom Intensity": 0.800000011920929,
+                "Bloom Filter Radius": 0.004999999888241291
+            },
+            "Entities": {
+                "test": {
+                    "Transform": {
+                        "Position": [
+                            0.0,
+                            0.0,
+                            0.0
+                        ],
+                        "Scale": [
+                            5.0,
+                            5.0,
+                            5.0
+                        ],
+                        "Rotation": [
+                            0.0,
+                            0.0,
+                            0.0
+                        ]
+                    },
+                    "Mesh": "##Cube",
+                    "Material": {
+                        "Ambient": [
+                            1.0,
+                            0.9786477088928223,
+                            0.9786477088928223,
+                            0.9686274528503418
+                        ],
+                        "Albedo Image": 15092291300684513771,
+                        "Albedo": [
+                            1.0,
+                            1.0,
+                            1.0,
+                            0.9921568632125854
+                        ],
+                        "Albedo Factor": 1.0,
+                        "Metallic": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ],
+                        "Metallic Factor": 0.0,
+                        "Emission": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ],
+                        "Emission Factor": 0.0,
+                        "Roughness": 0.0
+                    },
+                    "Directional Light": {
+                        "Color": [
+                            0.9786477088928223,
+                            0.07662012428045273,
+                            0.07662012428045273,
+                            1.0
+                        ],
+                        "Direction": [
+                            0.0,
+                            0.8700000047683716,
+                            0.15000000596046448
+                        ],
+                        "Intensity": 10.0
+                    },
+                    "Script": 5487794871857355226
+                },
+                "Entity1": {
+                    "Directional Light": {
+                        "Color": [
+                            0.0,
+                            0.32740211486816406,
+                            1.0,
+                            1.0
+                        ],
+                        "Direction": [
+                            -1.0,
+                            -1.0,
+                            -0.28999999165534973
+                        ],
+                        "Intensity": 10.0
+                    }
+                }
+            }
+        }
+    },
+    "Assets": {
+        "5487794871857355226": {
+            "Type": "Script",
+            "Path": "my_script.py"
+        },
+        "15092291300684513771": {
+            "Type": "Image",
+            "Path": "Untitled.png"
+        }
+    }
+}

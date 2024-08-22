@@ -76,6 +76,7 @@ namespace TooGoodEngine {
 			void  Unmap();
 			 
 			void BindBase(uint32_t index, BufferType type);
+			void BindRange(uint32_t index, BufferType type, size_t size);
 			
 		private:
 			uint32_t m_BufferHandle = 0;

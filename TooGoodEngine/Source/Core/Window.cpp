@@ -69,7 +69,7 @@ namespace TooGoodEngine {
 		{
 			case GL_DEBUG_SEVERITY_LOW:	   TGE_LOG_INFO(message);	   break;
 			case GL_DEBUG_SEVERITY_MEDIUM: TGE_LOG_WARNING(message);   break;
-			case GL_DEBUG_SEVERITY_HIGH:   TGE_ASSERT(false, message); break;
+			case GL_DEBUG_SEVERITY_HIGH:   TGE_LOG_ERROR(message);     break;
 			default:  break;
 		}
 	}

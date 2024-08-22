@@ -39,17 +39,14 @@ namespace TooGoodEngine {
 
 	struct PointLight
 	{
-		glm::vec4 Position;
-		glm::vec4 Color;
-		float Intensity;
-		float Radius;
+		glm::vec4 PositionAndIntensity;
+		glm::vec4 ColorAndRadius;
 	};
 
 	struct DirectionalLight
 	{
-		glm::vec4 Direction;
+		glm::vec4 DirectionAndIntensity;
 		glm::vec4 Color;
-		float Intensity;
 	};
 
 	struct ModelInfo

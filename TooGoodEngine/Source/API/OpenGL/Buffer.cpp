@@ -119,5 +119,9 @@ namespace TooGoodEngine {
 		{
 			glBindBufferBase((GLenum)type, index, m_BufferHandle);
 		}
+		void Buffer::BindRange(uint32_t index, BufferType type, size_t size)
+		{
+			glBindBufferRange((GLenum)type, (GLuint)index, m_BufferHandle, 0, (GLsizeiptr)size);
+		}
 	}
 }

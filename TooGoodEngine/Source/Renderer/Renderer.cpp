@@ -96,17 +96,7 @@ namespace TooGoodEngine {
 
 	void Renderer::ChangeSettings(const RenderSettings& settings)
 	{
-		if (settings.Bloom != m_Settings.Bloom)
-		{
-			m_Settings = settings;
-			_CreateTextures();
-			_CreateFramebuffers();
-		}
-		else
-		{
-			m_Settings = settings;
-		}
-
+		m_Settings = settings;
 		ApplySettings();
 	}
 
@@ -126,8 +116,6 @@ namespace TooGoodEngine {
 		m_Data.Materials.MappedData[id].MakeHandlesNonResident(); 
 		m_Data.Materials.MappedData[id] = material;
 		m_Data.Materials.MappedData[id].MakeHandlesResident();
-
-		m_Data.Materials.Buffer.FlushMapRange();
 	}
 
 	void Renderer::Begin(Camera* camera)
@@ -163,10 +151,8 @@ namespace TooGoodEngine {
 	void Renderer::PlacePointLight(const glm::vec3& position, const glm::vec4& color, float radius, float intensity)
 	{
 		PointLight light{};
-		light.Color = color;
-		light.Position = glm::vec4(position, 1.0f);
-		light.Radius = radius;
-		light.Intensity = intensity;
+		light.ColorAndRadius = glm::vec4(color.r, color.g, color.b, radius);
+		light.PositionAndIntensity = glm::vec4(position, intensity);
 
 		auto& currentBuffer = m_Data.PointLights.Buffers[m_Data.PointLights.BufferIndex];
 
@@ -184,8 +170,7 @@ namespace TooGoodEngine {
 	{
 		DirectionalLight light{};
 		light.Color = color;
-		light.Direction = glm::vec4(direction, 1.0f);
-		light.Intensity = intensity;
+		light.DirectionAndIntensity = glm::vec4(direction, intensity);
 
 		auto& currentBuffer = m_Data.DirectionalLights.Buffers[m_Data.DirectionalLights.BufferIndex];
 
@@ -269,6 +254,9 @@ namespace TooGoodEngine {
 
 		for (auto& instanceBuffer : m_Data.GeometryList)
 		{
+			if (instanceBuffer.GetInstanceCount() == 0)
+				continue;
+
 			instanceBuffer.BeginBatch(0);
 			m_Data.Materials.Buffer.BindBase(1, OpenGL::BufferTypeShaderStorage);
 			m_Data.PointLights.Buffers[m_Data.PointLights.BufferIndex].BindBase(2, OpenGL::BufferTypeShaderStorage);
@@ -325,6 +313,27 @@ namespace TooGoodEngine {
 		if (!m_Settings.Bloom)
 			return;
 
+		{
+			OpenGL::Framebuffer::BlitInfo info{};
+			info.Source = &m_Data.FinalImageFramebuffer;
+			info.Destination = &m_Data.BloomFramebuffer;
+			info.SourceTexture = m_Data.FinalImageTexture.get();
+			info.DestinationTexture = m_Data.BloomTexture.get();
+			info.SourceWidth = m_Settings.ViewportWidth;	
+			info.SourceHeight = m_Settings.ViewportHeight;
+			info.DestinationWidth = m_Settings.ViewportWidth;
+			info.DestinationHeight = m_Settings.ViewportHeight;
+			info.SourceIndex = 0;
+			info.DestinationIndex = 0;
+			info.SourceLayer = 0;
+			info.DestinationLayer = 0;
+			info.SourceMipLevel = 0;
+			info.DestinationMipLevel = 0;
+
+			OpenGL::Framebuffer::BlitColorAttachment(info);
+		}
+
+
 		m_Data.BloomPass.Use();
 
 		uint32_t width  = m_Settings.ViewportWidth;
@@ -356,8 +365,8 @@ namespace TooGoodEngine {
 			m_Data.BloomPass.SetUniform("u_Source", 0);
 			m_Data.BloomPass.SetUniform("u_Destination", 1);
 
-			m_Data.FinalImageTexture->Bind(0);
-			m_Data.FinalImageTexture->BindImage(1, destination, 0, false);
+			m_Data.BloomTexture->Bind(0);
+			m_Data.BloomTexture->BindImage(1, destination, 0, false);
 
 			glDispatchCompute((GLuint)groupX, (GLuint)groupY, 1);
 			glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
@@ -392,11 +401,32 @@ namespace TooGoodEngine {
 			m_Data.BloomPass.SetUniform("u_Intensity", m_Settings.Intensity);
 			m_Data.BloomPass.SetUniform("u_FilterRadius", m_Settings.FilterRadius);
 
-			m_Data.FinalImageTexture->Bind(0);
-			m_Data.FinalImageTexture->BindImage(1, destination, 0, false);
+			m_Data.BloomTexture->Bind(0);
+			m_Data.BloomTexture->BindImage(1, destination, 0, false);
 
 			glDispatchCompute((GLuint)groupX, (GLuint)groupY, 1);
 			glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
+		}
+
+
+		{
+			OpenGL::Framebuffer::BlitInfo info{};
+			info.Source = &m_Data.BloomFramebuffer;
+			info.Destination = &m_Data.FinalImageFramebuffer;
+			info.SourceTexture = m_Data.BloomTexture.get();
+			info.DestinationTexture = m_Data.FinalImageTexture.get();
+			info.SourceWidth = m_Settings.ViewportWidth;
+			info.SourceHeight = m_Settings.ViewportHeight;
+			info.DestinationWidth = m_Settings.ViewportWidth;
+			info.DestinationHeight = m_Settings.ViewportHeight;
+			info.SourceIndex = 0;
+			info.DestinationIndex = 0;
+			info.SourceLayer = 0;
+			info.DestinationLayer = 0;
+			info.SourceMipLevel = 0;
+			info.DestinationMipLevel = 0;
+
+			OpenGL::Framebuffer::BlitColorAttachment(info);
 		}
 
 	}
@@ -405,7 +435,6 @@ namespace TooGoodEngine {
 	{
 		m_Data.FinalPass.Use();
 		m_Data.FinalImageTexture->BindImage(0, 0, 0, false);
-		m_Data.FinalPass.SetUniform("u_FinalImage", 0);
 		m_Data.FinalPass.SetUniform("u_Gradient", m_Settings.Gradient);
 
 		glDispatchCompute((GLuint)std::ceil((float)m_Settings.ViewportWidth  / 8.0f), 
@@ -491,10 +520,9 @@ namespace TooGoodEngine {
 				OpenGL::BufferOptionMapWrite;
 
 
-			m_Data.Materials.MapFlags = OpenGL::BufferOptionMapCoherient | 
-										OpenGL::BufferOptionMapPersistent | 
-										OpenGL::BufferOptionMapWrite | 
-										OpenGL::BufferOptionMapFlushExplicit;
+			m_Data.Materials.MapFlags = OpenGL::BufferOptionMapCoherient |
+				OpenGL::BufferOptionMapPersistent |
+				OpenGL::BufferOptionMapWrite;
 
 			m_Data.Materials.Buffer = OpenGL::Buffer(bufferInfo);
 			m_Data.Materials.MappedData = (Material*)m_Data.Materials.Buffer.MapRange(m_Data.Materials.MapFlags);
@@ -513,7 +541,8 @@ namespace TooGoodEngine {
 							   OpenGL::BufferOptionMapPersistent |
 							   OpenGL::BufferOptionMapWrite;
 
-			m_Data.PointLights.MapFlags = OpenGL::BufferOptionMapCoherient | OpenGL::BufferOptionMapPersistent | OpenGL::BufferOptionMapWrite;
+			m_Data.PointLights.MapFlags = OpenGL::BufferOptionMapCoherient |
+				OpenGL::BufferOptionMapPersistent | OpenGL::BufferOptionMapWrite;
 			
 			for (size_t i = 0; i < 3; i++)
 			{
@@ -535,7 +564,8 @@ namespace TooGoodEngine {
 							   OpenGL::BufferOptionMapPersistent |
 							   OpenGL::BufferOptionMapWrite;
 
-			m_Data.DirectionalLights.MapFlags = OpenGL::BufferOptionMapCoherient | OpenGL::BufferOptionMapPersistent | OpenGL::BufferOptionMapWrite;
+			m_Data.DirectionalLights.MapFlags = OpenGL::BufferOptionMapCoherient |
+				OpenGL::BufferOptionMapPersistent | OpenGL::BufferOptionMapWrite;
 
 			for (size_t i = 0; i < 3; i++)
 			{
@@ -691,11 +721,10 @@ namespace TooGoodEngine {
 				info.MipMapLevels = RenderData::BloomMipLevelCount;
 				info.Paramaters[OpenGL::TextureParamater::MinFilter] = OpenGL::TextureParamaterOption::MipMapLinear;
 			}
-			else
-			{
-				info.MipMapLevels = 1;
-				info.Paramaters[OpenGL::TextureParamater::MinFilter] = OpenGL::TextureParamaterOption::Linear;
-			}
+			
+			info.MipMapLevels = 1;
+			info.Paramaters[OpenGL::TextureParamater::MinFilter] = OpenGL::TextureParamaterOption::Linear;
+			
 
 			info.Paramaters[OpenGL::TextureParamater::MagFilter] = OpenGL::TextureParamaterOption::Linear;
 			info.Paramaters[OpenGL::TextureParamater::WrapModeS] = OpenGL::TextureParamaterOption::ClampToEdge;
@@ -704,6 +733,25 @@ namespace TooGoodEngine {
 			m_Data.FinalImageTexture.reset();
 			m_Data.FinalImageTexture = CreateRef<OpenGL::Texture2D>(info);
 		}
+
+		{
+
+			OpenGL::Texture2DInfo info{};
+			info.Type = OpenGL::Texture2DType::Texture;
+			info.Format = OpenGL::Texture2DFormat::RGBA32F;
+			info.Width = m_Settings.ViewportWidth;
+			info.Height = m_Settings.ViewportHeight;
+
+			info.MipMapLevels = RenderData::BloomMipLevelCount;
+			info.Paramaters[OpenGL::TextureParamater::MinFilter] = OpenGL::TextureParamaterOption::MipMapLinear;
+
+			info.Paramaters[OpenGL::TextureParamater::MagFilter] = OpenGL::TextureParamaterOption::Linear;
+			info.Paramaters[OpenGL::TextureParamater::WrapModeS] = OpenGL::TextureParamaterOption::ClampToEdge;
+			info.Paramaters[OpenGL::TextureParamater::WrapModeT] = OpenGL::TextureParamaterOption::ClampToEdge;
+
+			m_Data.BloomTexture.reset();
+			m_Data.BloomTexture = CreateRef<OpenGL::Texture2D>(info);
+		} 
 
 		{
 			OpenGL::Texture2DInfo info{};
@@ -731,6 +779,14 @@ namespace TooGoodEngine {
 
 			m_Data.FinalImageFramebuffer.~Framebuffer();
 			m_Data.FinalImageFramebuffer = OpenGL::Framebuffer(info);
+		}
+
+		{
+			OpenGL::FramebufferInfo info{};
+			info.ColorAttachments.push_back(m_Data.BloomTexture.get());
+
+			m_Data.BloomFramebuffer.~Framebuffer();
+			m_Data.BloomFramebuffer = OpenGL::Framebuffer(info);
 		}
 	}
 

@@ -91,8 +91,6 @@ namespace GoodEditor {
 			return;
 		}
 
-		ImGui::DockSpaceOverViewport();
-		
 		if (m_PreviousWindowSize.x != ImGui::GetWindowSize().x || m_PreviousWindowSize.y != ImGui::GetWindowSize().y)
 		{
 			ViewportResizeEvent event((uint32_t)ImGui::GetWindowSize().x, (uint32_t)ImGui::GetWindowSize().y);
@@ -100,14 +98,17 @@ namespace GoodEditor {
 
 			m_PreviousWindowSize = ImGui::GetWindowSize();
 		}
+
+
+		ImGui::DockSpaceOverViewport();
 		
-		auto& image = currentSceneRenderer->GetImage();
-
-		_RenderViewport(image);
-
 		AssetPanel::DrawPanel(m_ExtensionMap);
 		ScenePanel::DrawPanel();
 		StatisticsPanel::DrawPanel();
+
+		auto& image = currentSceneRenderer->GetImage();
+
+		_RenderViewport(image);
 	}
 	void Editor::OnEvent(Event* event)
 	{
