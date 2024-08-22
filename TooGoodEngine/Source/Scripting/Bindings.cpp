@@ -540,7 +540,6 @@ namespace TooGoodEngine {
 	{
 	}
 
-	//TODO: future me, make sure to copy this somewhere in python
 	enum class InternalMaterialAttribute
 	{
 		None = 0, Ambient, Albedo, AlbedoFactor, Metallic, MetallicFactor,
