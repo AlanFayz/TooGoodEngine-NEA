@@ -84,7 +84,6 @@ namespace TooGoodEngine {
 		}
 
 		info.AlbedoTexture = _LoadImageFromAiMaterial(material, aiTextureType_DIFFUSE, 0);
-		info.AlbedoFactor = 1.0f;
 
 		if (!info.AlbedoTexture)
 		{
@@ -105,9 +104,8 @@ namespace TooGoodEngine {
 		
 
 		info.MetallicTexture = _LoadImageFromAiMaterial(material, aiTextureType_METALNESS, 0);
-		info.MetallicFactor = 1.0f;
 
-		if (!info.MetallicFactor)
+		if (!info.MetallicTexture)
 		{
 			aiColor4D aiMetallic;
 			material->Get(AI_MATKEY_METALLIC_FACTOR, aiMetallic);

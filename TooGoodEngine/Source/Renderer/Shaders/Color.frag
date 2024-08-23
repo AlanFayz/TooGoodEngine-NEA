@@ -16,8 +16,7 @@ struct MaterialAttribute
 {
 	vec4  Component;
 	uvec4 RefToImage; //(ignore)
-	uvec2 BindlessSampler;
-	int   Type;
+	uvec4 BindlessSamplerAndType;
 };
 
 struct Material 
@@ -28,18 +27,17 @@ struct Material
 	MaterialAttribute Emission;
 	MaterialAttribute Roughness;
 
-	float AlbedoFactor;  
-	float MetallicFactor;
-	float EmissionFactor;
+	vec4 EmissionFactor;
 };
 
 struct MaterialData
 {
 	vec4  Ambient;
 	vec4  Albedo;
-	vec4  Metallic;
 	vec4  Emission;
-	float Roughness;
+
+	float  Metallic;
+	float  Roughness;
 };
 
 struct PointLight
@@ -73,28 +71,28 @@ MaterialData FetchMaterialData(in Material material, in vec2 textureCoordinate)
 {
 	MaterialData data;
 
-	if(material.Ambient.Type == MATERIAL_TYPE_IMAGE) 
-		data.Ambient = texture(sampler2D(material.Ambient.BindlessSampler), textureCoordinate) * material.Ambient.Component;
+	if(material.Ambient.BindlessSamplerAndType.a == MATERIAL_TYPE_IMAGE) 
+		data.Ambient = texture(sampler2D(material.Ambient.BindlessSamplerAndType.xy), textureCoordinate) * material.Ambient.Component;
 	else 
 		data.Ambient = material.Ambient.Component;
 
-	if(material.Albedo.Type == MATERIAL_TYPE_IMAGE)
-		data.Albedo = texture(sampler2D(material.Albedo.BindlessSampler), textureCoordinate) * material.Albedo.Component * material.AlbedoFactor;
+	if(material.Albedo.BindlessSamplerAndType.a == MATERIAL_TYPE_IMAGE)
+		data.Albedo = texture(sampler2D(material.Albedo.BindlessSamplerAndType.xy), textureCoordinate) * material.Albedo.Component;
 	else 
-		data.Albedo = material.Albedo.Component * material.AlbedoFactor;
+		data.Albedo = material.Albedo.Component;
 
-	if(material.Metallic.Type == MATERIAL_TYPE_IMAGE)
-		data.Metallic = texture(sampler2D(material.Metallic.BindlessSampler), textureCoordinate) * material.Metallic.Component * material.MetallicFactor;
+	if(material.Metallic.BindlessSamplerAndType.a == MATERIAL_TYPE_IMAGE)
+		data.Metallic = texture(sampler2D(material.Metallic.BindlessSamplerAndType.xy), textureCoordinate).r * material.Metallic.Component.r;
 	else   
-		data.Metallic = material.Metallic.Component * material.MetallicFactor;
+		data.Metallic = material.Metallic.Component.r;
 
-	if(material.Emission.Type == MATERIAL_TYPE_IMAGE)
-		data.Emission = texture(sampler2D(material.Emission.BindlessSampler), textureCoordinate) * material.Emission.Component * material.EmissionFactor;
+	if(material.Emission.BindlessSamplerAndType.a == MATERIAL_TYPE_IMAGE)
+		data.Emission = texture(sampler2D(material.Emission.BindlessSamplerAndType.xy), textureCoordinate) * material.Emission.Component * material.EmissionFactor.r;
 	else 
-		data.Emission = material.Emission.Component * material.EmissionFactor;
+		data.Emission = material.Emission.Component * material.EmissionFactor.r;
 
-	if(material.Roughness.Type == MATERIAL_TYPE_IMAGE)
-		data.Roughness = texture(sampler2D(material.Albedo.BindlessSampler), textureCoordinate).r * material.Roughness.Component.r;
+	if(material.Roughness.BindlessSamplerAndType.a == MATERIAL_TYPE_IMAGE)
+		data.Roughness = texture(sampler2D(material.Albedo.BindlessSamplerAndType.xy), textureCoordinate).r * material.Roughness.Component.r;
 	else 
 		data.Roughness = material.Roughness.Component.r;
 
@@ -130,8 +128,8 @@ float GeometryGGX(float NdotX, float roughness)
 {
 	float k = (roughness * roughness)/2.0;
 	
-	float Denom = NdotX * (1.0 - k) + k;
-	return NdotX / max(Denom, EPSILON);
+	float denom = NdotX * (1.0 - k) + k;
+	return NdotX / max(denom, EPSILON);
 }
 
 float GeometryFun(float NdotV, float NdotL, float roughness)
@@ -141,12 +139,12 @@ float GeometryFun(float NdotV, float NdotL, float roughness)
 
 /*
 	the fresnel equation dictates how much reflection there is based on
-	the view angle.
+	the viewing angle.
 */
 
-vec4 FresnelApproximation(float NdotL, vec4 reflectivity)
+vec4 FresnelApproximation(float VdotH, vec4 reflectivity)
 {
-	return reflectivity + (1.0 - reflectivity) * pow(clamp(1.0 - NdotL, 0.0, 1.0), 5.0);
+	return reflectivity + (1.0 - reflectivity) * pow(clamp(1.0 - VdotH, 0.0, 1.0), 5.0);
 }
 
 float Attenuate(float radius, float dist)
@@ -186,8 +184,8 @@ vec4 Shade(in ShadeInfo info)
 	vec4 F0 = vec4(0.04); 
 	F0  = mix(F0, info.Data.Albedo, info.Data.Metallic);
 
-	vec4 ks = FresnelApproximation(NdotL, F0);
-	vec4 kd = (vec4(1.0) - ks) * (vec4(1.0) - info.Data.Metallic);
+	vec4 ks = FresnelApproximation(VdotH, F0);
+	vec4 kd = (vec4(1.0) - ks) * (1.0 - info.Data.Metallic);
 
 	vec3 cookTorranceNum =  DistributionGGX(NdotH, info.Data.Roughness)    *
 							GeometryFun(NdotV, NdotL, info.Data.Roughness)  *
@@ -234,10 +232,10 @@ void main()
 
 	for(int i = 0; i < u_PointLightSize; i++)
 	{
-		float radius = PointLights.Data[i].ColorAndRadius.a;
+		float radius    = PointLights.Data[i].ColorAndRadius.a;
 		float intensity = PointLights.Data[i].PositionAndIntensity.a;
-		vec3 position = PointLights.Data[i].PositionAndIntensity.rgb;
-		vec3 color = PointLights.Data[i].ColorAndRadius.rgb;
+		vec3 position   = PointLights.Data[i].PositionAndIntensity.rgb;
+		vec3 color      = PointLights.Data[i].ColorAndRadius.rgb;
 
 		float attenuation = Attenuate(radius, distance(position, o_WorldPosition));
 		if(attenuation <= 0.0)

@@ -24,7 +24,6 @@ namespace TooGoodEngine {
 		inline const std::vector<Geometry>& GetData() const { return m_GeometryData; }
 
 		virtual const AssetType GetAssetType() const { return AssetType::Model; };
-		static  const AssetType GetStaticAssetType() { return AssetType::Model; }
 
 		static Ref<Model> LoadModelAssetFromFile(const std::filesystem::path& path);
 

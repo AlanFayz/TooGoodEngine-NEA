@@ -22,7 +22,6 @@ namespace TooGoodEngine {
 		inline OpenGL::Texture2D& GetTexture() { return m_Texture; }
 
 		virtual const AssetType GetAssetType() const { return AssetType::EnvironmentMap; }
-		static  const AssetType GetStaticAssetType() { return AssetType::EnvironmentMap; }
 
 		//this will be taken in as an equirectanglar image (.hdr)
 		static Ref<EnvironmentMap> LoadEnviromentMapAssetFromFile(const std::filesystem::path& path);

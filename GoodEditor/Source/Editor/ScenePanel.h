@@ -34,7 +34,7 @@ namespace GoodEditor {
 		static void _DrawComponent(OrthographicCameraComponent& component);
 
 		static bool _DrawMaterialAttribute(const char* name, glm::vec4& attribute, Ref<Image>& image);
-		static bool _DrawMaterialRoughness(float& roughness, Ref<Image>& image);
+		static bool _DrawMaterialSingle(const char* name, float& value, Ref<Image>& image);
 	private:
 		static int m_IDCount;
 		static int m_ColorEditFlags;

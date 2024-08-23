@@ -15,7 +15,6 @@ namespace TooGoodEngine {
 		~Script() = default;
 
 		virtual const AssetType GetAssetType() const { return AssetType::Script; }
-		static  const AssetType GetStaticAssetType() { return AssetType::Script; }
 
 		static Ref<Script> LoadScriptAssetFromFile(const std::filesystem::path& path);
 	};

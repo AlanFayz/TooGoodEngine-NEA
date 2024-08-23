@@ -542,7 +542,7 @@ namespace TooGoodEngine {
 
 	enum class InternalMaterialAttribute
 	{
-		None = 0, Ambient, Albedo, AlbedoFactor, Metallic, MetallicFactor,
+		None = 0, Ambient, Albedo, Metallic,
 		Emission, EmissionFactor, Roughness
 	};
 
@@ -574,9 +574,7 @@ namespace TooGoodEngine {
 			case  InternalMaterialAttribute::Albedo:		 component.Material.Albedo.Component    = { r, g, b, a }; break;
 			case  InternalMaterialAttribute::Metallic:	     component.Material.Metallic.Component  = { r, g, b, a }; break;
 			case  InternalMaterialAttribute::Emission:		 component.Material.Emission.Component  = { r, g, b, a }; break;
-			case  InternalMaterialAttribute::Roughness:	     component.Material.Roughness.Component = { r, g, b, a }; break; //only r is used
-			case  InternalMaterialAttribute::AlbedoFactor:   component.Material.AlbedoFactor = r;    break;
-			case  InternalMaterialAttribute::MetallicFactor: component.Material.MetallicFactor = r;  break;
+			case  InternalMaterialAttribute::Roughness:	     component.Material.Roughness.Component = { r, g, b, a }; break; 
 			case  InternalMaterialAttribute::EmissionFactor: component.Material.EmissionFactor = r;  break;
 			case  InternalMaterialAttribute::None:
 			default:
@@ -635,11 +633,8 @@ namespace TooGoodEngine {
 
 			break;
 		case  InternalMaterialAttribute::Metallic:	     
-			
+
 			pyR = PyFloat_FromDouble(component.Material.Metallic.Component.r);
-			pyG = PyFloat_FromDouble(component.Material.Metallic.Component.g);
-			pyB = PyFloat_FromDouble(component.Material.Metallic.Component.b);
-			pyA = PyFloat_FromDouble(component.Material.Metallic.Component.a);
 
 			break;
 
@@ -657,16 +652,6 @@ namespace TooGoodEngine {
 			pyR = PyFloat_FromDouble(component.Material.Roughness.Component.r);
 
 			break; 
-		case  InternalMaterialAttribute::AlbedoFactor:   
-			
-			pyR = PyFloat_FromDouble(component.Material.AlbedoFactor);
-
-			break;
-		case  InternalMaterialAttribute::MetallicFactor: 
-
-			pyR = PyFloat_FromDouble(component.Material.MetallicFactor);
-
-			break;
 		case  InternalMaterialAttribute::EmissionFactor: 
 
 			pyR = PyFloat_FromDouble(component.Material.EmissionFactor);

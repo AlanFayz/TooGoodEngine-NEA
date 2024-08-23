@@ -32,8 +32,6 @@ namespace TooGoodEngine {
 
 		material.Albedo.Component = info.Albedo;
 
-		material.AlbedoFactor = info.AlbedoFactor;
-
 		if (info.MetallicTexture)
 		{
 			material.Metallic.Type = MaterialType::Image;
@@ -47,8 +45,6 @@ namespace TooGoodEngine {
 	
 		material.Metallic.Component = info.Metallic;
 		
-		material.MetallicFactor = info.MetallicFactor;
-
 		if (info.EmissionTexture)
 		{
 			material.Emission.Type = MaterialType::Image;

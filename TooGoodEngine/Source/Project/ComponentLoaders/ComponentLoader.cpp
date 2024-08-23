@@ -129,8 +129,6 @@ namespace TooGoodEngine {
 			info.Albedo = { albedoCol[0], albedoCol[1], albedoCol[2], albedoCol[3] };
 		}
 
-		info.AlbedoFactor = jsonComponent["Albedo Factor"].get<float>();
-
 		//
 		// ---- Metallic ----
 		if (jsonComponent.contains("Metallic Image"))
@@ -140,11 +138,9 @@ namespace TooGoodEngine {
 		}
 
 		{
-			std::array<float, 4> metallicCol = jsonComponent["Metallic"].get<std::array<float, 4>>();
-			info.Metallic = { metallicCol[0], metallicCol[1], metallicCol[2], metallicCol[3] };
+			info.Metallic.x = jsonComponent["Metallic"].get<float>();
 		}
 
-		info.MetallicFactor = jsonComponent["Metallic Factor"].get<float>();
 
 		//
 		// ---- Emission ----

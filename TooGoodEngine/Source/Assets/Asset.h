@@ -28,12 +28,10 @@ namespace TooGoodEngine {
 
 		virtual ~Asset() = default;
 		virtual const AssetType GetAssetType() const = 0;
-		//static const AssetType GetStaticAssetType() 
 		 
 		inline const std::filesystem::path& GetPath() const { return m_Path; }
 		inline const UUID GetAssetID() const { return m_UUID; }
 
-		//TODO: add asset meta data instead of std::filesystem::path
 		static Ref<Asset> LoadAssetFromFile(AssetType type, const std::filesystem::path& path);
 
 	private:

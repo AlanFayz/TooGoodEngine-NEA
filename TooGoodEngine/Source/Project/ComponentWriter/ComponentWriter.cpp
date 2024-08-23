@@ -82,11 +82,6 @@ namespace TooGoodEngine {
 			std::array<float, 4> attribute = { color[0], color[1], color[2], color[3] };
 			writer.WriteGeneric(path, attribute);
 		}
-		
-
-		path = entityPath;
-		path.insert(path.end(), { "Material", "Albedo Factor" });
-		writer.WriteGeneric(path, component.Material.AlbedoFactor);
 
 		path = entityPath;
 
@@ -103,16 +98,10 @@ namespace TooGoodEngine {
 
 			path.insert(path.end(), { "Material", "Metallic" });
 			auto& color = component.Material.Metallic.Component;
-			std::array<float, 4> attribute = { color[0], color[1], color[2], color[3] };
-			writer.WriteGeneric(path, attribute);
+			writer.WriteGeneric(path, color[0]);
 		}
 	
 		
-
-		path = entityPath;
-		path.insert(path.end(), { "Material", "Metallic Factor" });
-		writer.WriteGeneric(path, component.Material.MetallicFactor);
-
 		path = entityPath;
 
 		//

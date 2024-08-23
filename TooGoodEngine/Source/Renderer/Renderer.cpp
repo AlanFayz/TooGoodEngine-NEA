@@ -603,10 +603,8 @@ namespace TooGoodEngine {
 			info.Ambient = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 
 			info.Albedo = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-			info.AlbedoFactor = 1.0f;
 
 			info.Metallic = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
-			info.MetallicFactor = 1.0f;
 
 			info.Emission = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
 			info.EmissionFactor = 0.0f;
@@ -689,10 +687,8 @@ namespace TooGoodEngine {
 			info.Ambient = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 
 			info.Albedo = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-			info.AlbedoFactor = 1.0f;
 
 			info.Metallic = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
-			info.MetallicFactor = 1.0f;
 
 			info.Emission = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
 			info.EmissionFactor = 0.0f;

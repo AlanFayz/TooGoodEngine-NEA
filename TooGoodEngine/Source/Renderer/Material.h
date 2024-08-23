@@ -9,7 +9,7 @@
 
 namespace TooGoodEngine {
 
-	enum class MaterialType
+	enum class MaterialType : uint32_t
 	{
 		None = 0, Image, Vector
 	};
@@ -19,6 +19,7 @@ namespace TooGoodEngine {
 		glm::vec4 Component;
 		Ref<Image> ImageComponent = nullptr; //simply here to keep a lifetime.
 		uint64_t  BindlessTextureHandle = 0; //uvec2 in the shader
+		uint32_t Padding = 0;
 		MaterialType Type;
 	};
 
@@ -30,9 +31,8 @@ namespace TooGoodEngine {
 		MaterialAttribute Emission;
 		MaterialAttribute Roughness;
 
-		float AlbedoFactor;  
-		float MetallicFactor;
 		float EmissionFactor;
+		glm::vec3 Padding;
  
 		void MakeHandlesResident() const;
 		void MakeHandlesNonResident() const;
@@ -46,11 +46,9 @@ namespace TooGoodEngine {
 
 		glm::vec4 Albedo;
 		Ref<Image> AlbedoTexture = nullptr;
-		float AlbedoFactor;
 
 		glm::vec4 Metallic;
 		Ref<Image> MetallicTexture = nullptr;
-		float MetallicFactor;
 
 		glm::vec4 Emission;
 		Ref<Image> EmissionTexture = nullptr;

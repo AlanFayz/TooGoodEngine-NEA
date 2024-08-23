@@ -43,12 +43,10 @@ class MaterialAttributeCode:
 	None_ = 0
 	Ambient = 1
 	Albedo = 2 
-	AlbedoFactor = 3
-	Metallic = 4
-	MetallicFactor = 5
-	Emission = 6
-	EmissionFactor = 7
-	Roughness = 8
+	Metallic = 3
+	Emission = 4
+	EmissionFactor = 5
+	Roughness = 6
 
 class Material:
 	def __init__(self, handle):

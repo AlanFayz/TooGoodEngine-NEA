@@ -15,7 +15,6 @@ namespace TooGoodEngine {
 		inline OpenGL::Texture2D& GetTexture() { return m_Texture; }
 
 		virtual const AssetType GetAssetType() const { return AssetType::Image;  }
-		static  const AssetType GetStaticAssetType() { return AssetType::Image; }
 
 		static Ref<Image> LoadImageAssetFromFile(const std::filesystem::path& path);
 

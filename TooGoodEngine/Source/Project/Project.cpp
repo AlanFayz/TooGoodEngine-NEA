@@ -75,7 +75,7 @@ namespace TooGoodEngine {
 		auto& registry = scene->GetRegistry();
 		auto  renderer = scene->GetSceneRenderer();
 
-		if (!jsonScene.contains("Entites"))
+		if (!jsonScene.contains("Entities"))
 			return scene;
 
 		auto& jsonEntities = jsonScene["Entities"];

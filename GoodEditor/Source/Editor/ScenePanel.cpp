@@ -10,7 +10,7 @@
 namespace GoodEditor {
 
 	int ScenePanel::m_IDCount = 0;
-	int ScenePanel::m_ColorEditFlags = ImGuiColorEditFlags_AlphaPreview | ImGuiColorEditFlags_NoInputs;
+	int ScenePanel::m_ColorEditFlags = ImGuiColorEditFlags_NoInputs;
 	EntityID ScenePanel::m_CurrentEntity = g_NullEntity;
 	bool ScenePanel::m_EntityNamePopup = false;
 
@@ -440,19 +440,13 @@ namespace GoodEditor {
 			if (_DrawMaterialAttribute("Albedo", component.Material.Albedo.Component, component.Material.Albedo.ImageComponent))
 				changed = true;
 
-			if (_DrawMaterialAttribute("Metallic", component.Material.Metallic.Component, component.Material.Metallic.ImageComponent))
-				changed = true;
-
 			if (_DrawMaterialAttribute("Emission", component.Material.Emission.Component, component.Material.Emission.ImageComponent))
 				changed = true;
 
-			if (_DrawMaterialRoughness(component.Material.Roughness.Component.x, component.Material.Roughness.ImageComponent))
+			if (_DrawMaterialSingle("Roughness", component.Material.Roughness.Component.x, component.Material.Roughness.ImageComponent))
 				changed = true;
 
-			if (ImGui::DragFloat("Albedo Factor", &component.Material.AlbedoFactor, 0.01f, 0.0f, FLT_MAX / 2))
-				changed = true;
-
-			if (ImGui::DragFloat("Metallic Factor", &component.Material.MetallicFactor, 0.01f, 0.0f, FLT_MAX / 2))
+			if (_DrawMaterialSingle("Metalness", component.Material.Metallic.Component.x, component.Material.Metallic.ImageComponent))
 				changed = true;
 
 			if (ImGui::DragFloat("Emission Factor", &component.Material.EmissionFactor, 0.1f, 0.0f, FLT_MAX / 2))
@@ -669,7 +663,7 @@ namespace GoodEditor {
 		std::string imageName = name;
 		imageName += " Image";
 
-		if (ImGui::ColorEdit4(name, glm::value_ptr(attribute), m_ColorEditFlags))
+		if (ImGui::ColorEdit3(name, glm::value_ptr(attribute), m_ColorEditFlags))
 			changed = true;
 
 		ImGui::PushID(m_IDCount++);
@@ -711,7 +705,7 @@ namespace GoodEditor {
 
 		return changed;
 	}
-	bool ScenePanel::_DrawMaterialRoughness(float& roughness, Ref<Image>& image)
+	bool ScenePanel::_DrawMaterialSingle(const char* name, float& value, Ref<Image>& image)
 	{
 		bool changed = false;
 
@@ -727,13 +721,14 @@ namespace GoodEditor {
 				changed = true;
 			}
 			ImGui::SameLine();
-			ImGui::Text("Roughness");
+			ImGui::Text(name);
 		}
 		else
 		{
+			std::string imgName = std::string(name) + " Image";
 			float col[] = { 0.0f, 0.0f, 0.0f, 0.0f };
-			ImGui::ColorEdit4("Roughness Image", col, m_ColorEditFlags |
-													  ImGuiColorEditFlags_NoPicker);
+			ImGui::ColorEdit4(imgName.c_str(), col, m_ColorEditFlags |
+													ImGuiColorEditFlags_NoPicker);
 		}
 
 		if (ImGui::BeginDragDropTarget())
@@ -750,7 +745,7 @@ namespace GoodEditor {
 
 		ImGui::PopID();
 
-		if (ImGui::DragFloat("Roughness", &roughness, 0.01f, 0.0f, 1.0f, "%.3f"))
+		if (ImGui::DragFloat(name, &value, 0.01f, 0.0f, 1.0f, "%.3f"))
 			changed = true;
 
 		return changed;
