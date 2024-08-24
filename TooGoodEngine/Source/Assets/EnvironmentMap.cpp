@@ -83,6 +83,10 @@ namespace TooGoodEngine {
 		if (failure)
 		{
 			TGE_LOG_ERROR("failed to load image ", path, " because ", failure);
+
+			if (imageData)
+				stbi_image_free(imageData);
+
 			return nullptr;
 		}
 
