@@ -18,6 +18,7 @@ namespace GoodEditor {
 	{
 		Ref<Scene> currentScene = g_SelectedProject->GetCurrentScene();
 		auto& registry = currentScene->GetRegistry();
+		auto renderer = currentScene->GetSceneRenderer();
 
 		std::unordered_set<EntityID> displayedEntities;
 		
@@ -59,10 +60,10 @@ namespace GoodEditor {
 					
 				if (ImGui::TreeNode(entity.GetName().c_str()))
 				{
-					if (!_EntityPopup(entity, *currentScene->GetSceneRenderer(), registry)) //returns true if entity has been deleted
+					if (!_EntityPopup(entity, *renderer, registry)) //returns true if entity has been deleted
 					{
-						_DrawEntity(entity, registry);
-						_DrawChildren(entity, registry, *currentScene->GetSceneRenderer(), displayedEntities); //recursively call
+						_DrawEntity(entity, registry, *renderer);
+						_DrawChildren(entity, registry, *renderer, displayedEntities); //recursively call
 					}
 					
 
@@ -134,7 +135,7 @@ namespace GoodEditor {
 			{
 				if (!_EntityPopup(childEntity, sceneRenderer, tree))
 				{
-					_DrawEntity(childEntity, tree);
+					_DrawEntity(childEntity, tree, sceneRenderer);
 					_DrawChildren(childEntity, tree, sceneRenderer, displayed);
 				}
 
@@ -142,7 +143,7 @@ namespace GoodEditor {
 			}
 		}
 	}
-	void ScenePanel::_DrawEntity(Entity& entity, EntityTree& tree)
+	void ScenePanel::_DrawEntity(Entity& entity, EntityTree& tree, Renderer& sceneRenderer)
 	{
 		if (ImGui::Button("Rename"))
 		{
@@ -151,31 +152,71 @@ namespace GoodEditor {
 		}
 
 		if (tree.HasComponent<TransformComponent>(entity))
+		{
 			_DrawComponent(tree.GetComponent<TransformComponent>(entity));
+			if (_DeleteComponentPopup("Transform Component"))
+				tree.RemoveComponent<TransformComponent>(entity);
+			
+		}
 
 		if (tree.HasComponent<MeshComponent>(entity))
+		{
 			_DrawComponent(tree.GetComponent<MeshComponent>(entity));
+			if (_DeleteComponentPopup("Mesh Component"))
+				tree.RemoveComponent<MeshComponent>(entity);
+		}
 
 		if (tree.HasComponent<MaterialComponent>(entity))
-			_DrawComponent(tree.GetComponent<MaterialComponent>(entity));
+		{
+			auto& component = tree.GetComponent<MaterialComponent>(entity);
+			_DrawComponent(component);
+			if (_DeleteComponentPopup("Material Component"))
+			{
+				sceneRenderer.ChangeMaterialData(component.ID, {}); //clearing the material
+				tree.RemoveComponent<MaterialComponent>(entity);
+			}
+		}
 
 		if (tree.HasComponent<PointLightComponent>(entity))
+		{
 			_DrawComponent(tree.GetComponent<PointLightComponent>(entity));
+			if (_DeleteComponentPopup("Point Light Component"))
+				tree.RemoveComponent<PointLightComponent>(entity);
+		}
 
 		if (tree.HasComponent<DirectionalLightComponent>(entity))
+		{
 			_DrawComponent(tree.GetComponent<DirectionalLightComponent>(entity));
-
+			if (_DeleteComponentPopup("Directional Light Component"))
+				tree.RemoveComponent<DirectionalLightComponent>(entity);
+		}
 		if (tree.HasComponent<ModelComponent>(entity))
+		{
 			_DrawComponent(tree.GetComponent<ModelComponent>(entity));
+			if (_DeleteComponentPopup("Model Component"))
+				tree.RemoveComponent<ModelComponent>(entity);
+		}
 
 		if (tree.HasComponent<ScriptComponent>(entity))
+		{
 			_DrawComponent(tree.GetComponent<ScriptComponent>(entity));
+			if (_DeleteComponentPopup("Script Component"))
+				tree.RemoveComponent<ScriptComponent>(entity);
+		}
 
 		if (tree.HasComponent<OrthographicCameraComponent>(entity))
+		{
 			_DrawComponent(tree.GetComponent<OrthographicCameraComponent>(entity));
+			if (_DeleteComponentPopup("Orthographic Camera Component"))
+				tree.RemoveComponent<OrthographicCameraComponent>(entity);
+		}
 
 		if (tree.HasComponent<PerspectiveCameraComponent>(entity))
+		{
 			_DrawComponent(tree.GetComponent<PerspectiveCameraComponent>(entity));
+			if (_DeleteComponentPopup("Perspective Camera Component"))
+				tree.RemoveComponent<PerspectiveCameraComponent>(entity);
+		}
 	}
 
 	bool ScenePanel::_EntityPopup(Entity& entity, Renderer& sceneRenderer, EntityTree& tree)
@@ -750,5 +791,20 @@ namespace GoodEditor {
 			changed = true;
 
 		return changed;
+	}
+	bool ScenePanel::_DeleteComponentPopup(const char* name)
+	{
+		bool shouldDelete = false;
+
+
+		if (ImGui::BeginPopupContextItem(name))
+		{
+			if (ImGui::MenuItem("Delete"))
+				shouldDelete = true;
+
+			ImGui::EndPopup();
+		}
+
+		return shouldDelete;
 	}
 }

@@ -89,8 +89,11 @@ namespace TooGoodEngine {
 		m_Sparse.erase(entity);
 		m_IndexToEntity.erase(index);
 
-		m_Sparse[last] = at;
-		m_IndexToEntity[at] = last;
+		if (index != at)
+		{
+			m_Sparse[last] = at;
+			m_IndexToEntity[at] = last;
+		}
 	}
 
 	template<typename Type>

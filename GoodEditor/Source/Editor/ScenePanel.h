@@ -19,7 +19,7 @@ namespace GoodEditor {
 								  std::unordered_set<EntityID>& displayed);
 
 
-		static void _DrawEntity(Entity& entity, EntityTree& tree);
+		static void _DrawEntity(Entity& entity, EntityTree& tree, Renderer& sceneRenderer);
 		static bool _EntityPopup(Entity& entity, Renderer& sceneRenderer, EntityTree& tree);
 		static void _DrawSettings(const Ref<Scene>& scene);
 		
@@ -35,6 +35,8 @@ namespace GoodEditor {
 
 		static bool _DrawMaterialAttribute(const char* name, glm::vec4& attribute, Ref<Image>& image);
 		static bool _DrawMaterialSingle(const char* name, float& value, Ref<Image>& image);
+
+		static bool _DeleteComponentPopup(const char* name);
 	private:
 		static int m_IDCount;
 		static int m_ColorEditFlags;
