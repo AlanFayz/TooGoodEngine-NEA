@@ -47,6 +47,14 @@ namespace TooGoodEngine {
 
 		while (m_Runnning)
 		{
+			m_Window.Update();
+
+			if (m_Window.GetWidth() == 0 || m_Window.GetHeight() == 0)
+			{
+				glfwWaitEvents();
+				continue;
+			}
+
 			TGE_PROFILE_SCOPE(Frame);
 
 			m_Timer.Start();
@@ -62,7 +70,6 @@ namespace TooGoodEngine {
 				_UpdateImGui(delta);
 			}
 
-			m_Window.Update();
 
 			delta = (double)m_Timer.EllapsedMilli();
 			delta /= 1000.0;

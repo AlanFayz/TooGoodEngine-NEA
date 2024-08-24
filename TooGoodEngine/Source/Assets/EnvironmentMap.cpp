@@ -80,13 +80,9 @@ namespace TooGoodEngine {
 		imageData = stbi_loadf(path.string().c_str(), &width, &height, &channels, desiredChannels);
 
 		const char* failure = stbi_failure_reason();
-		if (failure)
+		if (!imageData)
 		{
 			TGE_LOG_ERROR("failed to load image ", path, " because ", failure);
-
-			if (imageData)
-				stbi_image_free(imageData);
-
 			return nullptr;
 		}
 

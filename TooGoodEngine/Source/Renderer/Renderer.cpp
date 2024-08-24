@@ -29,7 +29,7 @@ namespace TooGoodEngine {
 
 	Renderer::~Renderer()
 	{
-		for (size_t i = 0; i <= m_Data.Materials.Size; i++)
+		for (size_t i = 0; i < m_Data.Materials.Size; i++)
 		{
 			m_Data.Materials.MappedData[i].MakeHandlesNonResident();
 			m_Data.Materials.MappedData[i].~Material();

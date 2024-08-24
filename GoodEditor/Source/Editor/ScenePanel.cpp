@@ -630,10 +630,10 @@ namespace GoodEditor {
 			if (ImGui::DragFloat("Right",  &component.data.Right, 0.01f, -FLT_MAX / 2.0, FLT_MAX / 2.0))
 				changed = true;
 
-			if (ImGui::DragFloat("Top", &component.data.Top, 0.01f, 0.01f, FLT_MAX / 2.0f))
+			if (ImGui::DragFloat("Top", &component.data.Top, 0.01f, -FLT_MAX / 2.0, FLT_MAX / 2.0f))
 				changed = true;
 
-			if (ImGui::DragFloat("Bottom", &component.data.Bottom, 0.01f, 0.01f, FLT_MAX / 2.0f))
+			if (ImGui::DragFloat("Bottom", &component.data.Bottom, 0.01f, -FLT_MAX / 2.0f, FLT_MAX / 2.0f))
 				changed = true;
 
 			if (ImGui::DragFloat3("Position", glm::value_ptr(component.data.Position), 0.01f, -FLT_MAX / 2.0f, FLT_MAX / 2.0f))
@@ -644,6 +644,7 @@ namespace GoodEditor {
 
 			if (ImGui::DragFloat3("Up", glm::value_ptr(component.data.Up), 0.01f, -FLT_MAX / 2.0f, FLT_MAX / 2.0f))
 				changed = true;
+
 
 			ImGui::Checkbox("Use", &component.InUse);
 

@@ -43,26 +43,26 @@ namespace TooGoodEngine {
 			return;
 		}
 
-		glm::vec3 Movement(0.0f);
+		glm::vec3 movement(0.0f);
 
 		if (WKeyDown)
-			Movement -= m_CameraSpeed * m_Camera->m_Up * (float)delta;
+			movement -= m_CameraSpeed * m_Camera->m_Up * (float)delta;
 		if (SKeyDown)
-			Movement += m_CameraSpeed * m_Camera->m_Up * (float)delta;
+			movement += m_CameraSpeed * m_Camera->m_Up * (float)delta;
 
-		const glm::vec3 Side = glm::normalize(glm::cross(m_Camera->m_Front, m_Camera->m_Up));
+		const glm::vec3 side = glm::normalize(glm::cross(m_Camera->m_Front, m_Camera->m_Up));
 
 		if (AKeyDown)
-			Movement += m_CameraSpeed * Side * (float)delta;
+			movement += m_CameraSpeed * side * (float)delta;
 		if (DKeyDown)
-			Movement -= m_CameraSpeed * Side * (float)delta;
+			movement -= m_CameraSpeed * side * (float)delta;
 
 		if (QKeyDown)
-			Movement -= m_CameraSpeed * m_Camera->m_Front * (float)delta;
+			movement -= m_CameraSpeed * m_Camera->m_Front * (float)delta;
 		if (EKeyDown)
-			Movement += m_CameraSpeed * m_Camera->m_Front * (float)delta;
+			movement += m_CameraSpeed * m_Camera->m_Front * (float)delta;
 
-		m_Camera->m_Position += Movement;
+		m_Camera->m_Position += movement;
 
 		m_Yaw += XDifference;
 		m_Pitch -= YDifference;
