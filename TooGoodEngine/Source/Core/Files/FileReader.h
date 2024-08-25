@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Core/Base.h"
-#include "ECS/MemoryAllocator.h"
+#include "Core/MemoryAllocator.h"
 
 #include <filesystem>
 #include <fstream>

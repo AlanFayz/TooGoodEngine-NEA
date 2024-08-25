@@ -130,7 +130,7 @@ namespace TooGoodEngine {
 
 		//using normal pointers here because the overhead with shared_ptr
 		//was too much (40% on the profiler)
-		//so just using new/delete keys normally. FIGHT ME. unique_ptrs ownership semantics
+		//so just using new/delete keys normally.unique_ptrs ownership semantics
 		//are too annoying to deal with as well and don't look clean.
 
 		SparseSet<Type>* bucket = new SparseSet<Type>();
