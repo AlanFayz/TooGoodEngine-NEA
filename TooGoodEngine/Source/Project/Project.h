@@ -14,7 +14,7 @@ namespace TooGoodEngine {
 		~Project();
 
 		void SaveState(bool optimized = false);
-		void Build();
+		void Build(const std::filesystem::path& runtimeDirectory);
 
 		Ref<Scene> LoadScene(const json& jsonScene, const std::string& name);
 		void LoadSceneSettings(Ref<Scene>& scene, const json& jsonScene);

@@ -1,8 +1,8 @@
 #include "ScenePanel.h"
 
-#include "ECS/Components/Components.h"
-#include "Assets/Script.h"
-#include "Scripting/ScriptingEngine.h"
+#include <ECS/Components/Components.h>
+#include <Assets/Script.h>
+#include <Scripting/ScriptingEngine.h>
 
 #include <imgui.h>
 #include <glm/gtc/type_ptr.hpp>

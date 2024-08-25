@@ -9,7 +9,6 @@ namespace TooGoodEngine {
 		Entity entity = __CreateEntity(name);
 
 		Node node{};
-		node.Name = entity.GetName();
 		node.Entity = entity;
 		node.ParentIndex = g_NullNode;
 
@@ -24,14 +23,13 @@ namespace TooGoodEngine {
 
 		if (index == g_NullNode)
 		{
-			//TGE_LOG_WARNING("parent not found adding entity without parent");
+			TGE_LOG_WARNING("parent not found adding entity without parent");
 			return Add(name);
 		}
 
 		Entity entity = __CreateEntity(name);
 
 		Node child{};
-		child.Name = entity.GetName();
 		child.Entity = entity;
 		child.ParentIndex = index;
 

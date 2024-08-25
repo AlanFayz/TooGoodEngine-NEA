@@ -65,9 +65,29 @@ namespace TooGoodEngine {
 		SaveAssets(writer);
 	}
 
-	void Project::Build()
+	void Project::Build(const std::filesystem::path& runtimeDirectory)
 	{
-		SaveState(true);
+		std::filesystem::copy(m_ProjectDirectory, runtimeDirectory, std::filesystem::copy_options::recursive | std::filesystem::copy_options::update_existing);
+
+		std::filesystem::path file = runtimeDirectory / (m_ProjectName + ".json");
+		JsonWriter writer(file, true); 
+
+		auto timePoint = std::chrono::system_clock::now();
+		std::time_t currentTime = std::chrono::system_clock::to_time_t(timePoint);
+		std::tm* nowTime = std::localtime(&currentTime);
+
+		std::stringstream timeStream;
+		timeStream << std::put_time(nowTime, "%Y-%m-%d %H:%M:%S");
+
+		writer.WriteGeneric({ "Project Name" },      m_ProjectName);
+		writer.WriteGeneric({ "Project Directory" }, runtimeDirectory);
+		writer.WriteGeneric({ "Asset Directory" },   runtimeDirectory / "Assets");
+		writer.WriteGeneric({ "Last Build Date" },   timeStream.str());
+
+		for (const auto& scene : m_LoadedScenes)
+			SaveScene(writer, scene);
+
+		SaveAssets(writer);
 	}
 
 	Ref<Scene> Project::LoadScene(const json& jsonScene, const std::string& name)

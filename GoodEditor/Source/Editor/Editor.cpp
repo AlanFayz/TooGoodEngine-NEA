@@ -127,7 +127,18 @@ namespace GoodEditor {
 
 			if (ImGui::MenuItem("Build"))
 			{
-				g_SelectedProject->Build();
+				try
+				{
+					std::filesystem::path directory = FileDialog::GetDirectoryFromDialog();
+
+					if (!directory.empty() && std::filesystem::exists(directory))
+						g_SelectedProject->Build(directory);
+				}
+				catch (const std::exception& e)
+				{
+					TGE_LOG_INFO("failed to build ", e.what());
+				}
+				
 			}
 
 

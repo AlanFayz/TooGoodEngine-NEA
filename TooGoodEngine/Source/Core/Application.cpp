@@ -60,14 +60,13 @@ namespace TooGoodEngine {
 			m_Timer.Start();
 
 			{
-				TGE_PROFILE_SCOPE(UpdateLayers);
-				m_LayerStack.OnUpdateLayers(delta);
-			}
-
-
-			{
 				TGE_PROFILE_SCOPE(UpdateGui);
 				_UpdateImGui(delta);
+			}
+
+			{
+				TGE_PROFILE_SCOPE(UpdateLayers);
+				m_LayerStack.OnUpdateLayers(delta);
 			}
 
 

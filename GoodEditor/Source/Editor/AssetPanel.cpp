@@ -1,7 +1,8 @@
 #include "AssetPanel.h"
 
 #include "FileDialogs/FileDialog.h"
-#include "Assets/Script.h"
+
+#include <Assets/Script.h>
 
 namespace GoodEditor {
 

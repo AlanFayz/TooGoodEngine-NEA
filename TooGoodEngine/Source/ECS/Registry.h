@@ -128,7 +128,11 @@ namespace TooGoodEngine {
 		if (it != m_BucketStorage.end())
 			return (SparseSet<Type>*)(it->second);
 
-		//create bucket storage of that type and assign it to the type_index
+		//using normal pointers here because the overhead with shared_ptr
+		//was too much (40% on the profiler)
+		//so just using new/delete keys normally. FIGHT ME. unique_ptrs ownership semantics
+		//are too annoying to deal with as well and don't look clean.
+
 		SparseSet<Type>* bucket = new SparseSet<Type>();
 		m_BucketStorage[typeID] = bucket;
 		return bucket;
