@@ -15,6 +15,15 @@ namespace TooGoodEngine {
 		void Update(double delta);
 		void SetCamera(const Ref<PerspectiveCamera>& newCamera);
 
+		void SetFov(float fov);
+		void SetAspectRatio(float aspectRatio);
+		void SetNear(float near);
+		void SetFar(float far);
+
+		void UpdatePosition(const glm::vec3& position);
+		void UpdateFront(const glm::vec3& front);
+		void UpdateUp(const glm::vec3& up);
+
 	private:
 		Ref<PerspectiveCamera> m_Camera;
 

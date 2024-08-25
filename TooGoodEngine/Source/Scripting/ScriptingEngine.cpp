@@ -13,6 +13,8 @@ namespace TooGoodEngine {
 
 		//
 		// ---- Python initalization ----
+		//
+
 		Py_Initialize();
 
 		std::filesystem::path currentDirectory = path;
@@ -97,8 +99,18 @@ namespace TooGoodEngine {
 		s_Data->MethodDefinitions[42] = { "internal_update_up_orthographic_camera_controller",		 PythonBindings::InternalUpdateUpOrthographicCameraController,	    METH_VARARGS, "internal" };
 		s_Data->MethodDefinitions[43] = { "internal_update_front_orthographic_camera_controller",	 PythonBindings::InternalUpdateFrontOrthographicCameraController,   METH_VARARGS, "internal" };
 
+		s_Data->MethodDefinitions[44] = { "internal_create_perspective_camera_controller",	 PythonBindings::InternalCreatePerpsectiveCameraController,   METH_VARARGS, "internal" };
+		s_Data->MethodDefinitions[45] = { "internal_set_fov_perspective_camera_controller",	 PythonBindings::InternalSetFovPerspectiveCameraController,   METH_VARARGS, "internal" };
+		s_Data->MethodDefinitions[46] = { "internal_set_aspect_ratio_perspective_camera_controller",	 PythonBindings::InternalSetAspectRatioPerpspectiveCameraController,   METH_VARARGS, "internal" };
+		s_Data->MethodDefinitions[47] = { "internal_set_near_perspective_camera_controller",	 PythonBindings::InternalSetNearPerspectiveCameraController,   METH_VARARGS, "internal" };
+		s_Data->MethodDefinitions[48] = { "internal_set_far_perspective_camera_controller",	 PythonBindings::InternalSetFarPerspectiveCameraController,   METH_VARARGS, "internal" };
+		s_Data->MethodDefinitions[49] = { "internal_update_position_perspective_camera_controller",	 PythonBindings::InternalUpdatePositionPerspectiveCameraController,   METH_VARARGS, "internal" };
+		s_Data->MethodDefinitions[50] = { "internal_update_up_perspective_camera_controller",	 PythonBindings::InternalUpdateUpPerspectiveCameraController,   METH_VARARGS, "internal" };
+		s_Data->MethodDefinitions[51] = { "internal_update_front_perspective_camera_controller",	 PythonBindings::InternalUpdateFrontPerspectiveCameraController,   METH_VARARGS, "internal" };
+
+
 		// ---- END ----
-		s_Data->MethodDefinitions[49] = { nullptr, nullptr, 0, nullptr };
+		s_Data->MethodDefinitions[52] = { nullptr, nullptr, 0, nullptr };
 		
 		s_Data->EngineModuleDefinition.m_base    = PyModuleDef_HEAD_INIT;
 		s_Data->EngineModuleDefinition.m_name    = "TooGoodEngine";

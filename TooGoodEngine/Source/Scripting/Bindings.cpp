@@ -997,4 +997,145 @@ namespace TooGoodEngine {
 		container->UpdateFront(glm::vec3(x, y, z));
 		return Py_None;
 	}
+	
+	
+	void PythonBindings::InternalCleanPerspectiveCameraController(PyObject* capsule)
+	{
+		PerspectiveCameraController* container = (PerspectiveCameraController*)(PyCapsule_GetPointer(capsule, "InternalPerspectiveCameraController"));
+
+		if (container)
+			delete container;
+	}
+
+	PyObject* PythonBindings::InternalCreatePerpsectiveCameraController(PyObject* self, PyObject* args)
+	{
+		PyObject* capsule = nullptr;
+
+		if (!PyArg_ParseTuple(args, "O", &capsule))
+			return nullptr;
+
+		Entity* container = (Entity*)(PyCapsule_GetPointer(capsule, "InternalEntity"));
+		auto& registry = g_SelectedProject->GetCurrentScene()->GetRegistry();
+
+		if (!container || !*container || !registry.HasComponent<PerspectiveCameraComponent>(*container))
+			return nullptr;
+
+		auto& component = registry.GetComponent<PerspectiveCameraComponent>(*container);
+
+		PerspectiveCameraController* cameraControllerContainer = new PerspectiveCameraController(component.Camera);
+		return PyCapsule_New(cameraControllerContainer, "InternalPerspectiveCameraController", InternalCleanPerspectiveCameraController);
+	}
+	
+	PyObject* PythonBindings::InternalSetFovPerspectiveCameraController(PyObject* self, PyObject* args)
+	{
+		PyObject* capsule = nullptr;
+		float fov = 0.0f;
+
+		if (!PyArg_ParseTuple(args, "Of", &capsule, &fov))
+			return nullptr;
+
+		PerspectiveCameraController* container = (PerspectiveCameraController*)(PyCapsule_GetPointer(capsule, "InternalPerspectiveCameraController"));
+
+		if (!container)
+			return nullptr;
+
+		container->SetFov(fov);
+		return Py_None;
+	}
+	PyObject* PythonBindings::InternalSetAspectRatioPerpspectiveCameraController(PyObject* self, PyObject* args)
+	{
+		PyObject* capsule = nullptr;
+		float aspectRatio = 0.0f;
+
+		if (!PyArg_ParseTuple(args, "Of", &capsule, &aspectRatio))
+			return nullptr;
+
+		PerspectiveCameraController* container = (PerspectiveCameraController*)(PyCapsule_GetPointer(capsule, "InternalPerspectiveCameraController"));
+
+		if (!container)
+			return nullptr;
+
+		container->SetAspectRatio(aspectRatio);
+		return Py_None;
+	}
+	PyObject* PythonBindings::InternalSetNearPerspectiveCameraController(PyObject* self, PyObject* args)
+	{
+		PyObject* capsule = nullptr;
+		float near = 0.0f;
+
+		if (!PyArg_ParseTuple(args, "Of", &capsule, &near))
+			return nullptr;
+
+		PerspectiveCameraController* container = (PerspectiveCameraController*)(PyCapsule_GetPointer(capsule, "InternalPerspectiveCameraController"));
+
+		if (!container)
+			return nullptr;
+
+		container->SetNear(near);
+		return Py_None;
+	}
+	PyObject* PythonBindings::InternalSetFarPerspectiveCameraController(PyObject* self, PyObject* args)
+	{
+		PyObject* capsule = nullptr;
+		float far = 0.0f;
+
+		if (!PyArg_ParseTuple(args, "Of", &capsule, &far))
+			return nullptr;
+
+		PerspectiveCameraController* container = (PerspectiveCameraController*)(PyCapsule_GetPointer(capsule, "InternalPerspectiveCameraController"));
+
+		if (!container)
+			return nullptr;
+
+		container->SetFar(far);
+		return Py_None;
+	}
+	PyObject* PythonBindings::InternalUpdatePositionPerspectiveCameraController(PyObject* self, PyObject* args)
+	{
+		PyObject* capsule = nullptr;
+		float x = 0.0f, y = 0.0f, z = 0.0f;
+
+		if (!PyArg_ParseTuple(args, "Offf", &capsule, &x, &y, &z))
+			return nullptr;
+
+		PerspectiveCameraController* container = (PerspectiveCameraController*)(PyCapsule_GetPointer(capsule, "InternalPerspectiveCameraController"));
+
+		if (!container)
+			return nullptr;
+
+		container->UpdatePosition(glm::vec3(x, y ,z));
+		return Py_None;
+	}
+	PyObject* PythonBindings::InternalUpdateUpPerspectiveCameraController(PyObject* self, PyObject* args)
+	{
+		PyObject* capsule = nullptr;
+		float x = 0.0f, y = 0.0f, z = 0.0f;
+
+		if (!PyArg_ParseTuple(args, "Offf", &capsule, &x, &y, &z))
+			return nullptr;
+
+		PerspectiveCameraController* container = (PerspectiveCameraController*)(PyCapsule_GetPointer(capsule, "InternalPerspectiveCameraController"));
+
+		if (!container)
+			return nullptr;
+
+		container->UpdateUp(glm::vec3(x, y, z));
+		return Py_None;
+	}
+	PyObject* PythonBindings::InternalUpdateFrontPerspectiveCameraController(PyObject* self, PyObject* args)
+	{
+		PyObject* capsule = nullptr;
+		float x = 0.0f, y = 0.0f, z = 0.0f;
+
+		if (!PyArg_ParseTuple(args, "Offf", &capsule, &x, &y, &z))
+			return nullptr;
+		
+		PerspectiveCameraController* container = (PerspectiveCameraController*)(PyCapsule_GetPointer(capsule, "InternalPerspectiveCameraController"));
+
+		if (!container)
+			return nullptr;
+
+		container->UpdateFront(glm::vec3(x, y, z));
+		return Py_None;
+	}
 }

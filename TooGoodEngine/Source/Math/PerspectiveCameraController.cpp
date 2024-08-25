@@ -82,4 +82,39 @@ namespace TooGoodEngine {
 	{
 		m_Camera = newCamera;
 	}
+	void PerspectiveCameraController::SetFov(float fov)
+	{
+		m_Camera->m_Fov = fov;
+		m_Camera->UpdateViewProjection();
+	}
+	void PerspectiveCameraController::SetAspectRatio(float aspectRatio)
+	{
+		m_Camera->m_AspectRatio = aspectRatio;
+		m_Camera->UpdateViewProjection();
+	}
+	void PerspectiveCameraController::SetNear(float near)
+	{
+		m_Camera->m_Near = near;
+		m_Camera->UpdateViewProjection();
+	}
+	void PerspectiveCameraController::SetFar(float far)
+	{
+		m_Camera->m_Far = far;
+		m_Camera->UpdateViewProjection();
+	}
+	void PerspectiveCameraController::UpdatePosition(const glm::vec3& position)
+	{
+		m_Camera->m_Position = position;
+		m_Camera->UpdateViewProjection();
+	}
+	void PerspectiveCameraController::UpdateFront(const glm::vec3& front)
+	{
+		m_Camera->m_Front = front;
+		m_Camera->UpdateViewProjection();
+	}
+	void PerspectiveCameraController::UpdateUp(const glm::vec3& up)
+	{
+		m_Camera->m_Up = up;
+		m_Camera->UpdateViewProjection();
+	}
 }
