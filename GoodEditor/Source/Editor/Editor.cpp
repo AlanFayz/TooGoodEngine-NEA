@@ -57,22 +57,6 @@ namespace GoodEditor {
 		else if (g_SelectedProject && m_Playing)
 			g_SelectedProject->GetCurrentScene()->Play(delta);
 
-		//may make this changeable in the editor settings if i get the chance to make one
-
-		if (Input::IsKeyPressed(KeyCode::Esc)) 
-		{
-			if (m_Playing)
-			{
-				//when played project gets saved to disk. The player can completly mess up
-				//every single scene. We then destroy the current project without saving. Then reload from disk
-				//preserving the state before it was played.
-
-				g_SelectedProject.reset();
-				g_SelectedProject = CreateRef<Project>(m_ProjectPath);
-				g_SelectedProject->LoadProject();
-			}
-			m_Playing = false;
-		}
 	}
 	void Editor::OnGuiUpdate(double delta)
 	{
@@ -82,16 +66,23 @@ namespace GoodEditor {
 			return;
 		}
 
+		if (m_QueueRecreation && m_Playing)
+		{
+
+			//when played project gets saved to disk. The player can completly mess up
+			//every single scene. We then destroy the current project without saving. Then reload from disk
+			//preserving the state before it was played.
+
+			g_SelectedProject.reset();
+			g_SelectedProject = CreateRef<Project>(m_ProjectPath);
+			g_SelectedProject->LoadProject();
+
+			m_Playing = false;
+			m_QueueRecreation = false;
+		}
+
 		Ref<Scene>    currentScene = g_SelectedProject->GetCurrentScene();
 		Ref<Renderer> currentSceneRenderer = currentScene->GetSceneRenderer();
-
-		if (m_Playing)
-		{
-			currentSceneRenderer->RenderImageToScreen(m_CurrentWidth, m_CurrentHeight);
-			StatisticsPanel::DrawPanel();
-
-			return;
-		}
 
 		if (m_PreviousWindowSize.x != ImGui::GetWindowSize().x || m_PreviousWindowSize.y != ImGui::GetWindowSize().y)
 		{
@@ -144,6 +135,7 @@ namespace GoodEditor {
 
 			ImGui::EndMainMenuBar();
 		}
+
 	}
 	void Editor::OnEvent(Event* event)
 	{
@@ -227,9 +219,10 @@ namespace GoodEditor {
 	void Editor::_RenderViewport(const Ref<OpenGL::Texture2D>& image)
 	{
 		ImGui::Begin("Viewport", (bool*)0, ImGuiWindowFlags_MenuBar);
-		_RenderViewportMenuBar();
-		
 		ImGui::Image((ImTextureID)(intptr_t)image->GetHandle(), ImGui::GetContentRegionAvail(), ImVec2(0, 1), ImVec2(1, 0));
+		
+		_RenderViewportMenuBar();
+
 		ImGui::End();
 	}
 	void Editor::_RenderViewportMenuBar()
@@ -248,8 +241,16 @@ namespace GoodEditor {
 
 			if (ImGui::Button("Play"))
 			{
-				g_SelectedProject->SaveState();
-				m_Playing = true;
+				if (!m_Playing)
+				{
+					g_SelectedProject->SaveState();
+					m_Playing = true;
+				}
+			}
+
+			if(ImGui::Button("Stop"))
+			{
+				m_QueueRecreation = true;
 			}
 
 			ImGui::EndMenuBar();

@@ -1,0 +1,193 @@
+{
+    "Project Name": "Example",
+    "Project Directory": "D:\\Dev\\TooGoodEngine-NEA\\Example",
+    "Asset Directory": "D:\\Dev\\TooGoodEngine-NEA\\Example\\Assets",
+    "Last Build Date": "2024-08-26 01:39:59",
+    "Scenes": {
+        "": {
+            "Scene Settings": {
+                "Depth Testing": 1,
+                "Culling": 0,
+                "Winding Order": 2,
+                "Blending Source": 0,
+                "Blending Destination": 0,
+                "Filling Mode": 3,
+                "Environment Map": 14265145243090405190,
+                "Level Of Detail": 2.0,
+                "Gradient": 0.5199999809265137,
+                "Clear Color": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "Bloom Enabled": true,
+                "Bloom Threshold": 1.649999976158142,
+                "Bloom Intensity": 0.5,
+                "Bloom Filter Radius": 0.004999999888241291
+            },
+            "Entities": {
+                "Quad": {
+                    "Transform": {
+                        "Position": [
+                            1.0,
+                            0.699999988079071,
+                            -1.7000000476837158
+                        ],
+                        "Scale": [
+                            1.0,
+                            1.0,
+                            1.0
+                        ],
+                        "Rotation": [
+                            -1.399999976158142,
+                            84.0,
+                            -0.6000000238418579
+                        ]
+                    },
+                    "Mesh": "##Quad",
+                    "Material": {
+                        "Ambient": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ],
+                        "Albedo": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ],
+                        "Metallic": 0.0,
+                        "Emission": [
+                            0.9395017623901367,
+                            0.11367634683847427,
+                            0.7308413982391357,
+                            0.0
+                        ],
+                        "Emission Factor": 100.0,
+                        "Roughness": 0.0
+                    }
+                },
+                "Bunny": {
+                    "Transform": {
+                        "Position": [
+                            0.0,
+                            1.600000023841858,
+                            -0.800000011920929
+                        ],
+                        "Scale": [
+                            10.0,
+                            10.0,
+                            10.0
+                        ],
+                        "Rotation": [
+                            0.800000011920929,
+                            -105.0,
+                            0.30000001192092896
+                        ]
+                    },
+                    "Model": 4920172149060857114
+                },
+                "Light": {
+                    "Directional Light": {
+                        "Color": [
+                            1.0,
+                            0.024911046028137207,
+                            0.024911046028137207,
+                            0.0
+                        ],
+                        "Direction": [
+                            0.18000000715255737,
+                            1.0,
+                            0.0
+                        ],
+                        "Intensity": 10.600000381469727
+                    }
+                },
+                "Cube": {
+                    "Transform": {
+                        "Position": [
+                            0.0,
+                            0.0,
+                            0.0
+                        ],
+                        "Scale": [
+                            1.0,
+                            1.0,
+                            1.0
+                        ],
+                        "Rotation": [
+                            0.0,
+                            0.0,
+                            0.0
+                        ]
+                    },
+                    "Mesh": "##Cube",
+                    "Material": {
+                        "Ambient": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ],
+                        "Albedo": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ],
+                        "Metallic": 0.0,
+                        "Emission": [
+                            0.9340687394142151,
+                            1.0,
+                            0.024911046028137207,
+                            0.0
+                        ],
+                        "Emission Factor": 100.0,
+                        "Roughness": 0.0
+                    }
+                },
+                "Camera": {
+                    "Perspective Camera": {
+                        "Fov": 60.0,
+                        "Aspect Ratio": 1.7777777910232544,
+                        "Near": 0.10000000149011612,
+                        "Far": 100.0,
+                        "Position": [
+                            -5.679999828338623,
+                            2.119999885559082,
+                            -1.7200000286102295
+                        ],
+                        "Front": [
+                            6.0,
+                            0.4699999988079071,
+                            1.590000033378601
+                        ],
+                        "Up": [
+                            0.0,
+                            -1.0,
+                            0.0
+                        ],
+                        "In Use": true
+                    }
+                }
+            }
+        }
+    },
+    "Assets": {
+        "4920172149060857114": {
+            "Type": "Model",
+            "Path": "standford-bunny.obj"
+        },
+        "8053089691323146172": {
+            "Type": "Script",
+            "Path": "camera_controller.py"
+        },
+        "14265145243090405190": {
+            "Type": "EnvironmentMap",
+            "Path": "kloppenheim_02_puresky_1k.hdr"
+        }
+    }
+}

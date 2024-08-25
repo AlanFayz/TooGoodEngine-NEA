@@ -28,6 +28,7 @@ namespace GoodEditor {
 	private:
 		bool m_ProjectLoader = true;
 		bool m_Playing = false;
+		bool m_QueueRecreation = false;
 		char m_File[256];
 		std::filesystem::path m_ProjectPath;
 		ImVec2 m_PreviousWindowSize = ImVec2(0, 0);
