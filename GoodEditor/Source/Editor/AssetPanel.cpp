@@ -12,12 +12,22 @@ namespace GoodEditor {
 	{
         if (ImGui::Begin("Asset Panel"))
         {
+            auto& root = g_SelectedProject->GetAssetDirectory();
+
             if (m_CurrentDirectory.empty())
             {
-                m_CurrentDirectory = g_SelectedProject->GetAssetDirectory();
+                m_CurrentDirectory = root;
 
                 if (!std::filesystem::exists(m_CurrentDirectory))
                     std::filesystem::create_directories(m_CurrentDirectory);
+            }
+            
+            //if user deletes the root automatically recreate it.
+
+            if (!std::filesystem::exists(root))
+            {
+                m_CurrentDirectory = root;
+                std::filesystem::create_directories(root);
             }
 
             uint32_t currentX = 0;
@@ -86,7 +96,7 @@ namespace GoodEditor {
 
                     ImGui::BeginGroup();
 
-                    ImGui::ImageButton((ImTextureID)(intptr_t)extensionMap[path.extension()]->GetTexture().GetHandle(),
+                    ImGui::ImageButton((ImTextureID)(intptr_t)extensionMap[extension]->GetTexture().GetHandle(),
                         ImVec2(buttonWidth, buttonHeight), ImVec2(0, 1), ImVec2(1, 0));
 
                     if (!m_CachedDirectories.contains(path))

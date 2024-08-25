@@ -8,7 +8,8 @@ namespace TooGoodEngine {
 	Window::Window(uint32_t width, uint32_t height, const std::string& title, EventDispatcher<Application>& dispatcher)
 		: m_Width(width), m_Height(height), m_Title(title), m_Window(nullptr), m_Dispatcher(dispatcher)
 	{
-		TGE_VERIFY(glfwInit(), "glfw failed to init");
+		if (!glfwInit())
+			TGE_HALT();
 
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
@@ -41,7 +42,8 @@ namespace TooGoodEngine {
 
 		glfwMakeContextCurrent(m_Window);
 		
-		TGE_VERIFY(gladLoadGL(), "failed to load glad");
+		if (!gladLoadGL())
+			TGE_HALT();
 
 		glEnable(GL_DEBUG_OUTPUT);
 		glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);

@@ -49,12 +49,12 @@ project "ImGui"
     filter "configurations:Release"
        	defines { "RELEASE" }
        	runtime "Release"
-       	optimize "Speed"
+       	optimize "On"
 
     filter "configurations:Dist"
        	defines { "DIST" }
        	runtime "Release"
-       	optimize "On"
+       	optimize "Full"
        	symbols "Off"
 	
 	

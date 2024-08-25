@@ -120,10 +120,10 @@ project 'assimp'
     filter "configurations:Release"
         defines { "RELEASE" }
         runtime "Release"
-        optimize "Speed"
+        optimize "On"
 
     filter "configurations:Dist"
        defines { "RELEASE" } 
        runtime "Release"
-       optimize "On"
+       optimize "Full"
        symbols "Off"

@@ -58,7 +58,7 @@ project "TooGoodEngine"
    filter "configurations:Release"
        defines { "RELEASE" }
        runtime "Release"
-       optimize "Speed"
+       optimize "On"
        symbols "On"
 
        libdirs
@@ -69,7 +69,7 @@ project "TooGoodEngine"
    filter "configurations:Dist"
        defines { "DIST" }
        runtime "Release"
-       optimize "On"
+       optimize "Full"
        symbols "Off"
 
        libdirs
