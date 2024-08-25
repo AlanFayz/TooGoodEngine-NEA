@@ -202,7 +202,7 @@ namespace TooGoodEngine {
 
 		for (EntityID entityId = 0; entityId < registry.GetCount(); entityId++)
 		{
-			Entity entity = registry.GetEntity(entityId);
+			Entity entity = registry.GetEntityByID(entityId);
 
 			if (entity.GetID() == g_NullEntity)
 				continue;
@@ -219,7 +219,7 @@ namespace TooGoodEngine {
 
 				for (auto& child : node.Children)
 				{
-					Entity ent = scene->GetRegistry().GetEntity(child);
+					Entity ent = scene->GetRegistry().GetEntityByID(child);
 					if(ent)
 						strChildren.push_back(ent.GetName());
 				}

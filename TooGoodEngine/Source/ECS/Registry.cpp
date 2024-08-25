@@ -1,26 +1,51 @@
 #include "Registry.h"
 
-namespace TooGoodEngine{
+
+namespace TooGoodEngine {
+
+	static Entity s_NullEntity("null entity", g_NullEntity);
+
 	Registry::~Registry()
 	{
+		for (auto& [typeIndex, bucket] : m_BucketStorage)
+			delete bucket;
 	}
-	void Registry::RemoveEntity(EntityID id)
+
+	Entity Registry::__CreateEntity(const std::string& name)
 	{
-		m_Entites[id] = Entity("null entity", g_NullEntity);
+		Entity entity = Entity(name, m_EntityStorage.size());
+		m_EntityStorage.push_back(entity);
+		return entity;
 	}
-	Entity Registry::GetEntityByName(const std::string& name)
+
+	Entity& Registry::GetEntityByID(EntityID entityID)
 	{
-		for (auto& entity : m_Entites)
+		if (entityID < m_EntityStorage.size())
+			return m_EntityStorage[entityID];
+
+		return s_NullEntity;
+	}
+
+	Entity& Registry::GetEntityByName(const std::string& name)
+	{
+		for (auto& entity : m_EntityStorage)
 		{
 			if (entity.GetName() == name)
 				return entity;
 		}
 
-		return Entity("null entity", g_NullEntity);
+		return s_NullEntity;
 	}
-	void Registry::_VerifyEntity(const EntityID& entity) const
+
+	void Registry::__RemoveEntity(EntityID entityID)
 	{
-		TGE_VERIFY(entity < m_Count, "entity is invalid in this registry");
+		if (entityID >= m_EntityStorage.size())
+			return;
+
+		for (const auto& [typeIndex, bucket] : m_BucketStorage)
+			bucket->Remove(entityID);
+
+		m_EntityStorage[entityID] = s_NullEntity;
 	}
 
 }

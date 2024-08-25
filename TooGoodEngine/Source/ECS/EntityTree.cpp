@@ -1,12 +1,10 @@
 #include "EntityTree.h"
 
-#include "Components/Components.h"
-
 namespace TooGoodEngine {
 
 	Entity EntityTree::Add(const std::string& name)
 	{
-		Entity entity = CreateEntity(name);
+		Entity entity = __CreateEntity(name);
 
 		Node node{};
 		node.Name = entity.GetName();
@@ -24,17 +22,17 @@ namespace TooGoodEngine {
 
 		if (index == g_NullNode)
 		{
-			TGE_LOG_WARNING("parent not found adding entity without parent");
+			//TGE_LOG_WARNING("parent not found adding entity without parent");
 			return Add(name);
 		}
 
-		Entity entity = CreateEntity(name);
-	
+		Entity entity = __CreateEntity(name);
+
 		Node child{};
 		child.Name = entity.GetName();
 		child.Entity = entity;
 		child.ParentIndex = index;
-		
+
 		m_Nodes.push_back(child);
 
 		Node& parentNode = m_Nodes[index];
@@ -46,29 +44,22 @@ namespace TooGoodEngine {
 
 	void EntityTree::RemoveEntity(EntityID id)
 	{
-		if (id >= m_Count)
+		if (id >= GetCount())
 			return;
-		
-		size_t nodeIndex = _Find(GetEntity(id));
+
+		size_t nodeIndex = _Find(GetEntityByID(id));
 		if (nodeIndex == g_NullNode)
 			return;
 
 		for (auto& child : m_Nodes[nodeIndex].Children)
 			RemoveEntity(child);
 
-		Entity entity = GetEntity(id);
+		Entity entity = GetEntityByID(id);
 		nodeIndex = _Find(entity); //nodeIndex may have changed from previous erases
 
-		RemoveComponent<MeshComponent>(entity);
-		RemoveComponent<TransformComponent>(entity);
-		RemoveComponent<MaterialComponent>(entity);
-		RemoveComponent<DirectionalLightComponent>(entity);
-		RemoveComponent<PointLightComponent>(entity);
-		RemoveComponent<ModelComponent>(entity);
-		RemoveComponent<ScriptComponent>(entity);
 
 		m_Nodes.erase(m_Nodes.begin() + nodeIndex);
-		m_Entites[id] = Entity("null entity", g_NullEntity);
+		__RemoveEntity(entity);
 	}
 
 	const bool EntityTree::ContainsEntity(const Entity& entity)
@@ -80,19 +71,19 @@ namespace TooGoodEngine {
 	{
 		size_t index = _Find(parent);
 
-		TGE_VERIFY(index != g_NullNode, "parent not found");
+		//TGE_VERIFY(index != g_NullNode, "parent not found");
 
 		return m_Nodes[index];
 	}
 
 	void EntityTree::Move(const Entity& child, const Entity& newParent)
 	{
-		size_t childIndex  = _Find(child);
+		size_t childIndex = _Find(child);
 		size_t parentIndex = _Find(newParent);
 
-		TGE_VERIFY(childIndex != g_NullNode && parentIndex != g_NullNode, "child or parent was not found");
+		//TGE_VERIFY(childIndex != g_NullNode && parentIndex != g_NullNode, "child or parent was not found");
 
-		auto& childNode  = m_Nodes[childIndex];
+		auto& childNode = m_Nodes[childIndex];
 		auto& parentNode = m_Nodes[parentIndex];
 
 		if (childNode.ParentIndex == g_NullNode)
@@ -107,7 +98,7 @@ namespace TooGoodEngine {
 
 		auto it = std::find(oldParentNode.Children.begin(), oldParentNode.Children.end(), childIndex);
 
-		if(it != oldParentNode.Children.end())
+		if (it != oldParentNode.Children.end())
 			oldParentNode.Children.erase(it);
 
 		parentNode.Children.push_back(childIndex);
@@ -116,8 +107,8 @@ namespace TooGoodEngine {
 
 	size_t EntityTree::_Find(const Entity& entity)
 	{
-		auto it = std::find_if(m_Nodes.begin(), m_Nodes.end(), 
-			[&](const Node& node) 
+		auto it = std::find_if(m_Nodes.begin(), m_Nodes.end(),
+			[&](const Node& node)
 			{
 				return node.Entity == entity.GetID();
 			});
@@ -132,7 +123,7 @@ namespace TooGoodEngine {
 		auto it = std::find_if(m_Nodes.begin(), m_Nodes.end(),
 			[&](const Node& node)
 			{
-				return GetEntity(node.Entity).GetName() == name;
+				return GetEntityByID(node.Entity).GetName() == name;
 			});
 
 		if (it != m_Nodes.end())

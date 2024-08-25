@@ -50,7 +50,7 @@ namespace TooGoodEngine {
 
 			auto perspectiveView = m_Registry.View<PerspectiveCameraComponent>();
 
-			for (auto& camera : perspectiveView)
+			for (auto& [camera, entityID] : perspectiveView)
 			{
 				if (camera.InUse)
 				{
@@ -65,7 +65,7 @@ namespace TooGoodEngine {
 			{
 				auto OrthographicView = m_Registry.View<OrthographicCameraComponent>();
 
-				for (auto& camera : OrthographicView)
+				for (auto& [camera, entityID] : OrthographicView)
 				{
 					if (camera.InUse)
 					{
@@ -94,7 +94,7 @@ namespace TooGoodEngine {
 
 			if (m_FirstPlay)
 			{
-				for (const auto& script : scripts)
+				for (const auto& [script, entityID] : scripts)
 				{
 					if(script)
 						script.OnCreate();
@@ -103,7 +103,7 @@ namespace TooGoodEngine {
 				m_FirstPlay = false;
 			}
 
-			for (const auto& script : scripts)
+			for (const auto& [script, entityID] : scripts)
 			{
 				if(script)
 					script.OnUpdate(delta);
@@ -117,7 +117,7 @@ namespace TooGoodEngine {
 		{
 			auto pointLights = m_Registry.View<PointLightComponent>();
 
-			for (const auto& pointLight : pointLights)
+			for (const auto& [pointLight, entityID] : pointLights)
 				m_SceneRenderer->PlacePointLight(pointLight.Position, pointLight.Color, pointLight.Radius, pointLight.Intensity);
 		}
 
@@ -126,14 +126,14 @@ namespace TooGoodEngine {
 		{
 			auto directionalLights = m_Registry.View<DirectionalLightComponent>();
 
-			for (const auto& light : directionalLights)
+			for (const auto& [light, entityID] : directionalLights)
 				m_SceneRenderer->AddDirectionaLight(light.Direction, light.Color, light.Intensity);
 		}
 
 		// ---- Render Meshes ----
 		{
 			m_Registry.ForEach<MeshComponent>(
-				[this](auto& component, const auto entityID)
+				[this](auto& component, auto& entityID)
 				{
 					if (!m_Registry.HasComponent<TransformComponent>(entityID))
 						return;
@@ -150,7 +150,7 @@ namespace TooGoodEngine {
 				});
 
 			m_Registry.ForEach<ModelComponent>(
-				[this](ModelComponent& component, const auto entityID)
+				[this](auto& component, auto& entityID)
 				{
 					if (!m_Registry.HasComponent<TransformComponent>(entityID))
 						return;
@@ -189,7 +189,7 @@ namespace TooGoodEngine {
 		{
 			auto pointLights = m_Registry.View<PointLightComponent>();
 
-			for (auto& pointLight : pointLights)
+			for (auto& [pointLight, entityID] : pointLights)
 				m_SceneRenderer->PlacePointLight(pointLight.Position, pointLight.Color, pointLight.Radius, pointLight.Intensity);
 		}
 
@@ -198,7 +198,7 @@ namespace TooGoodEngine {
 		{
 			auto directionalLights = m_Registry.View<DirectionalLightComponent>();
 
-			for (auto& light : directionalLights)
+			for (auto& [light, entityID] : directionalLights)
 				m_SceneRenderer->AddDirectionaLight(light.Direction, light.Color, light.Intensity);
 		}
 
@@ -207,7 +207,7 @@ namespace TooGoodEngine {
 			TGE_PROFILE_SCOPE(RenderGeometry);
 
 			m_Registry.ForEach<MeshComponent>(
-				[this](auto& component, const auto entityID) 
+				[this](auto& component, auto& entityID) 
 				{
 					if (!m_Registry.HasComponent<TransformComponent>(entityID))
 						return;
@@ -224,7 +224,7 @@ namespace TooGoodEngine {
 				});
 
 			m_Registry.ForEach<ModelComponent>(
-				[this](ModelComponent& component, const auto entityID)
+				[this](auto& component, auto& entityID)
 				{
 					if (!m_Registry.HasComponent<TransformComponent>(entityID))
 						return;

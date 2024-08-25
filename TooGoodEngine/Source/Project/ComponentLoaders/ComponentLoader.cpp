@@ -92,9 +92,14 @@ namespace TooGoodEngine {
 		}
 
 		Ref<Model> model = g_SelectedProject->GetAssetManager().FetchAssetAssuredType<Model>(component.ModelAssetId);
-		component.Info = sceneRenderer.AddModel(model);
+		
+		if (model)
+		{
+			component.Info = sceneRenderer.AddModel(model);
 
-		cache[component.ModelAssetId] = component.Info;
+			cache[component.ModelAssetId] = component.Info;
+		}
+
 
 		return component;
 	}

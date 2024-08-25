@@ -33,6 +33,7 @@ namespace TooGoodEngine {
 
 		_ProcessNode(geometry, scene->mRootNode, scene);
 
+
 		return CreateRef<Model>(geometry);
 	}
 	void Model::_ProcessNode(std::vector<Geometry>& geometry, const aiNode* node, const aiScene* scene)

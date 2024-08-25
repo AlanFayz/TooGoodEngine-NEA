@@ -25,24 +25,12 @@ namespace TooGoodEngine {
 		Entity Add(const std::string& name);
 		Entity Add(const Entity& parent, const std::string& name);
 
-		virtual void RemoveEntity(EntityID id) override;
+		void RemoveEntity(EntityID id);
 
 		const bool ContainsEntity(const Entity& entity);
 		Node& GetNode(const Entity& parent);
 
-		/*
-			Will move a child entity to a new parent
-		*/
-
 		void Move(const Entity& child, const Entity& newParent);
-
-		/*
-			Applies function using depth first to elements
-			function should take in a name and entity ID
-		*/
-
-		template<typename Fun>
-		void Depth(const Entity& parent, Fun fun); 
 
 
 	private:
@@ -53,26 +41,5 @@ namespace TooGoodEngine {
 		std::vector<Node> m_Nodes;
 	};
 
-	template<typename Fun>
-	inline void EntityTree::Depth(const Entity& parent, Fun fun)
-	{
-		size_t index = _Find(parent);
-
-		TGE_VERIFY(index != g_NullNode, "parent is not in the tree");
-
-		std::stack<size_t> stack;
-		stack.push(index);
-
-		while (!stack.empty())
-		{
-			Node& currentNode = m_Nodes[stack.top()];
-			stack.pop();
-
-			fun(currentNode.Name, currentNode.Entity);
-
-			for (auto child : currentNode.Children)
-				stack.push(child);
-		}
-	}
 }
 

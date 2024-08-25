@@ -8,6 +8,12 @@
 #include <xmemory>
 #include <vector>
 
+/*
+	DEPRICATED
+	once everything that uses this has been replaced with an alternative
+	will remove this.
+*/
+
 namespace TooGoodEngine {
 
 	inline constexpr size_t g_ResizeFactor = 2;

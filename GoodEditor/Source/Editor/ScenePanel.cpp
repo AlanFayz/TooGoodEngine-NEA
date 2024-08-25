@@ -42,7 +42,7 @@ namespace GoodEditor {
 
 			for (EntityID i = 0; i < registry.GetCount(); i++)
 			{
-				Entity& entity = registry.GetEntity(i);
+				Entity& entity = registry.GetEntityByID(i);
 
 				//deleted or null entity
 				if (!entity)
@@ -86,7 +86,7 @@ namespace GoodEditor {
 			if (ImGui::Button("Enter"))
 			{
 				std::string name = buf;
-				Entity& entity = registry.GetEntity(m_CurrentEntity);
+				Entity& entity = registry.GetEntityByID(m_CurrentEntity);
 				if (name.length() > 0)
 					entity.SetName(name);
 
@@ -124,7 +124,7 @@ namespace GoodEditor {
 			if (displayed.contains(node.Children[i]))
 				continue;
 
-			Entity childEntity = tree.GetEntity(node.Children[i]);
+			Entity childEntity = tree.GetEntityByID(node.Children[i]);
 
 			if (!childEntity)
 				continue;

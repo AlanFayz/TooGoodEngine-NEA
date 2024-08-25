@@ -88,6 +88,8 @@ namespace GoodEditor {
 		if (m_Playing)
 		{
 			currentSceneRenderer->RenderImageToScreen(m_CurrentWidth, m_CurrentHeight);
+			StatisticsPanel::DrawPanel();
+
 			return;
 		}
 

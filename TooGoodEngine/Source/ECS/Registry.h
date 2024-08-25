@@ -1,140 +1,137 @@
 #pragma once
 
-#include "DenseMap.h"
-#include "Entity.h"
+#include "SparseSet.h"
 
 #include <typeindex>
-#include <functional>
+#include <unordered_map>
+#include <memory>
 
 namespace TooGoodEngine {
 
 	class Registry
 	{
 	public:
+		using EntityStorage = std::vector<Entity>;
+		using BucketStorage = std::unordered_map<std::type_index, BaseSparseSet*>;
+
+	public:
 		Registry() = default;
 		~Registry();
 
-		inline Entity CreateEntity(const std::string& name) 
-		{
-			Entity entity = Entity(name, m_Count++);
-			m_Entites.push_back(entity);
-			return entity; 
-		}
-		inline const size_t GetCount() const { return (size_t)m_Count; }
+		inline const size_t GetCount() const { return m_EntityStorage.size(); }
 
-		inline Entity& GetEntity(EntityID id)
-		{
-			if (id < m_Entites.size())
-				return m_Entites[id];
+		Entity& GetEntityByID(EntityID entityID);
+		Entity& GetEntityByName(const std::string& name);
 
-			static Entity s_NullEntity("null", g_NullEntity);
-
-			return s_NullEntity;
-		}
-
-		virtual void RemoveEntity(EntityID id);
-
-		Entity GetEntityByName(const std::string& name);
-		
 		template<typename Type>
-		inline bool HasComponent(const EntityID& entity) 
-		{ 
-			if (m_Buckets.contains(typeid(Type)))
-			{
-				auto bucket = GetBucketAssuredType<Type>();
-				return bucket->Contains(entity);
-			}
+		inline const bool HasComponent(const EntityID& entity);
 
-			return false;
-		}
-	
 		template<typename Type>
-		void AddComponent(const Entity& entity, const Type& t);
+		void AddComponent(EntityID entityID, const Type& type);
 
 		template<typename Type, typename ...Args>
-		void EmplaceComponent(const Entity& entity, Args&&... args);
+		void EmplaceComponent(EntityID entityID, Args&&... args);
 
 		template<typename Type>
-		void RemoveComponent(const Entity& entity);
+		void RemoveComponent(EntityID entityID);
 
+		//assumes user has already done the check to see if it exists
 		template<typename Type>
-		Type& GetComponent(const EntityID& entity);
+		Type& GetComponent(EntityID entityID);
 
 		template<typename Type, typename Fun>
 		void ForEach(Fun fun);
 
 		template<typename Type>
-		auto View();
-
-	private:
-		void _VerifyEntity(const EntityID& entity) const;
-
-		template<typename Type>
-		auto GetBucketAssuredType();
+		const auto View();
 
 	protected:
-		EntityID m_Count = 0;
+		//to be used by inheriting system
 
-		std::unordered_map<std::type_index, std::shared_ptr<BaseDenseMap>> m_Buckets;
-		std::vector<Entity> m_Entites;
+		void    __RemoveEntity(EntityID entityID);
+		Entity  __CreateEntity(const std::string& name);
+
+	private:
+		template<typename Type>
+		SparseSet<Type>* _GetBucketAssuredType();
+
+
+	private:
+		EntityStorage m_EntityStorage;
+		BucketStorage m_BucketStorage;
 	};
 
 	template<typename Type>
-	inline void Registry::AddComponent(const Entity& entity, const Type& t)
+	inline const bool Registry::HasComponent(const EntityID& entity)
 	{
-		auto bucket = GetBucketAssuredType<Type>();
-		bucket->Add(entity, t);
+		if (m_BucketStorage.contains(typeid(Type)))
+		{
+			auto bucket = _GetBucketAssuredType<Type>();
+			return bucket->Contains(entity);
+		}
+
+		return false;
+	}
+
+	template<typename Type>
+	inline void Registry::AddComponent(EntityID entityID, const Type& type)
+	{
+		auto bucket = _GetBucketAssuredType<Type>();
+		bucket->Insert(entityID, type);
 	}
 
 	template<typename Type, typename ...Args>
-	inline void Registry::EmplaceComponent(const Entity& entity, Args && ...args)
+	inline void Registry::EmplaceComponent(EntityID entityID, Args && ...args)
 	{
-		auto bucket = GetBucketAssuredType<Type>();
-		bucket->Emplace(entity, std::forward<Args>(args)...);
+		auto bucket = _GetBucketAssuredType<Type>();
+		bucket->Emplace(entityID, std::forward<Args>(args)...);
 	}
 
 	template<typename Type>
-	inline void Registry::RemoveComponent(const Entity& entity)
+	inline void Registry::RemoveComponent(EntityID entityID)
 	{
-		auto bucket = GetBucketAssuredType<Type>();
-		if (bucket->Contains(entity))
-			bucket->Remove(entity);
+		auto bucket = _GetBucketAssuredType<Type>();
+		bucket->Remove(entityID);
 	}
 
 	template<typename Type>
-	inline Type& Registry::GetComponent(const EntityID& entity)
+	inline Type& Registry::GetComponent(EntityID entityID)
 	{
-		auto bucket = GetBucketAssuredType<Type>();
+		auto bucket = _GetBucketAssuredType<Type>();
 
-		TGE_VERIFY(bucket->Contains(entity), "doesn't contain component");
-		return bucket->Get(entity);
+		TGE_VERIFY(bucket->Contains(entityID), "doesn't contain component");
+		return bucket->Get(entityID);
 	}
 
 	template<typename Type, typename Fun>
 	inline void Registry::ForEach(Fun fun)
 	{
-		auto bucket = GetBucketAssuredType<Type>();
-		bucket->ForEach(fun);
+		auto bucket = _GetBucketAssuredType<Type>();
+		for (auto& [component, entityID] : *bucket)
+			fun(component, entityID);
 	}
 
 	template<typename Type>
-	inline auto Registry::View()
+	inline const auto Registry::View()
 	{
-		auto bucket = GetBucketAssuredType<Type>();
-		return bucket->ViewDense();
+		auto bucket = _GetBucketAssuredType<Type>();
+		return bucket->GetDense();
 	}
 
 	template<typename Type>
-	inline auto Registry::GetBucketAssuredType()
+	inline SparseSet<Type>* Registry::_GetBucketAssuredType()
 	{
-		auto it = m_Buckets.find(typeid(Type));
-		if (it != m_Buckets.end()) 
-			return std::static_pointer_cast<DenseMap<Type>>(it->second);
-		
+		const std::type_index typeID = typeid(Type);
 
-		m_Buckets[typeid(Type)] = std::make_shared<DenseMap<Type>>();
-		return std::static_pointer_cast<DenseMap<Type>>(m_Buckets[typeid(Type)]);
+		//trying to find type if its in bucket storage
+		auto it = m_BucketStorage.find(typeID);
+		if (it != m_BucketStorage.end())
+			return (SparseSet<Type>*)(it->second);
+
+		//create bucket storage of that type and assign it to the type_index
+		SparseSet<Type>* bucket = new SparseSet<Type>();
+		m_BucketStorage[typeID] = bucket;
+		return bucket;
 	}
 
 }
-

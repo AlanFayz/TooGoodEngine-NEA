@@ -711,17 +711,10 @@ namespace TooGoodEngine {
 			info.Format = OpenGL::Texture2DFormat::RGBA32F;
 			info.Width = m_Settings.ViewportWidth;
 			info.Height = m_Settings.ViewportHeight;
-
-			if (m_Settings.Bloom)
-			{
-				info.MipMapLevels = RenderData::BloomMipLevelCount;
-				info.Paramaters[OpenGL::TextureParamater::MinFilter] = OpenGL::TextureParamaterOption::MipMapLinear;
-			}
 			
 			info.MipMapLevels = 1;
 			info.Paramaters[OpenGL::TextureParamater::MinFilter] = OpenGL::TextureParamaterOption::Linear;
 			
-
 			info.Paramaters[OpenGL::TextureParamater::MagFilter] = OpenGL::TextureParamaterOption::Linear;
 			info.Paramaters[OpenGL::TextureParamater::WrapModeS] = OpenGL::TextureParamaterOption::ClampToEdge;
 			info.Paramaters[OpenGL::TextureParamater::WrapModeT] = OpenGL::TextureParamaterOption::ClampToEdge;
