@@ -111,6 +111,28 @@ namespace GoodEditor {
 		auto& image = currentSceneRenderer->GetImage();
 
 		_RenderViewport(image);
+
+		if (ImGui::BeginMainMenuBar())
+		{
+			if (ImGui::BeginMenu("File"))
+			{
+				if (ImGui::MenuItem("Save"))
+				{
+					g_SelectedProject->SaveState();
+				}
+
+				ImGui::EndMenu();
+			}
+
+
+			if (ImGui::MenuItem("Build"))
+			{
+				g_SelectedProject->Build();
+			}
+
+
+			ImGui::EndMainMenuBar();
+		}
 	}
 	void Editor::OnEvent(Event* event)
 	{

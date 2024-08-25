@@ -42,10 +42,10 @@ namespace TooGoodEngine {
 		ComponentLoader::ClearCaches();
 	}
 
-	void Project::SaveState()
+	void Project::SaveState(bool optimized)
 	{
 		std::filesystem::path file = m_ProjectDirectory / (m_ProjectName + ".json");
-		JsonWriter writer(file, false); //will be true when build() function is created
+		JsonWriter writer(file, optimized); //will be true when build() function is created
 
 		auto timePoint = std::chrono::system_clock::now();
 		std::time_t currentTime = std::chrono::system_clock::to_time_t(timePoint);
@@ -63,6 +63,11 @@ namespace TooGoodEngine {
 			SaveScene(writer, scene);
 
 		SaveAssets(writer);
+	}
+
+	void Project::Build()
+	{
+		SaveState(true);
 	}
 
 	Ref<Scene> Project::LoadScene(const json& jsonScene, const std::string& name)

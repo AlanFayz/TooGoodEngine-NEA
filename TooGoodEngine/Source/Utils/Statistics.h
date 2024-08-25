@@ -28,7 +28,12 @@ namespace TooGoodEngine {
 		std::string_view m_Name;
 	};
 
-	//defined here just incase I may want to disable in dist builds as timers do 
-	//take up a considerable amount of time.
-	#define TGE_PROFILE_SCOPE(name) TooGoodEngine::ProfileScope name(#name); 
+	
+	#ifdef DEBUG
+		#define TGE_PROFILE_SCOPE(name) TooGoodEngine::ProfileScope name(#name); 
+	#elif RELEASE
+		#define TGE_PROFILE_SCOPE(name) TooGoodEngine::ProfileScope name(#name); 
+	#else 
+		#define TGE_PROFILE_SCOPE(name)
+	#endif
 }

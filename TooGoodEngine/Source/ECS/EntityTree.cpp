@@ -1,5 +1,7 @@
 #include "EntityTree.h"
 
+#include "Core/Base.h"
+
 namespace TooGoodEngine {
 
 	Entity EntityTree::Add(const std::string& name)
@@ -71,7 +73,7 @@ namespace TooGoodEngine {
 	{
 		size_t index = _Find(parent);
 
-		//TGE_VERIFY(index != g_NullNode, "parent not found");
+		TGE_VERIFY(index != g_NullNode, "parent not found");
 
 		return m_Nodes[index];
 	}
@@ -81,7 +83,7 @@ namespace TooGoodEngine {
 		size_t childIndex = _Find(child);
 		size_t parentIndex = _Find(newParent);
 
-		//TGE_VERIFY(childIndex != g_NullNode && parentIndex != g_NullNode, "child or parent was not found");
+		TGE_VERIFY(childIndex != g_NullNode && parentIndex != g_NullNode, "child or parent was not found");
 
 		auto& childNode = m_Nodes[childIndex];
 		auto& parentNode = m_Nodes[parentIndex];

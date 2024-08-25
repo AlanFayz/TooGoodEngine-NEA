@@ -147,6 +147,7 @@ namespace TooGoodEngine {
 						MaterialComponent& material = m_Registry.GetComponent<MaterialComponent>(entityID);
 						m_SceneRenderer->Draw(component.ID, transform.GetTransform(), (uint32_t)material.ID);
 					}
+
 				});
 
 			m_Registry.ForEach<ModelComponent>(
@@ -160,6 +161,7 @@ namespace TooGoodEngine {
 					//TODO: add a way to change materials dynamically from the editor. currently will have to 
 					//edit it directly from native application.
 					m_SceneRenderer->DrawModel(component.Info, transform.GetTransform());
+
 				});
 
 		}

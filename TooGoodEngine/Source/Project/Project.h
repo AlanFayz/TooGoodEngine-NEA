@@ -13,7 +13,8 @@ namespace TooGoodEngine {
 		Project(const std::string& name, const std::filesystem::path& pathOfDirectory); //for creating
 		~Project();
 
-		void SaveState();
+		void SaveState(bool optimized = false);
+		void Build();
 
 		Ref<Scene> LoadScene(const json& jsonScene, const std::string& name);
 		void LoadSceneSettings(Ref<Scene>& scene, const json& jsonScene);

@@ -8,7 +8,7 @@ namespace GoodEditor {
 
 	using namespace TooGoodEngine;
 
-	class Editor : public TooGoodEngine::Layer
+	class Editor : public Layer
 	{
 	public:
 		Editor() = default;
@@ -18,7 +18,7 @@ namespace GoodEditor {
 		virtual void OnDestroy() override;
 		virtual void OnUpdate(double delta) override;
 		virtual void OnGuiUpdate(double delta) override;
-		virtual void OnEvent(TooGoodEngine::Event* event) override;
+		virtual void OnEvent(Event* event) override;
 
 	private:
 		void _TryGetProjectName();

@@ -37,4 +37,8 @@ group "Core"
 	include "TooGoodEngine/Build-Core.lua"
 group ""
 
+group "Runtime"
+  include "Runtime/Build-Runtime.lua"
+group ""
+
 include "GoodEditor/Build-App.lua"
