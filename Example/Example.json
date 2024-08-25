@@ -1,7 +1,7 @@
 {
     "Project Name": "Example",
-    "Project Directory": "D:\\Dev\\TooGoodEngine-NEA\\Example",
-    "Asset Directory": "D:\\Dev\\TooGoodEngine-NEA\\Example\\Assets",
+    "Project Directory": "../Example",
+    "Asset Directory": "../Example\\Assets",
     "Last Build Date": "2024-08-26 01:39:59",
     "Scenes": {
         "": {
