@@ -39,6 +39,9 @@ namespace TooGoodEngine {
 		template<typename Type>
 		Type& GetComponent(EntityID entityID);
 
+		template<typename Type>
+		const auto GetBucket();
+
 		template<typename Type, typename Fun>
 		void ForEach(Fun fun);
 
@@ -101,6 +104,12 @@ namespace TooGoodEngine {
 
 		TGE_VERIFY(bucket->Contains(entityID), "doesn't contain component");
 		return bucket->Get(entityID);
+	}
+
+	template<typename Type>
+	inline const auto Registry::GetBucket()
+	{
+		return _GetBucketAssuredType<Type>();
 	}
 
 	template<typename Type, typename Fun>

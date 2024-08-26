@@ -1,7 +1,7 @@
 import math
 
 #todo: this function should be implemented in c++ for better performance
-#currently is faster than numpy somehow
+#currently is faster than numpy somehow 
 
 class Vector:
     def __init__(self, data):

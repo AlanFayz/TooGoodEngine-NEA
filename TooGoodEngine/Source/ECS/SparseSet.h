@@ -101,7 +101,7 @@ namespace TooGoodEngine {
 
 	}
 
-	//no checks hear because assumes the user has done those checks.
+	//no checks here because assumes the user has done those checks.
 	template<ValidItem Type>
 	inline Type& SparseSet<Type>::Get(EntityID entityID)
 	{

@@ -132,40 +132,38 @@ namespace TooGoodEngine {
 
 		// ---- Render Meshes ----
 		{
-			//TODO: need to figure out a way to get rid of HasComponent and GetComponent all together
-			
+			auto& meshView        = m_Registry.View<MeshComponent>();
+			auto  transformBucket = m_Registry.GetBucket<TransformComponent>();
+			auto  materialBucket  = m_Registry.GetBucket<MaterialComponent>();
 
-			m_Registry.ForEach<MeshComponent>(
-				[this](auto& component, auto& entityID)
+			for (const auto& [component, entityID] : meshView)
+			{
+				if (!transformBucket->Contains(entityID))
+					continue;
+
+				auto& transform = transformBucket->Get(entityID);
+
+				if (!materialBucket->Contains(entityID))
 				{
-					if (!m_Registry.HasComponent<TransformComponent>(entityID))
-						return;
-
-					TransformComponent& transform = m_Registry.GetComponent<TransformComponent>(entityID);
-
-					if (!m_Registry.HasComponent<MaterialComponent>(entityID))
-						m_SceneRenderer->Draw(component.ID, transform.GetTransform());
-					else
-					{
-						MaterialComponent& material = m_Registry.GetComponent<MaterialComponent>(entityID);
-						m_SceneRenderer->Draw(component.ID, transform.GetTransform(), (uint32_t)material.ID);
-					}
-
-				});
-
-			m_Registry.ForEach<ModelComponent>(
-				[this](auto& component, auto& entityID)
+					m_SceneRenderer->Draw(component.ID, transform.GetTransform());
+				}
+				else
 				{
-					if (!m_Registry.HasComponent<TransformComponent>(entityID))
-						return;
+					auto& material = materialBucket->Get(entityID);
+					m_SceneRenderer->Draw(component.ID, transform.GetTransform(), (uint32_t)material.ID);
+				}
+			}
 
-					TransformComponent& transform = m_Registry.GetComponent<TransformComponent>(entityID);
+			auto& modelView = m_Registry.View<ModelComponent>();
 
-					//TODO: add a way to change materials dynamically from the editor. currently will have to 
-					//edit it directly from native application.
-					m_SceneRenderer->DrawModel(component.Info, transform.GetTransform());
+			for (const auto& [component, entityID] : modelView)
+			{
+				if (!transformBucket->Contains(entityID))
+					continue;
 
-				});
+				auto& transform = transformBucket->Get(entityID);
+				m_SceneRenderer->DrawModel(component.Info, transform.GetTransform());
+			}
 
 		}
 
@@ -211,35 +209,38 @@ namespace TooGoodEngine {
 		{
 			TGE_PROFILE_SCOPE(RenderGeometry);
 
-			m_Registry.ForEach<MeshComponent>(
-				[this](auto& component, auto& entityID) 
+			auto& meshView		  = m_Registry.View<MeshComponent>();
+			auto  transformBucket = m_Registry.GetBucket<TransformComponent>();
+			auto  materialBucket  = m_Registry.GetBucket<MaterialComponent>();
+
+			for (const auto& [component, entityID] : meshView)
+			{
+				if (!transformBucket->Contains(entityID))
+					continue;
+
+				auto& transform = transformBucket->Get(entityID);
+
+				if (!materialBucket->Contains(entityID))
 				{
-					if (!m_Registry.HasComponent<TransformComponent>(entityID))
-						return;
-
-					TransformComponent& transform = m_Registry.GetComponent<TransformComponent>(entityID);
-					
-					if(!m_Registry.HasComponent<MaterialComponent>(entityID))
-						m_SceneRenderer->Draw(component.ID, transform.GetTransform());
-					else
-					{
-						MaterialComponent& material = m_Registry.GetComponent<MaterialComponent>(entityID);
-						m_SceneRenderer->Draw(component.ID, transform.GetTransform(), (uint32_t)material.ID);
-					}
-				});
-
-			m_Registry.ForEach<ModelComponent>(
-				[this](auto& component, auto& entityID)
+					m_SceneRenderer->Draw(component.ID, transform.GetTransform());
+				}
+				else
 				{
-					if (!m_Registry.HasComponent<TransformComponent>(entityID))
-						return;
+					auto& material = materialBucket->Get(entityID);
+					m_SceneRenderer->Draw(component.ID, transform.GetTransform(), (uint32_t)material.ID);
+				}
+			}
 
-					TransformComponent& transform = m_Registry.GetComponent<TransformComponent>(entityID);
+			auto& modelView = m_Registry.View<ModelComponent>();
 
-					//TODO: add a way to change materials dynamically from the editor. currently will have to 
-					//edit it directly from native application.
-					m_SceneRenderer->DrawModel(component.Info, transform.GetTransform()); 
-				});
+			for (const auto& [component, entityID] : modelView)
+			{
+				if (!transformBucket->Contains(entityID))
+					continue;
+
+				auto& transform = transformBucket->Get(entityID);
+				m_SceneRenderer->DrawModel(component.Info, transform.GetTransform());
+			}
 			
 		}
 

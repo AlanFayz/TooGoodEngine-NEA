@@ -2,7 +2,7 @@
     "Project Name": "Example",
     "Project Directory": "../Example",
     "Asset Directory": "../Example\\Assets",
-    "Last Build Date": "2024-08-26 13:36:14",
+    "Last Build Date": "2024-08-26 16:30:37",
     "Scenes": {
         "": {
             "Scene Settings": {
@@ -23,7 +23,7 @@
                 ],
                 "Bloom Enabled": true,
                 "Bloom Threshold": 1.649999976158142,
-                "Bloom Intensity": 0.5,
+                "Bloom Intensity": 0.5799999833106995,
                 "Bloom Filter Radius": 0.004999999888241291
             },
             "Entities": {
@@ -84,8 +84,8 @@
                         ],
                         "Rotation": [
                             0.800000011920929,
-                            -105.0,
-                            0.30000001192092896
+                            -89.69999694824219,
+                            0.0
                         ]
                     },
                     "Model": 4920172149060857114
@@ -93,9 +93,9 @@
                 "Light": {
                     "Directional Light": {
                         "Color": [
+                            0.024911046028137207,
+                            0.42743897438049316,
                             1.0,
-                            0.024911046028137207,
-                            0.024911046028137207,
                             0.0
                         ],
                         "Direction": [
@@ -103,7 +103,7 @@
                             1.0,
                             0.0
                         ],
-                        "Intensity": 10.600000381469727
+                        "Intensity": 17.100000381469727
                     }
                 },
                 "Cube": {
@@ -155,7 +155,7 @@
                         "Fov": 60.0,
                         "Aspect Ratio": 1.7777777910232544,
                         "Near": 0.10000000149011612,
-                        "Far": 100.0,
+                        "Far": 100.16999816894531,
                         "Position": [
                             -5.679999828338623,
                             2.119999885559082,

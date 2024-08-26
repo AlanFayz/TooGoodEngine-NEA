@@ -99,7 +99,7 @@ namespace TooGoodEngine {
 		s_Data->MethodDefinitions[42] = { "internal_update_up_orthographic_camera_controller",		 PythonBindings::InternalUpdateUpOrthographicCameraController,	    METH_VARARGS, "internal" };
 		s_Data->MethodDefinitions[43] = { "internal_update_front_orthographic_camera_controller",	 PythonBindings::InternalUpdateFrontOrthographicCameraController,   METH_VARARGS, "internal" };
 
-		s_Data->MethodDefinitions[44] = { "internal_create_perspective_camera_controller",	 PythonBindings::InternalCreatePerpsectiveCameraController,   METH_VARARGS, "internal" };
+		s_Data->MethodDefinitions[44] = { "internal_create_perspective_camera_controller",   PythonBindings::InternalCreatePerpsectiveCameraController,   METH_VARARGS, "internal" };
 		s_Data->MethodDefinitions[45] = { "internal_set_fov_perspective_camera_controller",	 PythonBindings::InternalSetFovPerspectiveCameraController,   METH_VARARGS, "internal" };
 		s_Data->MethodDefinitions[46] = { "internal_set_aspect_ratio_perspective_camera_controller",	 PythonBindings::InternalSetAspectRatioPerpspectiveCameraController,   METH_VARARGS, "internal" };
 		s_Data->MethodDefinitions[47] = { "internal_set_near_perspective_camera_controller",	 PythonBindings::InternalSetNearPerspectiveCameraController,   METH_VARARGS, "internal" };
@@ -162,7 +162,7 @@ namespace TooGoodEngine {
 
 			if (i != std::string::npos)
 			{
-				stringPath.replace(i, 1, ScriptingEngineData::Delimiter);
+				stringPath.replace(i, ScriptingEngineData::DelimiterSize, ScriptingEngineData::Delimiter);
 				i += ScriptingEngineData::DelimiterSize;
 			}
 		}
