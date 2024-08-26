@@ -21,15 +21,15 @@ class PerspectiveCameraController:
 		if self.__handle is not None: 
 			TooGoodEngine.internal_set_far_perspective_camera_controller(self.__handle, far)
 
-	def update_position(self, new_position: tuple) -> None: 
+	def update_position(self, new_position) -> None: 
 		if self.__handle is not None: 
 			TooGoodEngine.internal_update_position_perspective_camera_controller(self.__handle, new_position[0], new_position[1], new_position[2])
 
-	def update_up(self, new_up: tuple) -> None:
+	def update_up(self, new_up) -> None:
 		if self.__handle is not None:
 			TooGoodEngine.internal_update_up_perspective_camera_controller(self.__handle, new_up[0], new_up[1], new_up[2])
 
-	def update_front(self, new_front: tuple) -> None:
+	def update_front(self, new_front) -> None:
 		if self.__handle is not None:
 			TooGoodEngine.internal_update_front_perspective_camera_controller(self.__handle, new_front[0], new_front[1], new_front[2])
 
@@ -53,15 +53,15 @@ class OrthographicCameraController:
 		if self.__handle is not None: 
 			TooGoodEngine.internal_set_right_orthographic_camera_controller(self.__handle, new_right)
 
-	def update_position(self, new_position: tuple) -> None: 
+	def update_position(self, new_position) -> None: 
 		if self.__handle is not None: 
 			TooGoodEngine.internal_update_position_orthographic_camera_controller(self.__handle, new_position[0], new_position[1], new_position[2])
 
-	def update_up(self, new_up: tuple) -> None:
+	def update_up(self, new_up) -> None:
 		if self.__handle is not None:
 			TooGoodEngine.internal_update_up_orthographic_camera_controller(self.__handle, new_up[0], new_up[1], new_up[2])
 
-	def update_front(self, new_front: tuple) -> None:
+	def update_front(self, new_front) -> None:
 		if self.__handle is not None:
 			TooGoodEngine.internal_update_front_orthographic_camera_controller(self.__handle, new_front[0], new_front[1], new_front[2])
 

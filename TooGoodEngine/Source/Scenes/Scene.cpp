@@ -132,6 +132,9 @@ namespace TooGoodEngine {
 
 		// ---- Render Meshes ----
 		{
+			//TODO: need to figure out a way to get rid of HasComponent and GetComponent all together
+			
+
 			m_Registry.ForEach<MeshComponent>(
 				[this](auto& component, auto& entityID)
 				{

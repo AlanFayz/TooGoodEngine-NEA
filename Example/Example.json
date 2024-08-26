@@ -2,7 +2,7 @@
     "Project Name": "Example",
     "Project Directory": "../Example",
     "Asset Directory": "../Example\\Assets",
-    "Last Build Date": "2024-08-26 02:55:20",
+    "Last Build Date": "2024-08-26 13:36:14",
     "Scenes": {
         "": {
             "Scene Settings": {
@@ -150,6 +150,7 @@
                     }
                 },
                 "Camera": {
+                    "Script": 8053089691323146172,
                     "Perspective Camera": {
                         "Fov": 60.0,
                         "Aspect Ratio": 1.7777777910232544,

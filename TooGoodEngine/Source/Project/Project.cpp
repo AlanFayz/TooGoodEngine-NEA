@@ -67,6 +67,9 @@ namespace TooGoodEngine {
 
 	void Project::Build(const std::filesystem::path& runtimeDirectory)
 	{
+		//TODO: should also copy all the shaders used into a shader directory.
+		//TODO: most of this should be in a binary format in the future not json.
+
 		std::filesystem::copy(m_ProjectDirectory, runtimeDirectory, std::filesystem::copy_options::recursive | std::filesystem::copy_options::update_existing);
 
 		std::filesystem::path file = runtimeDirectory / (m_ProjectName + ".json");

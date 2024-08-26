@@ -9,17 +9,17 @@ class Transform:
 	def __init__(self, handle):
 		self.__handle = handle
 
-	def translate(self, x: float, y: float, z: float) -> None:
+	def translate(self, translation) -> None:
 		if self.__handle is not None:
-			TooGoodEngine.internal_translate_transform(self.__handle, x, y, z)
+			TooGoodEngine.internal_translate_transform(self.__handle, translation[0], translation[1], translation[2])
 
-	def rotate(self, x: float, y: float, z: float) -> None:
+	def rotate(self, rotation) -> None:
 		if self.__handle is not None:
-			TooGoodEngine.internal_rotate_transform(self.__handle, x, y, z)
+			TooGoodEngine.internal_rotate_transform(self.__handle, rotation[0], rotation[1], rotation[2])
 
-	def scale(self, x: float, y: float, z: float) -> None:
+	def scale(self, scale) -> None:
 		if self.__handle is not None:
-			TooGoodEngine.internal_scale_transform(self.__handle, x, y, z)
+			TooGoodEngine.internal_scale_transform(self.__handle, scale[0], scale[1], scale[2])
 
 	def get_translation(self) -> tuple:
 		if self.__handle is not None:
@@ -52,7 +52,7 @@ class Material:
 	def __init__(self, handle):
 		self.__handle = handle
 
-	def set_attribute(self, name: int, attribute: tuple) -> None:
+	def set_attribute(self, name: int, attribute) -> None:
 		if self.__handle is not None and len(attribute) > 0 and len(attribute) < 5:
 			if len(attribute) == 4:
 				TooGoodEngine.internal_update_material_attribute(self.__handle, name, attribute[0], attribute[1], attribute[2], attribute[3])
@@ -68,19 +68,19 @@ class PointLight:
 	def __init__(self, handle):
 		self.__handle = handle
 
-	def translate_position(self, offset: tuple) -> None:
+	def translate_position(self, offset) -> None:
 		if self.__handle is not None:
 			TooGoodEngine.internal_translate_point_light(self.__handle, offset[0], offset[1], offset[2])
 
-	def update_color(self, new_color: tuple) -> None:
+	def update_color(self, new_color) -> None:
 		if self.__handle is not None:
 			TooGoodEngine.internal_update_point_light_color(self.__handle, new_color[0], new_color[1], new_color[2])
 
-	def update_intensity(self, new_intensity: float) -> None:
+	def update_intensity(self, new_intensity) -> None:
 		if self.__handle is not None:
 			TooGoodEngine.internal_update_point_light_intensity(self.__handle, new_intensity)
 
-	def update_radius(self, new_radius: float) -> None:
+	def update_radius(self, new_radius) -> None:
 		if self.__handle is not None:
 			TooGoodEngine.internal_update_point_light_radius(self.__handle, new_radius)
 
@@ -89,15 +89,15 @@ class DirectionalLight:
 	def __init__(self, handle):
 		self.__handle = handle 
 
-	def update_direction(self, new_direction: tuple) -> None: 
+	def update_direction(self, new_direction) -> None: 
 		if self.__handle is not None:
 			TooGoodEngine.internal_update_directional_light_direction(self.__handle, new_direction[0], new_direction[1], new_direction[2])
 
-	def update_color(self, new_color: tuple) -> None:
+	def update_color(self, new_color) -> None:
 		if self.__handle is not None:
 			TooGoodEngine.internal_update_directional_light_color(self.__handle, new_color[0], new_color[1]. new_color[2])
 		
-	def update_intensity(self, new_intensity: float) -> None: 
+	def update_intensity(self, new_intensity) -> None: 
 		if self.__handle is not None:
 			TooGoodEngine.internal_update_directional_light_intensity(self.__handle, new_intensity)
 

@@ -135,8 +135,8 @@ namespace TooGoodEngine {
 	void ScriptingEngine::Shutdown()
 	{
 		Py_XDECREF(s_Data->EngineModule);
-		delete s_Data;
 		Py_Finalize();
+		delete s_Data;
 	}
 	ScriptData ScriptingEngine::ExtractScript(const std::filesystem::path& path)
 	{
