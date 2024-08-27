@@ -11,10 +11,7 @@
 namespace TooGoodEngine {
 
 	template<typename Type>
-	concept Resizable = std::is_copy_constructible_v<Type> || std::is_move_assignable_v<Type>;
-
-	template<typename Type>
-	concept ValidItem = Resizable<Type> && std::is_default_constructible_v<Type>;
+	concept Resizable = (std::is_copy_constructible_v<Type> || std::is_move_assignable_v<Type>) && std::is_default_constructible_v<Type>;
 
 	class BaseSparseSet
 	{
@@ -24,7 +21,7 @@ namespace TooGoodEngine {
 		virtual void Remove(EntityID entityID) = 0;
 	};
 
-	template<ValidItem Type>
+	template<Resizable Type>
 	class SparseSet : public BaseSparseSet
 	{
 	public:
@@ -61,7 +58,7 @@ namespace TooGoodEngine {
 		DenseStorage  m_Dense;  //elements
 	};
 
-	template<ValidItem Type>
+	template<Resizable Type>
 	inline bool SparseSet<Type>::Contains(EntityID entityID) const
 	{
 		if (m_Sparse.size() > entityID)
@@ -70,7 +67,7 @@ namespace TooGoodEngine {
 		return false;
 	}
 
-	template<ValidItem Type>
+	template<Resizable Type>
 	inline void SparseSet<Type>::Insert(EntityID entityID, const Type& type)
 	{
 		_ResizeIfNeeded(entityID);
@@ -78,7 +75,7 @@ namespace TooGoodEngine {
 		m_Dense.push_back(std::make_pair(type, entityID));
 	}
 
-	template<ValidItem Type>
+	template<Resizable Type>
 	inline void SparseSet<Type>::Remove(EntityID entityID)
 	{
 		if (entityID >= m_Sparse.size() || m_Sparse[entityID] == g_NullEntity)
@@ -87,35 +84,39 @@ namespace TooGoodEngine {
 		size_t where = m_Sparse[entityID];
 
 		if (where >= m_Dense.size())
-			return;
+			return;   
 
-		m_Dense.erase(m_Dense.begin() + where);
+		size_t lastIndex = m_Dense.size() - 1;
 
-		for (auto& index : m_Sparse)
+		if (where != lastIndex)
 		{
-			if (index != g_NullEntity && index > where)
-				index--;
+			EntityID lastEntityID = m_Dense[lastIndex].second;
+
+			std::swap(m_Dense[where], m_Dense[lastIndex]);
+
+			m_Sparse[lastEntityID] = where;
 		}
 
-		m_Sparse[entityID] = g_NullEntity;
+		m_Dense.pop_back();
 
+		m_Sparse[entityID] = g_NullEntity;
 	}
 
 	//no checks here because assumes the user has done those checks.
-	template<ValidItem Type>
+	template<Resizable Type>
 	inline Type& SparseSet<Type>::Get(EntityID entityID)
 	{
 		return m_Dense[m_Sparse[entityID]].first;
 	}
 
-	template<ValidItem Type>
+	template<Resizable Type>
 	inline void SparseSet<Type>::_ResizeIfNeeded(EntityID entityID)
 	{
 		if (entityID >= m_Sparse.size())
-			m_Sparse.resize(((size_t)entityID + 1) * 2, g_NullEntity);
+			m_Sparse.resize((entityID + 1) * 2, g_NullEntity);
 	}
 
-	template<ValidItem Type>
+	template<Resizable Type>
 	template<typename ...Args>
 	inline void SparseSet<Type>::Emplace(EntityID entityID, Args&&... args)
 	{
