@@ -1,6 +1,7 @@
 #pragma once
 
-#include "SparseSet.h"
+#include "Core/SparseSet.h"
+#include "Entity.h"
 
 #include <typeindex>
 #include <unordered_map>
