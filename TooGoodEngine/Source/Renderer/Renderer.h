@@ -1,11 +1,13 @@
 #pragma once
 
 #include "Core/Base.h"
-#include "GeometryInstanceBuffer.h"
 #include "Math/Camera.h"
 #include "Assets/Model.h"
 #include "API/OpenGL/Framebuffer.h"
 #include "Assets/EnvironmentMap.h"
+
+#include "Storage/GeometryStorage.h"
+#include "Storage/MaterialStorage.h"
 
 namespace TooGoodEngine {
 
@@ -73,8 +75,7 @@ namespace TooGoodEngine {
 		OpenGL::Program BloomPass;
 		OpenGL::Program FinalPass;
 
-		std::vector<GeometryInstanceBuffer> GeometryList;
-
+		GeometryStorage GeometryStorage;
 		MaterialStorage MaterialStorage;
 
 		struct PointLightBuffer
@@ -123,7 +124,10 @@ namespace TooGoodEngine {
 		~Renderer();
 
 		GeometryID AddGeometry(const Geometry& data);
+		void RemoveGeometry(GeometryID id);
+
 		ModelInfo  AddModel(const Ref<Model>& model);
+		void RemoveModel(const ModelInfo& info);
 
 		MaterialID CreateMaterial(const MaterialInfo& material);
 		MaterialID CreateMaterial();

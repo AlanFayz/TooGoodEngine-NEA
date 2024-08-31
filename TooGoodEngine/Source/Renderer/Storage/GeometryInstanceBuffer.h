@@ -3,12 +3,13 @@
 #include "API/OpenGL/VertexArray.h"
 #include "API/OpenGL/Program.h"
 
-#include "RenderInfo.h"
+#include "Renderer/RenderInfo.h"
 
 #include <glm/glm.hpp>
 #include <vector>
 
 namespace TooGoodEngine {
+
 
 	struct GeometryInstanceBufferInfo
 	{
@@ -30,7 +31,9 @@ namespace TooGoodEngine {
 		~GeometryInstanceBuffer() = default;
 
 		GeometryInstanceBuffer(const GeometryInstanceBufferInfo& info);
+
 		GeometryInstanceBuffer(GeometryInstanceBuffer&& other) noexcept;
+		GeometryInstanceBuffer& operator=(GeometryInstanceBuffer&& other) noexcept;
 
 		void Push(const Instance& instance);
 		void BeginBatch(uint32_t instanceStorageBufferIndex);

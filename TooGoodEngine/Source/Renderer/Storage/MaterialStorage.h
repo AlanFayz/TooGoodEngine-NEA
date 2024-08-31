@@ -52,6 +52,9 @@ namespace TooGoodEngine {
 	class MaterialStorage
 	{
 	public:
+		using StorageType = SparseSet<Material, std::numeric_limits<size_t>::max(), StorageBufferAllocator<Material>>;
+
+	public:
 		MaterialStorage() = default;
 		~MaterialStorage() = default;
 
@@ -71,7 +74,7 @@ namespace TooGoodEngine {
 		Material _Create(const MaterialInfo& info);
 
 	private:
-		SparseSet<Material, std::numeric_limits<size_t>::max(), StorageBufferAllocator<Material>> m_Storage;
+		StorageType m_Storage;
 		std::vector<MaterialInfo> m_MetaData;
 		std::stack<size_t> m_AvailableSlots;
 	};

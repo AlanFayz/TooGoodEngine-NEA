@@ -219,6 +219,7 @@ void main()
 {
 	MaterialData materialData = FetchMaterialData(Materials.Data[o_MaterialIndex], o_TextureCoord);
 
+	//TODO: should probably remove ambient soon as we have emission now
 	vec4 Color = materialData.Ambient + materialData.Emission;
 
 	ShadeInfo info;

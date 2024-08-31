@@ -3,12 +3,13 @@
 #include <concepts>
 #include <vector>
 #include <algorithm>
-#include <iostream>
 
 namespace TooGoodEngine {
 
 	template<typename Type>
-	concept Resizable = (std::is_copy_constructible_v<Type> || std::is_move_assignable_v<Type>) && std::is_default_constructible_v<Type>;
+	concept Resizable =  (std::is_copy_constructible_v<Type> || std::is_move_constructible_v<Type>) && 
+						  std::is_move_assignable_v<Type> &&
+						  std::is_default_constructible_v<Type>;
 
 	class BaseSparseSet
 	{
@@ -18,7 +19,7 @@ namespace TooGoodEngine {
 		virtual void Remove(size_t index) = 0;
 	};
 
-	//if needed may add the ability to have a custom sparse allocator as well but don't see any benfit currently
+	//if needed may add the ability to have a custom sparse allocator as well but don't see any benifit currently
 
 	template<Resizable Type, size_t SparseNull = std::numeric_limits<size_t>::max(), class Allocator = std::allocator<Type>>
 	class SparseSet : public BaseSparseSet
@@ -48,8 +49,8 @@ namespace TooGoodEngine {
 		inline const DenseStorage&  GetDense()  const { return m_Dense; }
 		inline const AllocatorType GetDenseAllocator() const { return m_Dense.get_allocator(); }
 
-		auto begin() const { return m_Dense.begin(); }
-		auto end()   const { return m_Dense.end(); }
+		auto begin() { return m_Dense.begin(); }
+		auto end()   { return m_Dense.end(); }
 
 	private:
 		void _ResizeIfNeeded(size_t index);

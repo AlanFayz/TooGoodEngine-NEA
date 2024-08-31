@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Alignment.h"
 #include "Storage/MaterialStorage.h"
 
 #include <vector>
@@ -19,8 +18,9 @@ namespace TooGoodEngine {
 
 	struct Instance
 	{
-		TGE_SCALAR_ALIGNMENT uint32_t MaterialIndex;
-		TGE_MATRIX_4X4_ALIGNMENT glm::mat4 Transform;
+		glm::mat4 Transform;
+		uint32_t MaterialIndex;
+		glm::uvec3 NotUsed;
 	};
 
 	//represents the geometry info for a single mesh

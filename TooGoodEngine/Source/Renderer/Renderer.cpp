@@ -53,9 +53,12 @@ namespace TooGoodEngine {
 
 		info.DefaultMaterialIndex = CreateMaterial(data.Material); 
 
-		m_Data.GeometryList.emplace_back(info);
+		return m_Data.GeometryStorage.Create(info);
+	}
 
-		return m_Data.GeometryList.size() - 1;
+	void Renderer::RemoveGeometry(GeometryID id)
+	{
+		m_Data.GeometryStorage.Remove(id);
 	}
 
 	ModelInfo Renderer::AddModel(const Ref<Model>& model)
@@ -76,6 +79,14 @@ namespace TooGoodEngine {
 		}
 
 		return info;
+	}
+
+	void Renderer::RemoveModel(const ModelInfo& info)
+	{
+		for (size_t i = 0; i < info.Size; i++)
+		{
+			RemoveGeometry(info.ID + i);
+		}
 	}
 
 	void Renderer::ChangeSettings(const RenderSettings& settings)
@@ -117,9 +128,8 @@ namespace TooGoodEngine {
 
 	void Renderer::Draw(GeometryID id, const glm::mat4& transform, uint32_t materialIndex)
 	{
-		TGE_VERIFY(id < m_Data.GeometryList.size(), "index out of range");
 
-		uint32_t sparseIndex = materialIndex == 0 ? (uint32_t)m_Data.GeometryList[id].GetDefaultMaterialIndex() : materialIndex;
+		uint32_t sparseIndex = materialIndex == 0 ? (uint32_t)m_Data.GeometryStorage.Get(id).GetDefaultMaterialIndex() : materialIndex;
 
 		uint32_t index = (uint32_t)m_Data.MaterialStorage.GetIndex((size_t)sparseIndex);
 
@@ -127,7 +137,7 @@ namespace TooGoodEngine {
 		info.MaterialIndex = index;
 		info.Transform = transform;
 
-		m_Data.GeometryList[id].Push(info);
+		m_Data.GeometryStorage.PushInstance(id, info);
 	}
 
 	void Renderer::DrawModel(const ModelInfo& info, const glm::mat4& transform)
@@ -245,7 +255,7 @@ namespace TooGoodEngine {
 		}
 		
 
-		for (auto& instanceBuffer : m_Data.GeometryList)
+		for (auto& [instanceBuffer,  index]:m_Data.GeometryStorage)
 		{
 			if (instanceBuffer.GetInstanceCount() == 0)
 				continue;
@@ -286,15 +296,16 @@ namespace TooGoodEngine {
 
 			Draw(m_Data.CubeGeometryIndex, glm::identity<glm::mat4>());
 
-			m_Data.GeometryList[m_Data.CubeGeometryIndex].BeginBatch(0); 
+			auto& cubeBuffer = m_Data.GeometryStorage.Get(m_Data.CubeGeometryIndex);
+			cubeBuffer.BeginBatch(0);
 
 			OpenGL::Command::DrawElementsInstanced(
 				&m_Data.SkyBoxShaderProgram,
-				m_Data.GeometryList[m_Data.CubeGeometryIndex].GetVertexArrayPointer(),
-				OpenGL::DrawMode::Triangle, m_Data.GeometryList[m_Data.CubeGeometryIndex].GetIndexCount(),
-				m_Data.GeometryList[m_Data.CubeGeometryIndex].GetInstanceCount());
+				cubeBuffer.GetVertexArrayPointer(),
+				OpenGL::DrawMode::Triangle, cubeBuffer.GetIndexCount(),
+				cubeBuffer.GetInstanceCount());
 
-			m_Data.GeometryList[m_Data.CubeGeometryIndex].EndBatch();
+			cubeBuffer.EndBatch();
 
 			glDepthMask(GL_TRUE);
 			ApplySettings();

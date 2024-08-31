@@ -7,8 +7,8 @@ layout(location = 2) in vec2 TextureCoord;
 
 struct InstanceData
 {
-    uint MaterialIndex;
     mat4 Transform;
+    uvec4 MaterialIndex;
 };
  
 readonly layout(binding = 0) buffer u_Instance
@@ -32,5 +32,5 @@ void main()
     o_Normal = transpose(inverse(mat3(Instances.Data[gl_InstanceID].Transform))) * Normal; 
     o_Normal = normalize(o_Normal);
     o_TextureCoord = TextureCoord; 
-    o_MaterialIndex = Instances.Data[gl_InstanceID].MaterialIndex;
+    o_MaterialIndex = Instances.Data[gl_InstanceID].MaterialIndex.x;
 }

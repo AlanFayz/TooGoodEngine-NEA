@@ -71,6 +71,26 @@ namespace TooGoodEngine {
 		m_IndexCount = other.m_IndexCount;
 	}
 
+	GeometryInstanceBuffer& GeometryInstanceBuffer::operator=(GeometryInstanceBuffer&& other) noexcept
+	{
+		m_VertexArray = std::move(other.m_VertexArray);
+		m_GeometryBuffer = std::move(other.m_GeometryBuffer);
+		m_IndexBuffer = std::move(other.m_IndexBuffer);
+
+		for (size_t i = 0; i < 3; i++)
+		{
+			m_InstanceBuffers[i] = std::move(other.m_InstanceBuffers[i]);
+			m_MappedData[i] = other.m_MappedData[i];
+		}
+
+		m_CurrentInstanceBuffer = other.m_CurrentInstanceBuffer;
+		m_InstanceCount = other.m_InstanceCount;
+		m_DefaultMaterialIndex = other.m_DefaultMaterialIndex;
+		m_IndexCount = other.m_IndexCount;
+
+		return *this;
+	}
+
 
 	void GeometryInstanceBuffer::Push(const Instance& instance)
 	{
