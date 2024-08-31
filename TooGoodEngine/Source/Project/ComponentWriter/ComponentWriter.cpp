@@ -46,20 +46,22 @@ namespace TooGoodEngine {
 		//TODO: change from image path to UUID once asset manager is seriliazed.
 
 		JsonPath path = entityPath;
+
+		auto& materialInfo = component.Renderer->GetMaterialInfo(component.ID);
 		
 		//
 		// ---- Ambient ----
-		if (component.Material.Ambient.ImageComponent)
+		if (materialInfo.AmbientTexture)
 		{
 			path.insert(path.end(), { "Material", "Ambient Image" });
-			writer.WriteGeneric(path, (uint64_t)component.Material.Ambient.ImageComponent->GetAssetID());
+			writer.WriteGeneric(path, (uint64_t)materialInfo.AmbientTexture->GetAssetID());
 		}
 		 
 		{
 			path = entityPath;
 
 			path.insert(path.end(), { "Material", "Ambient" });
-			auto& color = component.Material.Ambient.Component;
+			auto& color = materialInfo.Ambient;
 			std::array<float, 4> attribute = { color[0], color[1], color[2], color[3] };
 			writer.WriteGeneric(path, attribute);
 		}
@@ -68,17 +70,17 @@ namespace TooGoodEngine {
 
 		//
 		// ---- Albedo ----
-		if (component.Material.Albedo.ImageComponent)
+		if (materialInfo.AlbedoTexture)
 		{
 			path.insert(path.end(), { "Material", "Albedo Image" });
-			writer.WriteGeneric(path, (uint64_t)component.Material.Albedo.ImageComponent->GetAssetID());
+			writer.WriteGeneric(path, (uint64_t)materialInfo.AlbedoTexture->GetAssetID());
 		}
 		
 		{
 			path = entityPath;
 
 			path.insert(path.end(), { "Material", "Albedo" });
-			auto& color = component.Material.Albedo.Component;
+			auto& color = materialInfo.Albedo;
 			std::array<float, 4> attribute = { color[0], color[1], color[2], color[3] };
 			writer.WriteGeneric(path, attribute);
 		}
@@ -87,18 +89,18 @@ namespace TooGoodEngine {
 
 		//
 		// ---- Metallic ----
-		if (component.Material.Metallic.ImageComponent)
+		if (materialInfo.MetallicTexture)
 		{
 			path.insert(path.end(), { "Material", "Metallic Image" });
-			writer.WriteGeneric(path, (uint64_t)component.Material.Metallic.ImageComponent->GetAssetID());
+			writer.WriteGeneric(path, (uint64_t)materialInfo.MetallicTexture->GetAssetID());
 		}
 
 		{
 			path = entityPath;
 
 			path.insert(path.end(), { "Material", "Metallic" });
-			auto& color = component.Material.Metallic.Component;
-			writer.WriteGeneric(path, color[0]);
+			auto& color = materialInfo.Metallic;
+			writer.WriteGeneric(path, color);
 		}
 	
 		
@@ -106,42 +108,42 @@ namespace TooGoodEngine {
 
 		//
 		// ---- Emission ----
-		if (component.Material.Emission.ImageComponent)
+		if (materialInfo.EmissionTexture)
 		{
 			path.insert(path.end(), { "Material", "Emission Image" });
-			writer.WriteGeneric(path, (uint64_t)component.Material.Emission.ImageComponent->GetAssetID());
+			writer.WriteGeneric(path, (uint64_t)materialInfo.EmissionTexture->GetAssetID());
 		}
 
 		{
 			path = entityPath;
 
 			path.insert(path.end(), { "Material", "Emission" });
-			auto& color = component.Material.Emission.Component;
+			auto& color = materialInfo.Emission;
 			std::array<float, 4> attribute = { color[0], color[1], color[2], color[3] };
 			writer.WriteGeneric(path, attribute);
 		}
 
 		path = entityPath;
 		path.insert(path.end(), { "Material", "Emission Factor" });
-		writer.WriteGeneric(path, component.Material.EmissionFactor);
+		writer.WriteGeneric(path, materialInfo.EmissionFactor);
 
 
 		path = entityPath;
 
 		//
 		// ---- Roughness ----
-		if (component.Material.Roughness.ImageComponent)
+		if (materialInfo.RoughnessTexture)
 		{
 			path.insert(path.end(), { "Material", "Roughness Image" });
-			writer.WriteGeneric(path, (uint64_t)component.Material.Roughness.ImageComponent->GetAssetID());
+			writer.WriteGeneric(path, (uint64_t)materialInfo.RoughnessTexture->GetAssetID());
 		}
 		
 		{
 			path = entityPath;
 
 			path.insert(path.end(), { "Material", "Roughness" });
-			auto& color = component.Material.Roughness.Component;
-			writer.WriteGeneric(path, color[0]);
+			auto& color = materialInfo.Roughness;
+			writer.WriteGeneric(path, color);
 		}
 		
 	}

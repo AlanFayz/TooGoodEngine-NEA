@@ -48,6 +48,8 @@ namespace TooGoodEngine {
 			uint32_t Masks;
 		};
 
+		inline constexpr uint32_t g_NullBufferID = std::numeric_limits<uint32_t>::max();
+
 		class Buffer
 		{
 		public:
@@ -55,8 +57,8 @@ namespace TooGoodEngine {
 			Buffer(const BufferInfo& info);
 			~Buffer();
 
-			Buffer(const Buffer& other) = delete;
-			Buffer& operator=(const Buffer& other) = delete;
+			Buffer(const Buffer& other);
+			Buffer& operator=(const Buffer& other);
 
 			Buffer(Buffer&& other) noexcept;
 			Buffer& operator=(Buffer&& other) noexcept;
@@ -66,7 +68,7 @@ namespace TooGoodEngine {
 
 			void Resize(size_t newCapacity);
 			void SetData(size_t capacity, const void* data);
-			
+
 			void Copy(const Ref<Buffer>& other);
 			void Copy(const Buffer& other);
 
@@ -75,15 +77,21 @@ namespace TooGoodEngine {
 			void  FlushMapRange();
 			void  Unmap();
 			 
-			void BindBase(uint32_t index, BufferType type);
-			void BindRange(uint32_t index, BufferType type, size_t size);
-			
-		private:
-			uint32_t m_BufferHandle = 0;
-			size_t   m_Capacity;
+			void BindBase(uint32_t index, BufferType type) const;
+			void BindRange(uint32_t index, BufferType type, size_t size) const;
 
-			uint32_t m_Flags;
-			bool m_Mapped;
+			void Allocate(const BufferInfo& info);
+			void Release();
+			
+			inline bool Valid() const { return m_BufferHandle != g_NullBufferID; }
+			inline bool Mapped() const { return m_Mapped; }
+
+		private:
+			uint32_t m_BufferHandle = g_NullBufferID;
+			size_t   m_Capacity = 0;
+
+			uint32_t m_Flags = 0;
+			bool m_Mapped = false;
 		};
 
 	}

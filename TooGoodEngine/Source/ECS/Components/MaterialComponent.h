@@ -10,7 +10,7 @@ namespace TooGoodEngine {
 		~MaterialComponent() = default;
 
 		MaterialID ID;
-		Material Material; 
+		Ref<Renderer> Renderer = nullptr; //renderer it is associated with.
 	};
 
 }

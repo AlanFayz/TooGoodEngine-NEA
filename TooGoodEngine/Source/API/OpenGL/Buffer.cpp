@@ -3,25 +3,49 @@
 namespace TooGoodEngine {
 	namespace OpenGL {
 
-		Buffer::Buffer(const BufferInfo& info)
-			: m_BufferHandle(0), m_Capacity(info.Capacity), m_Flags(info.Masks), m_Mapped(false)
-		{
-			TGE_VERIFY(m_Capacity > 0, "capacity cannot be 0");
 
-			glCreateBuffers(1, &m_BufferHandle);
-			glNamedBufferStorage(m_BufferHandle, m_Capacity, info.Data, info.Masks);
+
+		Buffer::Buffer(const BufferInfo& info)
+			: m_Capacity(info.Capacity), m_Flags(info.Masks)
+		{
+			Allocate(info);
 		}
 
 		Buffer::~Buffer()
 		{
-			if (m_BufferHandle)
-			{
-				if (m_Mapped)
-					Unmap();
+			Release();
+		}
 
-				glDeleteBuffers(1, &m_BufferHandle);
-				m_BufferHandle = 0;
+		Buffer::Buffer(const Buffer& other)
+		{
+			if (other.m_Capacity == 0 || other.m_BufferHandle == g_NullBufferID)
+			{
+				Release();
+				return;
 			}
+
+			OpenGL::BufferInfo info{};
+			info.Capacity = other.m_Capacity;
+			info.Masks = other.m_Flags;
+			info.Data = nullptr;
+
+			Release();
+			Allocate(info);
+			Copy(other);
+		}
+
+		Buffer& Buffer::operator=(const Buffer& other)
+		{
+			OpenGL::BufferInfo info{};
+			info.Capacity = other.m_Capacity;
+			info.Masks = other.m_Flags;
+			info.Data = nullptr;
+
+			Release();
+			Allocate(info);
+			Copy(other);
+
+			return *this;
 		}
 
 		Buffer::Buffer(Buffer&& other) noexcept
@@ -30,7 +54,7 @@ namespace TooGoodEngine {
 			  m_Flags(other.m_Flags), 
 			  m_Mapped(other.m_Mapped) 
 		{
-			other.m_BufferHandle = 0;
+			other.m_BufferHandle = g_NullBufferID;
 			other.m_Capacity = 0;
 			other.m_Flags = BufferOptionNone; 
 			other.m_Mapped = false;
@@ -45,7 +69,7 @@ namespace TooGoodEngine {
 				m_Flags = other.m_Flags;
 				m_Mapped = other.m_Mapped;
 
-				other.m_BufferHandle = 0;
+				other.m_BufferHandle = g_NullBufferID;
 				other.m_Capacity = 0;
 				other.m_Flags = BufferOptionNone;
 				other.m_Mapped = false;
@@ -115,13 +139,34 @@ namespace TooGoodEngine {
 			m_Mapped = false;
 			glUnmapNamedBuffer(m_BufferHandle);
 		}
-		void Buffer::BindBase(uint32_t index, BufferType type)
+		void Buffer::BindBase(uint32_t index, BufferType type) const
 		{
 			glBindBufferBase((GLenum)type, index, m_BufferHandle);
 		}
-		void Buffer::BindRange(uint32_t index, BufferType type, size_t size)
+		void Buffer::BindRange(uint32_t index, BufferType type, size_t size) const
 		{
 			glBindBufferRange((GLenum)type, (GLuint)index, m_BufferHandle, 0, (GLsizeiptr)size);
+		}
+		void Buffer::Allocate(const BufferInfo& info)
+		{
+			TGE_VERIFY(info.Capacity > 0, "capacity cannot be 0");
+
+			glCreateBuffers(1, &m_BufferHandle);
+			glNamedBufferStorage(m_BufferHandle, info.Capacity, info.Data, info.Masks);
+
+			m_Capacity = info.Capacity;
+			m_Flags = info.Masks;
+		}
+		void Buffer::Release()
+		{
+			if (m_BufferHandle)
+			{
+				if (m_Mapped)
+					Unmap();
+
+				glDeleteBuffers(1, &m_BufferHandle);
+				m_BufferHandle = g_NullBufferID;
+			}
 		}
 	}
 }

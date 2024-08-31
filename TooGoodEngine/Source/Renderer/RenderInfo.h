@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Alignment.h"
-#include "Material.h"
+#include "Storage/MaterialStorage.h"
 
 #include <vector>
 

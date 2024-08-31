@@ -240,7 +240,8 @@ namespace TooGoodEngine {
 		else if (stringName == "Material" && !registry.HasComponent<MaterialComponent>(*container))
 		{
 			MaterialComponent component{};
-			component.ID = renderer->AddMaterial(component.Material);
+			component.ID = renderer->CreateMaterial();
+			component.Renderer = renderer;
 			registry.AddComponent(*container, component);
 
 		}
@@ -565,24 +566,25 @@ namespace TooGoodEngine {
 			return nullptr;
 
 		MaterialComponent& component = registry.GetComponent<MaterialComponent>(*container);
+		auto& materialInfo = component.Renderer->GetMaterialInfo(component.ID);
 
 		InternalMaterialAttribute attribute = (InternalMaterialAttribute)materialCode;
 
 		switch (attribute)
 		{
-			case  InternalMaterialAttribute::Ambient:		 component.Material.Ambient.Component   = { r, g, b, a }; break;
-			case  InternalMaterialAttribute::Albedo:		 component.Material.Albedo.Component    = { r, g, b, a }; break;
-			case  InternalMaterialAttribute::Metallic:	     component.Material.Metallic.Component  = { r, g, b, a }; break;
-			case  InternalMaterialAttribute::Emission:		 component.Material.Emission.Component  = { r, g, b, a }; break;
-			case  InternalMaterialAttribute::Roughness:	     component.Material.Roughness.Component = { r, g, b, a }; break; 
-			case  InternalMaterialAttribute::EmissionFactor: component.Material.EmissionFactor = r;  break;
+			case  InternalMaterialAttribute::Ambient:		 materialInfo.Ambient   = { r, g, b, a }; break;
+			case  InternalMaterialAttribute::Albedo:		 materialInfo.Albedo    = { r, g, b, a }; break;
+			case  InternalMaterialAttribute::Emission:		 materialInfo.Emission  = { r, g, b, a }; break;
+			case  InternalMaterialAttribute::Metallic:	     materialInfo.Metallic  = r; break;
+			case  InternalMaterialAttribute::Roughness:	     materialInfo.Roughness = r; break;
+			case  InternalMaterialAttribute::EmissionFactor: materialInfo.EmissionFactor = r;  break;
 			case  InternalMaterialAttribute::None:
 			default:
 				TGE_LOG_WARNING("no attribute edited of material");
 				break;
 		}
 
-		renderer->ChangeMaterialData(component.ID, component.Material);
+		renderer->ModifyMaterial(component.ID, materialInfo);
 
 		return Py_None;
 	}
@@ -604,6 +606,8 @@ namespace TooGoodEngine {
 			return nullptr;
 
 		MaterialComponent& component = registry.GetComponent<MaterialComponent>(*container);
+		auto& materialInfo = component.Renderer->GetMaterialInfo(component.ID);
+
 
 		InternalMaterialAttribute attribute = (InternalMaterialAttribute)materialCode;
 
@@ -616,45 +620,45 @@ namespace TooGoodEngine {
 		{
 		case  InternalMaterialAttribute::Ambient:	
 
-			 pyR = PyFloat_FromDouble(component.Material.Ambient.Component.r);
-			 pyG = PyFloat_FromDouble(component.Material.Ambient.Component.g);
-			 pyB = PyFloat_FromDouble(component.Material.Ambient.Component.b);
-			 pyA = PyFloat_FromDouble(component.Material.Ambient.Component.a);
+			 pyR = PyFloat_FromDouble(materialInfo.Ambient.r);
+			 pyG = PyFloat_FromDouble(materialInfo.Ambient.g);
+			 pyB = PyFloat_FromDouble(materialInfo.Ambient.b);
+			 pyA = PyFloat_FromDouble(materialInfo.Ambient.a);
 
 
 			break;
 		case  InternalMaterialAttribute::Albedo:		 
 
-			pyR = PyFloat_FromDouble(component.Material.Albedo.Component.r);
-			pyG = PyFloat_FromDouble(component.Material.Albedo.Component.g);
-			pyB = PyFloat_FromDouble(component.Material.Albedo.Component.b);
-			pyA = PyFloat_FromDouble(component.Material.Albedo.Component.a);
+			pyR = PyFloat_FromDouble(materialInfo.Albedo.r);
+			pyG = PyFloat_FromDouble(materialInfo.Albedo.g);
+			pyB = PyFloat_FromDouble(materialInfo.Albedo.b);
+			pyA = PyFloat_FromDouble(materialInfo.Albedo.a);
 
 
 			break;
 		case  InternalMaterialAttribute::Metallic:	     
 
-			pyR = PyFloat_FromDouble(component.Material.Metallic.Component.r);
+			pyR = PyFloat_FromDouble(materialInfo.Metallic);
 
 			break;
 
 		case  InternalMaterialAttribute::Emission:		 
 			
-			pyR = PyFloat_FromDouble(component.Material.Emission.Component.r);
-			pyG = PyFloat_FromDouble(component.Material.Emission.Component.g);
-			pyB = PyFloat_FromDouble(component.Material.Emission.Component.g);
-			pyA = PyFloat_FromDouble(component.Material.Emission.Component.a);
+			pyR = PyFloat_FromDouble(materialInfo.Emission.r);
+			pyG = PyFloat_FromDouble(materialInfo.Emission.g);
+			pyB = PyFloat_FromDouble(materialInfo.Emission.b);
+			pyA = PyFloat_FromDouble(materialInfo.Emission.a);
 
 
 			break;
 		case  InternalMaterialAttribute::Roughness:	     
 			
-			pyR = PyFloat_FromDouble(component.Material.Roughness.Component.r);
+			pyR = PyFloat_FromDouble(materialInfo.Roughness);
 
 			break; 
 		case  InternalMaterialAttribute::EmissionFactor: 
 
-			pyR = PyFloat_FromDouble(component.Material.EmissionFactor);
+			pyR = PyFloat_FromDouble(materialInfo.EmissionFactor);
 
 			break;
 		case  InternalMaterialAttribute::None:

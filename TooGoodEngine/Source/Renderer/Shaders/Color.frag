@@ -15,8 +15,8 @@ const float FLOAT_MAX = 3.402823466e+38;
 struct MaterialAttribute 
 {
 	vec4  Component;
-	uvec4 RefToImage; //(ignore)
-	uvec4 BindlessSamplerAndType;
+	uvec2 BindlessSampler;
+	uvec2 NotUsed;
 };
 
 struct Material 
@@ -27,7 +27,7 @@ struct Material
 	MaterialAttribute Emission;
 	MaterialAttribute Roughness;
 
-	vec4 EmissionFactor;
+	vec4 EmissionFactor; //only r is used
 };
 
 struct MaterialData
@@ -71,28 +71,28 @@ MaterialData FetchMaterialData(in Material material, in vec2 textureCoordinate)
 {
 	MaterialData data;
 
-	if(material.Ambient.BindlessSamplerAndType.a == MATERIAL_TYPE_IMAGE) 
-		data.Ambient = texture(sampler2D(material.Ambient.BindlessSamplerAndType.xy), textureCoordinate) * material.Ambient.Component;
+	if(material.Ambient.BindlessSampler != uvec2(0, 0)) 
+		data.Ambient = texture(sampler2D(material.Ambient.BindlessSampler), textureCoordinate) * material.Ambient.Component;
 	else 
 		data.Ambient = material.Ambient.Component;
 
-	if(material.Albedo.BindlessSamplerAndType.a == MATERIAL_TYPE_IMAGE)
-		data.Albedo = texture(sampler2D(material.Albedo.BindlessSamplerAndType.xy), textureCoordinate) * material.Albedo.Component;
+	if(material.Albedo.BindlessSampler != uvec2(0, 0))
+		data.Albedo = texture(sampler2D(material.Albedo.BindlessSampler), textureCoordinate) * material.Albedo.Component;
 	else 
 		data.Albedo = material.Albedo.Component;
 
-	if(material.Metallic.BindlessSamplerAndType.a == MATERIAL_TYPE_IMAGE)
-		data.Metallic = texture(sampler2D(material.Metallic.BindlessSamplerAndType.xy), textureCoordinate).r * material.Metallic.Component.r;
+	if(material.Metallic.BindlessSampler != uvec2(0, 0))
+		data.Metallic = texture(sampler2D(material.Metallic.BindlessSampler), textureCoordinate).r * material.Metallic.Component.r;
 	else   
 		data.Metallic = material.Metallic.Component.r;
 
-	if(material.Emission.BindlessSamplerAndType.a == MATERIAL_TYPE_IMAGE)
-		data.Emission = texture(sampler2D(material.Emission.BindlessSamplerAndType.xy), textureCoordinate) * material.Emission.Component * material.EmissionFactor.r;
+	if(material.Emission.BindlessSampler != uvec2(0, 0))
+		data.Emission = texture(sampler2D(material.Emission.BindlessSampler), textureCoordinate) * material.Emission.Component * material.EmissionFactor.r;
 	else 
 		data.Emission = material.Emission.Component * material.EmissionFactor.r;
 
-	if(material.Roughness.BindlessSamplerAndType.a == MATERIAL_TYPE_IMAGE)
-		data.Roughness = texture(sampler2D(material.Albedo.BindlessSamplerAndType.xy), textureCoordinate).r * material.Roughness.Component.r;
+	if(material.Roughness.BindlessSampler != uvec2(0, 0))
+		data.Roughness = texture(sampler2D(material.Albedo.BindlessSampler), textureCoordinate).r * material.Roughness.Component.r;
 	else 
 		data.Roughness = material.Roughness.Component.r;
 

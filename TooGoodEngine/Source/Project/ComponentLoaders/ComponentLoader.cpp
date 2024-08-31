@@ -104,7 +104,7 @@ namespace TooGoodEngine {
 		return component;
 	}
 
-	MaterialComponent ComponentLoader::LoadMaterial(const json& jsonComponent, Renderer& sceneRenderer)
+	MaterialComponent ComponentLoader::LoadMaterial(const json& jsonComponent, const Ref<Renderer>& sceneRenderer)
 	{
 		MaterialInfo info{};
 
@@ -143,7 +143,7 @@ namespace TooGoodEngine {
 		}
 
 		{
-			info.Metallic.x = jsonComponent["Metallic"].get<float>();
+			info.Metallic = jsonComponent["Metallic"].get<float>();
 		}
 
 
@@ -175,8 +175,8 @@ namespace TooGoodEngine {
 		}
 
 		MaterialComponent component{};
-		component.Material = CreateMaterial(info);
-		component.ID = sceneRenderer.AddMaterial(component.Material);
+		component.ID = sceneRenderer->CreateMaterial(info);
+		component.Renderer = sceneRenderer;
 
 		return component;
 	}

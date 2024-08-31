@@ -138,7 +138,7 @@ namespace TooGoodEngine {
 				}
 				else if (secondIt.key() == "Material")
 				{
-					MaterialComponent component = ComponentLoader::LoadMaterial(jsonComponent, *renderer);
+					MaterialComponent component = ComponentLoader::LoadMaterial(jsonComponent, renderer);
 					registry.AddComponent(entity, component);
 				}
 				else if (secondIt.key() == "Point Light")

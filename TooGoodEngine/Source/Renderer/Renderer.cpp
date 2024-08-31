@@ -24,36 +24,20 @@ namespace TooGoodEngine {
 		_CreateDefaultMaterialsAndMeshes();
 		_CreateTextures();
 		_CreateFramebuffers();
-
 	}
 
 	Renderer::~Renderer()
 	{
-		for (size_t i = 0; i < m_Data.Materials.Size; i++)
-		{
-			m_Data.Materials.MappedData[i].MakeHandlesNonResident();
-			m_Data.Materials.MappedData[i].~Material();
-		}
 	}
 
-	MaterialID Renderer::AddMaterial(const Material& material)
+	MaterialID Renderer::CreateMaterial(const MaterialInfo& material)
 	{
-		MaterialID id = m_Data.Materials.Size;
+		return m_Data.MaterialStorage.Create(material);
+	}
 
-		if (m_Data.Materials.Size * sizeof(Material) >= m_Data.Materials.Buffer.GetCapacity())
-		{
-			m_Data.Materials.Buffer.Unmap();
-			m_Data.Materials.Buffer.Resize(m_Data.Materials.Size * sizeof(Material) * 2);
-			m_Data.Materials.MappedData = (Material*)m_Data.Materials.Buffer.MapRange(m_Data.Materials.MapFlags);
-
-			size_t sizeToInit = m_Data.Materials.Buffer.GetCapacity() - (m_Data.Materials.Size * sizeof(Material));
-			memset(m_Data.Materials.MappedData + m_Data.Materials.Size, 0, sizeToInit);
-		}
-
-		m_Data.Materials.MappedData[m_Data.Materials.Size++] = material;
-		
-		material.MakeHandlesResident();
-		return id;
+	MaterialID Renderer::CreateMaterial()
+	{
+		return m_Data.MaterialStorage.Create();
 	}
 
 	GeometryID Renderer::AddGeometry(const Geometry& data)
@@ -67,7 +51,7 @@ namespace TooGoodEngine {
 		info.VertexData = data.Vertices.data();
 		info.VertexDataSize = data.Vertices.size();
 
-		info.DefaultMaterialIndex = AddMaterial(CreateMaterial(data.Material)); 
+		info.DefaultMaterialIndex = CreateMaterial(data.Material); 
 
 		m_Data.GeometryList.emplace_back(info);
 
@@ -109,13 +93,19 @@ namespace TooGoodEngine {
 		_CreateFramebuffers();
 	}
 
-	void Renderer::ChangeMaterialData(MaterialID id, const Material& material)
+	void Renderer::ModifyMaterial(MaterialID id, const MaterialInfo& material)
 	{
-		TGE_VERIFY(id < m_Data.Materials.Size, "not a valid material id");
+		m_Data.MaterialStorage.Modify(id, material);
+	}
 
-		m_Data.Materials.MappedData[id].MakeHandlesNonResident(); 
-		m_Data.Materials.MappedData[id] = material;
-		m_Data.Materials.MappedData[id].MakeHandlesResident();
+	void Renderer::RemoveMaterial(MaterialID id)
+	{
+		m_Data.MaterialStorage.Remove(id);
+	}
+
+	MaterialInfo& Renderer::GetMaterialInfo(MaterialID id)
+	{
+		return m_Data.MaterialStorage.GetInfo(id);
 	}
 
 	void Renderer::Begin(Camera* camera)
@@ -128,10 +118,13 @@ namespace TooGoodEngine {
 	void Renderer::Draw(GeometryID id, const glm::mat4& transform, uint32_t materialIndex)
 	{
 		TGE_VERIFY(id < m_Data.GeometryList.size(), "index out of range");
-		TGE_VERIFY(materialIndex < m_Data.Materials.Size, "index out of range");
+
+		uint32_t sparseIndex = materialIndex == 0 ? (uint32_t)m_Data.GeometryList[id].GetDefaultMaterialIndex() : materialIndex;
+
+		uint32_t index = (uint32_t)m_Data.MaterialStorage.GetIndex((size_t)sparseIndex);
 
 		Instance info{};
-		info.MaterialIndex = materialIndex == 0 ? (uint32_t)m_Data.GeometryList[id].GetDefaultMaterialIndex() : materialIndex;
+		info.MaterialIndex = index;
 		info.Transform = transform;
 
 		m_Data.GeometryList[id].Push(info);
@@ -258,7 +251,7 @@ namespace TooGoodEngine {
 				continue;
 
 			instanceBuffer.BeginBatch(0);
-			m_Data.Materials.Buffer.BindBase(1, OpenGL::BufferTypeShaderStorage);
+			m_Data.MaterialStorage.SubmitBuffer(1);
 			m_Data.PointLights.Buffers[m_Data.PointLights.BufferIndex].BindBase(2, OpenGL::BufferTypeShaderStorage);
 			m_Data.DirectionalLights.Buffers[m_Data.DirectionalLights.BufferIndex].BindBase(3, OpenGL::BufferTypeShaderStorage);
 
@@ -510,28 +503,6 @@ namespace TooGoodEngine {
 	void Renderer::_CreateBuffers()
 	{
 		//
-		// ---- Materials ----
-		{
-			OpenGL::BufferInfo bufferInfo{};
-			bufferInfo.Capacity = 10 * sizeof(Material); 
-			bufferInfo.Data = nullptr;
-			bufferInfo.Masks = OpenGL::BufferOptionMapCoherient |
-				OpenGL::BufferOptionMapPersistent |
-				OpenGL::BufferOptionMapWrite;
-
-
-			m_Data.Materials.MapFlags = OpenGL::BufferOptionMapCoherient |
-				OpenGL::BufferOptionMapPersistent |
-				OpenGL::BufferOptionMapWrite;
-
-			m_Data.Materials.Buffer = OpenGL::Buffer(bufferInfo);
-			m_Data.Materials.MappedData = (Material*)m_Data.Materials.Buffer.MapRange(m_Data.Materials.MapFlags);
-			m_Data.Materials.Size = 0;
-
-			memset(m_Data.Materials.MappedData, 0, m_Data.Materials.Buffer.GetCapacity());
-		}
-
-		//
 		// ---- Point Lights ----
 		{
 			OpenGL::BufferInfo bufferInfo{};
@@ -604,7 +575,7 @@ namespace TooGoodEngine {
 
 			info.Albedo = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
-			info.Metallic = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+			info.Metallic = 0.0f;
 
 			info.Emission = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
 			info.EmissionFactor = 0.0f;
@@ -688,7 +659,7 @@ namespace TooGoodEngine {
 
 			info.Albedo = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
-			info.Metallic = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+			info.Metallic = 0.0f;
 
 			info.Emission = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
 			info.EmissionFactor = 0.0f;

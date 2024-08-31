@@ -45,7 +45,8 @@ namespace TooGoodEngine {
 		inline Type& Get(size_t index);
 
 		inline const SparseStorage& GetSparse() const { return m_Sparse; }
-		inline const DenseStorage& GetDense()  const { return m_Dense; }
+		inline const DenseStorage&  GetDense()  const { return m_Dense; }
+		inline const AllocatorType GetDenseAllocator() const { return m_Dense.get_allocator(); }
 
 		auto begin() const { return m_Dense.begin(); }
 		auto end()   const { return m_Dense.end(); }
@@ -90,11 +91,11 @@ namespace TooGoodEngine {
 
 		if (where != lastIndex)
 		{
-			size_t lastsize_t = m_Dense[lastIndex].second;
+			size_t lastSparseIndex = m_Dense[lastIndex].second;
 
 			std::swap(m_Dense[where], m_Dense[lastIndex]);
 
-			m_Sparse[lastsize_t] = where;
+			m_Sparse[lastSparseIndex] = where;
 		}
 
 		m_Dense.pop_back();

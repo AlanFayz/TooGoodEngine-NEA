@@ -2,7 +2,7 @@
     "Project Name": "Example",
     "Project Directory": "../Example",
     "Asset Directory": "../Example\\Assets",
-    "Last Build Date": "2024-08-29 16:29:59",
+    "Last Build Date": "2024-08-31 15:39:29",
     "Scenes": {
         "": {
             "Scene Settings": {
@@ -14,17 +14,17 @@
                 "Filling Mode": 3,
                 "Environment Map": 14265145243090405190,
                 "Level Of Detail": 2.0,
-                "Gradient": 0.5199999809265137,
+                "Gradient": 0.2800000011920929,
                 "Clear Color": [
                     1.0,
-                    1.0,
-                    1.0,
+                    0.5124555230140686,
+                    0.5124555230140686,
                     1.0
                 ],
                 "Bloom Enabled": true,
-                "Bloom Threshold": 1.649999976158142,
-                "Bloom Intensity": 0.5799999833106995,
-                "Bloom Filter Radius": 0.004999999888241291
+                "Bloom Threshold": 2.1700000762939453,
+                "Bloom Intensity": 0.6000000238418579,
+                "Bloom Filter Radius": 0.006000000052154064
             },
             "Entities": {
                 "Quad": {
@@ -61,12 +61,12 @@
                         ],
                         "Metallic": 0.0,
                         "Emission": [
-                            0.9395017623901367,
-                            0.11367634683847427,
-                            0.7308413982391357,
+                            0.9466192126274109,
+                            0.28297513723373413,
+                            0.28297513723373413,
                             0.0
                         ],
-                        "Emission Factor": 100.0,
+                        "Emission Factor": 47.79999923706055,
                         "Roughness": 0.0
                     }
                 },
@@ -173,6 +173,50 @@
                         ],
                         "In Use": true
                     }
+                },
+                "Second Quad": {
+                    "Transform": {
+                        "Position": [
+                            6.300000190734863,
+                            2.299999952316284,
+                            -3.5999999046325684
+                        ],
+                        "Scale": [
+                            5.0,
+                            5.0,
+                            1.0
+                        ],
+                        "Rotation": [
+                            0.0,
+                            90.0,
+                            0.0
+                        ]
+                    },
+                    "Mesh": "##Quad",
+                    "Material": {
+                        "Ambient": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ],
+                        "Albedo": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ],
+                        "Metallic": 0.0,
+                        "Emission Image": 12350840746774954786,
+                        "Emission": [
+                            0.7747434973716736,
+                            0.15759678184986115,
+                            0.8683273792266846,
+                            0.0
+                        ],
+                        "Emission Factor": 38.099998474121094,
+                        "Roughness": 0.0
+                    }
                 }
             }
         }
@@ -185,6 +229,10 @@
         "8053089691323146172": {
             "Type": "Script",
             "Path": "camera_controller.py"
+        },
+        "12350840746774954786": {
+            "Type": "Image",
+            "Path": "amazing.png"
         },
         "14265145243090405190": {
             "Type": "EnvironmentMap",

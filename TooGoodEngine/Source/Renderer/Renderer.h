@@ -75,36 +75,26 @@ namespace TooGoodEngine {
 
 		std::vector<GeometryInstanceBuffer> GeometryList;
 
-		//no need for triple buffering as materials are unlikely to change per frame
-		//so we do not need to restart every frame.
-		//a user can edit a material simply by its ID 
-		struct MaterialBuffer
-		{
-			OpenGL::Buffer Buffer;
-			Material* MappedData;
-			size_t Size;
-			uint32_t MapFlags;
-		};
+		MaterialStorage MaterialStorage;
 
 		struct PointLightBuffer
 		{
 			OpenGL::Buffer Buffers[3];
-			PointLight* MappedData[3];
-			size_t BufferIndex;
-			size_t Size;
-			uint32_t MapFlags;
+			PointLight* MappedData[3]{};
+			size_t BufferIndex = 0;
+			size_t Size = 0;
+			uint32_t MapFlags = 0;
 		};
 
 		struct DirectionalLightBuffer
 		{
 			OpenGL::Buffer Buffers[3];
-			DirectionalLight* MappedData[3];
-			size_t BufferIndex;
-			size_t Size;
-			uint32_t MapFlags;
+			DirectionalLight* MappedData[3]{};
+			size_t BufferIndex = 0;
+			size_t Size = 0;
+			uint32_t MapFlags = 0;
 		};
 
-		MaterialBuffer Materials;
 		PointLightBuffer PointLights;
 		DirectionalLightBuffer DirectionalLights;
 
@@ -132,13 +122,18 @@ namespace TooGoodEngine {
 		Renderer(const RenderSettings& settings);
 		~Renderer();
 
-		MaterialID AddMaterial(const Material& material);
 		GeometryID AddGeometry(const Geometry& data);
 		ModelInfo  AddModel(const Ref<Model>& model);
 
+		MaterialID CreateMaterial(const MaterialInfo& material);
+		MaterialID CreateMaterial();
+		void ModifyMaterial(MaterialID id, const MaterialInfo& material);
+		void RemoveMaterial(MaterialID id);
+		MaterialInfo& GetMaterialInfo(MaterialID id);
+
+
 		void ChangeSettings(const RenderSettings& settings);
 		void OnWindowResize(uint32_t newWidth, uint32_t newHeight);
-		void ChangeMaterialData(MaterialID id, const Material& material);
 		void ApplySettings();
 
 		void Begin(Camera* camera);

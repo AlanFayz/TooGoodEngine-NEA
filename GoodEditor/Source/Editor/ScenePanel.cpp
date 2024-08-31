@@ -60,10 +60,10 @@ namespace GoodEditor {
 					
 				if (ImGui::TreeNode(entity.GetName().c_str()))
 				{
-					if (!_EntityPopup(entity, *renderer, registry)) //returns true if entity has been deleted
+					if (!_EntityPopup(entity, renderer, registry)) //returns true if entity has been deleted
 					{
-						_DrawEntity(entity, registry, *renderer);
-						_DrawChildren(entity, registry, *renderer, displayedEntities); //recursively call
+						_DrawEntity(entity, registry, renderer);
+						_DrawChildren(entity, registry, renderer, displayedEntities); //recursively call
 					}
 					
 
@@ -112,7 +112,7 @@ namespace GoodEditor {
 
 		m_IDCount = 1000;
 	}
-	void ScenePanel::_DrawChildren(Entity& entity, EntityTree& tree, Renderer& sceneRenderer, std::unordered_set<EntityID>& displayed)
+	void ScenePanel::_DrawChildren(Entity& entity, EntityTree& tree, const Ref<Renderer>& sceneRenderer, std::unordered_set<EntityID>& displayed)
 	{
 		if (!entity)
 			return;
@@ -143,7 +143,7 @@ namespace GoodEditor {
 			}
 		}
 	}
-	void ScenePanel::_DrawEntity(Entity& entity, EntityTree& tree, Renderer& sceneRenderer)
+	void ScenePanel::_DrawEntity(Entity& entity, EntityTree& tree, const Ref<Renderer>& sceneRenderer)
 	{
 		if (ImGui::Button("Rename"))
 		{
@@ -172,7 +172,7 @@ namespace GoodEditor {
 			_DrawComponent(component);
 			if (_DeleteComponentPopup("Material Component"))
 			{
-				sceneRenderer.ChangeMaterialData(component.ID, {}); //clearing the material
+				component.Renderer->RemoveMaterial(component.ID);
 				tree.RemoveComponent<MaterialComponent>(entity);
 			}
 		}
@@ -219,7 +219,7 @@ namespace GoodEditor {
 		}
 	}
 
-	bool ScenePanel::_EntityPopup(Entity& entity, Renderer& sceneRenderer, EntityTree& tree)
+	bool ScenePanel::_EntityPopup(Entity& entity, const Ref<Renderer>& sceneRenderer, EntityTree& tree)
 	{
 		if (ImGui::BeginPopupContextItem())
 		{
@@ -252,9 +252,8 @@ namespace GoodEditor {
 			if (ImGui::MenuItem("Add Material") && !tree.HasComponent<MaterialComponent>(entity))
 			{
 				MaterialComponent component{};
-				Material material{};
-				component.ID = sceneRenderer.AddMaterial(material);
-				component.Material = material;
+				component.ID = sceneRenderer->CreateMaterial();
+				component.Renderer = sceneRenderer;
 
 				tree.AddComponent(entity, component);
 			}
@@ -473,30 +472,31 @@ namespace GoodEditor {
 	{
 		if (ImGui::TreeNode("Material"))
 		{
+			auto& materialInfo = component.Renderer->GetMaterialInfo(component.ID);
+
 			bool changed = false;
 
-			if (_DrawMaterialAttribute("Ambient", component.Material.Ambient.Component, component.Material.Ambient.ImageComponent))
+			if (_DrawMaterialAttribute("Ambient", materialInfo.Ambient, materialInfo.AmbientTexture))
 				changed = true;
 
-			if (_DrawMaterialAttribute("Albedo", component.Material.Albedo.Component, component.Material.Albedo.ImageComponent))
+			if (_DrawMaterialAttribute("Albedo", materialInfo.Albedo, materialInfo.AlbedoTexture))
 				changed = true;
 
-			if (_DrawMaterialAttribute("Emission", component.Material.Emission.Component, component.Material.Emission.ImageComponent))
+			if (_DrawMaterialAttribute("Emission", materialInfo.Emission, materialInfo.EmissionTexture))
 				changed = true;
 
-			if (_DrawMaterialSingle("Roughness", component.Material.Roughness.Component.x, component.Material.Roughness.ImageComponent))
+			if (_DrawMaterialSingle("Roughness", materialInfo.Roughness, materialInfo.RoughnessTexture))
 				changed = true;
 
-			if (_DrawMaterialSingle("Metalness", component.Material.Metallic.Component.x, component.Material.Metallic.ImageComponent))
+			if (_DrawMaterialSingle("Metalness", materialInfo.Metallic, materialInfo.MetallicTexture))
 				changed = true;
 
-			if (ImGui::DragFloat("Emission Factor", &component.Material.EmissionFactor, 0.1f, 0.0f, FLT_MAX / 2))
+			if (ImGui::DragFloat("Emission Factor", &materialInfo.EmissionFactor, 0.1f, 0.0f, FLT_MAX / 2))
 				changed = true;
 
 			if (changed)
 			{
-				component.Material.UpdateTypes();
-				g_SelectedProject->GetCurrentScene()->GetSceneRenderer()->ChangeMaterialData(component.ID, component.Material);
+				component.Renderer->ModifyMaterial(component.ID, materialInfo);
 			}
 
 			ImGui::TreePop();
