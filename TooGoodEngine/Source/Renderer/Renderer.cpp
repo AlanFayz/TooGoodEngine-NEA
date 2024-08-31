@@ -67,6 +67,9 @@ namespace TooGoodEngine {
 
 		TGE_VERIFY(data.size() > 0, "cannot have a size of 0");
 
+		if (m_Data.ModelInstanceCache.contains(model->GetAssetID()))
+			return m_Data.ModelInstanceCache[model->GetAssetID()];
+
 		ModelInfo info{};
 		
 		info.ID = AddGeometry(data[0]);
@@ -78,7 +81,14 @@ namespace TooGoodEngine {
 			info.Size++;
 		}
 
+		m_Data.ModelInstanceCache[model->GetAssetID()] = info;
 		return info;
+	}
+
+	void Renderer::RemoveModel(const Ref<Model>& model)
+	{
+		if (m_Data.ModelInstanceCache.contains(model->GetAssetID()))
+			RemoveModel(m_Data.ModelInstanceCache[model->GetAssetID()]);
 	}
 
 	void Renderer::RemoveModel(const ModelInfo& info)

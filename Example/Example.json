@@ -2,7 +2,7 @@
     "Project Name": "Example",
     "Project Directory": "../Example",
     "Asset Directory": "../Example\\Assets",
-    "Last Build Date": "2024-08-31 17:44:29",
+    "Last Build Date": "2024-08-31 21:38:06",
     "Scenes": {
         "": {
             "Scene Settings": {
@@ -93,17 +93,17 @@
                 "Light": {
                     "Directional Light": {
                         "Color": [
-                            0.024911046028137207,
-                            0.42743897438049316,
+                            1.0,
+                            1.0,
                             1.0,
                             0.0
                         ],
                         "Direction": [
-                            0.18000000715255737,
+                            1.0,
                             1.0,
                             0.0
                         ],
-                        "Intensity": 17.100000381469727
+                        "Intensity": 16.899999618530273
                     }
                 },
                 "Cube": {
@@ -207,7 +207,7 @@
                             0.0
                         ],
                         "Metallic": 0.0,
-                        "Emission Image": 12350840746774954786,
+                        "Emission Image": 6829518503595925466,
                         "Emission": [
                             0.7747434973716736,
                             0.15759678184986115,
@@ -226,13 +226,13 @@
             "Type": "Model",
             "Path": "standford-bunny.obj"
         },
+        "6829518503595925466": {
+            "Type": "Image",
+            "Path": "amazing.png"
+        },
         "8053089691323146172": {
             "Type": "Script",
             "Path": "camera_controller.py"
-        },
-        "12350840746774954786": {
-            "Type": "Image",
-            "Path": "amazing.png"
         },
         "14265145243090405190": {
             "Type": "EnvironmentMap",

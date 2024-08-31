@@ -16,6 +16,7 @@ namespace GoodEditor {
 	private:
 		static std::filesystem::path m_CurrentDirectory;
 		static std::set<std::filesystem::path> m_CachedDirectories;
+		static std::unordered_map<TooGoodEngine::UUID, ModelInfo> m_ModelInstanceCache;
 	};
 
 }

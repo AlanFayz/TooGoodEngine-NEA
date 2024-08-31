@@ -256,7 +256,7 @@ void main()
 
 	for(int i = 0; i < u_DirectionalLightSize; i++)
 	{
-		info.LightDirection = DirectionalLights.Data[i].DirectionAndIntensity.xyz;
+		info.LightDirection = -DirectionalLights.Data[i].DirectionAndIntensity.xyz;
 
 		info.LightColor = DirectionalLights.Data[i].Color.rgb * max(DirectionalLights.Data[i].DirectionAndIntensity.a, 0.0);
 		info.Attenuation = 1.0;

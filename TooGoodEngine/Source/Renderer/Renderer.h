@@ -67,6 +67,8 @@ namespace TooGoodEngine {
 	{
 		static const uint32_t BloomMipLevelCount = 8;
 
+		std::unordered_map<uint64_t, ModelInfo> ModelInstanceCache;
+
 		std::filesystem::path ShaderDirectory;
 		bool IsDrawing = false;
 
@@ -127,6 +129,7 @@ namespace TooGoodEngine {
 		void RemoveGeometry(GeometryID id);
 
 		ModelInfo  AddModel(const Ref<Model>& model);
+		void RemoveModel(const Ref<Model>& model); //should use this if possible
 		void RemoveModel(const ModelInfo& info);
 
 		MaterialID CreateMaterial(const MaterialInfo& material);
