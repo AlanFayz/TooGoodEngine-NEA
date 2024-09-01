@@ -10,31 +10,34 @@ const int BLOOM_UP_SAMPLE = 1;
 
 const float EPSILON = 0.0000001;
 
-uniform int   u_SampleOption;
-uniform int   u_SourceMip;
-uniform float u_Threshold;
-uniform float u_Intensity;
-uniform float u_FilterRadius;
+layout(binding = 0) uniform u_BloomPassBuffer 
+{
+   int   SampleOption;
+   int   SourceMip;
+   float Threshold;
+   float Intensity;
+   float FilterRadius;
+} Buffer;
 
 /*
-    algorithm is from this article 
+    down and up sampling algorithm is from this article 
     https://www.iryoku.com/next-generation-post-processing-in-call-of-duty-advanced-warfare/
 */
 
 vec3 Prefilter(in vec3 color)
 {
     float brightness   = max(color.r, max(color.g, color.b));
-    float contribution = max(0, brightness - u_Threshold); 
+    float contribution = max(0, brightness - Buffer.Threshold); 
     contribution /= max(brightness, EPSILON);
     return color * contribution;
 }
 
 vec3 DownSample(in vec2 texCoord)
 {   
-    float x = 1.0 / textureSize(u_Source, u_SourceMip).x; 
-    float y = 1.0 / textureSize(u_Source, u_SourceMip).y;
+    float x = 1.0 / textureSize(u_Source, Buffer.SourceMip).x; 
+    float y = 1.0 / textureSize(u_Source, Buffer.SourceMip).y;
     
-    float levelOfDetail = float(u_SourceMip);
+    float levelOfDetail = float(Buffer.SourceMip);
 
 	vec3 a = textureLod(u_Source, vec2(texCoord.x - 2*x, texCoord.y + 2*y), levelOfDetail).rgb;
     vec3 b = textureLod(u_Source, vec2(texCoord.x,       texCoord.y + 2*y), levelOfDetail).rgb;
@@ -63,10 +66,10 @@ vec3 DownSample(in vec2 texCoord)
 
 vec3 UpSample(in vec2 texCoord)
 {    
-    float levelOfDetail = float(u_SourceMip);
+    float levelOfDetail = float(Buffer.SourceMip);
 
-    float x = u_FilterRadius; 
-    float y = u_FilterRadius;
+    float x = Buffer.FilterRadius; 
+    float y = Buffer.FilterRadius;
 
     vec3 a = textureLod(u_Source, vec2(texCoord.x - x, texCoord.y + y), levelOfDetail).rgb;
     vec3 b = textureLod(u_Source, vec2(texCoord.x,     texCoord.y + y), levelOfDetail).rgb;
@@ -101,13 +104,13 @@ void main()
 
     //NOTE: u_Destination and u_Source are the same texture just going through different mips
 
-    if(u_SampleOption == BLOOM_DOWN_SAMPLE)
+    if(Buffer.SampleOption == BLOOM_DOWN_SAMPLE)
     {
-        destinationColor = u_Intensity * DownSample(texCoord);
-         if(u_SourceMip == 0)
+        destinationColor = Buffer.Intensity * DownSample(texCoord);
+         if(Buffer.SourceMip == 0)
             destinationColor = Prefilter(destinationColor);
     }
-    else if (u_SampleOption == BLOOM_UP_SAMPLE)
+    else if (Buffer.SampleOption == BLOOM_UP_SAMPLE)
     {
        destinationColor = UpSample(texCoord);
        destinationColor += imageLoad(u_Destination, coordinate).rgb;

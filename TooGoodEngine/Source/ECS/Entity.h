@@ -28,8 +28,6 @@ namespace TooGoodEngine {
 	private:
 		std::string m_Name;
 		EntityID m_ID;
-
-		friend class Registry;
 	};
 }
 

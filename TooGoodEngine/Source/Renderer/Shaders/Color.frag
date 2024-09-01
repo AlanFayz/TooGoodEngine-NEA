@@ -67,6 +67,17 @@ readonly layout(std430, binding = 3) buffer u_DirectionalLightBuffer
 	DirectionalLight Data[];
 } DirectionalLights;
 
+layout(binding = 4) uniform u_GeometryPassBuffer 
+{
+	int  PointLightSize;
+	int  DirectionalLightSize;
+	int  HasCubeMap;
+	int  NotUsed;
+	vec3 CameraPosition;
+	float NumberOfMipMaps;
+	mat4 ViewProjection;
+} Buffer;
+
 MaterialData FetchMaterialData(in Material material, in vec2 textureCoordinate)
 {
 	MaterialData data;
@@ -202,47 +213,44 @@ vec4 Shade(in ShadeInfo info)
 }
 
 
-in vec3 o_WorldPosition;
-in vec3 o_Normal;
-in vec2 o_TextureCoord;
-in flat uint o_MaterialIndex;
+in VertexData
+{
+	vec3 WorldPosition;
+	vec3 Normal;
+	vec2 TextureCoord;
+	flat uint MaterialIndex;
+} In;
 
- //TODO: should package everything into PerFrameData struct
-uniform int  u_PointLightSize;
-uniform int  u_DirectionalLightSize;
-uniform vec3 u_CameraPosition;
-uniform int  u_HasCubeMap;
-uniform float u_NumberOfMipMaps;
 uniform samplerCube u_CubeMap;
 
 void main()
 {
-	MaterialData materialData = FetchMaterialData(Materials.Data[o_MaterialIndex], o_TextureCoord);
+	MaterialData materialData = FetchMaterialData(Materials.Data[In.MaterialIndex], In.TextureCoord);
 
-	//TODO: should probably remove ambient soon as we have emission now
+	//NOTE: may want to remove ambient as we have emission now
 	vec4 Color = materialData.Ambient + materialData.Emission;
 
 	ShadeInfo info;
 	info.Data = materialData;
-	info.Normal = o_Normal;
-	info.CameraPosition = u_CameraPosition;
+	info.Normal = In.Normal;
+	info.CameraPosition = Buffer.CameraPosition;
 
 	//
 	// ---- Point Light Contribution ---- 
 	//
 
-	for(int i = 0; i < u_PointLightSize; i++)
+	for(int i = 0; i < Buffer.PointLightSize; i++)
 	{
 		float radius    = PointLights.Data[i].ColorAndRadius.a;
 		float intensity = PointLights.Data[i].PositionAndIntensity.a;
 		vec3 position   = PointLights.Data[i].PositionAndIntensity.rgb;
 		vec3 color      = PointLights.Data[i].ColorAndRadius.rgb;
 
-		float attenuation = Attenuate(radius, distance(position, o_WorldPosition));
+		float attenuation = Attenuate(radius, distance(position, In.WorldPosition));
 		if(attenuation <= 0.0)
 			continue;
 
-		info.LightDirection = normalize(position - o_WorldPosition); 
+		info.LightDirection = normalize(position - In.WorldPosition); 
 		info.LightColor = color * intensity;
 		info.Attenuation = attenuation;
 		
@@ -254,7 +262,7 @@ void main()
 	// ---- Directional Light Contribution ---- 
 	//
 
-	for(int i = 0; i < u_DirectionalLightSize; i++)
+	for(int i = 0; i < Buffer.DirectionalLightSize; i++)
 	{
 		info.LightDirection = -DirectionalLights.Data[i].DirectionAndIntensity.xyz;
 
@@ -268,10 +276,10 @@ void main()
 	// ---- Enviorment Map Contribution ---- 
 	//
 
-	if(u_HasCubeMap == 1)
+	if(Buffer.HasCubeMap == 1)
 	{
-		info.LightDirection = normalize(reflect(o_WorldPosition - u_CameraPosition, o_Normal));
-		info.LightColor = textureLod(u_CubeMap, info.LightDirection, (u_NumberOfMipMaps - 1) * materialData.Roughness).rgb;
+		info.LightDirection = normalize(reflect(In.WorldPosition - Buffer.CameraPosition, In.Normal));
+		info.LightColor = textureLod(u_CubeMap, info.LightDirection, (Buffer.NumberOfMipMaps - 1) * materialData.Roughness).rgb;
 		
 		info.Attenuation = 1.0;
 

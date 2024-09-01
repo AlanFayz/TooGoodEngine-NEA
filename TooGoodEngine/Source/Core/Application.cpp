@@ -45,7 +45,7 @@ namespace TooGoodEngine {
 	{
 		double delta = 0.0;
 
-		while (m_Runnning)
+		while (m_Running)
 		{
 			m_Window.Update();
 
@@ -78,7 +78,7 @@ namespace TooGoodEngine {
 	void Application::OnEvent(Event* event)
 	{
 		if (event->GetType() == EventType::ApplicationClose)
-			m_Runnning = false;
+			m_Running = false;
 
 		m_LayerStack.OnEvent(event);
 	}

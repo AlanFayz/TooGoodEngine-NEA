@@ -2,7 +2,7 @@
     "Project Name": "Example",
     "Project Directory": "../Example",
     "Asset Directory": "../Example\\Assets",
-    "Last Build Date": "2024-09-01 12:43:53",
+    "Last Build Date": "2024-09-01 15:58:50",
     "Scenes": {
         "": {
             "Scene Settings": {
@@ -13,8 +13,8 @@
                 "Blending Destination": 0,
                 "Filling Mode": 3,
                 "Environment Map": 14265145243090405190,
-                "Level Of Detail": 2.0,
-                "Gradient": 0.2800000011920929,
+                "Level Of Detail": 0.0,
+                "Gradient": 1.0,
                 "Clear Color": [
                     1.0,
                     0.5124555230140686,
@@ -22,9 +22,9 @@
                     1.0
                 ],
                 "Bloom Enabled": true,
-                "Bloom Threshold": 2.1700000762939453,
-                "Bloom Intensity": 0.6000000238418579,
-                "Bloom Filter Radius": 0.006000000052154064
+                "Bloom Threshold": 8.069999694824219,
+                "Bloom Intensity": 0.75,
+                "Bloom Filter Radius": 0.004999999888241291
             },
             "Entities": {
                 "Quad": {
@@ -66,7 +66,7 @@
                             0.28297513723373413,
                             0.0
                         ],
-                        "Emission Factor": 47.79999923706055,
+                        "Emission Factor": 20.0,
                         "Roughness": 0.0
                     }
                 },
@@ -145,7 +145,7 @@
                             0.024911046028137207,
                             0.0
                         ],
-                        "Emission Factor": 100.0,
+                        "Emission Factor": 20.0,
                         "Roughness": 0.0
                     }
                 },
@@ -214,7 +214,7 @@
                             0.8683273792266846,
                             0.0
                         ],
-                        "Emission Factor": 38.099998474121094,
+                        "Emission Factor": 21.899999618530273,
                         "Roughness": 0.0
                     }
                 }

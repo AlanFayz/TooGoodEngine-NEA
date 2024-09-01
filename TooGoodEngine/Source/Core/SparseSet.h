@@ -104,7 +104,7 @@ namespace TooGoodEngine {
 		m_Sparse[index] = SparseNull;
 	}
 
-	//no checks here because assumes the user has done those checks.
+	//no checks here, assumes the user has done those checks.
 	template<Resizable Type, size_t SparseNull, class Allocator>
 	inline Type& SparseSet<Type, SparseNull, Allocator>::Get(size_t index)
 	{

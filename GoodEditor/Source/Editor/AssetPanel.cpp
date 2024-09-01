@@ -6,8 +6,14 @@
 
 namespace GoodEditor {
 
-    std::set<std::filesystem::path> AssetPanel::m_CachedDirectories = {};
-    std::filesystem::path           AssetPanel::m_CurrentDirectory = "";
+    const AssetPanel::ExtensionAssetLoadMap AssetPanel::s_ExtensionFunctions 
+    { 
+        {".png", [](const std::filesystem::path& path) { return  g_SelectedProject->GetAssetManager().LoadAssetIntoBank<Image>(path); } },
+        {".fbx", [](const std::filesystem::path& path) { return  g_SelectedProject->GetAssetManager().LoadAssetIntoBank<Model>(path); } },
+        {".obj", [](const std::filesystem::path& path) { return  g_SelectedProject->GetAssetManager().LoadAssetIntoBank<Model>(path); } }, 
+        {".hdr", [](const std::filesystem::path& path) { return  g_SelectedProject->GetAssetManager().LoadAssetIntoBank<EnvironmentMap>(path); }},
+        {".py",  [](const std::filesystem::path& path) { return  g_SelectedProject->GetAssetManager().LoadAssetIntoBank<Script>(path); }}
+    };
 
 	void AssetPanel::DrawPanel(std::map<std::filesystem::path, Ref<Image>>& extensionMap)
 	{
@@ -19,19 +25,19 @@ namespace GoodEditor {
 
        auto& root = g_SelectedProject->GetAssetDirectory();
 
-       if (m_CurrentDirectory.empty())
+       if (s_CurrentDirectory.empty())
        {
-           m_CurrentDirectory = root;
+           s_CurrentDirectory = root;
 
-           if (!std::filesystem::exists(m_CurrentDirectory))
-               std::filesystem::create_directories(m_CurrentDirectory);
+           if (!std::filesystem::exists(s_CurrentDirectory))
+               std::filesystem::create_directories(s_CurrentDirectory);
        }
        
        //if user deletes the root automatically recreate it.
 
        if (!std::filesystem::exists(root))
        {
-           m_CurrentDirectory = root;
+           s_CurrentDirectory = root;
            std::filesystem::create_directories(root);
        }
 
@@ -40,11 +46,11 @@ namespace GoodEditor {
        const int buttonWidth = 120;
        const int buttonHeight = 100;
 
-       if (m_CurrentDirectory != g_SelectedProject->GetAssetDirectory())
+       if (s_CurrentDirectory != g_SelectedProject->GetAssetDirectory())
        {
            if (ImGui::ImageButton((ImTextureID)(intptr_t)extensionMap["back"]->GetTexture().GetHandle(), ImVec2(buttonWidth, buttonHeight), ImVec2(0, 1), ImVec2(1, 0)))
            {
-               m_CurrentDirectory = m_CurrentDirectory.parent_path();
+               s_CurrentDirectory = s_CurrentDirectory.parent_path();
            }
            else
            {
@@ -55,17 +61,21 @@ namespace GoodEditor {
 
        ImVec2 size = ImGui::GetWindowSize();
 
-       while (!std::filesystem::exists(m_CurrentDirectory))
-           m_CurrentDirectory = m_CurrentDirectory.parent_path();
+       while (!std::filesystem::exists(s_CurrentDirectory))
+           s_CurrentDirectory = s_CurrentDirectory.parent_path();
 
        int k = 10000;
 
-       for (const auto& entry : std::filesystem::directory_iterator(m_CurrentDirectory))
+       for (const auto& entry : std::filesystem::directory_iterator(s_CurrentDirectory))
        {
            std::filesystem::path path = entry.path();
            std::filesystem::path extension = path.extension();
            std::string filename = path.filename().string();
            std::string sPath = path.string();
+
+           //any extension not supported by the engine will be ignored
+           if (!extensionMap.contains(extension))
+               continue;
 
            ImGui::PushID(k++);
 
@@ -73,14 +83,14 @@ namespace GoodEditor {
            {
                ImGui::BeginGroup();
                bool pressed = ImGui::ImageButton((ImTextureID)(intptr_t)extensionMap["folder"]->GetTexture().GetHandle(),
-                   ImVec2(buttonWidth, buttonHeight), ImVec2(0, 1), ImVec2(1, 0));
+                                                 ImVec2(buttonWidth, buttonHeight), ImVec2(0, 1), ImVec2(1, 0));
 
                ImGui::Text(filename.c_str());
 
                ImGui::EndGroup();
 
                if (pressed)
-                   m_CurrentDirectory = entry.path();
+                   s_CurrentDirectory = entry.path();
 
                currentX += buttonWidth;
 
@@ -89,117 +99,96 @@ namespace GoodEditor {
                else
                    currentX = 0;
                
+               ImGui::PopID();
+               continue;
            }
-           else
-           {
-               //any extension not supported by the engine will be ignored
-               if (!extensionMap.contains(extension))
-               {
-                   ImGui::PopID();
-                   continue;
-               }
+          
 
-               ImGui::BeginGroup();
+            ImGui::BeginGroup();
 
-               ImGui::ImageButton((ImTextureID)(intptr_t)extensionMap[extension]->GetTexture().GetHandle(),
-                   ImVec2(buttonWidth, buttonHeight), ImVec2(0, 1), ImVec2(1, 0));
+            ImGui::ImageButton((ImTextureID)(intptr_t)extensionMap[extension]->GetTexture().GetHandle(), 
+                                ImVec2(buttonWidth, buttonHeight), ImVec2(0, 1), ImVec2(1, 0));
 
-               if (!m_CachedDirectories.contains(path))
-               {
-                   if (extension == ".png")
-                       g_SelectedProject->GetAssetManager().LoadAssetIntoBank<Image>(path);
-                   if (extension == ".fbx" || extension == ".obj")
-                   {
-                       Ref<Model> model = g_SelectedProject->GetAssetManager().LoadAssetIntoBank<Model>(path);
-                     
-                       if (model)
-                       {
-                           ModelInfo info = g_SelectedProject->GetCurrentScene()->GetSceneRenderer()->AddModel(model);
-                           model->SetInfo(info);
-                       }
-                      
-                   }
-                   if (extension == ".hdr")
-                       g_SelectedProject->GetAssetManager().LoadAssetIntoBank<EnvironmentMap>(path);
+            if (!s_CachedDirectories.contains(path))
+            {
+                Ref<Asset> asset = s_ExtensionFunctions.at(extension)(path);
 
-                   if (extension == ".py")
-                       g_SelectedProject->GetAssetManager().LoadAssetIntoBank<Script>(path);
+                if (asset && asset->GetAssetType() == AssetType::Model)
+                {
+                    Ref<Model> model = std::dynamic_pointer_cast<Model>(asset);
 
-                   m_CachedDirectories.insert(path);
-               }
+                    if (model)
+                    {
+                        ModelInfo info = g_SelectedProject->GetCurrentScene()->GetSceneRenderer()->AddModel(model);
+                        model->SetInfo(info);
+                    }
+                }
+            }
+            
+            if (ImGui::BeginDragDropSource())
+            {
+                Ref<Asset> asset = g_SelectedProject->GetAssetManager().FetchAsset(path);
 
-               if (ImGui::BeginDragDropSource())
-               {
-                   Ref<Asset> asset = g_SelectedProject->GetAssetManager().FetchAsset(path);
+                if (!asset)
+                {
+                    g_SelectedProject->GetAssetManager().RemoveAsset(path);
 
-                   if (!asset)
-                   {
-                       g_SelectedProject->GetAssetManager().RemoveAsset(path);
+                    asset = s_ExtensionFunctions.at(extension)(path);
 
-                       if (extension == ".png")
-                           asset = g_SelectedProject->GetAssetManager().LoadAssetIntoBank<Image>(path);
-                       else if (extension == ".hdr")
-                           asset = g_SelectedProject->GetAssetManager().LoadAssetIntoBank<EnvironmentMap>(path);
-                       else if (extension == ".fbx" || extension == ".obj")
-                       {
-                           Ref<Model> model = g_SelectedProject->GetAssetManager().LoadAssetIntoBank<Model>(path);
-                         
-                           if (model)
-                           {
-                               ModelInfo info = g_SelectedProject->GetCurrentScene()->GetSceneRenderer()->AddModel(model);
-                               model->SetInfo(info);
+                    if (asset && asset->GetAssetType() == AssetType::Model)
+                    {
+                        Ref<Model> model = std::dynamic_pointer_cast<Model>(asset);
 
-                               asset = model;
-                           }
-                       }
-                       else
-                       {
-                           asset = g_SelectedProject->GetAssetManager().LoadAssetIntoBank<Script>(path);
-                       }
-                   }
+                        if (model)
+                        {
+                            ModelInfo info = g_SelectedProject->GetCurrentScene()->GetSceneRenderer()->AddModel(model);
+                            model->SetInfo(info);
 
-                   if (asset)
-                   {
-                       TooGoodEngine::UUID id = asset->GetAssetID();
+                            asset = model;
+                        }
+                    }
+                }
 
-                       if (extension == ".png")
-                           ImGui::SetDragDropPayload("IMAGE_TRANSFER_UUID", &id, sizeof(TooGoodEngine::UUID));
-                       else if (extension == ".hdr")
-                           ImGui::SetDragDropPayload("ENVIRONMENT_MAP_TRANSFER_UUID", &id, sizeof(TooGoodEngine::UUID));
-                       else if (extension == ".fbx" || extension == ".obj")
-                           ImGui::SetDragDropPayload("MODEL_TRANSFER_UUID", &id, sizeof(TooGoodEngine::UUID));
-                       else
-                           ImGui::SetDragDropPayload("SCRIPT_TRANSFER_UUID", &id, sizeof(TooGoodEngine::UUID));
-                   }
-                   
+                if (asset)
+                {
+                    TooGoodEngine::UUID id = asset->GetAssetID();
 
-                   ImGui::Text(filename.c_str());
-                   ImGui::EndDragDropSource();
-               }
+                    if (extension == ".png")
+                        ImGui::SetDragDropPayload("IMAGE_TRANSFER_UUID", &id, sizeof(TooGoodEngine::UUID));
+                    else if (extension == ".hdr")
+                        ImGui::SetDragDropPayload("ENVIRONMENT_MAP_TRANSFER_UUID", &id, sizeof(TooGoodEngine::UUID));
+                    else if (extension == ".fbx" || extension == ".obj")
+                        ImGui::SetDragDropPayload("MODEL_TRANSFER_UUID", &id, sizeof(TooGoodEngine::UUID));
+                    else
+                        ImGui::SetDragDropPayload("SCRIPT_TRANSFER_UUID", &id, sizeof(TooGoodEngine::UUID));
+                }
+                
 
-               ImGui::Text(filename.c_str());
+                ImGui::Text(filename.c_str());
+                ImGui::EndDragDropSource();
+            }
 
-               ImGui::EndGroup();
+            ImGui::Text(filename.c_str());
 
-               currentX += buttonWidth;
+            ImGui::EndGroup();
 
-               if (currentX < size.x - buttonWidth)
-                   ImGui::SameLine();
-               else
-                   currentX = 0;
-               
-           }
+            currentX += buttonWidth;
+
+            if (currentX < size.x - buttonWidth)
+                ImGui::SameLine();
+            else
+                currentX = 0;
 
            ImGui::PopID();
        }
 
 
-       for (const auto& directory : m_CachedDirectories)
+       for (const auto& directory : s_CachedDirectories)
        {
            if (!std::filesystem::exists(directory))
            {
                g_SelectedProject->GetAssetManager().RemoveAsset(directory);
-               m_CachedDirectories.erase(directory);
+               s_CachedDirectories.erase(directory);
            }
        }
         

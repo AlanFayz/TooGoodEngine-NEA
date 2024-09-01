@@ -37,7 +37,7 @@ namespace TooGoodEngine {
 		LayerStack m_LayerStack;
 		EventDispatcher<Application> m_Dispatcher;
 
-		bool m_Runnning = true;
+		bool m_Running = true;
 		Window m_Window;
 		Timer m_Timer;
 

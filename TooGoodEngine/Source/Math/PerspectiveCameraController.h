@@ -12,6 +12,7 @@ namespace TooGoodEngine {
 		PerspectiveCameraController(const Ref<PerspectiveCamera>& camera);
 		~PerspectiveCameraController() = default;
 
+		//Update is the default camera movement but more can be programmed using functions below.
 		void Update(double delta);
 		void SetCamera(const Ref<PerspectiveCamera>& newCamera);
 

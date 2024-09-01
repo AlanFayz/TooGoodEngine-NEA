@@ -16,21 +16,34 @@ readonly layout(binding = 0) buffer u_Instance
     InstanceData Data[];
 } Instances;
 
-out vec3 o_WorldPosition;
-out vec3 o_Normal;
-out vec2 o_TextureCoord;
-out flat uint o_MaterialIndex;
 
-uniform mat4 u_ViewProjection;
+out VertexData
+{
+    vec3 WorldPosition;
+    vec3 Normal;
+    vec2 TextureCoord;
+    flat uint MaterialIndex;
+} Out;
+
+layout(binding = 4) uniform u_GeometryPassBuffer 
+{
+	int  PointLightSize;
+	int  DirectionalLightSize;
+	int  HasCubeMap;
+	int  NotUsed;
+	vec3 CameraPosition;
+	float NumberOfMipMaps;
+	mat4 ViewProjection;
+} Buffer;
 
 void main()
 {
     vec4 WorldPosition = Instances.Data[gl_InstanceID].Transform * vec4(Position, 1.0);
-    gl_Position = u_ViewProjection * WorldPosition;
+    gl_Position = Buffer.ViewProjection * WorldPosition;
 
-    o_WorldPosition = WorldPosition.xyz;
-    o_Normal = transpose(inverse(mat3(Instances.Data[gl_InstanceID].Transform))) * Normal; 
-    o_Normal = normalize(o_Normal);
-    o_TextureCoord = TextureCoord; 
-    o_MaterialIndex = Instances.Data[gl_InstanceID].MaterialIndex.x;
+    Out.WorldPosition = WorldPosition.xyz;
+    Out.Normal = transpose(inverse(mat3(Instances.Data[gl_InstanceID].Transform))) * Normal; 
+    Out.Normal = normalize(Out.Normal);
+    Out.TextureCoord = TextureCoord; 
+    Out.MaterialIndex = Instances.Data[gl_InstanceID].MaterialIndex.x;
 }

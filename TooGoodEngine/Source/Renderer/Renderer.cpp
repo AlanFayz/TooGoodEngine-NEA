@@ -244,25 +244,22 @@ namespace TooGoodEngine {
 	{
 		m_Data.GeometryShaderProgram.Use();
 
-		PerFrameData data{};
-		data.ViewProjection = m_Data.CurrentCamera->GetProjection() * m_Data.CurrentCamera->GetView();
+		GeometryUniformBuffer data{};
+		data.PointLightSize		  = (int)m_Data.PointLights.Size;
+		data.DirectionalLightSize = (int)m_Data.DirectionalLights.Size;
+		data.CameraPosition		  = m_Data.CurrentCamera->GetCameraPosition();
+		data.NumberOfMipMaps      = (float)g_NumberOfMipMaps;
+		data.ViewProjection       = m_Data.CurrentCamera->GetProjection() * m_Data.CurrentCamera->GetView();
+		data.HasCubeMap = 0;
 
-		m_Data.GeometryShaderProgram.SetUniform("u_ViewProjection", data.ViewProjection);
-		m_Data.GeometryShaderProgram.SetUniform("u_PointLightSize", (int)m_Data.PointLights.Size);
-		m_Data.GeometryShaderProgram.SetUniform("u_DirectionalLightSize", (int)m_Data.DirectionalLights.Size);
-		m_Data.GeometryShaderProgram.SetUniform("u_CameraPosition", m_Data.CurrentCamera->GetCameraPosition());
-		m_Data.GeometryShaderProgram.SetUniform("u_NumberOfMipMaps", (float)g_NumberOfMipMaps);
-		
 		if (m_Settings.CurrentEnvironmentMap)
 		{
-			m_Data.GeometryShaderProgram.SetUniform("u_HasCubeMap", 1);
+			data.HasCubeMap = 1;
 			m_Data.GeometryShaderProgram.SetUniform("u_CubeMap", 0);
 			m_Settings.CurrentEnvironmentMap->GetTexture().Bind(0);
 		}
-		else
-		{
-			m_Data.GeometryShaderProgram.SetUniform("u_HasCubeMap", 0);
-		}
+
+		m_Data.GeometryPassBuffer.SetData(sizeof(GeometryUniformBuffer), &data);
 		
 
 		for (auto& [instanceBuffer,  index]:m_Data.GeometryStorage)
@@ -274,7 +271,7 @@ namespace TooGoodEngine {
 			m_Data.MaterialStorage.SubmitBuffer(1);
 			m_Data.PointLights.Buffers[m_Data.PointLights.BufferIndex].BindBase(2, OpenGL::BufferTypeShaderStorage);
 			m_Data.DirectionalLights.Buffers[m_Data.DirectionalLights.BufferIndex].BindBase(3, OpenGL::BufferTypeShaderStorage);
-
+			m_Data.GeometryPassBuffer.BindBase(4, OpenGL::BufferTypeUniform);
 
 			OpenGL::Command::DrawElementsInstanced(
 				&m_Data.GeometryShaderProgram,
@@ -374,8 +371,16 @@ namespace TooGoodEngine {
 			float groupX = std::ceil((float)destinationWidth / 8.0f);
 			float groupY = std::ceil((float)destinationHeight / 8.0f);
 
-			m_Data.BloomPass.SetUniform("u_SampleOption", DownSample);
-			m_Data.BloomPass.SetUniform("u_SourceMip", (int)source);
+			BloomUniformBuffer data{};
+			data.SampleOption = DownSample;
+			data.SourceMip = (int)source;
+			data.Threshold = m_Settings.Threshold;
+			data.Intensity = m_Settings.Intensity;
+			data.FilterRadius = m_Settings.FilterRadius;
+			
+			m_Data.BloomPassBuffer.SetData(sizeof(BloomUniformBuffer), &data);
+			m_Data.BloomPassBuffer.BindBase(0, OpenGL::BufferTypeUniform);
+			
 			m_Data.BloomPass.SetUniform("u_Source", 0);
 			m_Data.BloomPass.SetUniform("u_Destination", 1);
 
@@ -406,14 +411,29 @@ namespace TooGoodEngine {
 			float groupX = std::ceil((float)destinationWidth / 8.0f);
 			float groupY = std::ceil((float)destinationHeight / 8.0f);
 
-			//TODO: package in struct 
+			
+			BloomUniformBuffer data{};
+			data.SampleOption = UpSample;
+			data.SourceMip    = (int)source;
+			data.Threshold = m_Settings.Threshold;
+			data.Intensity = m_Settings.Intensity;
+			data.FilterRadius = m_Settings.FilterRadius;
+
+
+			m_Data.BloomPassBuffer.SetData(sizeof(BloomUniformBuffer), &data);
+			m_Data.BloomPassBuffer.BindBase(0, OpenGL::BufferTypeUniform);
+
+#if 0
 			m_Data.BloomPass.SetUniform("u_SampleOption", UpSample);
 			m_Data.BloomPass.SetUniform("u_SourceMip", (int)source);
-			m_Data.BloomPass.SetUniform("u_Source", 0);
-			m_Data.BloomPass.SetUniform("u_Destination", 1);
 			m_Data.BloomPass.SetUniform("u_Threshold", m_Settings.Threshold);
 			m_Data.BloomPass.SetUniform("u_Intensity", m_Settings.Intensity);
 			m_Data.BloomPass.SetUniform("u_FilterRadius", m_Settings.FilterRadius);
+#endif
+
+			m_Data.BloomPass.SetUniform("u_Source", 0);
+			m_Data.BloomPass.SetUniform("u_Destination", 1);
+			
 
 			m_Data.BloomTexture->Bind(0);
 			m_Data.BloomTexture->BindImage(1, destination, 0, false);
@@ -567,6 +587,24 @@ namespace TooGoodEngine {
 
 			m_Data.DirectionalLights.BufferIndex = 0;
 			m_Data.DirectionalLights.Size = 0;
+		}
+
+		{
+			OpenGL::BufferInfo bufferInfo{};
+			bufferInfo.Capacity = sizeof(GeometryUniformBuffer);
+			bufferInfo.Data = nullptr;
+			bufferInfo.Masks = OpenGL::BufferOptionDynamicStorage;
+
+			m_Data.GeometryPassBuffer = OpenGL::Buffer(bufferInfo);
+		}
+
+		{
+			OpenGL::BufferInfo bufferInfo{};
+			bufferInfo.Capacity = sizeof(BloomUniformBuffer);
+			bufferInfo.Data = nullptr;
+			bufferInfo.Masks = OpenGL::BufferOptionDynamicStorage;
+
+			m_Data.BloomPassBuffer = OpenGL::Buffer(bufferInfo);
 		}
 	}
 

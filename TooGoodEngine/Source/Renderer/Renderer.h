@@ -101,6 +101,9 @@ namespace TooGoodEngine {
 		PointLightBuffer PointLights;
 		DirectionalLightBuffer DirectionalLights;
 
+		OpenGL::Buffer GeometryPassBuffer;
+		OpenGL::Buffer BloomPassBuffer;
+
 		Camera* CurrentCamera;
 		GeometryID SquareGeometryIndex;
 		GeometryID CubeGeometryIndex;

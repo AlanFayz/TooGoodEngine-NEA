@@ -57,5 +57,23 @@ namespace TooGoodEngine {
 	};
 
 
-	
+	struct GeometryUniformBuffer
+	{
+		int  PointLightSize;
+		int  DirectionalLightSize;
+		int  HasCubeMap;
+		int  NotUsed;
+		glm::vec3 CameraPosition;
+		float NumberOfMipMaps;
+		glm::mat4 ViewProjection;
+	};
+
+	struct BloomUniformBuffer
+	{
+		int   SampleOption;
+		int   SourceMip;
+		float Threshold;
+		float Intensity;
+		float FilterRadius;
+	};
 }
