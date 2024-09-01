@@ -47,9 +47,9 @@ namespace TooGoodEngine {
 		std::cout << TextColor::Reset << std::endl;
 	}
 
-	#define TGE_LOG_INFO(...)    TooGoodEngine::Log(TextColor::Green,  "Engine Info: ",    __VA_ARGS__)
-	#define TGE_LOG_WARNING(...) TooGoodEngine::Log(TextColor::Yellow, "Engine Warning: ", __VA_ARGS__)
-	#define TGE_LOG_ERROR(...)   TooGoodEngine::Log(TextColor::Red,    "Engine Error: ",   __VA_ARGS__)
+	#define TGE_LOG_INFO(...)    TooGoodEngine::Log(TextColor::Green,  "[Info] ",    __VA_ARGS__)
+	#define TGE_LOG_WARNING(...) TooGoodEngine::Log(TextColor::Yellow, "[Warning] ", __VA_ARGS__)
+	#define TGE_LOG_ERROR(...)   TooGoodEngine::Log(TextColor::Red,    "[Error] ",   __VA_ARGS__)
 
 	#define TGE_HALT() __debugbreak()
 	

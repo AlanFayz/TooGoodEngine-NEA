@@ -46,21 +46,21 @@ namespace TooGoodEngine {
 		glm::vec3 movement(0.0f);
 
 		if (WKeyDown)
-			movement -= m_CameraSpeed * m_Camera->m_Up * (float)delta;
+			movement -= m_CameraSpeed * m_Camera->m_Up * (float)std::max(delta, 0.001);
 		if (SKeyDown)
-			movement += m_CameraSpeed * m_Camera->m_Up * (float)delta;
+			movement += m_CameraSpeed * m_Camera->m_Up * (float)std::max(delta, 0.001);
 
 		const glm::vec3 side = glm::normalize(glm::cross(m_Camera->m_Front, m_Camera->m_Up));
 
 		if (AKeyDown)
-			movement += m_CameraSpeed * side * (float)delta;
+			movement += m_CameraSpeed * side * (float)std::max(delta, 0.001);
 		if (DKeyDown)
-			movement -= m_CameraSpeed * side * (float)delta;
+			movement -= m_CameraSpeed * side * (float)std::max(delta, 0.001);
 
 		if (QKeyDown)
-			movement -= m_CameraSpeed * m_Camera->m_Front * (float)delta;
+			movement -= m_CameraSpeed * m_Camera->m_Front * (float)std::max(delta, 0.001);
 		if (EKeyDown)
-			movement += m_CameraSpeed * m_Camera->m_Front * (float)delta;
+			movement += m_CameraSpeed * m_Camera->m_Front * (float)std::max(delta, 0.001);
 
 		m_Camera->m_Position += movement;
 

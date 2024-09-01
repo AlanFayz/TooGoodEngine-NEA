@@ -5,7 +5,7 @@ layout(local_size_x = 8, local_size_y = 8, local_size_z = 1) in;
 layout(rgba32f, binding = 0) uniform image2D u_FinalImage;
 
 /*
-   Tone mapping algorithm maps values from hdr to ldr
+   Tone mapping algorithm 
    http://filmicworlds.com/blog/filmic-tonemapping-operators/
 */
 
@@ -39,7 +39,6 @@ void main()
 
     currentColor.rgb = Uncharted2Filmic(currentColor.rgb);
 
-    //converts color from linear to non linear 
     currentColor = pow(currentColor, vec4(1.0/2.2));  
 
     imageStore(u_FinalImage, coordinate, currentColor);

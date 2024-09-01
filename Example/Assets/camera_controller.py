@@ -55,24 +55,24 @@ def on_update(delta):
     movement = Vector([0.0, 0.0, 0.0])
 
     if w_key_down:
-        movement -= camera_up * camera_speed * delta
+        movement -= camera_up * camera_speed * max(delta, 0.001)
     
     if s_key_down:
-        movement += camera_up * camera_speed * delta
+        movement += camera_up * camera_speed * max(delta, 0.001)
     
     side = normalize(cross(camera_front, camera_up))
 
     if a_key_down:
-        movement += side * camera_speed * delta
+        movement += side * camera_speed * max(delta, 0.001)
     
     if d_key_down:
-        movement -= side * camera_speed * delta
+        movement -= side * camera_speed * max(delta, 0.001)
     
     if q_key_down:
-        movement -= camera_front * camera_speed * delta
+        movement -= camera_front * camera_speed * max(delta, 0.001)
     
     if e_key_down:
-        movement += camera_front * camera_speed * delta
+        movement += camera_front * camera_speed * max(delta, 0.001)
 
     camera_position += movement 
     camera_controller.update_position(camera_position)
