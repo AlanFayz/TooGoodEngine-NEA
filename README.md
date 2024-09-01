@@ -20,7 +20,7 @@ I would recommend staying in Release when using the editor.
 
 ## Cheat Sheet
 TODO (will contain all functions available in scripting library and how to navigate and use all the gui elements).
-Currently there is an example project located in the `Example/` directory, this wil also grow as I add new features.
+Currently there is an example project located in the `Example/` directory, this will also grow as I add new features.
 
 ## Attributions
 1. <a href="https://www.flaticon.com/free-icons/obj" title="obj icons">Obj icons created by Freepik - Flaticon</a>
