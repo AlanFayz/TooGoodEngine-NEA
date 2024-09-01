@@ -2,6 +2,7 @@
 #include "FileDialogs/FileDialog.h"
 #include "ScenePanel.h"
 #include "StatisticsPanel.h"
+#include "PropertiesPanel.h"
 #include "Utils/Input.h"
 
 #include <imgui.h>
@@ -98,6 +99,7 @@ namespace GoodEditor {
 		AssetPanel::DrawPanel(m_ExtensionMap);
 		ScenePanel::DrawPanel();
 		StatisticsPanel::DrawPanel();
+		PropertiesPanel::DrawPanel();
 
 		auto& image = currentSceneRenderer->GetImage();
 

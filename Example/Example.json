@@ -2,7 +2,7 @@
     "Project Name": "Example",
     "Project Directory": "../Example",
     "Asset Directory": "../Example\\Assets",
-    "Last Build Date": "2024-09-01 15:58:50",
+    "Last Build Date": "2024-09-01 22:31:17",
     "Scenes": {
         "": {
             "Scene Settings": {
@@ -177,7 +177,7 @@
                 "Second Quad": {
                     "Transform": {
                         "Position": [
-                            6.300000190734863,
+                            6.099999904632568,
                             2.299999952316284,
                             -3.5999999046325684
                         ],
