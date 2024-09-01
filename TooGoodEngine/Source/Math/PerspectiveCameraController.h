@@ -24,6 +24,9 @@ namespace TooGoodEngine {
 		void UpdateFront(const glm::vec3& front);
 		void UpdateUp(const glm::vec3& up);
 
+		void SetCameraSpeed(float newSpeed);
+		void SetCameraSensitivity(float newSensitivity);
+
 	private:
 		Ref<PerspectiveCamera> m_Camera;
 

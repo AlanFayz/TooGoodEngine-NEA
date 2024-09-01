@@ -24,6 +24,8 @@ namespace TooGoodEngine {
 		void SetTop(float top);
 		void SetBottom(float bottom);
 
+		void SetCameraSpeed(float newSpeed);
+
 	private:
 		Ref<OrthographicCamera> m_Camera;
 

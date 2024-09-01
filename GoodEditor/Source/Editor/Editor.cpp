@@ -136,6 +136,27 @@ namespace GoodEditor {
 			ImGui::EndMainMenuBar();
 		}
 
+		if (!ImGui::Begin("Scene Camera Settings"))
+		{
+			ImGui::End();
+			return;
+		}
+		
+		static float s_CameraSpeed = 100.0f;
+		if (ImGui::DragFloat("Camera Speed", &s_CameraSpeed, 0.01f, 0.0f, FLT_MAX / 2.0f))
+		{
+			currentScene->GetSceneCameraController().SetCameraSpeed(s_CameraSpeed);
+			currentScene->GetSceneCameraController2D().SetCameraSpeed(s_CameraSpeed);
+		}
+
+		static float s_Sensitivity = 1.0f;
+		if (ImGui::DragFloat("Camera Sensitivity", &s_Sensitivity, 0.01f, 0.0f, FLT_MAX / 2.0f))
+		{
+			currentScene->GetSceneCameraController().SetCameraSensitivity(s_Sensitivity);
+		}
+
+		ImGui::End();
+		
 	}
 	void Editor::OnEvent(Event* event)
 	{
@@ -218,12 +239,18 @@ namespace GoodEditor {
 	}
 	void Editor::_RenderViewport(const Ref<OpenGL::Texture2D>& image)
 	{
-		ImGui::Begin("Viewport", (bool*)0, ImGuiWindowFlags_MenuBar);
-		ImGui::Image((ImTextureID)(intptr_t)image->GetHandle(), ImGui::GetContentRegionAvail(), ImVec2(0, 1), ImVec2(1, 0));
+		if (!ImGui::Begin("Viewport", (bool*)0, ImGuiWindowFlags_MenuBar))
+		{
+			ImGui::End();
+			return;
+		}
 		
+		ImGui::Image((ImTextureID)(intptr_t)image->GetHandle(), ImGui::GetContentRegionAvail(), ImVec2(0, 1), ImVec2(1, 0));
+
 		_RenderViewportMenuBar();
 
 		ImGui::End();
+		
 	}
 	void Editor::_RenderViewportMenuBar()
 	{

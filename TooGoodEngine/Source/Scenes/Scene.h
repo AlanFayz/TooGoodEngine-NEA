@@ -31,6 +31,8 @@ namespace TooGoodEngine {
 
 		inline EntityTree& GetRegistry() { return m_Registry; }
 		inline Ref<Renderer> GetSceneRenderer() { return m_SceneRenderer; }
+		inline PerspectiveCameraController& GetSceneCameraController() { return m_CameraController; }
+		inline OrthographicCameraController& GetSceneCameraController2D() { return m_CameraController2D; }
 
 		inline const std::string& GetName() const { return m_SceneName; }
 		inline void SetName(const std::string& name) { m_SceneName = name; }

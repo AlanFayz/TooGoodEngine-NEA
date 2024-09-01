@@ -72,4 +72,9 @@ namespace TooGoodEngine {
 		m_Camera->UpdateViewProjection();
 	}
 
+	void OrthographicCameraController::SetCameraSpeed(float newSpeed)
+	{
+		m_CameraSpeed = newSpeed;
+	}
+
 }

@@ -22,7 +22,11 @@ namespace GoodEditor {
 
 		std::unordered_set<EntityID> displayedEntities;
 		
-		ImGui::Begin("Scene Panel");
+		if (!ImGui::Begin("Scene Panel"))
+		{
+			ImGui::End();
+			return;
+		}
 
 		if (ImGui::TreeNode("Scene Settings"))
 		{
@@ -36,7 +40,7 @@ namespace GoodEditor {
 			{
 				if (ImGui::MenuItem("Add Entity"))
 					registry.Add("Entity" + std::to_string(currentScene->GetRegistry().GetCount()));
-				
+
 				ImGui::EndPopup();
 			}
 
@@ -48,16 +52,16 @@ namespace GoodEditor {
 				if (!entity)
 					continue;
 
-				auto& node    = registry.GetNode(entity);
+				auto& node = registry.GetNode(entity);
 
 				//already displayed or going to be displayed from parent
 				if (displayedEntities.contains(i) || node.ParentIndex != g_NullNode)
 					continue;
 
-				displayedEntities.insert(i); 
+				displayedEntities.insert(i);
 
 				ImGui::PushID(m_IDCount++);
-					
+
 				if (ImGui::TreeNode(entity.GetName().c_str()))
 				{
 					if (!_EntityPopup(entity, renderer, registry)) //returns true if entity has been deleted
@@ -65,11 +69,11 @@ namespace GoodEditor {
 						_DrawEntity(entity, registry, renderer);
 						_DrawChildren(entity, registry, renderer, displayedEntities); //recursively call
 					}
-					
+
 
 					ImGui::TreePop();
 				}
-			
+
 				ImGui::PopID();
 			}
 
@@ -82,7 +86,7 @@ namespace GoodEditor {
 			static char buf[50];
 
 			ImGui::InputText("##Name", buf, 50);
-			
+
 			if (ImGui::Button("Enter"))
 			{
 				std::string name = buf;
@@ -107,9 +111,8 @@ namespace GoodEditor {
 			m_CurrentEntity = g_NullEntity;
 		}
 
-		
-		ImGui::End();
 
+		ImGui::End();
 		m_IDCount = 1000;
 	}
 	void ScenePanel::_DrawChildren(Entity& entity, EntityTree& tree, const Ref<Renderer>& sceneRenderer, std::unordered_set<EntityID>& displayed)

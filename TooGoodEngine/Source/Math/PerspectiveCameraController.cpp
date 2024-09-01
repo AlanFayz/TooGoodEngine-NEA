@@ -117,4 +117,12 @@ namespace TooGoodEngine {
 		m_Camera->m_Up = up;
 		m_Camera->UpdateViewProjection();
 	}
+	void PerspectiveCameraController::SetCameraSpeed(float newSpeed)
+	{
+		m_CameraSpeed = newSpeed;
+	}
+	void PerspectiveCameraController::SetCameraSensitivity(float newSensitivity)
+	{
+		m_Sensitivity = newSensitivity;
+	}
 }

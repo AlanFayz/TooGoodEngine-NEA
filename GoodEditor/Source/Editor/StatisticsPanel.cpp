@@ -5,9 +5,11 @@
 namespace GoodEditor {
 	void StatisticsPanel::DrawPanel()
 	{
-		//there may be more things to do in the future but for now this is good.
-
-		ImGui::Begin("Statistics");
+		if (!ImGui::Begin("Statistics"))
+		{
+			ImGui::End();
+			return;
+		}
 
 		const auto& statisticsToDisplay = Statistics::GetMap();
 
