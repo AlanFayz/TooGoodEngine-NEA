@@ -112,25 +112,11 @@ namespace GoodEditor {
 
 	void PropertiesPanel::_DrawComponent(TransformComponent& component)
 	{
-		auto& position = component.GetPosition();
-		auto& scale = component.GetScale();
-		auto& rotation = component.GetRotation();
-
 		if (ImGui::TreeNode("Transform"))
 		{
-			bool changed = false;
-
-			if (ImGui::DragFloat3("Position", glm::value_ptr(position), 0.1f, -FLT_MAX / 2, FLT_MAX / 2))
-				changed = true;
-
-			if (ImGui::DragFloat3("Rotation", glm::value_ptr(rotation), 0.1f, -FLT_MAX / 2, FLT_MAX / 2))
-				changed = true;
-
-			if (ImGui::DragFloat3("Scale", glm::value_ptr(scale), 0.1f, -FLT_MAX / 2, FLT_MAX / 2))
-				changed = true;
-
-			if (changed)
-				component.UpdateTransform();
+			ImGui::DragFloat3("Position", glm::value_ptr(component.Position), 0.1f, -FLT_MAX / 2, FLT_MAX / 2);
+			ImGui::DragFloat3("Rotation", glm::value_ptr(component.Rotation), 0.1f, -FLT_MAX / 2, FLT_MAX / 2);
+			ImGui::DragFloat3("Scale",	  glm::value_ptr(component.Scale),    0.1f, -FLT_MAX / 2, FLT_MAX / 2);
 
 			ImGui::TreePop();
 		}

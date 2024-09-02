@@ -9,19 +9,19 @@ namespace TooGoodEngine {
 		JsonPath path = entityPath;
 		path.insert(path.end(), { "Transform", "Position" });
 
-		std::array<float, 3> position = { component.GetPosition()[0], component.GetPosition()[1], component.GetPosition()[2] };
+		std::array<float, 3> position = { component.Position[0], component.Position[1], component.Position[2] };
 		writer.WriteGeneric(path, position);
 
 		path = entityPath;
 		path.insert(path.end(), { "Transform", "Scale" });
 
-		std::array<float, 3> scale = { component.GetScale()[0], component.GetScale()[1], component.GetScale()[2]};
+		std::array<float, 3> scale = { component.Scale[0], component.Scale[1], component.Scale[2]};
 		writer.WriteGeneric(path, scale);
 
 		path = entityPath;
 		path.insert(path.end(), { "Transform", "Rotation" });
 
-		std::array<float, 3> rotationAxis = { component.GetRotation()[0], component.GetRotation()[1], component.GetRotation()[2] };
+		std::array<float, 3> rotationAxis = { component.Rotation[0], component.Rotation[1], component.Rotation[2] };
 		writer.WriteGeneric(path, rotationAxis);
 	}
 

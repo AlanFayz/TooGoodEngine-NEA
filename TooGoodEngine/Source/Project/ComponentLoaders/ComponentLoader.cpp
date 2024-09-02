@@ -13,10 +13,6 @@ namespace TooGoodEngine {
 	{
 		TransformComponent component{};
 
-		auto& componentPosition = component.GetPosition();
-		auto& componentRotation = component.GetRotation();
-		auto& componentScale    = component.GetScale();
-
 		std::vector<float> position = jsonComponent["Position"].get<std::vector<float>>();
 		std::vector<float> scale = jsonComponent["Scale"].get<std::vector<float>>();
 		std::vector<float> rotation = jsonComponent["Rotation"].get<std::vector<float>>();
@@ -27,7 +23,7 @@ namespace TooGoodEngine {
 			if (i >= 3) //too many
 				break;
 
-			componentPosition[i] = position[i];
+			component.Position[i] = position[i];
 		}
 
 		i = 0;
@@ -36,7 +32,7 @@ namespace TooGoodEngine {
 			if (i >= 3) //too many
 				break;
 
-			componentScale[i] = scale[i];
+			component.Scale[i] = scale[i];
 		}
 
 		i = 0;
@@ -45,11 +41,8 @@ namespace TooGoodEngine {
 			if (i >= 3) //too many
 				break;
 
-			componentRotation[i] = rotation[i];
+			component.Rotation[i] = rotation[i];
 		}
-
-
-		component.UpdateTransform();
 
 		return component;
 	}

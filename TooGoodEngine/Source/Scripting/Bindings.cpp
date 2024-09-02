@@ -396,7 +396,7 @@ namespace TooGoodEngine {
 			return nullptr;
 
 		auto& component = registry.GetComponent<TransformComponent>(*container);
-		component.Translate({ x, y, z });
+		component.Position = { x, y, z };
 
 		return Py_None;
 	}
@@ -419,7 +419,7 @@ namespace TooGoodEngine {
 			return nullptr;
 
 		auto& component = registry.GetComponent<TransformComponent>(*container);
-		component.Rotate({ x, y, z });
+		component.Rotation = { x, y, z };
 
 		return Py_None;
 	}
@@ -442,7 +442,7 @@ namespace TooGoodEngine {
 			return nullptr;
 
 		auto& component = registry.GetComponent<TransformComponent>(*container);
-		component.Scale({ x, y, z });
+		component.Scale = { x, y, z };
 
 		return Py_None;
 	}
@@ -462,11 +462,10 @@ namespace TooGoodEngine {
 			return nullptr;
 
 		auto& component = registry.GetComponent<TransformComponent>(*container);
-		auto& position = component.GetPosition();
 
-		PyObject* pyX = PyFloat_FromDouble(position.x);
-		PyObject* pyY = PyFloat_FromDouble(position.y);
-		PyObject* pyZ = PyFloat_FromDouble(position.z);
+		PyObject* pyX = PyFloat_FromDouble(component.Position.x);
+		PyObject* pyY = PyFloat_FromDouble(component.Position.y);
+		PyObject* pyZ = PyFloat_FromDouble(component.Position.z);
 
 		PyObject* tuple = PyTuple_New(3);
 
@@ -492,11 +491,10 @@ namespace TooGoodEngine {
 			return nullptr;
 
 		auto& component = registry.GetComponent<TransformComponent>(*container);
-		auto& rotation = component.GetRotation();
 
-		PyObject* pyX = PyFloat_FromDouble(rotation.x);
-		PyObject* pyY = PyFloat_FromDouble(rotation.y);
-		PyObject* pyZ = PyFloat_FromDouble(rotation.z);
+		PyObject* pyX = PyFloat_FromDouble(component.Rotation.x);
+		PyObject* pyY = PyFloat_FromDouble(component.Rotation.y);
+		PyObject* pyZ = PyFloat_FromDouble(component.Rotation.z);
 
 		PyObject* tuple = PyTuple_New(3);
 
@@ -522,11 +520,10 @@ namespace TooGoodEngine {
 			return nullptr;
 
 		auto& component = registry.GetComponent<TransformComponent>(*container);
-		auto& scale = component.GetScale();
 
-		PyObject* pyX = PyFloat_FromDouble(scale.x);
-		PyObject* pyY = PyFloat_FromDouble(scale.y);
-		PyObject* pyZ = PyFloat_FromDouble(scale.z);
+		PyObject* pyX = PyFloat_FromDouble(component.Scale.x);
+		PyObject* pyY = PyFloat_FromDouble(component.Scale.y);
+		PyObject* pyZ = PyFloat_FromDouble(component.Scale.z);
 
 		PyObject* tuple = PyTuple_New(3);
 
