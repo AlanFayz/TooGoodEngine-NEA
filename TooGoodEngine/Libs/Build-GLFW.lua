@@ -93,3 +93,5 @@ project "glfw"
        runtime "Release"
        optimize "Full"
        symbols "Off"
+
+       vectorextensions "SSE2"

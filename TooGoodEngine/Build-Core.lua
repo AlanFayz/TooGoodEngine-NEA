@@ -71,6 +71,7 @@ project "TooGoodEngine"
        runtime "Release"
        optimize "Full"
        symbols "Off"
+       vectorextensions "SSE2"
 
        libdirs
        {

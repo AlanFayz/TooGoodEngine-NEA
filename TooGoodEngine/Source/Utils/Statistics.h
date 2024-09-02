@@ -34,6 +34,6 @@ namespace TooGoodEngine {
 	#elif RELEASE
 		#define TGE_PROFILE_SCOPE(name) TooGoodEngine::ProfileScope name(#name); 
 	#else 
-		#define TGE_PROFILE_SCOPE(name)
+		#define TGE_PROFILE_SCOPE(name) TooGoodEngine::ProfileScope name(#name); 
 	#endif
 }

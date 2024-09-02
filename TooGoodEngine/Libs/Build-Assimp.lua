@@ -127,3 +127,5 @@ project 'assimp'
        runtime "Release"
        optimize "Full"
        symbols "Off"
+
+       vectorextensions "SSE2"

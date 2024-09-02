@@ -67,6 +67,7 @@ project "GoodEditor"
        runtime "Release"
        optimize "Full"
        symbols "Off"
+        vectorextensions "SSE2"
 
        libdirs
        {
