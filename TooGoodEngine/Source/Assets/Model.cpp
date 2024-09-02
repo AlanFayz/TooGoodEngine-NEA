@@ -16,6 +16,8 @@ namespace TooGoodEngine {
 	}
 	Ref<Model> Model::LoadModelAssetFromFile(const std::filesystem::path& path)
 	{
+		s_CurrentRelativePath = path.parent_path();
+
 		Assimp::Importer importer;
 
 		const aiScene* scene = importer.ReadFile(path.string(), aiProcess_Triangulate      |
@@ -113,10 +115,10 @@ namespace TooGoodEngine {
 		if (material->GetTexture(type, index, &path) == AI_SUCCESS)
 		{
 			std::filesystem::path filePath = path.C_Str();
-			std::filesystem::path assetPath = g_SelectedProject->GetAssetDirectory();
+			filePath = s_CurrentRelativePath / filePath;
 			std::string strPath = filePath.string();
 
-			Ref<Image> image = g_SelectedProject->GetAssetManager().LoadAssetIntoBank<Image>(assetPath / filePath);
+			Ref<Image> image = g_SelectedProject->GetAssetManager().LoadAssetIntoBank<Image>(filePath);
 
 			if (!image)
 				return nullptr;

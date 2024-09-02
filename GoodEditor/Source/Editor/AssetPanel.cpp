@@ -9,6 +9,10 @@ namespace GoodEditor {
     const AssetPanel::ExtensionAssetLoadMap AssetPanel::s_ExtensionFunctions 
     { 
         {".png", [](const std::filesystem::path& path) { return  g_SelectedProject->GetAssetManager().LoadAssetIntoBank<Image>(path); } },
+        {".jpg", [](const std::filesystem::path& path) { return  g_SelectedProject->GetAssetManager().LoadAssetIntoBank<Image>(path); } },
+        {".tga", [](const std::filesystem::path& path) { return  g_SelectedProject->GetAssetManager().LoadAssetIntoBank<Image>(path); } },
+        {".bmp", [](const std::filesystem::path& path) { return  g_SelectedProject->GetAssetManager().LoadAssetIntoBank<Image>(path); } },
+        {".gif", [](const std::filesystem::path& path) { return  g_SelectedProject->GetAssetManager().LoadAssetIntoBank<Image>(path); } },
         {".fbx", [](const std::filesystem::path& path) { return  g_SelectedProject->GetAssetManager().LoadAssetIntoBank<Model>(path); } },
         {".obj", [](const std::filesystem::path& path) { return  g_SelectedProject->GetAssetManager().LoadAssetIntoBank<Model>(path); } }, 
         {".hdr", [](const std::filesystem::path& path) { return  g_SelectedProject->GetAssetManager().LoadAssetIntoBank<EnvironmentMap>(path); }},
@@ -73,17 +77,13 @@ namespace GoodEditor {
            std::string filename = path.filename().string();
            std::string sPath = path.string();
 
-           //any extension not supported by the engine will be ignored
-           if (!extensionMap.contains(extension))
-               continue;
-
            ImGui::PushID(k++);
 
            if (entry.is_directory())
            {
                ImGui::BeginGroup();
                bool pressed = ImGui::ImageButton((ImTextureID)(intptr_t)extensionMap["folder"]->GetTexture().GetHandle(),
-                                                 ImVec2(buttonWidth, buttonHeight), ImVec2(0, 1), ImVec2(1, 0));
+                                                 ImVec2(buttonWidth, buttonHeight), ImVec2(1, 0), ImVec2(0, 1));
 
                ImGui::Text(filename.c_str());
 
@@ -102,12 +102,20 @@ namespace GoodEditor {
                ImGui::PopID();
                continue;
            }
+
+           //any extension not supported by the engine will be ignored
+           if (!extensionMap.contains(extension))
+           {
+               ImGui::PopID();
+               continue;
+           }
+
           
 
             ImGui::BeginGroup();
 
             ImGui::ImageButton((ImTextureID)(intptr_t)extensionMap[extension]->GetTexture().GetHandle(), 
-                                ImVec2(buttonWidth, buttonHeight), ImVec2(0, 1), ImVec2(1, 0));
+                                ImVec2(buttonWidth, buttonHeight), ImVec2(1, 0), ImVec2(0, 1));
 
             if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
                 Platform::OpenDefaultApp(path);

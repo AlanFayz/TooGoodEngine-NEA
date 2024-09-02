@@ -39,12 +39,15 @@ namespace GoodEditor {
 
 		m_ExtensionMap["folder"] = Image::LoadImageAssetFromFile("Resources/Textures/folder_icon.png");
 		m_ExtensionMap["back"]	 = Image::LoadImageAssetFromFile("Resources/Textures/back_icon.png");
-		m_ExtensionMap[".png"]	 = Image::LoadImageAssetFromFile("Resources/Textures/image_icon.png");
 		m_ExtensionMap[".obj"]	 = Image::LoadImageAssetFromFile("Resources/Textures/obj_icon.png");
 		m_ExtensionMap[".fbx"]	 = Image::LoadImageAssetFromFile("Resources/Textures/fbx_icon.png");
 		m_ExtensionMap[".hdr"]	 = Image::LoadImageAssetFromFile("Resources/Textures/hdr_icon.png");
 		m_ExtensionMap[".py"]	 = Image::LoadImageAssetFromFile("Resources/Textures/python_icon.png");
 
+		m_ExtensionMap[".png"] = Image::LoadImageAssetFromFile("Resources/Textures/image_icon.png");
+		m_ExtensionMap[".jpg"] = m_ExtensionMap[".png"];
+		m_ExtensionMap[".bmp"] = m_ExtensionMap[".png"];
+		m_ExtensionMap[".gif"] = m_ExtensionMap[".png"];
 	}
 	void Editor::OnDestroy()
 	{

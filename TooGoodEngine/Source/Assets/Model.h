@@ -36,6 +36,8 @@ namespace TooGoodEngine {
 	private:
 		std::vector<Geometry> m_GeometryData;
 		ModelInfo m_Info;
+
+		static inline std::filesystem::path s_CurrentRelativePath;
 	};
 
 }

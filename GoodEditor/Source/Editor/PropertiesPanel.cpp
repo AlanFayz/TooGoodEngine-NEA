@@ -390,7 +390,7 @@ namespace GoodEditor {
 		if (image)
 		{
 			uint32_t handle = image->GetTexture().GetHandle();
-			if (ImGui::ImageButton((ImTextureID)(intptr_t)handle, ImVec2(15, 15), ImVec2(0, 1), ImVec2(1, 0)))
+			if (ImGui::ImageButton((ImTextureID)(intptr_t)handle, ImVec2(15, 15), ImVec2(1, 0), ImVec2(0, 1)))
 			{
 				image.reset();
 				image = nullptr;
@@ -434,7 +434,7 @@ namespace GoodEditor {
 		if (image)
 		{
 			uint32_t handle = image->GetTexture().GetHandle();
-			if (ImGui::ImageButton((ImTextureID)(intptr_t)handle, ImVec2(15, 15), ImVec2(0, 1), ImVec2(1, 0)))
+			if (ImGui::ImageButton((ImTextureID)(intptr_t)handle, ImVec2(15, 15), ImVec2(1, 0), ImVec2(0, 1)))
 			{
 				image.reset();
 				image = nullptr;

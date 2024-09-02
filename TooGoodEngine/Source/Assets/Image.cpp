@@ -11,7 +11,8 @@ namespace TooGoodEngine {
 	{
 		const int desiredChannels = 4;
 		int channels = 0;
-		stbi_set_flip_vertically_on_load(true);
+
+		stbi_set_flip_vertically_on_load(false);
 
 		uint8_t* imageData = nullptr;
 		int width = 0, height = 0;
