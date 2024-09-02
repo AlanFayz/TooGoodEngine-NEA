@@ -1,8 +1,8 @@
 #include "AssetPanel.h"
 
-#include "FileDialogs/FileDialog.h"
-
 #include <Assets/Script.h>
+
+#include "Platform/Platform.h"
 
 namespace GoodEditor {
 
@@ -108,6 +108,9 @@ namespace GoodEditor {
 
             ImGui::ImageButton((ImTextureID)(intptr_t)extensionMap[extension]->GetTexture().GetHandle(), 
                                 ImVec2(buttonWidth, buttonHeight), ImVec2(0, 1), ImVec2(1, 0));
+
+            if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
+                Platform::OpenDefaultApp(path);
 
             if (!s_CachedDirectories.contains(path))
             {

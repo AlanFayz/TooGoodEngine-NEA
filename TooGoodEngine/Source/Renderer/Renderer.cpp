@@ -423,18 +423,9 @@ namespace TooGoodEngine {
 			m_Data.BloomPassBuffer.SetData(sizeof(BloomUniformBuffer), &data);
 			m_Data.BloomPassBuffer.BindBase(0, OpenGL::BufferTypeUniform);
 
-#if 0
-			m_Data.BloomPass.SetUniform("u_SampleOption", UpSample);
-			m_Data.BloomPass.SetUniform("u_SourceMip", (int)source);
-			m_Data.BloomPass.SetUniform("u_Threshold", m_Settings.Threshold);
-			m_Data.BloomPass.SetUniform("u_Intensity", m_Settings.Intensity);
-			m_Data.BloomPass.SetUniform("u_FilterRadius", m_Settings.FilterRadius);
-#endif
-
 			m_Data.BloomPass.SetUniform("u_Source", 0);
 			m_Data.BloomPass.SetUniform("u_Destination", 1);
 			
-
 			m_Data.BloomTexture->Bind(0);
 			m_Data.BloomTexture->BindImage(1, destination, 0, false);
 

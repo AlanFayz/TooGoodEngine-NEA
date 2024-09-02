@@ -1,5 +1,5 @@
 #include "Editor.h"
-#include "FileDialogs/FileDialog.h"
+#include "Platform/Platform.h"
 #include "ScenePanel.h"
 #include "StatisticsPanel.h"
 #include "PropertiesPanel.h"
@@ -122,7 +122,7 @@ namespace GoodEditor {
 			{
 				try
 				{
-					std::filesystem::path directory = FileDialog::GetDirectoryFromDialog();
+					std::filesystem::path directory = Platform::GetDirectoryFromDialog();
 
 					if (!directory.empty() && std::filesystem::exists(directory))
 						g_SelectedProject->Build(directory);
@@ -205,7 +205,7 @@ namespace GoodEditor {
 
 			if (ImGui::Button("Open File"))
 			{
-				std::filesystem::path path = FileDialog::GetPathFromDialog();
+				std::filesystem::path path = Platform::GetPathFromDialog();
 				if (path.extension() == ".json" && std::filesystem::exists(path))
 				{
 					m_ProjectLoader = false;
@@ -227,7 +227,7 @@ namespace GoodEditor {
 
 			if (ImGui::Button("Create New"))
 			{
-				std::filesystem::path path = FileDialog::GetDirectoryFromDialog();
+				std::filesystem::path path = Platform::GetDirectoryFromDialog();
 				if (!path.empty())
 				{
 					m_ProjectLoader = false;
