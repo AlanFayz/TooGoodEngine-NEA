@@ -118,7 +118,7 @@ namespace TooGoodEngine {
 			filePath = s_CurrentRelativePath / filePath;
 			std::string strPath = filePath.string();
 
-			Ref<Image> image = g_SelectedProject->GetAssetManager().LoadAssetIntoBank<Image>(filePath);
+			Ref<Image> image = Project::GetSelectedProject()->GetAssetManager().LoadAssetIntoBank<Image>(filePath);
 
 			if (!image)
 				return nullptr;

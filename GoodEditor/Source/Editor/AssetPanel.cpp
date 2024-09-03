@@ -8,15 +8,15 @@ namespace GoodEditor {
 
     const AssetPanel::ExtensionAssetLoadMap AssetPanel::s_ExtensionFunctions 
     { 
-        {".png", [](const std::filesystem::path& path) { return  g_SelectedProject->GetAssetManager().LoadAssetIntoBank<Image>(path); } },
-        {".jpg", [](const std::filesystem::path& path) { return  g_SelectedProject->GetAssetManager().LoadAssetIntoBank<Image>(path); } },
-        {".tga", [](const std::filesystem::path& path) { return  g_SelectedProject->GetAssetManager().LoadAssetIntoBank<Image>(path); } },
-        {".bmp", [](const std::filesystem::path& path) { return  g_SelectedProject->GetAssetManager().LoadAssetIntoBank<Image>(path); } },
-        {".gif", [](const std::filesystem::path& path) { return  g_SelectedProject->GetAssetManager().LoadAssetIntoBank<Image>(path); } },
-        {".fbx", [](const std::filesystem::path& path) { return  g_SelectedProject->GetAssetManager().LoadAssetIntoBank<Model>(path); } },
-        {".obj", [](const std::filesystem::path& path) { return  g_SelectedProject->GetAssetManager().LoadAssetIntoBank<Model>(path); } }, 
-        {".hdr", [](const std::filesystem::path& path) { return  g_SelectedProject->GetAssetManager().LoadAssetIntoBank<EnvironmentMap>(path); }},
-        {".py",  [](const std::filesystem::path& path) { return  g_SelectedProject->GetAssetManager().LoadAssetIntoBank<Script>(path); }}
+        {".png", [](const std::filesystem::path& path) { return  Project::GetSelectedProject()->GetAssetManager().LoadAssetIntoBank<Image>(path); }},
+        {".jpg", [](const std::filesystem::path& path) { return  Project::GetSelectedProject()->GetAssetManager().LoadAssetIntoBank<Image>(path); } },
+        {".tga", [](const std::filesystem::path& path) { return  Project::GetSelectedProject()->GetAssetManager().LoadAssetIntoBank<Image>(path); } },
+        {".bmp", [](const std::filesystem::path& path) { return  Project::GetSelectedProject()->GetAssetManager().LoadAssetIntoBank<Image>(path); } },
+        {".gif", [](const std::filesystem::path& path) { return  Project::GetSelectedProject()->GetAssetManager().LoadAssetIntoBank<Image>(path); } },
+        {".fbx", [](const std::filesystem::path& path) { return  Project::GetSelectedProject()->GetAssetManager().LoadAssetIntoBank<Model>(path); } },
+        {".obj", [](const std::filesystem::path& path) { return  Project::GetSelectedProject()->GetAssetManager().LoadAssetIntoBank<Model>(path); } },
+        {".hdr", [](const std::filesystem::path& path) { return  Project::GetSelectedProject()->GetAssetManager().LoadAssetIntoBank<EnvironmentMap>(path); }},
+        {".py",  [](const std::filesystem::path& path) { return  Project::GetSelectedProject()->GetAssetManager().LoadAssetIntoBank<Script>(path); }}
     };
 
 	void AssetPanel::DrawPanel(std::map<std::filesystem::path, Ref<Image>>& extensionMap)
@@ -27,7 +27,9 @@ namespace GoodEditor {
             return;
         }
 
-       auto& root = g_SelectedProject->GetAssetDirectory();
+       auto selctedProject = Project::GetSelectedProject();
+
+       auto& root = selctedProject->GetAssetDirectory();
 
        if (s_CurrentDirectory.empty())
        {
@@ -50,7 +52,7 @@ namespace GoodEditor {
        const int buttonWidth = 120;
        const int buttonHeight = 100;
 
-       if (s_CurrentDirectory != g_SelectedProject->GetAssetDirectory())
+       if (s_CurrentDirectory != selctedProject->GetAssetDirectory())
        {
            if (ImGui::ImageButton((ImTextureID)(intptr_t)extensionMap["back"]->GetTexture().GetHandle(), ImVec2(buttonWidth, buttonHeight), ImVec2(0, 1), ImVec2(1, 0)))
            {
@@ -130,7 +132,7 @@ namespace GoodEditor {
 
                     if (model)
                     {
-                        ModelInfo info = g_SelectedProject->GetCurrentScene()->GetSceneRenderer()->AddModel(model);
+                        ModelInfo info = selctedProject->GetCurrentScene()->GetSceneRenderer()->AddModel(model);
                         model->SetInfo(info);
                     }
                 }
@@ -138,11 +140,11 @@ namespace GoodEditor {
             
             if (ImGui::BeginDragDropSource())
             {
-                Ref<Asset> asset = g_SelectedProject->GetAssetManager().FetchAsset(path);
+                Ref<Asset> asset = selctedProject->GetAssetManager().FetchAsset(path);
 
                 if (!asset)
                 {
-                    g_SelectedProject->GetAssetManager().RemoveAsset(path);
+                    selctedProject->GetAssetManager().RemoveAsset(path);
 
                     asset = s_ExtensionFunctions.at(extension)(path);
 
@@ -152,7 +154,7 @@ namespace GoodEditor {
 
                         if (model)
                         {
-                            ModelInfo info = g_SelectedProject->GetCurrentScene()->GetSceneRenderer()->AddModel(model);
+                            ModelInfo info = selctedProject->GetCurrentScene()->GetSceneRenderer()->AddModel(model);
                             model->SetInfo(info);
 
                             asset = model;
@@ -198,7 +200,7 @@ namespace GoodEditor {
        {
            if (!std::filesystem::exists(directory))
            {
-               g_SelectedProject->GetAssetManager().RemoveAsset(directory);
+               selctedProject->GetAssetManager().RemoveAsset(directory);
                s_CachedDirectories.erase(directory);
            }
        }

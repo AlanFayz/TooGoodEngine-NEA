@@ -43,14 +43,13 @@ namespace TooGoodEngine {
 
 	void ComponentWriter::WriteMaterial(JsonWriter& writer, const JsonPath& entityPath, MaterialComponent& component)
 	{
-		//TODO: change from image path to UUID once asset manager is seriliazed.
-
 		JsonPath path = entityPath;
 
 		auto& materialInfo = component.Renderer->GetMaterialInfo(component.ID);
 		
 		//
 		// ---- Ambient ----
+		//
 		if (materialInfo.AmbientTexture)
 		{
 			path.insert(path.end(), { "Material", "Ambient Image" });
@@ -70,6 +69,7 @@ namespace TooGoodEngine {
 
 		//
 		// ---- Albedo ----
+		//
 		if (materialInfo.AlbedoTexture)
 		{
 			path.insert(path.end(), { "Material", "Albedo Image" });
@@ -89,6 +89,7 @@ namespace TooGoodEngine {
 
 		//
 		// ---- Metallic ----
+		//
 		if (materialInfo.MetallicTexture)
 		{
 			path.insert(path.end(), { "Material", "Metallic Image" });
@@ -108,6 +109,7 @@ namespace TooGoodEngine {
 
 		//
 		// ---- Emission ----
+		//
 		if (materialInfo.EmissionTexture)
 		{
 			path.insert(path.end(), { "Material", "Emission Image" });
@@ -132,6 +134,7 @@ namespace TooGoodEngine {
 
 		//
 		// ---- Roughness ----
+		//
 		if (materialInfo.RoughnessTexture)
 		{
 			path.insert(path.end(), { "Material", "Roughness Image" });

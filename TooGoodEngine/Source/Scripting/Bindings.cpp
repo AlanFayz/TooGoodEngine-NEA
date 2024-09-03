@@ -168,7 +168,7 @@ namespace TooGoodEngine {
 		if (!PyArg_ParseTuple(args, "s", &val))
 			return nullptr;
 
-		Entity entity = g_SelectedProject->GetCurrentScene()->Add(std::string(val));
+		Entity entity = Project::GetSelectedProject()->GetCurrentScene()->Add(std::string(val));
 
 		Entity* container = new Entity(entity);
 		return PyCapsule_New(container, "InternalEntity", InternalCleanEntity);
@@ -180,7 +180,7 @@ namespace TooGoodEngine {
 		if (!PyArg_ParseTuple(args, "s", &val))
 			return nullptr;
 
-		auto& registry = g_SelectedProject->GetCurrentScene()->GetRegistry();
+		auto& registry = Project::GetSelectedProject()->GetCurrentScene()->GetRegistry();
 		
 		Entity entity = registry.GetEntityByName(val);
 		if (!entity)
@@ -223,8 +223,10 @@ namespace TooGoodEngine {
 		if (!PyArg_ParseTuple(args, "Os", &capsule, &name))
 			return nullptr;
 
-		auto& registry = g_SelectedProject->GetCurrentScene()->GetRegistry();
-		auto renderer  = g_SelectedProject->GetCurrentScene()->GetSceneRenderer();
+		auto selectedProject = Project::GetSelectedProject();
+
+		auto& registry = selectedProject->GetCurrentScene()->GetRegistry();
+		auto renderer  = selectedProject->GetCurrentScene()->GetSceneRenderer();
 		
 		Entity* container = (Entity*)(PyCapsule_GetPointer(capsule, "InternalEntity"));
 
@@ -280,7 +282,7 @@ namespace TooGoodEngine {
 		if (!PyArg_ParseTuple(args, "Os", &capsule, &name))
 			return nullptr;
 
-		auto& registry = g_SelectedProject->GetCurrentScene()->GetRegistry();
+		auto& registry = Project::GetSelectedProject()->GetCurrentScene()->GetRegistry();
 
 		Entity* container = (Entity*)(PyCapsule_GetPointer(capsule, "InternalEntity"));
 
@@ -316,7 +318,7 @@ namespace TooGoodEngine {
 		if (!container)
 			return nullptr;
 
-		auto& registry = g_SelectedProject->GetCurrentScene()->GetRegistry();
+		auto& registry = Project::GetSelectedProject()->GetCurrentScene()->GetRegistry();
 		registry.RemoveEntity(*container);
 
 		return Py_None;
@@ -329,7 +331,7 @@ namespace TooGoodEngine {
 		if (!PyArg_ParseTuple(args, "Os", &capsule, &name))
 			return nullptr;
 
-		auto& registry = g_SelectedProject->GetCurrentScene()->GetRegistry();
+		auto& registry = Project::GetSelectedProject()->GetCurrentScene()->GetRegistry();
 
 		Entity* container = (Entity*)(PyCapsule_GetPointer(capsule, "InternalEntity"));
 
@@ -390,7 +392,7 @@ namespace TooGoodEngine {
 
 		Entity* container = (Entity*)(PyCapsule_GetPointer(capsule, "InternalTransform"));
 		
-		auto& registry = g_SelectedProject->GetCurrentScene()->GetRegistry();
+		auto& registry = Project::GetSelectedProject()->GetCurrentScene()->GetRegistry();
 
 		if (!container || !*container || !registry.HasComponent<TransformComponent>(*container))
 			return nullptr;
@@ -413,7 +415,7 @@ namespace TooGoodEngine {
 
 		Entity* container = (Entity*)(PyCapsule_GetPointer(capsule, "InternalTransform"));
 
-		auto& registry = g_SelectedProject->GetCurrentScene()->GetRegistry();
+		auto& registry = Project::GetSelectedProject()->GetCurrentScene()->GetRegistry();
 
 		if (!container || !*container || !registry.HasComponent<TransformComponent>(*container))
 			return nullptr;
@@ -436,7 +438,7 @@ namespace TooGoodEngine {
 
 		Entity* container = (Entity*)(PyCapsule_GetPointer(capsule, "InternalTransform"));
 
-		auto& registry = g_SelectedProject->GetCurrentScene()->GetRegistry();
+		auto& registry = Project::GetSelectedProject()->GetCurrentScene()->GetRegistry();
 
 		if (!container || !*container || !registry.HasComponent<TransformComponent>(*container))
 			return nullptr;
@@ -456,7 +458,7 @@ namespace TooGoodEngine {
 
 		Entity* container = (Entity*)(PyCapsule_GetPointer(capsule, "InternalTransform"));
 
-		auto& registry = g_SelectedProject->GetCurrentScene()->GetRegistry();
+		auto& registry = Project::GetSelectedProject()->GetCurrentScene()->GetRegistry();
 
 		if (!container || !*container || !registry.HasComponent<TransformComponent>(*container))
 			return nullptr;
@@ -485,7 +487,7 @@ namespace TooGoodEngine {
 
 		Entity* container = (Entity*)(PyCapsule_GetPointer(capsule, "InternalTransform"));
 
-		auto& registry = g_SelectedProject->GetCurrentScene()->GetRegistry();
+		auto& registry = Project::GetSelectedProject()->GetCurrentScene()->GetRegistry();
 
 		if (!container || !*container || !registry.HasComponent<TransformComponent>(*container))
 			return nullptr;
@@ -514,7 +516,7 @@ namespace TooGoodEngine {
 
 		Entity* container = (Entity*)(PyCapsule_GetPointer(capsule, "InternalTransform"));
 
-		auto& registry = g_SelectedProject->GetCurrentScene()->GetRegistry();
+		auto& registry = Project::GetSelectedProject()->GetCurrentScene()->GetRegistry();
 
 		if (!container || !*container || !registry.HasComponent<TransformComponent>(*container))
 			return nullptr;
@@ -556,8 +558,10 @@ namespace TooGoodEngine {
 
 		Entity* container = (Entity*)(PyCapsule_GetPointer(capsule, "InternalMaterial"));
 
-		auto& registry = g_SelectedProject->GetCurrentScene()->GetRegistry();
-		auto  renderer = g_SelectedProject->GetCurrentScene()->GetSceneRenderer();
+		auto selectedProject = Project::GetSelectedProject();
+
+		auto& registry = selectedProject->GetCurrentScene()->GetRegistry();
+		auto  renderer = selectedProject->GetCurrentScene()->GetSceneRenderer();
 
 		if (!container || !*container || !registry.HasComponent<TransformComponent>(*container))
 			return nullptr;
@@ -597,7 +601,7 @@ namespace TooGoodEngine {
 
 		Entity* container = (Entity*)(PyCapsule_GetPointer(capsule, "InternalMaterial"));
 
-		auto& registry = g_SelectedProject->GetCurrentScene()->GetRegistry();
+		auto& registry = Project::GetSelectedProject()->GetCurrentScene()->GetRegistry();
 
 		if (!container || !*container || !registry.HasComponent<TransformComponent>(*container))
 			return nullptr;
@@ -704,7 +708,7 @@ namespace TooGoodEngine {
 
 		Entity* container = (Entity*)(PyCapsule_GetPointer(capsule, "InternalPointLight"));
 
-		auto& registry = g_SelectedProject->GetCurrentScene()->GetRegistry();
+		auto& registry = Project::GetSelectedProject()->GetCurrentScene()->GetRegistry();
 
 		if (!container || !*container || !registry.HasComponent<PointLightComponent>(*container))
 			return nullptr;
@@ -725,7 +729,7 @@ namespace TooGoodEngine {
 
 		Entity* container = (Entity*)(PyCapsule_GetPointer(capsule, "InternalPointLight"));
 
-		auto& registry = g_SelectedProject->GetCurrentScene()->GetRegistry();
+		auto& registry = Project::GetSelectedProject()->GetCurrentScene()->GetRegistry();
 
 		if (!container || !*container || !registry.HasComponent<PointLightComponent>(*container))
 			return nullptr;
@@ -746,7 +750,7 @@ namespace TooGoodEngine {
 
 		Entity* container = (Entity*)(PyCapsule_GetPointer(capsule, "InternalPointLight"));
 
-		auto& registry = g_SelectedProject->GetCurrentScene()->GetRegistry();
+		auto& registry = Project::GetSelectedProject()->GetCurrentScene()->GetRegistry();
 
 		if (!container || !*container || !registry.HasComponent<PointLightComponent>(*container))
 			return nullptr;
@@ -767,7 +771,7 @@ namespace TooGoodEngine {
 
 		Entity* container = (Entity*)(PyCapsule_GetPointer(capsule, "InternalPointLight"));
 
-		auto& registry = g_SelectedProject->GetCurrentScene()->GetRegistry();
+		auto& registry = Project::GetSelectedProject()->GetCurrentScene()->GetRegistry();
 
 		if (!container || !*container || !registry.HasComponent<PointLightComponent>(*container))
 			return nullptr;
@@ -792,7 +796,7 @@ namespace TooGoodEngine {
 
 		Entity* container = (Entity*)(PyCapsule_GetPointer(capsule, "InternalDirectionalLight"));
 
-		auto& registry = g_SelectedProject->GetCurrentScene()->GetRegistry();
+		auto& registry = Project::GetSelectedProject()->GetCurrentScene()->GetRegistry();
 
 		if (!container || !*container || !registry.HasComponent<DirectionalLightComponent>(*container))
 			return nullptr;
@@ -813,7 +817,7 @@ namespace TooGoodEngine {
 
 		Entity* container = (Entity*)(PyCapsule_GetPointer(capsule, "InternalDirectionalLight"));
 
-		auto& registry = g_SelectedProject->GetCurrentScene()->GetRegistry();
+		auto& registry = Project::GetSelectedProject()->GetCurrentScene()->GetRegistry();
 
 		if (!container || !*container || !registry.HasComponent<DirectionalLightComponent>(*container))
 			return nullptr;
@@ -834,7 +838,7 @@ namespace TooGoodEngine {
 
 		Entity* container = (Entity*)(PyCapsule_GetPointer(capsule, "InternalDirectionalLight"));
 
-		auto& registry = g_SelectedProject->GetCurrentScene()->GetRegistry();
+		auto& registry = Project::GetSelectedProject()->GetCurrentScene()->GetRegistry();
 
 		if (!container || !*container || !registry.HasComponent<DirectionalLightComponent>(*container))
 			return nullptr;
@@ -863,7 +867,7 @@ namespace TooGoodEngine {
 			return nullptr;
 
 		Entity* container = (Entity*)(PyCapsule_GetPointer(capsule, "InternalEntity"));
-		auto& registry = g_SelectedProject->GetCurrentScene()->GetRegistry();
+		auto& registry = Project::GetSelectedProject()->GetCurrentScene()->GetRegistry();
 
 		if (!container || !*container || !registry.HasComponent<OrthographicCameraComponent>(*container))
 			return nullptr;
@@ -1016,7 +1020,7 @@ namespace TooGoodEngine {
 			return nullptr;
 
 		Entity* container = (Entity*)(PyCapsule_GetPointer(capsule, "InternalEntity"));
-		auto& registry = g_SelectedProject->GetCurrentScene()->GetRegistry();
+		auto& registry = Project::GetSelectedProject()->GetCurrentScene()->GetRegistry();
 
 		if (!container || !*container || !registry.HasComponent<PerspectiveCameraComponent>(*container))
 			return nullptr;

@@ -35,6 +35,13 @@ namespace TooGoodEngine {
 		inline Ref<Scene> GetCurrentScene() const { return m_CurrentScene; }
 		inline AssetManager& GetAssetManager() { return *m_AssetManager; }
 
+		static Ref<Project> GetSelectedProject() { return g_SelectedProject; }
+		static Ref<Project> CreateProject(const std::filesystem::path& path);
+		static Ref<Project> CreateNewProject(const std::string& name, const std::filesystem::path& directory);
+		
+		static bool ProjectLoaded();
+		static void RemoveSelectedProject();
+
 	private:
 		std::filesystem::path m_ProjectDirectory;
 		std::string m_ProjectName;
@@ -42,7 +49,10 @@ namespace TooGoodEngine {
 		Ref<AssetManager> m_AssetManager; 
 		Ref<Scene> m_CurrentScene = nullptr;
 		std::vector<Ref<Scene>> m_LoadedScenes;
+
+
+		static inline Ref<Project> g_SelectedProject = nullptr;
 	};
 
-	inline Ref<Project> g_SelectedProject = nullptr;
+	
 }

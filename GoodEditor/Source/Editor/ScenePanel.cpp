@@ -17,7 +17,9 @@ namespace GoodEditor {
 
 	void ScenePanel::DrawPanel()
 	{
-		Ref<Scene> currentScene = g_SelectedProject->GetCurrentScene();
+		auto selectedProject = Project::GetSelectedProject();
+
+		Ref<Scene> currentScene = selectedProject->GetCurrentScene();
 		auto& registry = currentScene->GetRegistry();
 		auto renderer = currentScene->GetSceneRenderer();
 
@@ -354,12 +356,14 @@ namespace GoodEditor {
 				ImGuiColorEditFlags_NoInputs |
 				ImGuiColorEditFlags_NoPicker);
 
+			auto selectedProject = Project::GetSelectedProject();
+
 			if (ImGui::BeginDragDropTarget())
 			{
 				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ENVIRONMENT_MAP_TRANSFER_UUID"))
 				{
 					UUID id = *(UUID*)payload->Data;
-					renderSettings.CurrentEnvironmentMap = g_SelectedProject->GetAssetManager().FetchAssetAssuredType<EnvironmentMap>(id);
+					renderSettings.CurrentEnvironmentMap = selectedProject->GetAssetManager().FetchAssetAssuredType<EnvironmentMap>(id);
 				}
 
 				changed = true;

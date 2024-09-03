@@ -21,7 +21,8 @@ namespace GoodEditor {
 			return;
 		}
 
-		Ref<Scene> currentScene = g_SelectedProject->GetCurrentScene();
+		auto selectedProject = Project::GetSelectedProject();
+		Ref<Scene> currentScene = selectedProject->GetCurrentScene();
 		auto& tree = currentScene->GetRegistry();
 
 		EntityID entity = ScenePanel::GetSelectedEntity();
@@ -191,9 +192,13 @@ namespace GoodEditor {
 	{
 		ImGui::PushID(s_IDCount++);
 
+
 		if (ImGui::TreeNode("Model"))
 		{
-			Ref<Asset> asset = g_SelectedProject->GetAssetManager().FetchAsset(component.ModelAssetId);
+			auto selectedProject = Project::GetSelectedProject();
+
+
+			Ref<Asset> asset = selectedProject->GetAssetManager().FetchAsset(component.ModelAssetId);
 
 			if (asset)
 			{
@@ -208,10 +213,12 @@ namespace GoodEditor {
 
 		if (ImGui::BeginDragDropTarget())
 		{
+			auto selectedProject = Project::GetSelectedProject();
+
 			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("MODEL_TRANSFER_UUID"))
 			{
 				UUID id = *(UUID*)payload->Data;
-				Ref<Model> asset = g_SelectedProject->GetAssetManager().FetchAssetAssuredType<Model>(id);
+				Ref<Model> asset = selectedProject->GetAssetManager().FetchAssetAssuredType<Model>(id);
 
 				component.ModelAssetId = asset->GetAssetID();
 				component.Info = asset->GetInfo();
@@ -229,7 +236,9 @@ namespace GoodEditor {
 
 		if (ImGui::TreeNode("Script"))
 		{
-			Ref<Asset> asset = g_SelectedProject->GetAssetManager().FetchAsset(component.GetHandle());
+			auto selectedProject = Project::GetSelectedProject();
+
+			Ref<Asset> asset = selectedProject->GetAssetManager().FetchAsset(component.GetHandle());
 
 			if (asset)
 			{
@@ -263,10 +272,13 @@ namespace GoodEditor {
 
 		if (ImGui::BeginDragDropTarget())
 		{
+			auto selectedProject = Project::GetSelectedProject();
+
+
 			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("SCRIPT_TRANSFER_UUID"))
 			{
 				UUID id = *(UUID*)payload->Data;
-				Ref<Script> asset = g_SelectedProject->GetAssetManager().FetchAssetAssuredType<Script>(id);
+				Ref<Script> asset = selectedProject->GetAssetManager().FetchAssetAssuredType<Script>(id);
 
 				ScriptData data = ScriptingEngine::ExtractScript(asset->GetPath());
 
@@ -397,10 +409,12 @@ namespace GoodEditor {
 
 		if (ImGui::BeginDragDropTarget())
 		{
+			auto selectedProject = Project::GetSelectedProject();
+
 			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("IMAGE_TRANSFER_UUID"))
 			{
 				UUID id = *(UUID*)payload->Data;
-				image = g_SelectedProject->GetAssetManager().FetchAssetAssuredType<Image>(id);
+				image = selectedProject->GetAssetManager().FetchAssetAssuredType<Image>(id);
 			}
 
 			changed = true;
@@ -439,10 +453,12 @@ namespace GoodEditor {
 
 		if (ImGui::BeginDragDropTarget())
 		{
+			auto selectedProject = Project::GetSelectedProject();
+
 			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("IMAGE_TRANSFER_UUID"))
 			{
 				UUID id = *(UUID*)payload->Data;
-				image = g_SelectedProject->GetAssetManager().FetchAssetAssuredType<Image>(id);
+				image = selectedProject->GetAssetManager().FetchAssetAssuredType<Image>(id);
 			}
 
 			changed = true;

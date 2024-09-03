@@ -11,8 +11,7 @@ void Runtime::OnCreate()
 {
 	try
 	{
-		TooGoodEngine::g_SelectedProject = TooGoodEngine::CreateRef<TooGoodEngine::Project>(m_ProjectPath);
-		TooGoodEngine::g_SelectedProject->LoadProject();
+		m_SelectedProject = TooGoodEngine::Project::CreateProject(m_ProjectPath);
 	}
 	catch (const std::exception& e)
 	{
@@ -27,8 +26,8 @@ void Runtime::OnDestroy()
 
 void Runtime::OnUpdate(double delta)
 {
-	TooGoodEngine::g_SelectedProject->GetCurrentScene()->Play(delta);
-	TooGoodEngine::g_SelectedProject->GetCurrentScene()->GetSceneRenderer()->RenderImageToScreen(m_CurrentWidth, m_CurrentHeight);
+	m_SelectedProject->GetCurrentScene()->Play(delta);
+	m_SelectedProject->GetCurrentScene()->GetSceneRenderer()->RenderImageToScreen(m_CurrentWidth, m_CurrentHeight);
 }
 
 void Runtime::OnGuiUpdate(double delta)
@@ -45,6 +44,6 @@ void Runtime::OnEvent(TooGoodEngine::Event* event)
 
 
 		TooGoodEngine::ViewportResizeEvent viewportResize(m_CurrentWidth, m_CurrentHeight);
-		TooGoodEngine::g_SelectedProject->GetCurrentScene()->OnEvent(&viewportResize);
+		m_SelectedProject->GetCurrentScene()->OnEvent(&viewportResize);
 	}
 }

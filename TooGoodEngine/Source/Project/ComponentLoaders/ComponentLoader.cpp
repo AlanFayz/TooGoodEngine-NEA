@@ -72,6 +72,8 @@ namespace TooGoodEngine {
 
 	ModelComponent ComponentLoader::LoadModel(const json& jsonComponent, Renderer& sceneRenderer)
 	{
+		auto selectedProject = Project::GetSelectedProject();
+
 		ModelComponent component{};
 
 		auto& cache = *m_ModelCache;
@@ -84,7 +86,7 @@ namespace TooGoodEngine {
 			return component;
 		}
 
-		Ref<Model> model = g_SelectedProject->GetAssetManager().FetchAssetAssuredType<Model>(component.ModelAssetId);
+		Ref<Model> model = selectedProject->GetAssetManager().FetchAssetAssuredType<Model>(component.ModelAssetId);
 		
 		if (model)
 		{
@@ -101,12 +103,16 @@ namespace TooGoodEngine {
 	{
 		MaterialInfo info{};
 
+		auto selectedProject = Project::GetSelectedProject();
+
+
 		//
 		// ---- Ambient ----
+		//
 		if (jsonComponent.contains("Ambient Image"))
 		{
 			UUID handle = jsonComponent["Ambient Image"].get<uint64_t>();
-			info.AmbientTexture = g_SelectedProject->GetAssetManager().FetchAssetAssuredType<Image>(handle);
+			info.AmbientTexture = selectedProject->GetAssetManager().FetchAssetAssuredType<Image>(handle);
 		}
 		
 		{
@@ -116,10 +122,11 @@ namespace TooGoodEngine {
 
 		//
 		// ---- Albedo ---- 
+		//
 		if (jsonComponent.contains("Albedo Image"))
 		{
 			UUID handle = jsonComponent["Albedo Image"].get<uint64_t>();
-			info.AlbedoTexture = g_SelectedProject->GetAssetManager().FetchAssetAssuredType<Image>(handle);
+			info.AlbedoTexture = selectedProject->GetAssetManager().FetchAssetAssuredType<Image>(handle);
 		}
 
 		{
@@ -129,10 +136,11 @@ namespace TooGoodEngine {
 
 		//
 		// ---- Metallic ----
+		//
 		if (jsonComponent.contains("Metallic Image"))
 		{
 			UUID handle = jsonComponent["Metallic Image"].get<uint64_t>();
-			info.MetallicTexture = g_SelectedProject->GetAssetManager().FetchAssetAssuredType<Image>(handle);
+			info.MetallicTexture = selectedProject->GetAssetManager().FetchAssetAssuredType<Image>(handle);
 		}
 
 		{
@@ -142,10 +150,11 @@ namespace TooGoodEngine {
 
 		//
 		// ---- Emission ----
+		//
 		if (jsonComponent.contains("Emission Image"))
 		{
 			UUID handle = jsonComponent["Emission Image"].get<uint64_t>();
-			info.EmissionTexture = g_SelectedProject->GetAssetManager().FetchAssetAssuredType<Image>(handle);
+			info.EmissionTexture = selectedProject->GetAssetManager().FetchAssetAssuredType<Image>(handle);
 		}
 
 		{
@@ -157,10 +166,11 @@ namespace TooGoodEngine {
 
 		//
 		// ---- Roughness ----
+		//
 		if (jsonComponent.contains("Roughness Image"))
 		{
 			UUID handle = jsonComponent["Roughness Image"].get<uint64_t>();
-			info.RoughnessTexture = g_SelectedProject->GetAssetManager().FetchAssetAssuredType<Image>(handle);
+			info.RoughnessTexture = selectedProject->GetAssetManager().FetchAssetAssuredType<Image>(handle);
 		}
 
 		{
@@ -207,10 +217,12 @@ namespace TooGoodEngine {
 
 	ScriptComponent ComponentLoader::LoadScript(const json& jsonComponent)
 	{
+		auto selectedProject = Project::GetSelectedProject();
+
 		ScriptComponent component;
 
 		UUID id = jsonComponent.get<uint64_t>();
-		Ref<Script> asset = g_SelectedProject->GetAssetManager().FetchAssetAssuredType<Script>(id);
+		Ref<Script> asset = selectedProject->GetAssetManager().FetchAssetAssuredType<Script>(id);
 
 		if (asset)
 		{

@@ -51,15 +51,24 @@ namespace GoodEditor {
 	}
 	void Editor::OnDestroy()
 	{
-		if(g_SelectedProject)
-			g_SelectedProject->SaveState();
+		if (Project::ProjectLoaded())
+		{
+			auto selectedProject = Project::GetSelectedProject();
+			selectedProject->SaveState();
+		}
 	}
 	void Editor::OnUpdate(double delta)
 	{
-		if (g_SelectedProject && !m_Playing)
-			g_SelectedProject->GetCurrentScene()->Update(delta);
-		else if (g_SelectedProject && m_Playing)
-			g_SelectedProject->GetCurrentScene()->Play(delta);
+		if (!Project::ProjectLoaded())
+			return;
+
+		auto selectedProject = Project::GetSelectedProject();
+
+		if (!m_Playing)
+			selectedProject->GetCurrentScene()->Update(delta);
+		else
+			selectedProject->GetCurrentScene()->Play(delta);
+		
 
 	}
 	void Editor::OnGuiUpdate(double delta)
@@ -70,6 +79,8 @@ namespace GoodEditor {
 			return;
 		}
 
+
+
 		if (m_QueueRecreation && m_Playing)
 		{
 
@@ -77,15 +88,17 @@ namespace GoodEditor {
 			//every single scene. We then destroy the current project without saving. Then reload from disk
 			//preserving the state before it was played.
 
-			g_SelectedProject.reset();
-			g_SelectedProject = CreateRef<Project>(m_ProjectPath);
-			g_SelectedProject->LoadProject();
+			Project::RemoveSelectedProject();
+			Project::CreateProject(m_ProjectPath);
 
 			m_Playing = false;
 			m_QueueRecreation = false;
 		}
 
-		Ref<Scene>    currentScene = g_SelectedProject->GetCurrentScene();
+		auto selectedProject = Project::GetSelectedProject();
+
+
+		Ref<Scene>    currentScene = selectedProject->GetCurrentScene();
 		Ref<Renderer> currentSceneRenderer = currentScene->GetSceneRenderer();
 
 		if (m_PreviousWindowSize.x != ImGui::GetWindowSize().x || m_PreviousWindowSize.y != ImGui::GetWindowSize().y)
@@ -114,7 +127,7 @@ namespace GoodEditor {
 			{
 				if (ImGui::MenuItem("Save"))
 				{
-					g_SelectedProject->SaveState();
+					selectedProject->SaveState();
 				}
 
 				ImGui::EndMenu();
@@ -128,7 +141,9 @@ namespace GoodEditor {
 					std::filesystem::path directory = Platform::GetDirectoryFromDialog();
 
 					if (!directory.empty() && std::filesystem::exists(directory))
-						g_SelectedProject->Build(directory);
+					{
+						selectedProject->Build(directory);
+					}
 				}
 				catch (const std::exception& e)
 				{
@@ -165,8 +180,11 @@ namespace GoodEditor {
 	}
 	void Editor::OnEvent(Event* event)
 	{
-		if(g_SelectedProject)
-			g_SelectedProject->GetCurrentScene()->OnEvent(event);
+		if (Project::ProjectLoaded())
+		{
+			auto selectedProject = Project::GetSelectedProject();
+			selectedProject->GetCurrentScene()->OnEvent(event);
+		}
 
 		if (event->GetType() == EventType::WindowResize)
 		{
@@ -193,14 +211,12 @@ namespace GoodEditor {
 					
 					try
 					{
-						g_SelectedProject = CreateRef<Project>(m_ProjectPath);
-						g_SelectedProject->LoadProject();
+						Project::CreateProject(m_ProjectPath);
 					}
 					catch (const std::exception& e)
 					{
 						TGE_LOG_INFO(e.what());
-						g_SelectedProject = nullptr;
-						m_ProjectLoader = true;
+						Project::RemoveSelectedProject();
 					}
 					
 				}
@@ -216,14 +232,12 @@ namespace GoodEditor {
 
 					try
 					{
-						g_SelectedProject = CreateRef<Project>(m_ProjectPath);
-						g_SelectedProject->LoadProject();
+						Project::CreateProject(m_ProjectPath);
 					}
 					catch (const std::exception& e)
 					{
 						TGE_LOG_INFO(e.what());
-						g_SelectedProject = nullptr;
-						m_ProjectLoader = true;
+						Project::RemoveSelectedProject();
 					}
 				}
 			}
@@ -234,7 +248,7 @@ namespace GoodEditor {
 				if (!path.empty())
 				{
 					m_ProjectLoader = false;
-					g_SelectedProject = CreateRef<Project>(path.filename().string(), path);
+					Project::CreateNewProject(path.filename().string(), path);
 				}
 			}
 
@@ -261,21 +275,23 @@ namespace GoodEditor {
 	{
 		if (ImGui::BeginMenuBar())
 		{  
+			auto selectedProject = Project::GetSelectedProject();
+
 			if (ImGui::Button("2D View"))
 			{
-				g_SelectedProject->GetCurrentScene()->SetSceneView(SceneView::View2D);
+				selectedProject->GetCurrentScene()->SetSceneView(SceneView::View2D);
 			}
 
 			if (ImGui::Button("3D View"))
 			{
-				g_SelectedProject->GetCurrentScene()->SetSceneView(SceneView::View3D);
+				selectedProject->GetCurrentScene()->SetSceneView(SceneView::View3D);
 			}
 
 			if (ImGui::Button("Play"))
 			{
 				if (!m_Playing)
 				{
-					g_SelectedProject->SaveState();
+					selectedProject->SaveState();
 					m_Playing = true;
 				}
 			}

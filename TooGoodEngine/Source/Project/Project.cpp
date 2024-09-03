@@ -400,4 +400,28 @@ namespace TooGoodEngine {
 		m_CurrentScene = m_LoadedScenes[0];
 	}
 
+	Ref<Project> Project::CreateProject(const std::filesystem::path& path)
+	{
+		g_SelectedProject = CreateRef<Project>(path);
+		g_SelectedProject->LoadProject();
+
+		return g_SelectedProject;
+	}
+
+	Ref<Project> Project::CreateNewProject(const std::string& name, const std::filesystem::path& directory)
+	{
+		g_SelectedProject = CreateRef<Project>(name, directory);
+		return g_SelectedProject;
+	}
+
+	bool Project::ProjectLoaded()
+	{
+		return g_SelectedProject != nullptr;
+	}
+
+	void Project::RemoveSelectedProject()
+	{
+		g_SelectedProject.reset();
+	}
+
 }

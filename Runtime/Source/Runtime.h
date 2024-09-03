@@ -1,7 +1,8 @@
 #pragma once
 
-#include "Project/Project.h"
-#include "Core/Layers/Layer.h"
+#include <Core/Base.h>
+#include <Project/Project.h>
+#include <Core/Layers/Layer.h>
 
 class Runtime : public TooGoodEngine::Layer
 {
@@ -17,6 +18,8 @@ public:
 
 private:
 	std::filesystem::path m_ProjectPath;
+
+	TooGoodEngine::Ref<TooGoodEngine::Project> m_SelectedProject; //guarenteed to be one for the entire runtime
 
 	uint32_t m_CurrentWidth = 1200;
 	uint32_t m_CurrentHeight = 800;
