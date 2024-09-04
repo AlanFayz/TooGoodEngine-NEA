@@ -147,11 +147,12 @@ namespace TooGoodEngine {
 		void ApplySettings();
 
 		void Begin(Camera* camera);
-		void Draw(GeometryID id, const glm::mat4& transform, uint32_t materialIndex = 0);
-		void DrawModel(const ModelInfo& info, const glm::mat4& transform); 
 
-		void PlacePointLight(const glm::vec3& position, const glm::vec4& color, float radius, float intensity);
-		void AddDirectionaLight(const glm::vec3& direction, const glm::vec4& color, float intensity);
+		void Submit(GeometryID id, const glm::mat4& transform, uint32_t materialIndex = 0);
+		void SubmitModel(const ModelInfo& info, const glm::mat4& transform); 
+		void SubmitPointLight(const glm::vec3& position, const glm::vec4& color, float radius, float intensity);
+		void SubmitDirectionaLight(const glm::vec3& direction, const glm::vec4& color, float intensity);
+
 		void End();
 
 		void RenderImageToScreen(uint32_t width, uint32_t height);

@@ -136,9 +136,8 @@ namespace TooGoodEngine {
 		m_Data.IsDrawing = true;
 	}
 
-	void Renderer::Draw(GeometryID id, const glm::mat4& transform, uint32_t materialIndex)
+	void Renderer::Submit(GeometryID id, const glm::mat4& transform, uint32_t materialIndex)
 	{
-
 		uint32_t sparseIndex = materialIndex == 0 ? (uint32_t)m_Data.GeometryStorage.Get(id).GetDefaultMaterialIndex() : materialIndex;
 
 		uint32_t index = (uint32_t)m_Data.MaterialStorage.GetIndex((size_t)sparseIndex);
@@ -150,18 +149,18 @@ namespace TooGoodEngine {
 		m_Data.GeometryStorage.PushInstance(id, info);
 	}
 
-	void Renderer::DrawModel(const ModelInfo& info, const glm::mat4& transform)
+	void Renderer::SubmitModel(const ModelInfo& info, const glm::mat4& transform)
 	{
 		for (size_t i = 0; i < info.Size; i++)
 		{
 			if (info.CustomMaterials.size() > i)
-				Draw(info.ID + i, transform, (uint32_t)info.CustomMaterials[i]);
+				Submit(info.ID + i, transform, (uint32_t)info.CustomMaterials[i]);
 			else
-				Draw(info.ID + i, transform);
+				Submit(info.ID + i, transform);
 		}
 	}
 
-	void Renderer::PlacePointLight(const glm::vec3& position, const glm::vec4& color, float radius, float intensity)
+	void Renderer::SubmitPointLight(const glm::vec3& position, const glm::vec4& color, float radius, float intensity)
 	{
 		PointLight light{};
 		light.ColorAndRadius = glm::vec4(color.r, color.g, color.b, radius);
@@ -179,7 +178,7 @@ namespace TooGoodEngine {
 		m_Data.PointLights.MappedData[m_Data.PointLights.BufferIndex][m_Data.PointLights.Size++] = light;
 	}
 
-	void Renderer::AddDirectionaLight(const glm::vec3& direction, const glm::vec4& color, float intensity)
+	void Renderer::SubmitDirectionaLight(const glm::vec3& direction, const glm::vec4& color, float intensity)
 	{
 		DirectionalLight light{};
 		light.Color = color;
@@ -301,7 +300,7 @@ namespace TooGoodEngine {
 			m_Data.SkyBoxShaderProgram.SetUniform("u_EnvironmentMap", 0);
 			m_Data.SkyBoxShaderProgram.SetUniform("u_LevelOfDetail", m_Settings.LevelOfDetail);
 
-			Draw(m_Data.CubeGeometryIndex, glm::identity<glm::mat4>());
+			Submit(m_Data.CubeGeometryIndex, glm::identity<glm::mat4>());
 
 			auto& cubeBuffer = m_Data.GeometryStorage.Get(m_Data.CubeGeometryIndex);
 			cubeBuffer.BeginBatch(0);

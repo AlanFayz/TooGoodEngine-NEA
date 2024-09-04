@@ -39,10 +39,6 @@ namespace TooGoodEngine {
 
 	void Scene::Play(double delta)
 	{   
-		//
-		// --- search for a camera that is in use ---
-		//
-
 		Camera* sceneCamera = nullptr;
 
 		{
@@ -77,14 +73,10 @@ namespace TooGoodEngine {
 
 		}
 
-		//if there are no cameras then just use scene default camera
 		if (!sceneCamera)
 			sceneCamera = m_SceneCamera.get();
 
 
-		//
-		// ---- call scripts ----
-		//
 		{
 			auto scripts = m_Registry.View<ScriptComponent>();
 
@@ -112,25 +104,21 @@ namespace TooGoodEngine {
 
 		m_SceneRenderer->Begin(sceneCamera);
 
-		// ---- add point lights ----
-
 		{
 			auto pointLights = m_Registry.View<PointLightComponent>();
 
 			for (const auto& [pointLight, entityID] : pointLights)
-				m_SceneRenderer->PlacePointLight(pointLight.Position, pointLight.Color, pointLight.Radius, pointLight.Intensity);
+				m_SceneRenderer->SubmitPointLight(pointLight.Position, pointLight.Color, pointLight.Radius, pointLight.Intensity);
 		}
 
-		// ---- add directional lights ----
 
 		{
 			auto directionalLights = m_Registry.View<DirectionalLightComponent>();
 
 			for (const auto& [light, entityID] : directionalLights)
-				m_SceneRenderer->AddDirectionaLight(light.Direction, light.Color, light.Intensity);
+				m_SceneRenderer->SubmitDirectionaLight(light.Direction, light.Color, light.Intensity);
 		}
 
-		// ---- Render Meshes ----
 		{
 			auto& meshView        = m_Registry.View<MeshComponent>();
 			auto  transformBucket = m_Registry.GetBucket<TransformComponent>();
@@ -145,12 +133,12 @@ namespace TooGoodEngine {
 
 				if (!materialBucket->Contains(entityID))
 				{
-					m_SceneRenderer->Draw(component.ID, transform.GetTransform());
+					m_SceneRenderer->Submit(component.ID, transform.GetTransform());
 				}
 				else
 				{
 					auto& material = materialBucket->Get(entityID);
-					m_SceneRenderer->Draw(component.ID, transform.GetTransform(), (uint32_t)material.ID);
+					m_SceneRenderer->Submit(component.ID, transform.GetTransform(), (uint32_t)material.ID);
 				}
 			}
 
@@ -162,7 +150,7 @@ namespace TooGoodEngine {
 					continue;
 
 				auto& transform = transformBucket->Get(entityID);
-				m_SceneRenderer->DrawModel(component.Info, transform.GetTransform());
+				m_SceneRenderer->SubmitModel(component.Info, transform.GetTransform());
 			}
 
 		}
@@ -181,31 +169,27 @@ namespace TooGoodEngine {
 		else
 			m_CameraController2D.Update(delta);
 
-		// ---- renderer begin ----
 		if (m_SceneView == SceneView::View3D)
 			m_SceneRenderer->Begin(m_SceneCamera.get());
 		else
 			m_SceneRenderer->Begin(m_SceneCamera2D.get());
 
-		// ---- add point lights ----
 
 		{
 			auto pointLights = m_Registry.View<PointLightComponent>();
 
 			for (auto& [pointLight, entityID] : pointLights)
-				m_SceneRenderer->PlacePointLight(pointLight.Position, pointLight.Color, pointLight.Radius, pointLight.Intensity);
+				m_SceneRenderer->SubmitPointLight(pointLight.Position, pointLight.Color, pointLight.Radius, pointLight.Intensity);
 		}
 
-		// ---- add directional lights ----
 
 		{
 			auto directionalLights = m_Registry.View<DirectionalLightComponent>();
 
 			for (auto& [light, entityID] : directionalLights)
-				m_SceneRenderer->AddDirectionaLight(light.Direction, light.Color, light.Intensity);
+				m_SceneRenderer->SubmitDirectionaLight(light.Direction, light.Color, light.Intensity);
 		}
 
-		// ---- Render Meshes ----
 		{
 			TGE_PROFILE_SCOPE(RenderGeometry);
 
@@ -222,12 +206,12 @@ namespace TooGoodEngine {
 
 				if (!materialBucket->Contains(entityID))
 				{
-					m_SceneRenderer->Draw(component.ID, transform.GetTransform());
+					m_SceneRenderer->Submit(component.ID, transform.GetTransform());
 				}
 				else
 				{
 					auto& material = materialBucket->Get(entityID);
-					m_SceneRenderer->Draw(component.ID, transform.GetTransform(), (uint32_t)material.ID);
+					m_SceneRenderer->Submit(component.ID, transform.GetTransform(), (uint32_t)material.ID);
 				}
 			}
 
@@ -239,7 +223,7 @@ namespace TooGoodEngine {
 					continue;
 
 				auto& transform = transformBucket->Get(entityID);
-				m_SceneRenderer->DrawModel(component.Info, transform.GetTransform());
+				m_SceneRenderer->SubmitModel(component.Info, transform.GetTransform());
 			}
 			
 		}
