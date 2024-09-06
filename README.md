@@ -7,7 +7,7 @@
 ## Building
 1. First step is to clone the repository recursively using the command below.
 ```
-git clone https://github.com/AlanFayz/TooGoodEngine-NEA.git --recursive 
+git clone --recursive https://github.com/AlanFayz/TooGoodEngine-NEA.git DesiredFolderName
 ```
 2. After this navigate to `Scripts/` and run the script to generate project files.
 3. A visual studio solution is generated in the root of the project you can simply double click to open and build.
