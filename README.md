@@ -1,13 +1,13 @@
 ## Prerequisites
-1. Windows OS (this is going to change in the future to include linux)
-2. Visual Studio (this will also change)
+1. Windows OS 
+2. Visual Studio 
 3. A C++20 Compiler
 3. Python installed and in your system enviroment variable "Path" (there is an option to add this in the python installer)
 
 ## Building
 1. First step is to clone the repository recursively using the command below.
 ```
-git clone https://github.com/DevAlgos/TooGoodEngine-NEA.git --recursive 
+git clone https://github.com/AlanFayz/TooGoodEngine-NEA.git --recursive 
 ```
 2. After this navigate to `Scripts/` and run the script to generate project files.
 3. A visual studio solution is generated in the root of the project you can simply double click to open and build.
