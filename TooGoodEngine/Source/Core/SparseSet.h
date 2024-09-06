@@ -19,8 +19,6 @@ namespace TooGoodEngine {
 		virtual void Remove(size_t index) = 0;
 	};
 
-	//if needed may add the ability to have a custom sparse allocator as well but don't see any benifit currently
-
 	template<Resizable Type, size_t SparseNull = std::numeric_limits<size_t>::max(), class Allocator = std::allocator<Type>>
 	class SparseSet : public BaseSparseSet
 	{

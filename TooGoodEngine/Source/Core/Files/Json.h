@@ -39,6 +39,7 @@ namespace TooGoodEngine {
 		json* current = &m_Data;
 		size_t last = path.size() - 1;
 
+		//essentially treating it like a linked list
 		for (size_t i = 0; i < last; ++i)
 		{
 			auto& ref = *current;
@@ -83,6 +84,7 @@ namespace TooGoodEngine {
 		json* current = &m_Data;
 		size_t last = path.size() - 1;
 
+		//essentially treating it like a linked list
 		for (size_t i = 0; i < last; ++i) 
 		{
 			auto& ref = *current;

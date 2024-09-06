@@ -2,7 +2,7 @@
     "Project Name": "Example",
     "Project Directory": "../Example",
     "Asset Directory": "../Example\\Assets",
-    "Last Build Date": "2024-09-06 07:17:04",
+    "Last Build Date": "2024-09-06 07:37:40",
     "Scenes": {
         "": {
             "Scene Settings": {
@@ -220,7 +220,7 @@
                 "Duck": {
                     "Transform": {
                         "Position": [
-                            3.200000047683716,
+                            6.199999809265137,
                             8.100000381469727,
                             0.0
                         ],
@@ -231,11 +231,11 @@
                         ],
                         "Rotation": [
                             -90.0,
-                            0.0,
-                            56.099998474121094
+                            -0.5,
+                            55.70000076293945
                         ]
                     },
-                    "Model": 16187119479394026469
+                    "Model": 11321238477760111702
                 }
             }
         }
@@ -253,10 +253,6 @@
             "Type": "Script",
             "Path": "camera_controller.py"
         },
-        "8507050281964349901": {
-            "Type": "Image",
-            "Path": "security_camera_01_1k.fbx\\textures\\security_camera_01_diff_1k.jpg"
-        },
         "10856765018053007526": {
             "Type": "Image",
             "Path": "rubber_duck_toy_1k.fbx\\textures\\rubber_duck_toy_diff_1k.jpg"
@@ -268,10 +264,6 @@
         "14265145243090405190": {
             "Type": "EnvironmentMap",
             "Path": "kloppenheim_02_puresky_1k.hdr"
-        },
-        "16187119479394026469": {
-            "Type": "Model",
-            "Path": "security_camera_01_1k.fbx\\security_camera_01_1k.fbx"
         }
     }
 }

@@ -42,7 +42,7 @@ namespace TooGoodEngine {
 
 		glfwMakeContextCurrent(m_Window);
 		
-		if (!gladLoadGL())
+		if (!gladLoadGL()) //CRITICIAL ERROR
 			TGE_HALT();
 
 		glEnable(GL_DEBUG_OUTPUT);
