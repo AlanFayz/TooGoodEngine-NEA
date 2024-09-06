@@ -3,6 +3,7 @@
 
 int main()
 {
+	//entry point into the engine
 	TooGoodEngine::ApplicationData data{};
 	data.Layers.push_back(TooGoodEngine::CreateRef<GoodEditor::Editor>());
 	data.Title        = "Good Editor";

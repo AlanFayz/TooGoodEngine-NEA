@@ -27,6 +27,7 @@ namespace GoodEditor {
 
 		EntityID entity = ScenePanel::GetSelectedEntity();
 		
+		//if the entity is not valid we simply return
 		if (entity == g_NullEntity)
 		{
 			ImGui::End();
@@ -37,6 +38,7 @@ namespace GoodEditor {
 
 		ImGui::Text(name.c_str());
 
+		//draw all possible components if the entity contains them.
 		if (tree.HasComponent<TransformComponent>(entity))
 		{
 			_DrawComponent(tree.GetComponent<TransformComponent>(entity));
@@ -211,6 +213,7 @@ namespace GoodEditor {
 			ImGui::TreePop();
 		}
 
+		//if the user has dropped a model asset onto the component then create the component using that model.
 		if (ImGui::BeginDragDropTarget())
 		{
 			auto selectedProject = Project::GetSelectedProject();
@@ -250,6 +253,7 @@ namespace GoodEditor {
 
 			if (asset)
 			{
+				//if the user clicks the refersh button then it will destroy the script component and re extract it 
 				if (ImGui::Button("Refresh"))
 				{
 					component.~ScriptComponent();
@@ -269,6 +273,8 @@ namespace GoodEditor {
 
 			ImGui::TreePop();
 		}
+
+		//if the user drops a script asset onto the component then create the script from that asset.
 
 		if (ImGui::BeginDragDropTarget())
 		{
@@ -407,6 +413,7 @@ namespace GoodEditor {
 				ImGuiColorEditFlags_NoPicker);
 		}
 
+		//similar to the rest of the drop targets
 		if (ImGui::BeginDragDropTarget())
 		{
 			auto selectedProject = Project::GetSelectedProject();
@@ -451,6 +458,7 @@ namespace GoodEditor {
 				ImGuiColorEditFlags_NoPicker);
 		}
 
+		//similar to the rest of the drop targets
 		if (ImGui::BeginDragDropTarget())
 		{
 			auto selectedProject = Project::GetSelectedProject();

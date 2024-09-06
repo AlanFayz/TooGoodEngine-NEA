@@ -136,11 +136,13 @@ namespace GoodEditor {
 
 		for (size_t i = 0; i < node.Children.size(); i++)
 		{
+			//if the entity has already been displayed then ignore it.
 			if (displayed.contains(node.Children[i]))
 				continue;
 
 			Entity childEntity = tree.GetEntityByID(node.Children[i]);
 
+			//if the entity is not valid ignore it.
 			if (!childEntity)
 				continue;
 

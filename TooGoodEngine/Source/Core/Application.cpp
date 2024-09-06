@@ -16,10 +16,13 @@ namespace TooGoodEngine {
 	Application::Application(ApplicationData& data)
 		: m_Dispatcher(this), m_Window(data.WindowWidth, data.WindowHeight, data.Title, m_Dispatcher)
 	{
+		//init critical systems first such as detecting input and imgui.
+
 		Input::Init(m_Window.GetWindow());
 
 		_InitImGui();
 
+		//taking the layers from the application data and moving them to the application class
 		for (auto& layer : data.Layers)
 			AddLayer(layer);
 
@@ -47,8 +50,10 @@ namespace TooGoodEngine {
 
 		while (m_Running)
 		{
+			//swap window buffers and poll events
 			m_Window.Update();
 
+			//if the window is minimized do nothing
 			if (m_Window.GetWidth() == 0 || m_Window.GetHeight() == 0)
 			{
 				glfwWaitEvents();
@@ -57,19 +62,23 @@ namespace TooGoodEngine {
 
 			TGE_PROFILE_SCOPE(Frame);
 
+			//start a timer to calculate delta for this current frame
 			m_Timer.Start();
 
 			{
+				//updates imgui data and calls OnGuiUpdate on the layers
 				TGE_PROFILE_SCOPE(UpdateGui);
 				_UpdateImGui(delta);
 			}
 
 			{
+				//calls OnUpdate on the layers
+				//also passes the delta of the previous frame
 				TGE_PROFILE_SCOPE(UpdateLayers);
 				m_LayerStack.OnUpdateLayers(delta);
 			}
 
-
+			//calculates the delta of the current frame in seconds
 			delta = (double)m_Timer.EllapsedMilli();
 			delta /= 1000.0;
 		}
@@ -77,6 +86,7 @@ namespace TooGoodEngine {
 
 	void Application::OnEvent(Event* event)
 	{
+		//if the user has closed the application we stop the application loop
 		if (event->GetType() == EventType::ApplicationClose)
 			m_Running = false;
 
@@ -84,6 +94,7 @@ namespace TooGoodEngine {
 	}
 	void Application::_UpdateImGui(double delta)
 	{
+		//clear the screen to black
 		OpenGL::Command::ClearColor({0.0f, 0.0f, 0.0f, 1.0f});
 
 		ImGuiIO& io = ImGui::GetIO();
@@ -92,11 +103,15 @@ namespace TooGoodEngine {
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
 
+		//calls OnGuiUpdate on the layers with the delta
 		m_LayerStack.OnGuiUpdateLayers(delta);
 
+		//renders the results of what was registered to imgui
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
+		
+		//if multiviewports are enabled we update the platforms with their viewports
+		//and then restore the current context
 		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
 		{
 			GLFWwindow* backup_current_context = glfwGetCurrentContext();

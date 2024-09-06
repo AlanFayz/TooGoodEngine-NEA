@@ -31,6 +31,7 @@ namespace GoodEditor {
 
        auto& root = selctedProject->GetAssetDirectory();
 
+       //if the current directory has not currently been set then set it to the root.
        if (s_CurrentDirectory.empty())
        {
            s_CurrentDirectory = root;
@@ -52,7 +53,8 @@ namespace GoodEditor {
        const int buttonWidth = 120;
        const int buttonHeight = 100;
 
-       if (s_CurrentDirectory != selctedProject->GetAssetDirectory())
+       //if current directory is not the root we want to be able to displaya back button.
+       if (s_CurrentDirectory != root)
        {
            if (ImGui::ImageButton((ImTextureID)(intptr_t)extensionMap["back"]->GetTexture().GetHandle(), ImVec2(buttonWidth, buttonHeight), ImVec2(0, 1), ImVec2(1, 0)))
            {
@@ -67,11 +69,13 @@ namespace GoodEditor {
 
        ImVec2 size = ImGui::GetWindowSize();
 
+       //if the user has deleted the current directory then it will keep going back until it reaches a valid one.
        while (!std::filesystem::exists(s_CurrentDirectory))
            s_CurrentDirectory = s_CurrentDirectory.parent_path();
 
        int k = 10000;
 
+       //going through each file in the currently selected folder
        for (const auto& entry : std::filesystem::directory_iterator(s_CurrentDirectory))
        {
            std::filesystem::path path = entry.path();
@@ -117,15 +121,17 @@ namespace GoodEditor {
             ImGui::BeginGroup();
 
             ImGui::ImageButton((ImTextureID)(intptr_t)extensionMap[extension]->GetTexture().GetHandle(), 
-                                ImVec2(buttonWidth, buttonHeight), ImVec2(1, 0), ImVec2(0, 1));
+                                ImVec2(buttonWidth, buttonHeight));
 
             if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
                 Platform::OpenDefaultApp(path);
 
+            //if we haven't loaded the assset in then do so and add it to the loaded directories
             if (!s_CachedDirectories.contains(path))
             {
                 Ref<Asset> asset = s_ExtensionFunctions.at(extension)(path);
 
+                //if the asset is valid and is a model we want to register this with the renderer
                 if (asset && asset->GetAssetType() == AssetType::Model)
                 {
                     Ref<Model> model = std::dynamic_pointer_cast<Model>(asset);
@@ -136,12 +142,17 @@ namespace GoodEditor {
                         model->SetInfo(info);
                     }
                 }
+
+                if(asset)
+                    s_CachedDirectories.insert(path);
             }
             
+            //if the user begins to drag a file register it and add it to an imgui dragdrop payload.
             if (ImGui::BeginDragDropSource())
             {
                 Ref<Asset> asset = selctedProject->GetAssetManager().FetchAsset(path);
 
+                //if the asset isn't valid then try reload it.
                 if (!asset)
                 {
                     selctedProject->GetAssetManager().RemoveAsset(path);
@@ -195,6 +206,9 @@ namespace GoodEditor {
            ImGui::PopID();
        }
 
+
+       //go through the cached directories to check their existance. If they do not exist we 
+       //remove them from the asset manager.
 
        for (const auto& directory : s_CachedDirectories)
        {

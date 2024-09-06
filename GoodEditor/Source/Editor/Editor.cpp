@@ -13,9 +13,11 @@ namespace GoodEditor {
 
 	void Editor::OnCreate()
 	{
+		//creates fonts for the gui
 		ImGuiIO& io = ImGui::GetIO();
 		io.Fonts->AddFontFromFileTTF("Resources/Fonts/Open_Sans/static/OpenSans-Regular.ttf", 20.0f);
 
+		//styling for the editor.
 		ImGuiStyle& style = ImGui::GetStyle();
 		style.FrameRounding = 12;
 		style.WindowRounding = 12;
@@ -37,6 +39,7 @@ namespace GoodEditor {
 		style.Colors[27] = ImColor(70, 70, 154, 128);   //header active
 		style.Colors[41] = ImColor(2, 5, 20, 128);      //docking empty background
 
+		//loads images that are requierd by the asset panel.
 		m_ExtensionMap["folder"] = Image::LoadImageAssetFromFile("Resources/Textures/folder_icon.png");
 		m_ExtensionMap["back"]	 = Image::LoadImageAssetFromFile("Resources/Textures/back_icon.png");
 		m_ExtensionMap[".obj"]	 = Image::LoadImageAssetFromFile("Resources/Textures/obj_icon.png");
@@ -51,6 +54,7 @@ namespace GoodEditor {
 	}
 	void Editor::OnDestroy()
 	{
+		//if we have a project loaded we save it before we close the editor
 		if (Project::ProjectLoaded())
 		{
 			auto selectedProject = Project::GetSelectedProject();
@@ -59,11 +63,14 @@ namespace GoodEditor {
 	}
 	void Editor::OnUpdate(double delta)
 	{
+		//if we don't have a project loaded we don't want to update the scene
 		if (!Project::ProjectLoaded())
 			return;
 
+		
 		auto selectedProject = Project::GetSelectedProject();
 
+		//update the project depending on if we are in the editor or playing
 		if (!m_Playing)
 			selectedProject->GetCurrentScene()->Update(delta);
 		else
@@ -73,13 +80,13 @@ namespace GoodEditor {
 	}
 	void Editor::OnGuiUpdate(double delta)
 	{
+		//if we are still in the project loader then it will wait for 
+		//the user to select/create a new project.
 		if (m_ProjectLoader)
 		{
 			_TryGetProjectName();
 			return;
 		}
-
-
 
 		if (m_QueueRecreation && m_Playing)
 		{
@@ -101,6 +108,7 @@ namespace GoodEditor {
 		Ref<Scene>    currentScene = selectedProject->GetCurrentScene();
 		Ref<Renderer> currentSceneRenderer = currentScene->GetSceneRenderer();
 
+		//if the window has changed we need to register that
 		if (m_PreviousWindowSize.x != ImGui::GetWindowSize().x || m_PreviousWindowSize.y != ImGui::GetWindowSize().y)
 		{
 			ViewportResizeEvent event((uint32_t)ImGui::GetWindowSize().x, (uint32_t)ImGui::GetWindowSize().y);
@@ -180,6 +188,7 @@ namespace GoodEditor {
 	}
 	void Editor::OnEvent(Event* event)
 	{
+		//register events with current project and resize the width and height of the editor
 		if (Project::ProjectLoaded())
 		{
 			auto selectedProject = Project::GetSelectedProject();
@@ -217,6 +226,7 @@ namespace GoodEditor {
 					{
 						TGE_LOG_INFO(e.what());
 						Project::RemoveSelectedProject();
+						m_ProjectLoader = true;
 					}
 					
 				}
@@ -238,6 +248,7 @@ namespace GoodEditor {
 					{
 						TGE_LOG_INFO(e.what());
 						Project::RemoveSelectedProject();
+						m_ProjectLoader = true;
 					}
 				}
 			}

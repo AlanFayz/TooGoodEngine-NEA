@@ -12,7 +12,6 @@
 #include <shobjidl_core.h> 
 #include <comdef.h>        
 
-//TODO: all windows specific stuff should be moved to a windows folder.
 
 namespace GoodEditor {
 
