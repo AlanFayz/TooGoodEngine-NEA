@@ -9,8 +9,17 @@ void main()
 
 	// gl_VertexID     X      Y
 	// 0               0      0
-	// 1               2      3
+	// 1               2      0
 	// 2               0      2
+
+	// (0, 2)
+	//
+	//     
+	// (0,1) ------------------
+	//       |				  |
+	//	     |	  screen	  |	
+	//       |                |  
+	// (0, 0)------------------(1,0)     (2, 0)
 
 	//anything above 1 is clipped leaving a quad.
 
