@@ -48,8 +48,11 @@ namespace TooGoodEngine {
 			uint32_t Masks;
 		};
 
+		//makes debugging easier as buffer ids can be 0, 1, 2. 
+		//if it is initialized to a massive number its very obvious in the debugger
 		inline constexpr uint32_t g_NullBufferID = std::numeric_limits<uint32_t>::max();
 
+		//a class which manages a block of memory on the GPU, allocating, resizing, modifying etc...
 		class Buffer
 		{
 		public:

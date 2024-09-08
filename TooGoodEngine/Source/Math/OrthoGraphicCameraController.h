@@ -5,6 +5,7 @@
 
 namespace TooGoodEngine {
 
+	//simply controls an orthographic camera.
 	class OrthographicCameraController
 	{
 	public:

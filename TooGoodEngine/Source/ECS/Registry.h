@@ -9,6 +9,10 @@
 
 namespace TooGoodEngine {
 
+	//a registry is to be inherited by systems
+	//it contains the storages for entites and their componenets
+	//organising each type of componenet into buckets (Sparse sets).
+	//this is done using c++ RTTI (typeid)
 	class Registry
 	{
 	public:
@@ -124,6 +128,7 @@ namespace TooGoodEngine {
 	template<typename Type>
 	inline const auto Registry::View()
 	{
+		//returns the vector so it can be iterated over
 		auto bucket = _GetBucketAssuredType<Type>();
 		return bucket->GetDense();
 	}

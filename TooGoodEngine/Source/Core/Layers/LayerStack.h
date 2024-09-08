@@ -7,6 +7,7 @@
 
 namespace TooGoodEngine {
 
+	//a collection of layers.
 	class LayerStack : public EventHandler
 	{
 	public:

@@ -19,6 +19,7 @@ namespace TooGoodEngine {
 		using ShaderMap       = std::map<ShaderType, std::filesystem::path>;
 		using ShaderSourceMap = std::map<ShaderType, const char*>;
 
+		//a program is a collection of shader objects.
 		class Program
 		{
 		public:

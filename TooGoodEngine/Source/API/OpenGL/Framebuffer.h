@@ -18,6 +18,7 @@ namespace TooGoodEngine {
 			Texture2D* DepthAttachment = nullptr; //if needed will make this DepthStencil 
 		};
 
+		//this is a class which holds textures/rendering attachments (only textures are used)
 		class Framebuffer
 		{
 		public:
@@ -48,6 +49,7 @@ namespace TooGoodEngine {
 				uint32_t SourceMipLevel, DestinationMipLevel;
 			};
 
+			//blit copies an attachemnt from one framebuffer to another.
 			static void BlitColorAttachment(const BlitInfo& info); 
 
 			//note, source and destination index are obselete here

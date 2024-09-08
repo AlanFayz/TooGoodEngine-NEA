@@ -6,8 +6,13 @@
 
 namespace TooGoodEngine {
 	
+	//this is a container for a collection of scenes
+	//assets and is responsible for serilization/deserilization.
 	class Project
 	{
+	public:
+		using ComponentLoaderMapType = std::map<std::string, std::function<void(EntityTree&, Entity&, const json&, Ref<Renderer>)>>;
+
 	public:
 		Project(const std::filesystem::path& path); //for loading projects
 		Project(const std::string& name, const std::filesystem::path& pathOfDirectory); //for creating
@@ -49,8 +54,8 @@ namespace TooGoodEngine {
 		Ref<AssetManager> m_AssetManager; 
 		Ref<Scene> m_CurrentScene = nullptr;
 		std::vector<Ref<Scene>> m_LoadedScenes;
-
-
+		
+		static const ComponentLoaderMapType s_ComponentLoaderMap;
 		static inline Ref<Project> g_SelectedProject = nullptr;
 	};
 

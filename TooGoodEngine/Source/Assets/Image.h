@@ -5,6 +5,7 @@
 
 namespace TooGoodEngine {
 
+	//simply a wrapper around a texture but includes the asset API.
 	class Image : public Asset
 	{
 	public:

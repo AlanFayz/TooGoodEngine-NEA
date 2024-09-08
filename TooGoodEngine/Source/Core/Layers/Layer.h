@@ -4,6 +4,9 @@
 
 namespace TooGoodEngine {
 
+	//this is the base class for any "layer" that an external module
+	//such as the editor/runtime can inherit from.
+	//the below functions will be called as required by the engine.
 	class Layer : public EventHandler
 	{
 	public:

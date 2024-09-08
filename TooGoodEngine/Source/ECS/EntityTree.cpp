@@ -8,6 +8,7 @@ namespace TooGoodEngine {
 	{
 		Entity entity = __CreateEntity(name);
 
+		//all nodes are stored in one vector.
 		Node node{};
 		node.Entity = entity;
 		node.ParentIndex = g_NullNode;
@@ -44,20 +45,24 @@ namespace TooGoodEngine {
 
 	void EntityTree::RemoveEntity(EntityID id)
 	{
+		//invalid id.
 		if (id >= GetCount())
 			return;
 
+		//find the node where the entity is.
 		size_t nodeIndex = _Find(GetEntityByID(id));
 		if (nodeIndex == g_NullNode)
 			return;
 
+		//remove all its children recursively.
 		for (auto& child : m_Nodes[nodeIndex].Children)
 			RemoveEntity(child);
 
 		Entity entity = GetEntityByID(id);
 		nodeIndex = _Find(entity); //nodeIndex may have changed from previous erases
 
-
+		//remove the entity from the node and from the registry.
+		//this also automatically frees any componenents associated with the entity.
 		m_Nodes.erase(m_Nodes.begin() + nodeIndex);
 		__RemoveEntity(entity);
 	}
@@ -86,6 +91,8 @@ namespace TooGoodEngine {
 		auto& childNode = m_Nodes[childIndex];
 		auto& parentNode = m_Nodes[parentIndex];
 
+		//if there is no parent index to the child then that means its a root. We can simply append 
+		//its index to the parent and return.
 		if (childNode.ParentIndex == g_NullNode)
 		{
 			parentNode.Children.push_back(childIndex);
@@ -93,6 +100,8 @@ namespace TooGoodEngine {
 			return;
 		}
 
+		//if it does have an old parent then we need to adjust that parents children
+		//by removing this child.
 		size_t oldParentIndex = m_Nodes[childIndex].ParentIndex;
 		auto& oldParentNode = m_Nodes[oldParentIndex];
 

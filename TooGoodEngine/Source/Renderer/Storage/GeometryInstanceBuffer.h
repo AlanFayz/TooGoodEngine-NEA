@@ -24,6 +24,8 @@ namespace TooGoodEngine {
 		size_t DefaultMaterialIndex = 0;
 	};
 
+	//holds the information for a unqiue geometry.
+	//it contains the instances and their data as well as the orgional vertex data.
 	class GeometryInstanceBuffer
 	{
 	public:

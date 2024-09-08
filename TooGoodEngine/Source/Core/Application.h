@@ -16,6 +16,7 @@ namespace TooGoodEngine {
 		std::string Title;
 	};
 
+	//holds the current state of the application.
 	class Application : public EventHandler
 	{
 	public:

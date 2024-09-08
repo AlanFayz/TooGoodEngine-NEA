@@ -33,6 +33,7 @@ namespace TooGoodEngine {
 
 		std::vector<Geometry> geometry;
 
+		//recursive call (DFS) of all the nodes.
 		_ProcessNode(geometry, scene->mRootNode, scene);
 
 
@@ -51,6 +52,8 @@ namespace TooGoodEngine {
 		geometry.push_back({});
 		auto& currentMesh = geometry.back();
 
+		//copy each vertex and push into a vector
+
 		for (size_t i = 0; i < mesh->mNumVertices; i++)
 		{
 			Vertex Vertex{};
@@ -65,6 +68,7 @@ namespace TooGoodEngine {
 			currentMesh.Vertices.push_back(Vertex);
 		}
 
+		//go through each face retreiving the incides for the index buffer.
 		for (size_t i = 0; i < mesh->mNumFaces; i++)
 		{
 			for (size_t j = 0; j < mesh->mFaces[i].mNumIndices; j++)
@@ -123,6 +127,7 @@ namespace TooGoodEngine {
 			if (!image)
 				return nullptr;
 
+			//cache the image so repeated images do not get reloaded multiple times.
 			if (s_CachedImages.count(strPath) == 0)
 				s_CachedImages[strPath] = image->GetAssetID();
 

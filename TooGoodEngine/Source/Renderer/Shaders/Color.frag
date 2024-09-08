@@ -182,6 +182,7 @@ vec4 Shade(in ShadeInfo info)
 {
 	vec3 radiance = info.LightColor * info.Attenuation;
 
+	//precalculate everything that is needed to increase performance.
 	vec3 viewDir    = normalize(info.CameraPosition - info.WorldPosition);
 	vec3 halfwayDir = normalize(info.LightDirection + viewDir);
 
@@ -190,14 +191,17 @@ vec4 Shade(in ShadeInfo info)
 	float NdotH = max(dot(info.Normal, halfwayDir),			 EPSILON);
 	float VdotH = max(dot(viewDir,     halfwayDir),		     EPSILON);
 
+	//diffuse
 	vec4 lambertianDiffuse = info.Data.Albedo / PI;
 
 	vec4 F0 = vec4(0.04); 
 	F0  = mix(F0, info.Data.Albedo, info.Data.Metallic);
 
+	//fresnel 
 	vec4 ks = FresnelApproximation(VdotH, F0);
 	vec4 kd = (vec4(1.0) - ks) * (1.0 - info.Data.Metallic);
 
+	//specular calculations
 	vec3 cookTorranceNum =  DistributionGGX(NdotH, info.Data.Roughness)    *
 							GeometryFun(NdotV, NdotL, info.Data.Roughness)  *
 							ks.rgb;
@@ -235,10 +239,8 @@ void main()
 	info.Normal = In.Normal;
 	info.CameraPosition = Buffer.CameraPosition;
 
-	//
-	// ---- Point Light Contribution ---- 
-	//
-
+	
+	//Point Light Contribution
 	for(int i = 0; i < Buffer.PointLightSize; i++)
 	{
 		float radius    = PointLights.Data[i].ColorAndRadius.a;
@@ -258,10 +260,7 @@ void main()
 	}
 
 	
-	//
-	// ---- Directional Light Contribution ---- 
-	//
-
+	// Directional Light Contribution 
 	for(int i = 0; i < Buffer.DirectionalLightSize; i++)
 	{
 		info.LightDirection = -DirectionalLights.Data[i].DirectionAndIntensity.xyz;
@@ -272,10 +271,7 @@ void main()
 		Color += Shade(info);
 	}
 
-	//
-	// ---- Enviorment Map Contribution ---- 
-	//
-
+	//Enviorment Map Contribution 
 	if(Buffer.HasCubeMap == 1)
 	{
 		info.LightDirection = normalize(reflect(In.WorldPosition - Buffer.CameraPosition, In.Normal));

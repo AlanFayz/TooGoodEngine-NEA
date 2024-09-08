@@ -34,7 +34,9 @@ namespace TooGoodEngine {
 			return nullptr;
 		}
 
+		//call the specified loader function at that location in the map.
 		Ref<Asset> asset = s_FunctionMap.at(type)(path);
+		//if the asset successfully loaded we can set its path and return it.
 		if(asset)
 			asset->_SetPath(path);
 

@@ -10,13 +10,16 @@ namespace TooGoodEngine {
 		{
 			m_ProgramHandle = glCreateProgram();
 
+			//go through each element in the map, containing a shader type (vertex, frament etc... and a source string)
 			for (const auto& [type, source] : map)
 			{
+				//create and compile the shader
 				uint32_t shader = glCreateShader(GetShaderType(type));
 				glShaderSource(shader, 1, &source, nullptr);
 				glCompileShader(shader);
 				glAttachShader(m_ProgramHandle, shader);
 
+				//check for any errors in the compilation
 				GLint success;
 				glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
 				if (!success)
@@ -26,11 +29,14 @@ namespace TooGoodEngine {
 					TGE_LOG_ERROR(infoLog);
 				}
 
+				//no longer needed as is attached so can free.
 				glDeleteShader(shader);
 			}
 
+		
 			glLinkProgram(m_ProgramHandle);
 
+			//check if linking was sucessful and register if not.
 			GLint success;
 			glGetProgramiv(m_ProgramHandle, GL_LINK_STATUS, &success);
 
@@ -45,6 +51,7 @@ namespace TooGoodEngine {
 		{
 			m_ProgramHandle = glCreateProgram();
 
+			//all same applies as above except the shader code is loaded from a file instead.
 			for (const auto& [type, fileLocation] : map)
 			{
 				std::string shaderData = LoadShaderFromFile(fileLocation);

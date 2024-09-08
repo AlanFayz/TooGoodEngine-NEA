@@ -6,6 +6,7 @@
 
 namespace TooGoodEngine {
 
+	//simply controls a perspective camera.
 	class PerspectiveCameraController
 	{
 	public:

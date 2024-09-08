@@ -5,6 +5,10 @@
 
 namespace TooGoodEngine {
 
+	//this allocator will allow any STL container (vector) to 
+	//directly manipulate mapped memory instead of creating a vector
+	//and copying over the memory to a mapped memory.
+
 	template<typename Type>
 	class StorageBufferAllocator
 	{
@@ -36,6 +40,7 @@ namespace TooGoodEngine {
 			Ref<OpenGL::Buffer> buffer = CreateRef<OpenGL::Buffer>(info);
 			Type* ptr = (Type*)buffer->MapRange(info.Masks);
 
+			//we can use the mapped ptr as a unique id.
 			s_Buffers[(const void*)ptr] = buffer;
 			return ptr;
 		}

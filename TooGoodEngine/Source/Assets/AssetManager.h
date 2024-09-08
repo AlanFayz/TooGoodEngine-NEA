@@ -11,6 +11,7 @@ namespace TooGoodEngine {
 	using AssetBank  = std::map<UUID, Ref<Asset>>;
 	using AssetCache = std::map<std::filesystem::path, UUID>;
 
+	//as the name suggests responsible for loading, retrieving and storing assets.
 	class AssetManager
 	{
 	public:
@@ -28,20 +29,25 @@ namespace TooGoodEngine {
 		{
 			static_assert(std::is_base_of_v<Asset, T>, "not a valid asset");
 
+			//want to get the relative path of an absolute path.
 			std::filesystem::path relative = std::filesystem::relative(path, GetPath());
 
+			//if it is contained in the asset cache we can simply retrieve it.
 			if (m_AssetCache.contains(relative))
 				return FetchAssetAssuredType<T>(m_AssetCache[relative]);
 
+			//construct a default asset in order to get its type.
 			T type;
 			Ref<Asset> asset = Asset::LoadAssetFromFile(type.GetAssetType(), path);
 			
+			//if the asset failed to load log a warning and return nullptr (this should be checked by the user)
 			if (!asset)
 			{
 				TGE_LOG_WARNING("Failed to load asset of type ", typeid(T).name(), " path ", path);
 				return nullptr;
 			}
 
+			//we can then store it in the asset bank and its filepath in the cache.
 			UUID uuid = asset->GetAssetID();
 
 			m_AssetCache[relative] = uuid;
@@ -54,6 +60,7 @@ namespace TooGoodEngine {
 		{
 			static_assert(std::is_base_of_v<Asset, T>, "not a valid asset");
 
+			//similar to above function however sets the ID instead of generating a new one.
 			std::filesystem::path relative = std::filesystem::relative(path, GetPath());
 
 			if (m_AssetCache.contains(relative))

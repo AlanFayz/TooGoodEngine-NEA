@@ -12,6 +12,7 @@ namespace TooGoodEngine {
 
 	static Ref<OpenGL::Program> s_EnvironmentProgram;
 
+
 	static const char* s_EnvironmentMapSourceVertex =
 	R"(
 		#version 460 core
@@ -59,6 +60,7 @@ namespace TooGoodEngine {
 
 	Ref<EnvironmentMap> EnvironmentMap::LoadEnviromentMapAssetFromFile(const std::filesystem::path& path)
 	{
+		//lazy load the static program.
 		if (!s_EnvironmentProgram)
 		{
 			OpenGL::ShaderSourceMap shaderMap;
@@ -115,7 +117,7 @@ namespace TooGoodEngine {
 			OpenGL::Texture2DInfo info{};
 			info.Type = OpenGL::Texture2DType::CubeMap;
 			info.Format = OpenGL::Texture2DFormat::RGBA32F;
-			info.Width = g_EnvironmentMapWidth; //May make variable in the future.
+			info.Width = g_EnvironmentMapWidth;
 			info.Height = g_EnvironmentMapHeight;
 			info.MipMapLevels = g_NumberOfMipMaps;
 
@@ -128,6 +130,7 @@ namespace TooGoodEngine {
 			enviormentMap->m_Texture = OpenGL::Texture2D(info);
 		}
 
+		//set up our projection matrix and our view matrix for each face of the cube.
 		glm::mat4 projection = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 100.0f);
 		glm::mat4 viewMatrices[6] = 
 		{
@@ -139,6 +142,7 @@ namespace TooGoodEngine {
 			glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f),  glm::vec3(0.0f, -1.0f, 0.0f))
 		};
 
+		//construct a framebuffer in order to write to the texture.
 		OpenGL::FramebufferInfo info;
 		info.ColorAttachments.push_back(&enviormentMap->m_Texture);
 		info.DepthAttachment = nullptr;
@@ -151,9 +155,10 @@ namespace TooGoodEngine {
 		OpenGL::Command::ClearColor({ 0.0f, 0.0f, 0.0f, 0.0f });
 		OpenGL::Command::ClearDepth();
 
+		//go through each face of the cube and render it whilst sampling from the equirectangular map.
 		for (uint32_t i = 0; i < 6; i++)
 		{
-			//TODO: add as a part of the framebuffer api
+			//this sets the current layer in the cube map. (the current face)
 			glNamedFramebufferTextureLayer(framebuffer.GetHandle(), GL_COLOR_ATTACHMENT0, enviormentMap->m_Texture.GetHandle(), 0, i);
 
 			s_EnvironmentProgram->Use();
@@ -167,7 +172,7 @@ namespace TooGoodEngine {
 
 		framebuffer.Unbind();
 		
-
+		//generate the mip maps (smaller textures which decrease in size by a factor of 2.
 		enviormentMap->m_Texture.GenerateMipmaps();
 
 		return enviormentMap;
@@ -221,7 +226,7 @@ namespace TooGoodEngine {
 
 		//i could initalize static buffers and vertex array
 		//but they are small and its not something thats
-		//going to affect frame rate, may change in the future
+		//going to affect frame rate.
 		OpenGL::BufferInfo info{};
 		info.Capacity = sizeof(float) * 108;
 		info.Data = vertices;

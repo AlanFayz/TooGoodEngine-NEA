@@ -16,6 +16,7 @@ namespace TooGoodEngine {
 			TriangleStrip = GL_TRIANGLE_STRIP
 		};
 
+		//abstracts the underlying gpu command and takes in program/vertexarray instead of calling bind 
 		class Command
 		{
 		public:

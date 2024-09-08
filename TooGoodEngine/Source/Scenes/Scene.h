@@ -16,6 +16,7 @@ namespace TooGoodEngine {
 		None = 0, View2D, View3D
 	};
 
+	//a collection of entities with their componenets.
 	class Scene : public EventHandler 
 	{
 	public:

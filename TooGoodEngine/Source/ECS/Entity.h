@@ -9,6 +9,7 @@ namespace TooGoodEngine {
 
 	inline constexpr EntityID g_NullEntity = std::numeric_limits<size_t>::max();
 
+	//a "container" for componenets.
 	class Entity
 	{
 	public:

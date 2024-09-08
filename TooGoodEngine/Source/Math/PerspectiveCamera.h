@@ -18,6 +18,11 @@ namespace TooGoodEngine {
 
 	class PerspectiveCameraController;
 
+	//another type of camera but it creates a viewing frustum
+	//using an angle (field of view) instead of a set of 2D bounds.
+	//this is great for 3D games as objects further away become smaller.
+	//and vice versa.
+
 	class PerspectiveCamera : public Camera
 	{
 	public:

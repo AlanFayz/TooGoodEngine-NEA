@@ -3,6 +3,7 @@
 #include "Asset.h"
 #include "Renderer/RenderInfo.h"
 
+//assimp 
 struct aiNode;
 struct aiScene;
 struct aiMesh;
@@ -12,6 +13,7 @@ enum   aiTextureType;
 
 namespace TooGoodEngine {
 
+	//a collection of geometries (simpler shapes)
 	class Model : public Asset
 	{
 	public:

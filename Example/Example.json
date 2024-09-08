@@ -2,7 +2,7 @@
     "Project Name": "Example",
     "Project Directory": "../Example",
     "Asset Directory": "../Example\\Assets",
-    "Last Build Date": "2024-09-06 07:37:40",
+    "Last Build Date": "2024-09-08 09:20:14",
     "Scenes": {
         "": {
             "Scene Settings": {
@@ -23,7 +23,7 @@
                 ],
                 "Bloom Enabled": true,
                 "Bloom Threshold": 8.069999694824219,
-                "Bloom Intensity": 0.75,
+                "Bloom Intensity": 0.6899999976158142,
                 "Bloom Filter Radius": 0.004999999888241291
             },
             "Entities": {
@@ -101,9 +101,9 @@
                         "Direction": [
                             1.0,
                             1.0,
-                            0.0
+                            1.0
                         ],
-                        "Intensity": 16.899999618530273
+                        "Intensity": 3.0999999046325684
                     }
                 },
                 "Cube": {
@@ -231,8 +231,8 @@
                         ],
                         "Rotation": [
                             -90.0,
-                            -0.5,
-                            55.70000076293945
+                            0.0,
+                            56.900001525878906
                         ]
                     },
                     "Model": 11321238477760111702

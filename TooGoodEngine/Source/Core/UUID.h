@@ -5,6 +5,7 @@
 
 namespace TooGoodEngine {
 
+	//stands for universially unique identifer and this class is just that.
 	class UUID
 	{
 	public:

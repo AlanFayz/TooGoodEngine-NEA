@@ -8,9 +8,11 @@ namespace TooGoodEngine {
 	Window::Window(uint32_t width, uint32_t height, const std::string& title, EventDispatcher<Application>& dispatcher)
 		: m_Width(width), m_Height(height), m_Title(title), m_Window(nullptr), m_Dispatcher(dispatcher)
 	{
-		if (!glfwInit())
+		//if glfw fails to init this is a critical error so we halt.
+		if (!glfwInit()) 
 			TGE_HALT();
 
+		//set some hints to glfw as to which opengl version we want to use.
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -21,6 +23,7 @@ namespace TooGoodEngine {
 
 		glfwSetWindowUserPointer(m_Window, this);
 
+		//window resize callback
 		glfwSetWindowSizeCallback(m_Window, [](GLFWwindow* window, int width, int height) 
 			{
 				Window* myWindow = (Window*)glfwGetWindowUserPointer(window);
@@ -31,7 +34,8 @@ namespace TooGoodEngine {
 				WindowResizeEvent event((uint32_t)width, (uint32_t)height);
 				myWindow->GetDispatcher().Dispatch(&event);
 			});
-
+		
+		//window close callback
 		glfwSetWindowCloseCallback(m_Window, [](GLFWwindow* window) 
 			{
 				Window* myWindow = (Window*)glfwGetWindowUserPointer(window);
@@ -42,7 +46,9 @@ namespace TooGoodEngine {
 
 		glfwMakeContextCurrent(m_Window);
 		
-		if (!gladLoadGL()) //CRITICIAL ERROR
+		//if glad fails to init this is a critical error so we halt.
+
+		if (!gladLoadGL()) 
 			TGE_HALT();
 
 		glEnable(GL_DEBUG_OUTPUT);

@@ -7,12 +7,14 @@
 
 namespace TooGoodEngine {
 
-	//TODO: should probably make variable.
-
 	inline constexpr uint32_t g_NumberOfMipMaps = 7;
 	inline constexpr uint32_t g_EnvironmentMapWidth = 1024;
 	inline constexpr uint32_t g_EnvironmentMapHeight = 1024;
 	
+	//this is another type of Image however this takes in a hdr file
+	//in an equirectangular format and converts it to a Cube Map to be rendered as a skybox.
+	//and used in lighting calculations in a 3D enviorment
+
 	class EnvironmentMap : public Asset
 	{
 	public:

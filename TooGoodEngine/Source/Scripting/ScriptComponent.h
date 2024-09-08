@@ -8,7 +8,6 @@
 
 namespace TooGoodEngine {
 	
-	//May contain more information in the future
 	struct ScriptData
 	{
 		PyObject* PyOnCreate;

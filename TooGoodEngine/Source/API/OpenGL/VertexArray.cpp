@@ -57,27 +57,37 @@ namespace TooGoodEngine {
 		{
 			TGE_VERIFY(buffer && program, "buffer or program was nullptr");
 
+			//first we need to calculate the total stride from the types.
 			size_t totalStride = 0;
 
 			for (const auto& [name, input] : map)
 				totalStride += GetSizeFromType(input.Type);
 			
+			//current offset is the end of the previous attachment.
 			size_t startingOffset = m_CurrentOffset;
 
+			//reiterate through all the elements (attribute name and input)
 			for (const auto& [name, input] : map)
 			{
+				//get the index of the named attribute
 				program->Use();
 				GLint index = glGetAttribLocation(program->GetHandle(), name.c_str());
 
+				//if the type is specifically a 4x4 matrix we want to handle it differently than the rest
+				//(never in a situation where I will use any other vertex type so no point in over engineering)
 				if (input.Type == VertexType::Matrix4x4)
 				{
 					GLuint numColumns = GetNumberOfElements(input.Type); 
+					//baseType ex. GL_FLOAT
 					GLuint baseType = GetBaseTypeFromVertexType(input.Type); 
 
+					//go through each column of the matrix attaching each column as a Vec4
+					//to the attribute + the current column.
 					for (GLuint i = 0; i < numColumns; ++i) 
 					{
 						GLint columnIndex = index + i;
 
+						//attach
 						glVertexArrayAttribFormat(
 							m_VertexArrayHandle,
 							columnIndex,
@@ -86,21 +96,26 @@ namespace TooGoodEngine {
 							GL_FALSE,
 							m_CurrentOffset + sizeof(float) * 4 * i); 
 
+						//enable and bind that attribute to the current buffer
 						glEnableVertexArrayAttrib(m_VertexArrayHandle, columnIndex);
 						glVertexArrayAttribBinding(m_VertexArrayHandle, columnIndex, (GLuint)m_CurrentBufferIndex);
 
+						//if it is instanced set a flag to let opengl know.
 						if (input.Instanced)
 							glVertexArrayBindingDivisor(m_VertexArrayHandle, columnIndex, 1);
 					}
 
+					//increment the current offset accordingly.
 					m_CurrentOffset += sizeof(float) * 4 * numColumns; 
 
 					if (input.Instanced)
 						glVertexArrayBindingDivisor(m_VertexArrayHandle, index, 1);
 
+					//CONTINUE 
 					continue;
 				}
 				
+				//attach the attribute normally.
 				glVertexArrayAttribFormat(
 					m_VertexArrayHandle,
 					index,
@@ -108,9 +123,11 @@ namespace TooGoodEngine {
 					GetBaseTypeFromVertexType(input.Type),
 					GL_FALSE, m_CurrentOffset);
 
+				//enable the attribute and bind it to the current buffer
 				glEnableVertexArrayAttrib(m_VertexArrayHandle, index);
 				glVertexArrayAttribBinding(m_VertexArrayHandle, index, (GLuint)m_CurrentBufferIndex);
 
+				//if it is instanced set a flag to let opengl know.
 				if (input.Instanced)
 					glVertexArrayBindingDivisor(m_VertexArrayHandle, index, 1);
 

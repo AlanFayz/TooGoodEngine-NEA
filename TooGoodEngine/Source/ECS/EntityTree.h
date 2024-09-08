@@ -15,6 +15,8 @@ namespace TooGoodEngine {
 		std::vector<size_t> Children;
 	};
 
+	//this is a type of registry which organises entities in a hierarchical relationship
+	//where entities can inherit each other.
 	class EntityTree : public Registry
 	{
 	public:

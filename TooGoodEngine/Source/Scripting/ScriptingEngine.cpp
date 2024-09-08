@@ -24,9 +24,6 @@ namespace TooGoodEngine {
 		PyObject* sysModule = PyImport_ImportModule("sys");
 		PyObject* sysPath   = PyObject_GetAttrString(sysModule, "path");
 
-		//TODO: add a bool to check if in runtime. If so then the module will have been
-		//copied into the same assets directory so we can ignore this.
-
 		std::filesystem::path pathToModule = __FILE__;
 		pathToModule = pathToModule.parent_path();
 		pathToModule = pathToModule / "Module";
@@ -150,11 +147,14 @@ namespace TooGoodEngine {
 
 		size_t last = stringPath.find_last_of(".");
 		
+		//invalid file
 		if (last == std::string::npos)
 			return data;
 
+		//clip the extension
 		stringPath = stringPath.substr(0, last);
 
+		//replaces seperator with .
 		size_t i = 0;
 		while (i < stringPath.length())
 		{

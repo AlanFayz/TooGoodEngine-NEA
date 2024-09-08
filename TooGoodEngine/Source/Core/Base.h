@@ -5,6 +5,7 @@
 
 namespace TooGoodEngine {
 
+	//type aliases so it makes chaning which API we use for these operations easy.
 	template<typename T>
 	using Ref = std::shared_ptr<T>;
 

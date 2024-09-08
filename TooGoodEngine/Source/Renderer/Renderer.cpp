@@ -168,6 +168,7 @@ namespace TooGoodEngine {
 
 		auto& currentBuffer = m_Data.PointLights.Buffers[m_Data.PointLights.BufferIndex];
 
+		//resize the buffer if needed.
 		if (m_Data.PointLights.Size * sizeof(PointLight) >= currentBuffer.GetCapacity())
 		{
 			currentBuffer.Unmap();
@@ -261,8 +262,10 @@ namespace TooGoodEngine {
 		m_Data.GeometryPassBuffer.SetData(sizeof(GeometryUniformBuffer), &data);
 		
 
+		//going through each unique instance
 		for (auto& [instanceBuffer,  index]:m_Data.GeometryStorage)
 		{
+			//nothing to render no point in waisting a draw call.
 			if (instanceBuffer.GetInstanceCount() == 0)
 				continue;
 
@@ -323,6 +326,7 @@ namespace TooGoodEngine {
 		if (!m_Settings.Bloom)
 			return;
 
+		//blit current results to bloom texture.
 		{
 			OpenGL::Framebuffer::BlitInfo info{};
 			info.Source = &m_Data.FinalImageFramebuffer;
@@ -352,15 +356,13 @@ namespace TooGoodEngine {
 		static constexpr int DownSample = 0;
 		static constexpr int UpSample   = 1;
 
-		//
-		// ---- down sampling ----
-		//
-
+		//continous down sampling from previous mips (kernel details are in the compute shader)
 		for (uint32_t i = 1; i < RenderData::BloomMipLevelCount; i++)
 		{
 			uint32_t source = i - 1;
 			uint32_t destination = i;
 
+			//shift the source bits by the source and destination. This is the same as repeatedily dividing by 2.
 			uint32_t sourceWidth = width >> source;
 			uint32_t sourceHeight = height >> source;
 
@@ -390,12 +392,10 @@ namespace TooGoodEngine {
 			glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 		}
 
-		//
-		// ---- up sampling ----
-		//
-
+		
 		m_Data.BloomPass.Use();
 
+		//continuous upsampling from the bottom up of the mips.
 		for (uint32_t i = RenderData::BloomMipLevelCount - 1; i > 0; i--)
 		{
 			uint32_t source = i;
@@ -433,6 +433,7 @@ namespace TooGoodEngine {
 		}
 
 
+		//blit the results back to the main framebuffer.
 		{
 			OpenGL::Framebuffer::BlitInfo info{};
 			info.Source = &m_Data.BloomFramebuffer;
@@ -533,8 +534,7 @@ namespace TooGoodEngine {
 
 	void Renderer::_CreateBuffers()
 	{
-		//
-		// ---- Point Lights ----
+		//point light buffer
 		{
 			OpenGL::BufferInfo bufferInfo{};
 			bufferInfo.Capacity = 10 * sizeof(PointLight);
@@ -556,8 +556,7 @@ namespace TooGoodEngine {
 			m_Data.PointLights.Size = 0;
 		}
 
-		//
-		// ---- Directional Lights ----
+		//directional light buffer
 		{
 			OpenGL::BufferInfo bufferInfo{};
 			bufferInfo.Capacity = 10 * sizeof(DirectionalLight);
@@ -579,6 +578,7 @@ namespace TooGoodEngine {
 			m_Data.DirectionalLights.Size = 0;
 		}
 
+		//geomettry pass uniform buffer
 		{
 			OpenGL::BufferInfo bufferInfo{};
 			bufferInfo.Capacity = sizeof(GeometryUniformBuffer);
@@ -588,6 +588,7 @@ namespace TooGoodEngine {
 			m_Data.GeometryPassBuffer = OpenGL::Buffer(bufferInfo);
 		}
 
+		//bloom pass uniform buffer
 		{
 			OpenGL::BufferInfo bufferInfo{};
 			bufferInfo.Capacity = sizeof(BloomUniformBuffer);

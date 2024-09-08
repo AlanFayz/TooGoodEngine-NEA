@@ -5,6 +5,7 @@
 
 namespace TooGoodEngine {
 
+	//stores a collection of geometry instance buffers in a sparse set.
 	class GeometryStorage
 	{
 	public:

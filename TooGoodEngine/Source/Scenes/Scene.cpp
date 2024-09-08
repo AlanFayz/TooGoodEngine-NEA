@@ -8,7 +8,6 @@ namespace TooGoodEngine {
 	Scene::Scene()
 		: m_CameraController(nullptr), m_CameraController2D(nullptr)
 	{
-		//TODO: add a way to get the window dimensions (isn't a pressing issue as this is fixed by resizing the window)
 		RenderSettings settings{};
 		settings.ViewportWidth  = 1200;  
 		settings.ViewportHeight = 800;

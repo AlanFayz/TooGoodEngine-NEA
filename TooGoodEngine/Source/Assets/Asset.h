@@ -18,6 +18,8 @@ namespace TooGoodEngine {
 	std::string_view GetAssetTypeString(AssetType type);
 	AssetType GetAssetTypeFromString(const std::string& strType);
 
+	//an asset is a base class for any derived resource that a user may use.
+	//this may include models, images etc...
 	class Asset
 	{
 	public:

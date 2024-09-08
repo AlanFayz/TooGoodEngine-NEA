@@ -3,6 +3,8 @@
 #include "Math/Random.h"
 
 namespace TooGoodEngine {
+	//generates a random 64 bit unsigned integer
+	//range is from 0 to 2^64, this makes collisions highly unlickley.
 
 	static std::random_device s_Device;
 	static std::mt19937 s_RandomEngine(s_Device());

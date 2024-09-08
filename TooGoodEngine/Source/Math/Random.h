@@ -6,16 +6,21 @@
 
 namespace TooGoodEngine {
 
+	template<typename Type>
+	concept Arithmetic = std::is_arithmetic_v<Type>;
+
 	class Random
 	{
 	public:
 		Random();
 		~Random() = default;
 		
-		template<typename T>
+		template<Arithmetic T>
 		T Generate(T min, T max)
 		{
-			static_assert(std::is_arithmetic_v<T>, "type must be of an arithmetic type");
+			//generate a random number between 0 and 1.
+			//we can then scale this up based on the range
+			//and add it to the min.
 			double range = (double)max - (double)min;
 			return min + (T)(range * m_Distribution(m_RandomEngine));
 		}

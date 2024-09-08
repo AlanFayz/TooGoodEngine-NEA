@@ -18,6 +18,10 @@ namespace TooGoodEngine {
 
 	class OrthographicCameraController;
 
+	//a type of camera which creates a viewing box essentially.
+	//there is no concept of scale when objects are further away
+	//this is used for 2D games mainly but can be used for 3D if there is some
+	//art style
 	class OrthographicCamera : public Camera
 	{
 	public:

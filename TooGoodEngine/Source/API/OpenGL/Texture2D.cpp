@@ -9,9 +9,11 @@ namespace TooGoodEngine {
 			glCreateTextures(GetTarget(info.Type), 1, &m_TextureHandle);
 			glBindTexture(GetTarget(info.Type), m_TextureHandle);
 
+			//apply any texture paramters.
 			for (const auto& [paramater, option] : info.Paramaters)
 				glTextureParameteri(m_TextureHandle, GetTextureParamater(paramater), GetTextureParamaterOption(option));
 			
+			//if the type is multisample then we can do an early out as no data should be set.
 			if (info.Type == Texture2DType::Multisample)
 			{
 				glTextureStorage2DMultisample(
@@ -24,12 +26,15 @@ namespace TooGoodEngine {
 				return;
 			}
 
+			//allocate the storage.
 			glTextureStorage2D(
 				m_TextureHandle, 
 				(GLsizei)info.MipMapLevels,
 				GetInternalFormat(info.Format),
 				(GLsizei)info.Width, (GLsizei)info.Height);
 
+			//if data is not null and the type is not a cube map we copy the 
+			//data to the texture.
 			if (info.Data && !(info.Type == Texture2DType::CubeMap))
 			{
 				glTextureSubImage2D(
@@ -40,6 +45,9 @@ namespace TooGoodEngine {
 					GetComponentFormat(info.Format),
 					GetDataType(info.Format), info.Data);
 			}
+
+			//if the cube map data is valid and is cubemap type then go through each
+			//face in the cube and set the data.
 
 			if (info.CubeMapData[0] && (info.Type == Texture2DType::CubeMap))
 			{

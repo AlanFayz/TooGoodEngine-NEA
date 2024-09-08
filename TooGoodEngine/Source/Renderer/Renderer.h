@@ -121,6 +121,7 @@ namespace TooGoodEngine {
 
 	inline constexpr size_t g_NullID = std::numeric_limits<size_t>::max();
 
+	//responsible for drawing to the screen. This renderer uses instancing.
 	class Renderer
 	{
 	public:

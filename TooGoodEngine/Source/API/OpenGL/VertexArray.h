@@ -22,6 +22,8 @@ namespace TooGoodEngine {
 		
 		using VertexInputMap = std::vector<std::pair<std::string, VertexInput>>;
 
+		//holds a collection of buffers which are made available 
+		//in shader pipelines.
 		class VertexArray
 		{
 		public:

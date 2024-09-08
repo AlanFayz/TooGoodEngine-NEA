@@ -47,6 +47,8 @@ namespace TooGoodEngine {
 			std::map<TextureParamater, TextureParamaterOption> Paramaters;
 		};
 
+		//similar to a buffer but is optimized for images specifically and gives extra benifits such as
+		//the ability to render directly to them and provides samplers.
 		class Texture2D
 		{
 		public:

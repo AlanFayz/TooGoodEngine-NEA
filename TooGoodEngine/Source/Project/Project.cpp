@@ -8,6 +8,19 @@
 
 namespace TooGoodEngine {
 
+	const Project::ComponentLoaderMapType Project::s_ComponentLoaderMap = {
+		{"Transform",		    [](EntityTree& registry, Entity& entity, const json& jsonComponent, Ref<Renderer> renderer) { registry.AddComponent(entity, ComponentLoader::LoadTransform(jsonComponent)); }},
+		{"Mesh",			    [](EntityTree& registry, Entity& entity, const json& jsonComponent, Ref<Renderer> renderer) { registry.AddComponent(entity, ComponentLoader::LoadMesh(jsonComponent, *renderer)); } },
+		{"Model",			    [](EntityTree& registry, Entity& entity, const json& jsonComponent, Ref<Renderer> renderer) { registry.AddComponent(entity, ComponentLoader::LoadModel(jsonComponent, *renderer)); } },
+		{"Material",		    [](EntityTree& registry, Entity& entity, const json& jsonComponent, Ref<Renderer> renderer) { registry.AddComponent(entity, ComponentLoader::LoadMaterial(jsonComponent, renderer)); } },
+		{"Point Light",		    [](EntityTree& registry, Entity& entity, const json& jsonComponent, Ref<Renderer> renderer) { registry.AddComponent(entity, ComponentLoader::LoadPointLight(jsonComponent)); } },
+		{"Directional Light",   [](EntityTree& registry, Entity& entity, const json& jsonComponent, Ref<Renderer> renderer) { registry.AddComponent(entity, ComponentLoader::LoadDirectionalLight(jsonComponent)); } },
+		{"Script",			    [](EntityTree& registry, Entity& entity, const json& jsonComponent, Ref<Renderer> renderer) { registry.AddComponent(entity, ComponentLoader::LoadScript(jsonComponent)); } },
+		{"Perspective Camera",  [](EntityTree& registry, Entity& entity, const json& jsonComponent, Ref<Renderer> renderer) { registry.AddComponent(entity, ComponentLoader::LoadPerspectiveCamera(jsonComponent)); } },
+		{"Orthographic Camera", [](EntityTree& registry, Entity& entity, const json& jsonComponent, Ref<Renderer> renderer) { registry.AddComponent(entity, ComponentLoader::LoadOrthographicCamera(jsonComponent)); } },
+
+	};
+
 	Project::Project(const std::filesystem::path& path)
 	{
 		JsonReader reader(path);
@@ -45,8 +58,9 @@ namespace TooGoodEngine {
 	void Project::SaveState(bool optimized)
 	{
 		std::filesystem::path file = m_ProjectDirectory / (m_ProjectName + ".json");
-		JsonWriter writer(file, optimized); //will be true when build() function is created
+		JsonWriter writer(file, optimized); 
 
+		//get the current time.
 		auto timePoint = std::chrono::system_clock::now();
 		std::time_t currentTime = std::chrono::system_clock::to_time_t(timePoint);
 		std::tm* nowTime = std::localtime(&currentTime);
@@ -67,9 +81,6 @@ namespace TooGoodEngine {
 
 	void Project::Build(const std::filesystem::path& runtimeDirectory)
 	{
-		//TODO: should also copy all the shaders used into a shader directory.
-		//TODO: most of this should be in a binary format in the future not json.
-
 		std::filesystem::copy(m_ProjectDirectory, runtimeDirectory, std::filesystem::copy_options::recursive | std::filesystem::copy_options::update_existing);
 
 		std::filesystem::path file = runtimeDirectory / (m_ProjectName + ".json");
@@ -122,51 +133,8 @@ namespace TooGoodEngine {
 			{
 				auto& jsonComponent = *secondIt;
 
-
-				if (secondIt.key() == "Transform")
-					registry.AddComponent(entity, ComponentLoader::LoadTransform(jsonComponent));
-
-				else if (secondIt.key() == "Mesh")
-				{
-					MeshComponent component = ComponentLoader::LoadMesh(jsonComponent, *renderer);
-					registry.AddComponent(entity, component);
-				}
-				else if (secondIt.key() == "Model")
-				{
-					ModelComponent component = ComponentLoader::LoadModel(jsonComponent, *renderer);
-					registry.AddComponent(entity, component);
-				}
-				else if (secondIt.key() == "Material")
-				{
-					MaterialComponent component = ComponentLoader::LoadMaterial(jsonComponent, renderer);
-					registry.AddComponent(entity, component);
-				}
-				else if (secondIt.key() == "Point Light")
-				{
-					PointLightComponent component = ComponentLoader::LoadPointLight(jsonComponent);
-					registry.AddComponent(entity, component);
-				}
-				else if (secondIt.key() == "Directional Light")
-				{
-					DirectionalLightComponent component = ComponentLoader::LoadDirectionalLight(jsonComponent);
-					registry.AddComponent(entity, component);
-				}
-				else if (secondIt.key() == "Script")
-				{
-					ScriptComponent component = ComponentLoader::LoadScript(jsonComponent);
-					registry.AddComponent(entity, component);
-				}
-				else if (secondIt.key() == "Perspective Camera")
-				{
-					PerspectiveCameraComponent component = ComponentLoader::LoadPerspectiveCamera(jsonComponent);
-					registry.AddComponent(entity, component);
-				}
-				else if (secondIt.key() == "Orthographic Camera")
-				{
-					OrthographicCameraComponent component = ComponentLoader::LoadOrthographicCamera(jsonComponent);
-					registry.AddComponent(entity, component);
-				}
-				
+				if (s_ComponentLoaderMap.contains(secondIt.key()))
+					s_ComponentLoaderMap.at(secondIt.key())(registry, entity, jsonComponent, renderer);
 			}
 		}
 
@@ -228,10 +196,12 @@ namespace TooGoodEngine {
 
 		auto& registry = scene->GetRegistry();
 
+		//go through each entity in the registry.
 		for (EntityID entityId = 0; entityId < registry.GetCount(); entityId++)
 		{
 			Entity entity = registry.GetEntityByID(entityId);
 
+			//if its been deleted/invalid then ignore.
 			if (entity.GetID() == g_NullEntity)
 				continue;
 
@@ -239,6 +209,8 @@ namespace TooGoodEngine {
 
 			Node& node = registry.GetNode(entity);
 
+			//if it has children then push back their names
+			//into a vector and serilize them.
 			if (!node.Children.empty())
 			{
 				JsonPath pathToChildren = pathToEntity;
@@ -255,6 +227,8 @@ namespace TooGoodEngine {
 				writer.WriteGeneric(pathToChildren, strChildren);
 			}
 
+			//checks for a componenet, if it has a paticular component
+			//then an associated write function is called serilizing that component.
 			if (registry.HasComponent<TransformComponent>(entity))
 				ComponentWriter::WriteTransform(writer, pathToEntity, registry.GetComponent<TransformComponent>(entity));
 
@@ -343,6 +317,7 @@ namespace TooGoodEngine {
 	{
 		const auto& bank = m_AssetManager->GetBank();
 
+		//go through each asset in the bank serilizing its ID, Type and Filepath.
 		for (const auto& [assetUUID, asset] : bank)
 		{
 			std::string handle    = std::to_string((uint64_t)assetUUID);
@@ -358,6 +333,7 @@ namespace TooGoodEngine {
 	{
 		json assets = reader.Fetch<json>({ "Assets" });
 
+		//go through each of the assets registering it with the asset manager.
 		for (auto it = assets.begin(); it != assets.end(); it++)
 		{
 			auto& asset = *it;

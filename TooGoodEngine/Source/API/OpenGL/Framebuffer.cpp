@@ -9,6 +9,9 @@ namespace TooGoodEngine {
 
 			std::vector<GLenum> drawBuffers;
 			uint32_t index = 0;
+
+			//go through all the color attachments attaching them to the framebuffer and preparing them to be 
+			//added to the draw buffers.
 			for (const auto& colorAttachment : info.ColorAttachments)
 			{
 				glNamedFramebufferTexture(
@@ -19,6 +22,7 @@ namespace TooGoodEngine {
 				drawBuffers.push_back(GL_COLOR_ATTACHMENT0 + (GLenum)index++);
 			}
 
+			//if there is a depth attachemnt add this as well.
 			if (info.DepthAttachment)
 			{
 				glNamedFramebufferTexture(
@@ -28,6 +32,7 @@ namespace TooGoodEngine {
 					0);
 			}
 
+			//simple error checking.
 			GLenum status = glCheckNamedFramebufferStatus(m_FramebufferHandle, GL_FRAMEBUFFER);
 			TGE_VERIFY(status == GL_FRAMEBUFFER_COMPLETE, "framebuffer incomplete with code ", status);
 		
@@ -71,6 +76,7 @@ namespace TooGoodEngine {
 					   info.SourceWidth > 0 &&
 					   info.SourceHeight > 0, "all dimensions have to be bigger than 0");
 
+			//if there is a source or destination layer make sure to specify which one.
 			if (info.SourceLayer > 0)
 			{
 				glNamedFramebufferTextureLayer(info.Source->GetHandle(), GL_COLOR_ATTACHMENT0 + (GLenum)info.SourceIndex,
@@ -83,6 +89,7 @@ namespace TooGoodEngine {
 					info.DestinationTexture->GetHandle(), (GLint)info.DestinationMipLevel, (GLint)info.DestinationLayer);
 			}
 			
+			//blit pixels
 			glBlitNamedFramebuffer(
 				(GLuint)info.Source->GetHandle(), (GLuint)info.Destination->GetHandle(),
 				0, 0, (GLint)info.SourceWidth, (GLint)info.SourceHeight,

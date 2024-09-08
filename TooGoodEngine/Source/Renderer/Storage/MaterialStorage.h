@@ -49,6 +49,7 @@ namespace TooGoodEngine {
 		//size_t index (uvec2) because everything is stored as a pair in sparse set
 	};
 
+	//stores a collection of materials in a sparse set using a custom allocator
 	class MaterialStorage
 	{
 	public:

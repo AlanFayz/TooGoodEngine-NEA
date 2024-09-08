@@ -4,6 +4,7 @@
 
 namespace TooGoodEngine {
 
+	//this is to be inherited by every type of camera (mainly orthographic and perspective)
 	class Camera
 	{
 	public:
