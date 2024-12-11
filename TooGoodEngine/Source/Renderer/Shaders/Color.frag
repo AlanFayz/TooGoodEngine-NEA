@@ -4,9 +4,6 @@
 
 layout(location = 0) out vec4 OutColor;
 
-const int MATERIAL_TYPE_IMAGE  = 1;
-const int MATERIAL_TYPE_VECTOR = 2;
-
 const float PI = 3.1415926535897932384626433832795;
 const float EPSILON = 0.0000001;
 

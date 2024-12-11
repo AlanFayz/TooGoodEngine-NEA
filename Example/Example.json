@@ -2,7 +2,7 @@
     "Project Name": "Example",
     "Project Directory": "../Example",
     "Asset Directory": "../Example\\Assets",
-    "Last Build Date": "2024-09-08 09:20:14",
+    "Last Build Date": "2024-12-11 15:52:21",
     "Scenes": {
         "": {
             "Scene Settings": {
@@ -13,8 +13,8 @@
                 "Blending Destination": 0,
                 "Filling Mode": 3,
                 "Environment Map": 14265145243090405190,
-                "Level Of Detail": 0.0,
-                "Gradient": 1.0,
+                "Level Of Detail": 0.18000000715255737,
+                "Gradient": 0.23999999463558197,
                 "Clear Color": [
                     1.0,
                     0.5124555230140686,
@@ -103,7 +103,7 @@
                             1.0,
                             1.0
                         ],
-                        "Intensity": 3.0999999046325684
+                        "Intensity": 4.900000095367432
                     }
                 },
                 "Cube": {

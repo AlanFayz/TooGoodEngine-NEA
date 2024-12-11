@@ -108,11 +108,8 @@ namespace TooGoodEngine {
 		GeometryID SquareGeometryIndex;
 		GeometryID CubeGeometryIndex;
 
-		OpenGL::Framebuffer FinalImageFramebuffer;
 		OpenGL::Framebuffer BloomFramebuffer;
 
-		Ref<OpenGL::Texture2D> FinalImageTexture;
-		Ref<OpenGL::Texture2D> DepthTexture;
 		Ref<OpenGL::Texture2D> BloomTexture;
 
 		OpenGL::Program DisplayProgram;
@@ -158,7 +155,6 @@ namespace TooGoodEngine {
 
 		void RenderImageToScreen(uint32_t width, uint32_t height);
 
-		inline const Ref<OpenGL::Texture2D>& GetImage() const { return m_Data.FinalImageTexture; }
 		inline const RenderSettings& GetSettings() const { return m_Settings; }
 
 

@@ -3,6 +3,8 @@
 #include "API/OpenGL/Command.h"
 #include "Utils/Statistics.h"
 
+#include "Common.h"
+
 namespace TooGoodEngine {
 
 	Renderer::Renderer(const RenderSettings& settings)
@@ -17,6 +19,8 @@ namespace TooGoodEngine {
 		{
 			m_Data.ShaderDirectory = settings.RuntimeShaderDirectory;
 		}
+
+		Common::Init(m_Settings.ViewportWidth, m_Settings.ViewportHeight);
 
 		ApplySettings();
 		_CreatePrograms();
@@ -203,7 +207,8 @@ namespace TooGoodEngine {
 		TGE_PROFILE_SCOPE(RendererSubmit);
 		m_Data.IsDrawing = false;
 
-		m_Data.FinalImageFramebuffer.Bind();
+		auto& framebuffer = Common::GetFramebuffer();
+		framebuffer.Bind();
 
 		OpenGL::Command::SetViewport(m_Settings.ViewportWidth, m_Settings.ViewportHeight);
 		OpenGL::Command::ClearColor(m_Settings.ClearColor);
@@ -220,7 +225,7 @@ namespace TooGoodEngine {
 		m_Data.PointLights.BufferIndex = (m_Data.PointLights.BufferIndex + 1) % 3;
 		m_Data.DirectionalLights.BufferIndex = (m_Data.DirectionalLights.BufferIndex + 1) % 3;
 
-		m_Data.FinalImageFramebuffer.Unbind();
+		framebuffer.Unbind();
 	}
 
 	void Renderer::RenderImageToScreen(uint32_t width, uint32_t height)
@@ -229,8 +234,10 @@ namespace TooGoodEngine {
 
 		m_Data.DisplayProgram.Use();
 		glDisable(GL_DEPTH_TEST);
+		
+		auto finalImage = Common::GetTexture();
 
-		m_Data.FinalImageTexture->Bind(0);
+		finalImage->Bind(0);
 		m_Data.DisplayProgram.SetUniform("u_Image", 0);
 
 		//vertex array not used so just pass a dummy to make opengl happy.
@@ -328,10 +335,13 @@ namespace TooGoodEngine {
 
 		//blit current results to bloom texture.
 		{
+			auto& buffer = Common::GetFramebuffer();
+			auto texture = Common::GetTexture();
+
 			OpenGL::Framebuffer::BlitInfo info{};
-			info.Source = &m_Data.FinalImageFramebuffer;
+			info.Source = &buffer;
 			info.Destination = &m_Data.BloomFramebuffer;
-			info.SourceTexture = m_Data.FinalImageTexture.get();
+			info.SourceTexture = texture.get();
 			info.DestinationTexture = m_Data.BloomTexture.get();
 			info.SourceWidth = m_Settings.ViewportWidth;	
 			info.SourceHeight = m_Settings.ViewportHeight;
@@ -435,11 +445,14 @@ namespace TooGoodEngine {
 
 		//blit the results back to the main framebuffer.
 		{
+			auto& buffer = Common::GetFramebuffer();
+			auto texture = Common::GetTexture();
+
 			OpenGL::Framebuffer::BlitInfo info{};
 			info.Source = &m_Data.BloomFramebuffer;
-			info.Destination = &m_Data.FinalImageFramebuffer;
+			info.Destination = &buffer;
 			info.SourceTexture = m_Data.BloomTexture.get();
-			info.DestinationTexture = m_Data.FinalImageTexture.get();
+			info.DestinationTexture = texture.get();
 			info.SourceWidth = m_Settings.ViewportWidth;
 			info.SourceHeight = m_Settings.ViewportHeight;
 			info.DestinationWidth = m_Settings.ViewportWidth;
@@ -458,8 +471,10 @@ namespace TooGoodEngine {
 
 	void Renderer::_RenderFinalPass()
 	{
+		auto texture = Common::GetTexture();
+
 		m_Data.FinalPass.Use();
-		m_Data.FinalImageTexture->BindImage(0, 0, 0, false);
+		texture->BindImage(0, 0, 0, false);
 		m_Data.FinalPass.SetUniform("u_Gradient", m_Settings.Gradient);
 
 		glDispatchCompute((GLuint)std::ceil((float)m_Settings.ViewportWidth  / 8.0f), 
@@ -727,24 +742,6 @@ namespace TooGoodEngine {
 	void Renderer::_CreateTextures()
 	{
 		{
-			OpenGL::Texture2DInfo info{};
-			info.Type = OpenGL::Texture2DType::Texture;
-			info.Format = OpenGL::Texture2DFormat::RGBA32F;
-			info.Width = m_Settings.ViewportWidth;
-			info.Height = m_Settings.ViewportHeight;
-			
-			info.MipMapLevels = 1;
-			info.Paramaters[OpenGL::TextureParamater::MinFilter] = OpenGL::TextureParamaterOption::Linear;
-			
-			info.Paramaters[OpenGL::TextureParamater::MagFilter] = OpenGL::TextureParamaterOption::Linear;
-			info.Paramaters[OpenGL::TextureParamater::WrapModeS] = OpenGL::TextureParamaterOption::ClampToEdge;
-			info.Paramaters[OpenGL::TextureParamater::WrapModeT] = OpenGL::TextureParamaterOption::ClampToEdge;
-
-			m_Data.FinalImageTexture.reset();
-			m_Data.FinalImageTexture = CreateRef<OpenGL::Texture2D>(info);
-		}
-
-		{
 
 			OpenGL::Texture2DInfo info{};
 			info.Type = OpenGL::Texture2DType::Texture;
@@ -763,34 +760,10 @@ namespace TooGoodEngine {
 			m_Data.BloomTexture = CreateRef<OpenGL::Texture2D>(info);
 		} 
 
-		{
-			OpenGL::Texture2DInfo info{};
-			info.Type = OpenGL::Texture2DType::DepthTexture;
-			info.Format = OpenGL::Texture2DFormat::DEPTH_32F;
-			info.Width = m_Settings.ViewportWidth;
-			info.Height = m_Settings.ViewportHeight;
-
-			info.Paramaters[OpenGL::TextureParamater::MinFilter] = OpenGL::TextureParamaterOption::Linear;
-			info.Paramaters[OpenGL::TextureParamater::MagFilter] = OpenGL::TextureParamaterOption::Linear;
-			info.Paramaters[OpenGL::TextureParamater::WrapModeS] = OpenGL::TextureParamaterOption::ClampToBorder;
-			info.Paramaters[OpenGL::TextureParamater::WrapModeT] = OpenGL::TextureParamaterOption::ClampToBorder;
-
-			m_Data.DepthTexture.reset();
-			m_Data.DepthTexture = CreateRef<OpenGL::Texture2D>(info);
-		}
 	}
 
 	void Renderer::_CreateFramebuffers()
 	{
-		{
-			OpenGL::FramebufferInfo info{};
-			info.ColorAttachments.push_back(m_Data.FinalImageTexture.get());
-			info.DepthAttachment = m_Data.DepthTexture.get();
-
-			m_Data.FinalImageFramebuffer.~Framebuffer();
-			m_Data.FinalImageFramebuffer = OpenGL::Framebuffer(info);
-		}
-
 		{
 			OpenGL::FramebufferInfo info{};
 			info.ColorAttachments.push_back(m_Data.BloomTexture.get());

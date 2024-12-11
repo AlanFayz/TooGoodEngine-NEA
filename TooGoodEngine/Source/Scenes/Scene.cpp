@@ -3,6 +3,8 @@
 #include "Project/Project.h"
 #include "Utils/Statistics.h"
 
+#include "Renderer/Common.h"
+
 namespace TooGoodEngine {
 
 	Scene::Scene()
@@ -236,6 +238,8 @@ namespace TooGoodEngine {
 		if (event->GetType() == EventType::ViewportResize)
 		{
 			ViewportResizeEvent* windowResizeEvent = (ViewportResizeEvent*)event;
+			Common::OnWindowResize(windowResizeEvent->GetWidth(), windowResizeEvent->GetHeight());
+			
 			m_SceneRenderer->OnWindowResize(windowResizeEvent->GetWidth(), windowResizeEvent->GetHeight());
 			m_SceneCamera->OnWindowResize((float)windowResizeEvent->GetWidth(), (float)windowResizeEvent->GetHeight());
 			m_SceneCamera2D->OnWindowResize((float)windowResizeEvent->GetWidth(), (float)windowResizeEvent->GetHeight());

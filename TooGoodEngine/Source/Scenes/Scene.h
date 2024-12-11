@@ -51,8 +51,6 @@ namespace TooGoodEngine {
 		Ref<OrthographicCamera> m_SceneCamera2D;
 		OrthographicCameraController m_CameraController2D;
 
-		ModelInfo m_TestModel;
-
 		SceneView m_SceneView = SceneView::View3D;
 
 		bool m_FirstPlay = true;

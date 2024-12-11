@@ -29,15 +29,15 @@ namespace TooGoodEngine {
 
 	struct TextColor
 	{
-		static constexpr const char* Reset = "\033[0m";
-		static constexpr const char* Black = "\033[0;30m";
-		static constexpr const char* Red = "\033[0;31m";
-		static constexpr const char* Green = "\033[0;32m";
-		static constexpr const char* Yellow = "\033[0;33m";
-		static constexpr const char* Blue = "\033[0;34m";
-		static constexpr const char* Magenta = "\033[0;35m";
-		static constexpr const char* Cyan = "\033[0;36m";
-		static constexpr const char* White = "\033[0;37m";
+		static inline const char* Reset = "\033[0m";
+		static inline const char* Black = "\033[0;30m";
+		static inline const char* Red = "\033[0;31m";
+		static inline const char* Green = "\033[0;32m";
+		static inline const char* Yellow = "\033[0;33m";
+		static inline const char* Blue = "\033[0;34m";
+		static inline const char* Magenta = "\033[0;35m";
+		static inline const char* Cyan = "\033[0;36m";
+		static inline const char* White = "\033[0;37m";
 	};
 
 	template<typename ...Args>

@@ -5,6 +5,8 @@
 #include "PropertiesPanel.h"
 #include "Utils/Input.h"
 
+#include <Renderer/Common.h>
+
 #include <imgui.h>
 
 namespace GoodEditor {
@@ -67,7 +69,6 @@ namespace GoodEditor {
 		if (!Project::ProjectLoaded())
 			return;
 
-		
 		auto selectedProject = Project::GetSelectedProject();
 
 		//update the project depending on if we are in the editor or playing
@@ -90,7 +91,6 @@ namespace GoodEditor {
 
 		if (m_QueueRecreation && m_Playing)
 		{
-
 			//when played project gets saved to disk. The player can completly mess up
 			//every single scene. We then destroy the current project without saving. Then reload from disk
 			//preserving the state before it was played.
@@ -125,7 +125,7 @@ namespace GoodEditor {
 		StatisticsPanel::DrawPanel();
 		PropertiesPanel::DrawPanel();
 
-		auto& image = currentSceneRenderer->GetImage();
+		auto image = TooGoodEngine::Common::GetTexture();
 
 		_RenderViewport(image);
 

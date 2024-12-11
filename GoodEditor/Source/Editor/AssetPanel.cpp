@@ -78,6 +78,7 @@ namespace GoodEditor {
        //going through each file in the currently selected folder
        for (const auto& entry : std::filesystem::directory_iterator(s_CurrentDirectory))
        {
+           //get some meta data from the entry such as path extension filename etc...
            std::filesystem::path path = entry.path();
            std::filesystem::path extension = path.extension();
            std::string filename = path.filename().string();
@@ -85,6 +86,7 @@ namespace GoodEditor {
 
            ImGui::PushID(k++);
 
+           //if the entry is a directory we display an image button with the folder texture
            if (entry.is_directory())
            {
                ImGui::BeginGroup();
@@ -95,9 +97,11 @@ namespace GoodEditor {
 
                ImGui::EndGroup();
 
+               //if pressed then set the current directory to the entries path
                if (pressed)
                    s_CurrentDirectory = entry.path();
 
+               //increment the current button x position
                currentX += buttonWidth;
 
                if (currentX < size.x - buttonWidth)
@@ -106,6 +110,8 @@ namespace GoodEditor {
                    currentX = 0;
                
                ImGui::PopID();
+
+               //continue (ignoring everyting above)
                continue;
            }
 
@@ -116,13 +122,14 @@ namespace GoodEditor {
                continue;
            }
 
-          
-
+            
             ImGui::BeginGroup();
 
+            //draw the image with the corresponding extension
             ImGui::ImageButton((ImTextureID)(intptr_t)extensionMap[extension]->GetTexture().GetHandle(), 
                                 ImVec2(buttonWidth, buttonHeight));
 
+            //if the current button is hovered and mouse is clicked open the default app for that file
             if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
                 Platform::OpenDefaultApp(path);
 
@@ -155,10 +162,14 @@ namespace GoodEditor {
                 //if the asset isn't valid then try reload it.
                 if (!asset)
                 {
+                    //remove asset incased its invalid and cached
                     selctedProject->GetAssetManager().RemoveAsset(path);
 
+                    //use the extension functions to load the asset
                     asset = s_ExtensionFunctions.at(extension)(path);
 
+                    //if the asset is valid and its the propery type we cast it and submit it to the 
+                    //renderer
                     if (asset && asset->GetAssetType() == AssetType::Model)
                     {
                         Ref<Model> model = std::dynamic_pointer_cast<Model>(asset);
@@ -173,6 +184,7 @@ namespace GoodEditor {
                     }
                 }
 
+                //if the asset is valid then get its id and set a payload with te id.
                 if (asset)
                 {
                     TooGoodEngine::UUID id = asset->GetAssetID();
