@@ -366,13 +366,13 @@ namespace TooGoodEngine {
 		static constexpr int DownSample = 0;
 		static constexpr int UpSample   = 1;
 
-		//continous down sampling from previous mips (kernel details are in the compute shader)
+		//continuous down sampling from previous mips (kernel details are in the compute shader)
 		for (uint32_t i = 1; i < RenderData::BloomMipLevelCount; i++)
 		{
 			uint32_t source = i - 1;
 			uint32_t destination = i;
 
-			//shift the source bits by the source and destination. This is the same as repeatedily dividing by 2.
+			//shift the source bits by the source and destination. This is the same as repeatedly dividing by 2.
 			uint32_t sourceWidth = width >> source;
 			uint32_t sourceHeight = height >> source;
 

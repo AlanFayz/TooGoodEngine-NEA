@@ -27,8 +27,6 @@ namespace TooGoodEngine {
 
 		OrthographicCameraData orthoCameraData{};
 		orthoCameraData.Position = glm::vec3(0.0f, 0.0f, 0.0f);
-		orthoCameraData.Front = glm::vec3(0.0f, 0.0f, 1.0f);
-		orthoCameraData.Up = glm::vec3(0.0f, 1.0f, 0.0f);
 		orthoCameraData.Left = -3.0f;
 		orthoCameraData.Right = 3.0f;
 		orthoCameraData.Bottom = -4.0f;

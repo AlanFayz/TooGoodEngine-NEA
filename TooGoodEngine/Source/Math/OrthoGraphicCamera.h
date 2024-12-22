@@ -1,14 +1,16 @@
 #pragma once
 
+
 #include "Camera.h"
+
+#include <glm/gtc/matrix_transform.hpp>
 
 namespace TooGoodEngine {
 
 	struct OrthographicCameraData
 	{
 		glm::vec3 Position = glm::vec3(0.0f, 0.0f, 0.0f);
-		glm::vec3 Front = glm::vec3(0.0f, 0.0f, -1.0f);
-		glm::vec3 Up = glm::vec3(0.0f, 1.0f, 0.0f);
+		glm::vec3 Rotation = glm::vec3(0.0f, 0.0f, 0.0f);
 
 		float Left = 0.0f;
 		float Right = 0.0f;
@@ -32,24 +34,18 @@ namespace TooGoodEngine {
 		void SetData(const OrthographicCameraData& data);
 		virtual void OnWindowResize(float newWidth, float newHeight) override;
 
-		void UpdateViewProjection();
-
 		virtual const glm::vec3& GetCameraPosition() { return m_Position; }
-		virtual const glm::mat4& GetProjection() { return m_Projection; }
-		virtual const glm::mat4& GetView() { return m_View; }
-		virtual const glm::mat4& GetInverseProjection() { return m_InverseProjection; }
-		virtual const glm::mat4& GetInverseView() { return m_InverseView; }
+
+		glm::mat4 GetTransform();
+
+		virtual const glm::mat4 GetProjection() { return glm::ortho(m_Left, m_Right, m_Bottom, m_Top, 0.1f, 100.0f);  }
+		virtual const glm::mat4 GetView() { return glm::inverse(GetTransform()); }
+		virtual const glm::mat4 GetInverseProjection() { return glm::inverse(GetProjection()); }
+		virtual const glm::mat4 GetInverseView() { return GetTransform(); }
 
 	private:
-		glm::mat4 m_View;
-		glm::mat4 m_Projection;
-
-		glm::mat4 m_InverseView;
-		glm::mat4 m_InverseProjection;
-
 		glm::vec3 m_Position;
-		glm::vec3 m_Front;
-		glm::vec3 m_Up;
+		glm::vec3 m_Rotation;
 
 		float m_Top, m_Bottom, m_Left, m_Right;
 

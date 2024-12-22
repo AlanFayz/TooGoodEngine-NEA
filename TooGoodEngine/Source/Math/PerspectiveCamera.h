@@ -35,10 +35,10 @@ namespace TooGoodEngine {
 		virtual void OnWindowResize(float newWidth, float newHeight) override;
 
 		virtual const glm::vec3& GetCameraPosition() { return m_Position; }
-		virtual const glm::mat4& GetProjection() { return m_Projection; }
-		virtual const glm::mat4& GetView() { return m_View; }
-		virtual const glm::mat4& GetInverseProjection() { return m_InverseProjection; }
-		virtual const glm::mat4& GetInverseView() { return m_InverseView; }
+		virtual const glm::mat4 GetProjection() { return m_Projection; }
+		virtual const glm::mat4 GetView() { return m_View; }
+		virtual const glm::mat4 GetInverseProjection() { return m_InverseProjection; }
+		virtual const glm::mat4 GetInverseView() { return m_InverseView; }
 
 	private:
 		glm::mat4 m_Projection;

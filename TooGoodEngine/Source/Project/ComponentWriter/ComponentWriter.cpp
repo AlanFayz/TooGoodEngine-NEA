@@ -325,21 +325,13 @@ namespace TooGoodEngine {
 			writer.WriteGeneric(path, position);
 		}
 
-		path = entityPath;
-
-		{
-			path.insert(path.end(), { "Orthographic Camera", "Front" });
-
-			std::array<float, 3> front = { component.data.Front.x, component.data.Front.y, component.data.Front.z };
-			writer.WriteGeneric(path, front);
-		}
 
 		path = entityPath;
 
 		{
-			path.insert(path.end(), { "Orthographic Camera", "Up" });
+			path.insert(path.end(), { "Orthographic Camera", "Rotation" });
 
-			std::array<float, 3> up = { component.data.Up.x, component.data.Up.y, component.data.Up.z };
+			std::array<float, 3> up = { component.data.Rotation.x, component.data.Rotation.y, component.data.Rotation.z };
 			writer.WriteGeneric(path, up);
 		}
 

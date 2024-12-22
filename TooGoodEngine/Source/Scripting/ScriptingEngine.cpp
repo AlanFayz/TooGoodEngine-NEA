@@ -12,7 +12,7 @@ namespace TooGoodEngine {
 		s_Data = new ScriptingEngineData();
 
 		//
-		// ---- Python initalization ----
+		// ---- Python initialization ----
 		//
 
 		Py_Initialize();
