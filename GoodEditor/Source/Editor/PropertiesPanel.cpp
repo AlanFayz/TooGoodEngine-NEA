@@ -155,7 +155,7 @@ namespace GoodEditor {
 			if (_DrawMaterialSingle("Roughness", materialInfo.Roughness, materialInfo.RoughnessTexture))
 				changed = true;
 
-			if (_DrawMaterialSingle("Metalness", materialInfo.Metallic, materialInfo.MetallicTexture))
+			if (_DrawMaterialSingle("Metallic", materialInfo.Metallic, materialInfo.MetallicTexture))
 				changed = true;
 
 			if (ImGui::DragFloat("Emission Factor", &materialInfo.EmissionFactor, 0.1f, 0.0f, FLT_MAX / 2))
@@ -308,29 +308,29 @@ namespace GoodEditor {
 		{
 			bool changed = false;
 
-			if (ImGui::DragFloat("Fov", &component.data.Fov, 0.1f, 1.0f, 180.0f))
+			if (ImGui::DragFloat("Fov", &component.Data.Fov, 0.1f, 1.0f, 180.0f))
 				changed = true;
 
-			if (ImGui::DragFloat("Aspect Ratio", &component.data.AspectRatio, 0.1f, 0.001f, 10.0f))
+			if (ImGui::DragFloat("Aspect Ratio", &component.Data.AspectRatio, 0.1f, 0.001f, 10.0f))
 				changed = true;
 
-			if (ImGui::DragFloat("Near", &component.data.Near, 0.01f, 0.01f, FLT_MAX / 2.0f))
+			if (ImGui::DragFloat("Near", &component.Data.Near, 0.01f, 0.01f, FLT_MAX / 2.0f))
 				changed = true;
 
-			if (ImGui::DragFloat("Far", &component.data.Far, 0.01f, 0.01f, FLT_MAX / 2.0f))
+			if (ImGui::DragFloat("Far", &component.Data.Far, 0.01f, 0.01f, FLT_MAX / 2.0f))
 				changed = true;
 
-			if (ImGui::DragFloat3("Position", glm::value_ptr(component.data.Position), 0.01f, -FLT_MAX / 2.0f, FLT_MAX / 2.0f))
+			if (ImGui::DragFloat3("Position", glm::value_ptr(component.Data.Position), 0.01f, -FLT_MAX / 2.0f, FLT_MAX / 2.0f))
 				changed = true;
 
-			if (ImGui::DragFloat3("Rotation", glm::value_ptr(component.data.Rotation), 0.01f, -FLT_MAX / 2.0f, FLT_MAX / 2.0f))
+			if (ImGui::DragFloat3("Rotation", glm::value_ptr(component.Data.Rotation), 0.01f, -FLT_MAX / 2.0f, FLT_MAX / 2.0f))
 				changed = true;
 
 
 			ImGui::Checkbox("Use", &component.InUse);
 
 			if (changed)
-				component.Camera->SetData(component.data);
+				component.Camera->SetData(component.Data);
 
 			ImGui::TreePop();
 		}
@@ -345,29 +345,29 @@ namespace GoodEditor {
 		{
 			bool changed = false;
 
-			if (ImGui::DragFloat("Left", &component.data.Left, 0.01f, -FLT_MAX / 2.0, FLT_MAX / 2.0))
+			if (ImGui::DragFloat("Left", &component.Data.Left, 0.01f, -FLT_MAX / 2.0, FLT_MAX / 2.0))
 				changed = true;
 
-			if (ImGui::DragFloat("Right", &component.data.Right, 0.01f, -FLT_MAX / 2.0, FLT_MAX / 2.0))
+			if (ImGui::DragFloat("Right", &component.Data.Right, 0.01f, -FLT_MAX / 2.0, FLT_MAX / 2.0))
 				changed = true;
 
-			if (ImGui::DragFloat("Top", &component.data.Top, 0.01f, -FLT_MAX / 2.0, FLT_MAX / 2.0f))
+			if (ImGui::DragFloat("Top", &component.Data.Top, 0.01f, -FLT_MAX / 2.0, FLT_MAX / 2.0f))
 				changed = true;
 
-			if (ImGui::DragFloat("Bottom", &component.data.Bottom, 0.01f, -FLT_MAX / 2.0f, FLT_MAX / 2.0f))
+			if (ImGui::DragFloat("Bottom", &component.Data.Bottom, 0.01f, -FLT_MAX / 2.0f, FLT_MAX / 2.0f))
 				changed = true;
 
-			if (ImGui::DragFloat3("Position", glm::value_ptr(component.data.Position), 0.01f, -FLT_MAX / 2.0f, FLT_MAX / 2.0f))
+			if (ImGui::DragFloat3("Position", glm::value_ptr(component.Data.Position), 0.01f, -FLT_MAX / 2.0f, FLT_MAX / 2.0f))
 				changed = true;
 
-			if (ImGui::DragFloat3("Rotation", glm::value_ptr(component.data.Rotation), 0.01f, -FLT_MAX / 2.0f, FLT_MAX / 2.0f))
+			if (ImGui::DragFloat3("Rotation", glm::value_ptr(component.Data.Rotation), 0.01f, -FLT_MAX / 2.0f, FLT_MAX / 2.0f))
 				changed = true;
 
 
 			ImGui::Checkbox("Use", &component.InUse);
 
 			if (changed)
-				component.Camera->SetData(component.data);
+				component.Camera->SetData(component.Data);
 
 			ImGui::TreePop();
 		}

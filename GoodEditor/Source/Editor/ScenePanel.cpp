@@ -192,6 +192,18 @@ namespace GoodEditor {
 				component.ID = 0;
 				component.PathToSource = "##Quad";
 				tree.AddComponent(entity, component);
+
+				if (!tree.HasComponent<TransformComponent>(entity))
+					tree.EmplaceComponent<TransformComponent>(entity);
+
+				if (!tree.HasComponent<MaterialComponent>(entity))
+				{
+					MaterialComponent material{};
+					material.ID = sceneRenderer->CreateMaterial();
+					material.Renderer = sceneRenderer;
+
+					tree.AddComponent<MaterialComponent>(entity, material);
+				}
 			}
 
 			if (ImGui::MenuItem("Add Cube") && !tree.HasComponent<MeshComponent>(entity))
@@ -200,6 +212,18 @@ namespace GoodEditor {
 				component.ID = 1;
 				component.PathToSource = "##Cube";
 				tree.AddComponent(entity, component);
+
+				if (!tree.HasComponent<TransformComponent>(entity))
+					tree.EmplaceComponent<TransformComponent>(entity);
+
+				if (!tree.HasComponent<MaterialComponent>(entity))
+				{
+					MaterialComponent material{};
+					material.ID = sceneRenderer->CreateMaterial();
+					material.Renderer = sceneRenderer;
+
+					tree.AddComponent<MaterialComponent>(entity, material);
+				}
 			}
 
 			if (ImGui::MenuItem("Add Transform") && !tree.HasComponent<TransformComponent>(entity))
@@ -221,7 +245,21 @@ namespace GoodEditor {
 				tree.EmplaceComponent<DirectionalLightComponent>(entity);
 
 			if (ImGui::MenuItem("Add Model") && !tree.HasComponent<ModelComponent>(entity))
+			{
 				tree.EmplaceComponent<ModelComponent>(entity);
+
+				if (!tree.HasComponent<TransformComponent>(entity))
+					tree.EmplaceComponent<TransformComponent>(entity);
+
+				if (!tree.HasComponent<MaterialComponent>(entity))
+				{
+					MaterialComponent material{};
+					material.ID = sceneRenderer->CreateMaterial();
+					material.Renderer = sceneRenderer;
+
+					tree.AddComponent<MaterialComponent>(entity, material);
+				}
+			}
 
 			if (ImGui::MenuItem("Add Script") && !tree.HasComponent<ScriptComponent>(entity))
 				tree.EmplaceComponent<ScriptComponent>(entity);
@@ -229,7 +267,7 @@ namespace GoodEditor {
 			if (ImGui::MenuItem("Add Perspective Camera") && !tree.HasComponent<PerspectiveCameraComponent>(entity))
 			{
 				PerspectiveCameraComponent component;
-				component.Camera = CreateRef<PerspectiveCamera>(component.data);
+				component.Camera = CreateRef<PerspectiveCamera>(component.Data);
 
 				tree.AddComponent(entity, component);
 			}
@@ -237,7 +275,7 @@ namespace GoodEditor {
 			if (ImGui::MenuItem("Add Orthographic Camera") && !tree.HasComponent<OrthographicCameraComponent>(entity))
 			{
 				OrthographicCameraComponent component;
-				component.Camera = CreateRef<OrthographicCamera>(component.data);
+				component.Camera = CreateRef<OrthographicCamera>(component.Data);
 
 				tree.AddComponent(entity, component);
 			}

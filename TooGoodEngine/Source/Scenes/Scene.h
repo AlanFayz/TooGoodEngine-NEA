@@ -29,6 +29,7 @@ namespace TooGoodEngine {
 		virtual void OnEvent(Event* event) override;
 
 		void SetSceneView(SceneView view);
+		void DrawAxis();
 
 		inline EntityTree& GetRegistry() { return m_Registry; }
 		inline Ref<Renderer> GetSceneRenderer() { return m_SceneRenderer; }
@@ -54,6 +55,10 @@ namespace TooGoodEngine {
 		SceneView m_SceneView = SceneView::View3D;
 
 		bool m_FirstPlay = true;
+
+		MaterialID m_Green;
+		MaterialID m_Red;
+		MaterialID m_Blue;
 	};
 
 }

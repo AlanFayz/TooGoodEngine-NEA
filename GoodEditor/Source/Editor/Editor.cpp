@@ -41,7 +41,7 @@ namespace GoodEditor {
 		style.Colors[27] = ImColor(70, 70, 154, 128);   //header active
 		style.Colors[41] = ImColor(2, 5, 20, 128);      //docking empty background
 
-		//loads images that are requierd by the asset panel.
+		//loads images that are required by the asset panel.
 		m_ExtensionMap["folder"] = Image::LoadImageAssetFromFile("Resources/Textures/folder_icon.png");
 		m_ExtensionMap["back"]	 = Image::LoadImageAssetFromFile("Resources/Textures/back_icon.png");
 		m_ExtensionMap[".obj"]	 = Image::LoadImageAssetFromFile("Resources/Textures/obj_icon.png");

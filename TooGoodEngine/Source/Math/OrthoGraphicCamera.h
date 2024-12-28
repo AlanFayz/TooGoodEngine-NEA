@@ -12,10 +12,10 @@ namespace TooGoodEngine {
 		glm::vec3 Position = glm::vec3(0.0f, 0.0f, 0.0f);
 		glm::vec3 Rotation = glm::vec3(0.0f, 0.0f, 0.0f);
 
-		float Left = 0.0f;
-		float Right = 0.0f;
-		float Top = 0.0f;
-		float Bottom = 0.0f;
+		float Left   = -1.0f;
+		float Right  = 1.0f;
+		float Top    = 1.0f;
+		float Bottom = -1.0f;
 	};
 
 	class OrthographicCameraController;
@@ -38,7 +38,7 @@ namespace TooGoodEngine {
 
 		glm::mat4 GetTransform();
 
-		virtual const glm::mat4 GetProjection() { return glm::ortho(m_Left, m_Right, m_Bottom, m_Top, 0.1f, 100.0f);  }
+		virtual const glm::mat4 GetProjection() { return glm::ortho(m_Left, m_Right, m_Bottom, m_Top, -1.0f, 1.0f);  }
 		virtual const glm::mat4 GetView() { return glm::inverse(GetTransform()); }
 		virtual const glm::mat4 GetInverseProjection() { return glm::inverse(GetProjection()); }
 		virtual const glm::mat4 GetInverseView() { return GetTransform(); }

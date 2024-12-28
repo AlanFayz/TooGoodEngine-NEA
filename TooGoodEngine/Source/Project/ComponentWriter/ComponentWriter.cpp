@@ -225,14 +225,14 @@ namespace TooGoodEngine {
 
 		{
 			path.insert(path.end(), { "Perspective Camera", "Fov"});
-			writer.WriteGeneric(path, component.data.Fov);
+			writer.WriteGeneric(path, component.Data.Fov);
 		}
 
 		path = entityPath;
 
 		{
 			path.insert(path.end(), { "Perspective Camera", "Aspect Ratio" });
-			writer.WriteGeneric(path, component.data.AspectRatio);
+			writer.WriteGeneric(path, component.Data.AspectRatio);
 		}
 
 
@@ -240,14 +240,14 @@ namespace TooGoodEngine {
 
 		{
 			path.insert(path.end(), { "Perspective Camera", "Near" });
-			writer.WriteGeneric(path, component.data.Near);
+			writer.WriteGeneric(path, component.Data.Near);
 		}
 
 		path = entityPath;
 
 		{
 			path.insert(path.end(), { "Perspective Camera", "Far" });
-			writer.WriteGeneric(path, component.data.Far);
+			writer.WriteGeneric(path, component.Data.Far);
 		}
 
 		path = entityPath;
@@ -255,7 +255,7 @@ namespace TooGoodEngine {
 		{
 			path.insert(path.end(), { "Perspective Camera", "Position" });
 
-			std::array<float, 3> position = { component.data.Position.x, component.data.Position.y, component.data.Position.z };
+			std::array<float, 3> position = { component.Data.Position.x, component.Data.Position.y, component.Data.Position.z };
 			writer.WriteGeneric(path, position);
 		}
 
@@ -264,7 +264,7 @@ namespace TooGoodEngine {
 		{
 			path.insert(path.end(), { "Perspective Camera", "Rotation" });
 
-			std::array<float, 3> rotation = { component.data.Rotation.x, component.data.Rotation.y, component.data.Rotation.z };
+			std::array<float, 3> rotation = { component.Data.Rotation.x, component.Data.Rotation.y, component.Data.Rotation.z };
 			writer.WriteGeneric(path, rotation);
 		}
 
@@ -282,14 +282,14 @@ namespace TooGoodEngine {
 
 		{
 			path.insert(path.end(), { "Orthographic Camera", "Bottom" });
-			writer.WriteGeneric(path, component.data.Bottom);
+			writer.WriteGeneric(path, component.Data.Bottom);
 		}
 
 		path = entityPath;
 
 		{
 			path.insert(path.end(), { "Orthographic Camera", "Top" });
-			writer.WriteGeneric(path, component.data.Top);
+			writer.WriteGeneric(path, component.Data.Top);
 		}
 
 
@@ -297,14 +297,14 @@ namespace TooGoodEngine {
 
 		{
 			path.insert(path.end(), { "Orthographic Camera", "Left" });
-			writer.WriteGeneric(path, component.data.Left);
+			writer.WriteGeneric(path, component.Data.Left);
 		}
 
 		path = entityPath;
 
 		{
 			path.insert(path.end(), { "Orthographic Camera", "Right" });
-			writer.WriteGeneric(path, component.data.Right);
+			writer.WriteGeneric(path, component.Data.Right);
 		}
 
 		path = entityPath;
@@ -312,7 +312,7 @@ namespace TooGoodEngine {
 		{
 			path.insert(path.end(), { "Orthographic Camera", "Position" });
 
-			std::array<float, 3> position = { component.data.Position.x, component.data.Position.y, component.data.Position.z };
+			std::array<float, 3> position = { component.Data.Position.x, component.Data.Position.y, component.Data.Position.z };
 			writer.WriteGeneric(path, position);
 		}
 
@@ -322,7 +322,7 @@ namespace TooGoodEngine {
 		{
 			path.insert(path.end(), { "Orthographic Camera", "Rotation" });
 
-			std::array<float, 3> up = { component.data.Rotation.x, component.data.Rotation.y, component.data.Rotation.z };
+			std::array<float, 3> up = { component.Data.Rotation.x, component.Data.Rotation.y, component.Data.Rotation.z };
 			writer.WriteGeneric(path, up);
 		}
 

@@ -46,12 +46,16 @@ namespace TooGoodEngine {
             return;
         }
 
-        m_Yaw += XDifference;
-        m_Pitch = std::clamp(m_Pitch - YDifference, -89.0f, 89.0f);
+        glm::mat4 orientation = m_Camera->GetOrientation();
 
-        glm::vec3 front = glm::normalize(glm::vec3(glm::vec4(0.0f, 0.0f, -1.0f, 0.0f) * m_Camera->GetTransform()));
-        glm::vec3 up    = glm::normalize(glm::vec3(glm::vec4(0.0f, 1.0f, 0.0f, 0.0f) * m_Camera->GetTransform()));
-        glm::vec3 right = glm::normalize(glm::vec3(glm::vec4(1.0f, 0.0f, 0.0f, 0.0f) * m_Camera->GetTransform()));
+        glm::vec3 front = glm::normalize(glm::vec3(orientation * glm::vec4(0.0f, 0.0f, -1.0f, 0.0f)));
+        glm::vec3 up    = glm::normalize(glm::vec3(orientation * glm::vec4(0.0f, 1.0f, 0.0f, 0.0f)));
+        glm::vec3 right = glm::normalize(glm::vec3(orientation * glm::vec4(1.0f, 0.0f, 0.0f, 0.0f)));
+
+
+        float sign = up.y < 0 ? -1.0f : 1.0f;
+        m_Yaw -= XDifference;
+        m_Pitch = std::clamp(m_Pitch - YDifference, -89.0f, 89.0f);
 
         glm::vec3 movement(0.0f);
 
@@ -60,12 +64,16 @@ namespace TooGoodEngine {
      
         if (SKeyDown) 
             movement -= front * m_CameraSpeed * (float)std::max(delta, 0.001);
+
         if (AKeyDown) 
             movement -= right * m_CameraSpeed * (float)std::max(delta, 0.001);
+
         if (DKeyDown) 
             movement += right * m_CameraSpeed * (float)std::max(delta, 0.001);
+
         if (QKeyDown) 
             movement += up * m_CameraSpeed * (float)std::max(delta, 0.001);
+
         if (EKeyDown) 
             movement -= up * m_CameraSpeed * (float)std::max(delta, 0.001);
 

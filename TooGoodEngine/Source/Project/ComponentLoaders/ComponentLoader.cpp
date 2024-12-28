@@ -239,19 +239,19 @@ namespace TooGoodEngine {
 	PerspectiveCameraComponent ComponentLoader::LoadPerspectiveCamera(const json& jsonComponent)
 	{
 		PerspectiveCameraComponent component;
-		component.data.Fov         = jsonComponent["Fov"].get<float>();
-		component.data.AspectRatio = jsonComponent["Aspect Ratio"].get<float>();
-		component.data.Near		   = jsonComponent["Near"].get<float>();
-		component.data.Far		   = jsonComponent["Far"].get<float>();
+		component.Data.Fov         = jsonComponent["Fov"].get<float>();
+		component.Data.AspectRatio = jsonComponent["Aspect Ratio"].get<float>();
+		component.Data.Near		   = jsonComponent["Near"].get<float>();
+		component.Data.Far		   = jsonComponent["Far"].get<float>();
 		component.InUse			   = jsonComponent["In Use"].get<bool>();
 
 		std::array<float, 3> position = jsonComponent["Position"].get<std::array<float, 3>>();
 		std::array<float, 3> rotation = jsonComponent["Rotation"].get<std::array<float, 3>>();
 
-		component.data.Position = { position[0], position[1], position[2] };
-		component.data.Rotation = { rotation[0], rotation[1], rotation[2] };
+		component.Data.Position = { position[0], position[1], position[2] };
+		component.Data.Rotation = { rotation[0], rotation[1], rotation[2] };
 		
-		component.Camera = CreateRef<PerspectiveCamera>(component.data);
+		component.Camera = CreateRef<PerspectiveCamera>(component.Data);
 
 		return component;
 	}
@@ -259,19 +259,19 @@ namespace TooGoodEngine {
 	OrthographicCameraComponent ComponentLoader::LoadOrthographicCamera(const json& jsonComponent)
 	{
 		OrthographicCameraComponent component;
-		component.data.Bottom = jsonComponent["Bottom"].get<float>();
-		component.data.Top    = jsonComponent["Top"].get<float>();
-		component.data.Left   = jsonComponent["Left"].get<float>();
-		component.data.Right  = jsonComponent["Right"].get<float>();
+		component.Data.Bottom = jsonComponent["Bottom"].get<float>();
+		component.Data.Top    = jsonComponent["Top"].get<float>();
+		component.Data.Left   = jsonComponent["Left"].get<float>();
+		component.Data.Right  = jsonComponent["Right"].get<float>();
 		component.InUse		  = jsonComponent["In Use"].get<bool>();
 
 		std::array<float, 3> position = jsonComponent["Position"].get<std::array<float, 3>>();
 		std::array<float, 3> rotation = jsonComponent["Rotation"].get<std::array<float, 3>>();
 
-		component.data.Position = { position[0], position[1], position[2] };
-		component.data.Rotation = { rotation[0], rotation[1], rotation[2] };
+		component.Data.Position = { position[0], position[1], position[2] };
+		component.Data.Rotation = { rotation[0], rotation[1], rotation[2] };
 
-		component.Camera = CreateRef<OrthographicCamera>(component.data);
+		component.Camera = CreateRef<OrthographicCamera>(component.Data);
 
 		return component;
 	}

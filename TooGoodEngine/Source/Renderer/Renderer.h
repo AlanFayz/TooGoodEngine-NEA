@@ -151,6 +151,7 @@ namespace TooGoodEngine {
 		void SubmitPointLight(const glm::vec3& position, const glm::vec4& color, float radius, float intensity);
 		void SubmitDirectionaLight(const glm::vec3& direction, const glm::vec4& color, float intensity);
 
+		void Reset();
 		void End();
 
 		void RenderImageToScreen(uint32_t width, uint32_t height);

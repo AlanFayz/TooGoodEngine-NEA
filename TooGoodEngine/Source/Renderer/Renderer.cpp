@@ -201,6 +201,18 @@ namespace TooGoodEngine {
 		m_Data.DirectionalLights.MappedData[m_Data.DirectionalLights.BufferIndex][m_Data.DirectionalLights.Size++] = light;
 	}
 
+	void Renderer::Reset()
+	{
+		auto& framebuffer = Common::GetFramebuffer();
+		framebuffer.Bind();
+
+		OpenGL::Command::SetViewport(m_Settings.ViewportWidth, m_Settings.ViewportHeight);
+		OpenGL::Command::ClearColor(m_Settings.ClearColor);
+		OpenGL::Command::ClearDepth();
+
+		framebuffer.Unbind();
+	}
+
 	void Renderer::End()
 	{
 		TGE_VERIFY(m_Data.IsDrawing, "haven't drawn anything");
@@ -209,10 +221,6 @@ namespace TooGoodEngine {
 
 		auto& framebuffer = Common::GetFramebuffer();
 		framebuffer.Bind();
-
-		OpenGL::Command::SetViewport(m_Settings.ViewportWidth, m_Settings.ViewportHeight);
-		OpenGL::Command::ClearColor(m_Settings.ClearColor);
-		OpenGL::Command::ClearDepth();
 		
 		_RenderGeometry();
 		_RenderSkyBox();

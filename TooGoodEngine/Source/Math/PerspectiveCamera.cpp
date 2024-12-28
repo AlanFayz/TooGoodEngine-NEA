@@ -28,17 +28,18 @@ namespace TooGoodEngine {
 	glm::mat4 PerspectiveCamera::GetTransform()
 	{
 		constexpr glm::mat4 identity = glm::identity<glm::mat4>();
-
-		glm::mat4 rotationMatrix = glm::rotate(identity, glm::radians(m_Rotation[0]), { 1.0f, 0.0f, 0.0f }) *
-			glm::rotate(identity, glm::radians(m_Rotation[1]), { 0.0f, 1.0f, 0.0f }) *
-			glm::rotate(identity, glm::radians(m_Rotation[2]), { 0.0f, 0.0f, 1.0f });
-
-		return glm::translate(identity, m_Position) * rotationMatrix;
+		return glm::translate(identity, m_Position) * GetOrientation();
 	}
 
-	const glm::mat4 PerspectiveCamera::GetView()
+	glm::mat4 PerspectiveCamera::GetOrientation()
 	{
-		return glm::inverse(GetTransform());
+		constexpr glm::mat4 identity = glm::identity<glm::mat4>();
+
+		return glm::rotate(identity, glm::radians(m_Rotation[2]), { 0.0f, 0.0f, 1.0f }) *  
+			glm::rotate(identity, glm::radians(m_Rotation[0]), { 1.0f, 0.0f, 0.0f }) * 
+			glm::rotate(identity, glm::radians(m_Rotation[1]), { 0.0f, 1.0f, 0.0f });   
 	}
+
+
 
 }

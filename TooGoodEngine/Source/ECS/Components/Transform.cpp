@@ -13,13 +13,13 @@ namespace TooGoodEngine {
 
 	glm::mat4 TransformComponent::GetTransform()
 	{
-		static constexpr glm::mat4 s_Identity = glm::identity<glm::mat4>();
+		constexpr glm::mat4 identity = glm::identity<glm::mat4>();
 
-		glm::mat4 rotationMatrix = glm::rotate(s_Identity, glm::radians(Rotation[0]), { 1.0f, 0.0f, 0.0f }) *
-			glm::rotate(s_Identity, glm::radians(Rotation[1]), { 0.0f, 1.0f, 0.0f }) *
-			glm::rotate(s_Identity, glm::radians(Rotation[2]), { 0.0f, 0.0f, 1.0f });
+		glm::mat4 rotationMatrix = glm::rotate(identity, glm::radians(Rotation[0]), { 1.0f, 0.0f, 0.0f }) *
+			glm::rotate(identity, glm::radians(Rotation[1]), { 0.0f, 1.0f, 0.0f }) *
+			glm::rotate(identity, glm::radians(Rotation[2]), { 0.0f, 0.0f, 1.0f });
 
-		return glm::translate(s_Identity, Position) * rotationMatrix * glm::scale(s_Identity, Scale);
+		return glm::translate(identity, Position) * rotationMatrix * glm::scale(identity, Scale);
 	}
 	
 }
