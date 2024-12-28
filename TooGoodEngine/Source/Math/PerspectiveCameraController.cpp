@@ -12,6 +12,7 @@ namespace TooGoodEngine {
 	}
     void PerspectiveCameraController::Update(double delta)
     {
+        //query keys
         const bool WKeyDown = Input::IsKeyDown(KeyCode::W);
         const bool SKeyDown = Input::IsKeyDown(KeyCode::S);
         const bool AKeyDown = Input::IsKeyDown(KeyCode::A);
@@ -26,11 +27,11 @@ namespace TooGoodEngine {
         float XDifference = (float)(CurrentX - m_LastX) * m_Sensitivity;
         float YDifference = (float)(CurrentY - m_LastY) * m_Sensitivity;
 
-        // Update last mouse position
+        // update last mouse position
         m_LastX = CurrentX;
         m_LastY = CurrentY;
 
-        // Handle cursor toggling
+        // handle cursor toggling
         if (XKeyDown)
         {
             Input::DisableCursor();
@@ -48,19 +49,15 @@ namespace TooGoodEngine {
         m_Yaw += XDifference;
         m_Pitch = std::clamp(m_Pitch - YDifference, -89.0f, 89.0f);
 
-        glm::vec3 front{};
-        front.x = glm::cos(glm::radians(m_Yaw)) * glm::cos(glm::radians(m_Pitch));
-        front.y = glm::sin(glm::radians(m_Pitch));
-        front.z = glm::sin(glm::radians(m_Yaw)) * glm::cos(glm::radians(m_Pitch));
-        front = glm::normalize(front);
-
-        glm::vec3 up = { 0.0f, 1.0f, 0.0f };
-        glm::vec3 right = glm::normalize(glm::cross(front, up));
+        glm::vec3 front = glm::normalize(glm::vec3(glm::vec4(0.0f, 0.0f, -1.0f, 0.0f) * m_Camera->GetTransform()));
+        glm::vec3 up    = glm::normalize(glm::vec3(glm::vec4(0.0f, 1.0f, 0.0f, 0.0f) * m_Camera->GetTransform()));
+        glm::vec3 right = glm::normalize(glm::vec3(glm::vec4(1.0f, 0.0f, 0.0f, 0.0f) * m_Camera->GetTransform()));
 
         glm::vec3 movement(0.0f);
 
-        if (WKeyDown) 
+        if (WKeyDown)
             movement += front * m_CameraSpeed * (float)std::max(delta, 0.001);
+     
         if (SKeyDown) 
             movement -= front * m_CameraSpeed * (float)std::max(delta, 0.001);
         if (AKeyDown) 

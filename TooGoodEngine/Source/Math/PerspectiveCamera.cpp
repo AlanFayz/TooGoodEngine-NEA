@@ -25,17 +25,20 @@ namespace TooGoodEngine {
 		m_AspectRatio = newWidth / newHeight;
 	}
 
+	glm::mat4 PerspectiveCamera::GetTransform()
+	{
+		constexpr glm::mat4 identity = glm::identity<glm::mat4>();
+
+		glm::mat4 rotationMatrix = glm::rotate(identity, glm::radians(m_Rotation[0]), { 1.0f, 0.0f, 0.0f }) *
+			glm::rotate(identity, glm::radians(m_Rotation[1]), { 0.0f, 1.0f, 0.0f }) *
+			glm::rotate(identity, glm::radians(m_Rotation[2]), { 0.0f, 0.0f, 1.0f });
+
+		return glm::translate(identity, m_Position) * rotationMatrix;
+	}
+
 	const glm::mat4 PerspectiveCamera::GetView()
 	{
-		glm::vec3 front{};
-		front.x = glm::cos(glm::radians(m_Rotation[1])) * glm::cos(glm::radians(m_Rotation[0]));
-		front.y = glm::sin(glm::radians(m_Rotation[0]));
-		front.z = glm::sin(glm::radians(m_Rotation[1])) * glm::cos(glm::radians(m_Rotation[0]));
-		front = glm::normalize(front);
-
-		glm::vec3 up = { 0.0f, 1.0f, 0.0f };
-
-		return glm::lookAt(m_Position, m_Position + front, up);
+		return glm::inverse(GetTransform());
 	}
 
 }

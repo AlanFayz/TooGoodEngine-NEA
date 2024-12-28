@@ -34,6 +34,7 @@ namespace TooGoodEngine {
 		void SetData(const PerspectiveCameraData& data);
 		virtual void OnWindowResize(float newWidth, float newHeight) override;
 
+		glm::mat4 GetTransform();
 
 		virtual const glm::vec3& GetCameraPosition() { return m_Position; }
 		virtual const glm::mat4 GetProjection() { return glm::perspective(glm::radians(m_Fov), m_AspectRatio, m_Near, m_Far);; }
