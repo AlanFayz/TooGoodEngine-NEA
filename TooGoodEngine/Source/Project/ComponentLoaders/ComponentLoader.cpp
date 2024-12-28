@@ -246,12 +246,10 @@ namespace TooGoodEngine {
 		component.InUse			   = jsonComponent["In Use"].get<bool>();
 
 		std::array<float, 3> position = jsonComponent["Position"].get<std::array<float, 3>>();
-		std::array<float, 3> front    = jsonComponent["Front"].get<std::array<float, 3>>();
-		std::array<float, 3> up		  = jsonComponent["Up"].get<std::array<float, 3>>();
+		std::array<float, 3> rotation = jsonComponent["Rotation"].get<std::array<float, 3>>();
 
 		component.data.Position = { position[0], position[1], position[2] };
-		component.data.Front    = { front[0],    front[1],    front[2] };
-		component.data.Up       = { up[0],		 up[1],		  up[2] };
+		component.data.Rotation = { rotation[0], rotation[1], rotation[2] };
 		
 		component.Camera = CreateRef<PerspectiveCamera>(component.data);
 

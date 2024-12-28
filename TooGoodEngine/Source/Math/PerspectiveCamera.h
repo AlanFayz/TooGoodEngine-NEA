@@ -2,6 +2,8 @@
 
 #include "Camera.h"
 
+#include <glm/gtc/matrix_transform.hpp>
+
 namespace TooGoodEngine {
 	
 	struct PerspectiveCameraData
@@ -12,8 +14,7 @@ namespace TooGoodEngine {
 		float Far = 100.0f;
 
 		glm::vec3 Position = { 0.0f, 0.0f, 0.0f };
-		glm::vec3 Front = { 0.0f, 0.0f, -1.0f };
-		glm::vec3 Up = { 0.0f, 1.0f, 0.0f };
+		glm::vec3 Rotation = { 0.0f, 0.0f, 0.0f };
 	};
 
 	class PerspectiveCameraController;
@@ -30,26 +31,19 @@ namespace TooGoodEngine {
 		PerspectiveCamera(const PerspectiveCameraData& data);
 		~PerspectiveCamera() = default;
 
-		void UpdateViewProjection();
 		void SetData(const PerspectiveCameraData& data);
 		virtual void OnWindowResize(float newWidth, float newHeight) override;
 
+
 		virtual const glm::vec3& GetCameraPosition() { return m_Position; }
-		virtual const glm::mat4 GetProjection() { return m_Projection; }
-		virtual const glm::mat4 GetView() { return m_View; }
-		virtual const glm::mat4 GetInverseProjection() { return m_InverseProjection; }
-		virtual const glm::mat4 GetInverseView() { return m_InverseView; }
+		virtual const glm::mat4 GetProjection() { return glm::perspective(glm::radians(m_Fov), m_AspectRatio, m_Near, m_Far);; }
+		virtual const glm::mat4 GetView();
+		virtual const glm::mat4 GetInverseProjection() { return glm::inverse(GetProjection()); }
+		virtual const glm::mat4 GetInverseView() { return glm::inverse(GetView()); }
 
 	private:
-		glm::mat4 m_Projection;
-		glm::mat4 m_View;
-
-		glm::mat4 m_InverseProjection;
-		glm::mat4 m_InverseView;
-
 		glm::vec3 m_Position;
-		glm::vec3 m_Front;
-		glm::vec3 m_Up;
+		glm::vec3 m_Rotation;
 
 		float m_Fov;
 		float m_AspectRatio;

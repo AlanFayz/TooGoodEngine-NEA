@@ -262,19 +262,10 @@ namespace TooGoodEngine {
 		path = entityPath;
 
 		{
-			path.insert(path.end(), { "Perspective Camera", "Front" });
+			path.insert(path.end(), { "Perspective Camera", "Rotation" });
 
-			std::array<float, 3> front = { component.data.Front.x, component.data.Front.y, component.data.Front.z };
-			writer.WriteGeneric(path, front);
-		}
-
-		path = entityPath;
-
-		{
-			path.insert(path.end(), { "Perspective Camera", "Up" });
-
-			std::array<float, 3> up = { component.data.Up.x, component.data.Up.y, component.data.Up.z };
-			writer.WriteGeneric(path, up);
+			std::array<float, 3> rotation = { component.data.Rotation.x, component.data.Rotation.y, component.data.Rotation.z };
+			writer.WriteGeneric(path, rotation);
 		}
 
 		path = entityPath;

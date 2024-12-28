@@ -79,14 +79,13 @@ namespace TooGoodEngine {
 		static PyObject* InternalUpdateFrontOrthographicCameraController(PyObject* self, PyObject* args);
 
 		static void      InternalCleanPerspectiveCameraController(PyObject* capsule);
-		static PyObject* InternalCreatePerpsectiveCameraController(PyObject* self, PyObject* args);
+		static PyObject* InternalCreatePerspectiveCameraController(PyObject* self, PyObject* args);
 		static PyObject* InternalSetFovPerspectiveCameraController(PyObject* self, PyObject* args);
-		static PyObject* InternalSetAspectRatioPerpspectiveCameraController(PyObject* self, PyObject* args);
+		static PyObject* InternalSetAspectRatioPerspectiveCameraController(PyObject* self, PyObject* args);
 		static PyObject* InternalSetNearPerspectiveCameraController(PyObject* self, PyObject* args);
 		static PyObject* InternalSetFarPerspectiveCameraController(PyObject* self, PyObject* args);
 		static PyObject* InternalUpdatePositionPerspectiveCameraController(PyObject* self, PyObject* args);
-		static PyObject* InternalUpdateUpPerspectiveCameraController(PyObject* self, PyObject* args);
-		static PyObject* InternalUpdateFrontPerspectiveCameraController(PyObject* self, PyObject* args);
+		static PyObject* InternalUpdateRotationPerspectiveCameraController(PyObject* self, PyObject* args);
 
 	};	
 

@@ -323,11 +323,9 @@ namespace GoodEditor {
 			if (ImGui::DragFloat3("Position", glm::value_ptr(component.data.Position), 0.01f, -FLT_MAX / 2.0f, FLT_MAX / 2.0f))
 				changed = true;
 
-			if (ImGui::DragFloat3("Front", glm::value_ptr(component.data.Front), 0.01f, -FLT_MAX / 2.0f, FLT_MAX / 2.0f))
+			if (ImGui::DragFloat3("Rotation", glm::value_ptr(component.data.Rotation), 0.01f, -FLT_MAX / 2.0f, FLT_MAX / 2.0f))
 				changed = true;
 
-			if (ImGui::DragFloat3("Up", glm::value_ptr(component.data.Up), 0.01f, -FLT_MAX / 2.0f, FLT_MAX / 2.0f))
-				changed = true;
 
 			ImGui::Checkbox("Use", &component.InUse);
 

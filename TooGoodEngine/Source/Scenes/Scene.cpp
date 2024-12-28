@@ -19,7 +19,7 @@ namespace TooGoodEngine {
 
 		PerspectiveCameraData cameraData;
 		cameraData.AspectRatio = 1200.0f / 800.0f;
-		cameraData.Up = glm::vec3(0.0f, -1.0f, 0.0f);
+		cameraData.Rotation = glm::vec3(0.0f, 0.0f, 0.0f);
 
 		m_SceneCamera = CreateRef<PerspectiveCamera>(cameraData);
 

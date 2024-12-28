@@ -1012,7 +1012,7 @@ namespace TooGoodEngine {
 			delete container;
 	}
 
-	PyObject* PythonBindings::InternalCreatePerpsectiveCameraController(PyObject* self, PyObject* args)
+	PyObject* PythonBindings::InternalCreatePerspectiveCameraController(PyObject* self, PyObject* args)
 	{
 		PyObject* capsule = nullptr;
 
@@ -1047,7 +1047,7 @@ namespace TooGoodEngine {
 		container->SetFov(fov);
 		return Py_None;
 	}
-	PyObject* PythonBindings::InternalSetAspectRatioPerpspectiveCameraController(PyObject* self, PyObject* args)
+	PyObject* PythonBindings::InternalSetAspectRatioPerspectiveCameraController(PyObject* self, PyObject* args)
 	{
 		PyObject* capsule = nullptr;
 		float aspectRatio = 0.0f;
@@ -1111,7 +1111,7 @@ namespace TooGoodEngine {
 		container->UpdatePosition(glm::vec3(x, y ,z));
 		return Py_None;
 	}
-	PyObject* PythonBindings::InternalUpdateUpPerspectiveCameraController(PyObject* self, PyObject* args)
+	PyObject* PythonBindings::InternalUpdateRotationPerspectiveCameraController(PyObject* self, PyObject* args)
 	{
 		PyObject* capsule = nullptr;
 		float x = 0.0f, y = 0.0f, z = 0.0f;
@@ -1124,23 +1124,7 @@ namespace TooGoodEngine {
 		if (!container)
 			return nullptr;
 
-		container->UpdateUp(glm::vec3(x, y, z));
-		return Py_None;
-	}
-	PyObject* PythonBindings::InternalUpdateFrontPerspectiveCameraController(PyObject* self, PyObject* args)
-	{
-		PyObject* capsule = nullptr;
-		float x = 0.0f, y = 0.0f, z = 0.0f;
-
-		if (!PyArg_ParseTuple(args, "Offf", &capsule, &x, &y, &z))
-			return nullptr;
-		
-		PerspectiveCameraController* container = (PerspectiveCameraController*)(PyCapsule_GetPointer(capsule, "InternalPerspectiveCameraController"));
-
-		if (!container)
-			return nullptr;
-
-		container->UpdateFront(glm::vec3(x, y, z));
+		container->UpdateRotation(glm::vec3(x, y, z));
 		return Py_None;
 	}
 }

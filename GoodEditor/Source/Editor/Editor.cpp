@@ -91,7 +91,7 @@ namespace GoodEditor {
 
 		if (m_QueueRecreation && m_Playing)
 		{
-			//when played project gets saved to disk. The player can completly mess up
+			//when played project gets saved to disk. The player can completely mess up
 			//every single scene. We then destroy the current project without saving. Then reload from disk
 			//preserving the state before it was played.
 

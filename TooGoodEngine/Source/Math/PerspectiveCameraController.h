@@ -23,8 +23,7 @@ namespace TooGoodEngine {
 		void SetFar(float far);
 
 		void UpdatePosition(const glm::vec3& position);
-		void UpdateFront(const glm::vec3& front);
-		void UpdateUp(const glm::vec3& up);
+		void UpdateRotation(const glm::vec3& rotation);
 
 		void SetCameraSpeed(float newSpeed);
 		void SetCameraSensitivity(float newSensitivity);

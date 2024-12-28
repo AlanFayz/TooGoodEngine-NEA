@@ -20,17 +20,17 @@ namespace TooGoodEngine {
 
 		glm::vec3 movement(0.0f);
 
-		static constexpr glm::vec3 s_Up   = glm::vec3(0.0f, 1.0f, 0.0f);
-		static constexpr glm::vec3 s_Side = glm::vec3(1.0f, 0.0f, 0.0f);
+		glm::vec3 up   = glm::vec3(0.0f, 1.0f, 0.0f);
+		glm::vec3 side = glm::vec3(1.0f, 0.0f, 0.0f);
 
 		if (keyWPressed)
-			movement += s_Up * m_CameraSpeed * (float)delta;
+			movement += up * m_CameraSpeed * (float)delta;
 		if (keySPressed)
-			movement -= s_Up * m_CameraSpeed * (float)delta;
+			movement -= up * m_CameraSpeed * (float)delta;
 		if (keyAPressed)
-			movement -= s_Side * m_CameraSpeed * (float)delta;
+			movement -= side * m_CameraSpeed * (float)delta;
 		if (keyDPressed)
-			movement += s_Side * m_CameraSpeed * (float)delta;
+			movement += side * m_CameraSpeed * (float)delta;
 
 		m_Camera->m_Position += movement;
 	}

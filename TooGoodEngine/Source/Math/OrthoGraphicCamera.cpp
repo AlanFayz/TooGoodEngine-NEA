@@ -30,12 +30,12 @@ namespace TooGoodEngine {
 
 	glm::mat4 OrthographicCamera::GetTransform()
 	{
-		static constexpr glm::mat4 s_Identity = glm::identity<glm::mat4>();
+		constexpr glm::mat4 identity = glm::identity<glm::mat4>();
 
-		glm::mat4 rotationMatrix = glm::rotate(s_Identity, glm::radians(m_Rotation[0]), { 1.0f, 0.0f, 0.0f }) *
-			glm::rotate(s_Identity, glm::radians(m_Rotation[1]), { 0.0f, 1.0f, 0.0f }) *
-			glm::rotate(s_Identity, glm::radians(m_Rotation[2]), { 0.0f, 0.0f, 1.0f });
+		glm::mat4 rotationMatrix = glm::rotate(identity, glm::radians(m_Rotation[0]), { 1.0f, 0.0f, 0.0f }) *
+			glm::rotate(identity, glm::radians(m_Rotation[1]), { 0.0f, 1.0f, 0.0f }) *
+			glm::rotate(identity, glm::radians(m_Rotation[2]), { 0.0f, 0.0f, 1.0f });
 
-		return glm::translate(s_Identity, m_Position) * rotationMatrix;
+		return glm::translate(identity, m_Position) * rotationMatrix;
 	}
 }
