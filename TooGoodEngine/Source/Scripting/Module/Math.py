@@ -58,7 +58,7 @@ class Vector:
                 result[i] *= other[i]
 
             return Vector(result)
-        elif isinstance(other, float):
+        elif isinstance(other, float) or isinstance(other, int):
             result = [x * other for x in self.__data]
             return Vector(result)
         else:
@@ -76,7 +76,7 @@ class Vector:
                 result[i] /= other[i]
 
             return Vector(result)
-        elif isinstance(other, float):
+        elif isinstance(other, float) or isinstance(other, int):
             if other == 0:
                 raise ZeroDivisionError("division by zero")
 

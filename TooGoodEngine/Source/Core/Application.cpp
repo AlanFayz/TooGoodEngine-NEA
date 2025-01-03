@@ -109,14 +109,14 @@ namespace TooGoodEngine {
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 		
-		//if multiviewports are enabled we update the platforms with their viewports
+		//if multiple viewports are enabled we update the platforms with their viewports
 		//and then restore the current context
 		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
 		{
-			GLFWwindow* backup_current_context = glfwGetCurrentContext();
+			GLFWwindow* backupContext = glfwGetCurrentContext();
 			ImGui::UpdatePlatformWindows();
 			ImGui::RenderPlatformWindowsDefault();
-			glfwMakeContextCurrent(backup_current_context);
+			glfwMakeContextCurrent(backupContext);
 		}
 	}
 	void Application::_ShutdownImGui()
