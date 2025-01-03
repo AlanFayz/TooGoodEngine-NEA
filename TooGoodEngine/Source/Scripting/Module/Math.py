@@ -49,6 +49,9 @@ class Vector:
 
         return Vector(result)
 
+    def __neg__(self) -> 'Vector':
+        return Vector([-1 * x for x in self.__data])
+
     def __mul__(self, other) -> 'Vector':
         if isinstance(other, Vector):
             minSize = min(other.size(), self.size())

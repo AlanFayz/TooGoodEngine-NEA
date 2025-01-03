@@ -9,15 +9,15 @@ class Transform:
 	def __init__(self, handle):
 		self.__handle = handle
 
-	def translate(self, translation) -> None:
+	def translate(self, translation: any) -> None:
 		if self.__handle is not None:
 			TooGoodEngine.internal_translate_transform(self.__handle, translation[0], translation[1], translation[2])
 
-	def rotate(self, rotation) -> None:
+	def rotate(self, rotation: any) -> None:
 		if self.__handle is not None:
 			TooGoodEngine.internal_rotate_transform(self.__handle, rotation[0], rotation[1], rotation[2])
 
-	def scale(self, scale) -> None:
+	def scale(self, scale: any) -> None:
 		if self.__handle is not None:
 			TooGoodEngine.internal_scale_transform(self.__handle, scale[0], scale[1], scale[2])
 
