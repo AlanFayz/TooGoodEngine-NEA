@@ -280,7 +280,7 @@ namespace TooGoodEngine {
 		//going through each unique instance
 		for (auto& [instanceBuffer,  index]:m_Data.GeometryStorage)
 		{
-			//nothing to render no point in waisting a draw call.
+			//nothing to render no point in waiting a draw call.
 			if (instanceBuffer.GetInstanceCount() == 0)
 				continue;
 

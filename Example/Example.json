@@ -2,7 +2,7 @@
     "Project Name": "Example",
     "Project Directory": "../Example",
     "Asset Directory": "../Example\\Assets",
-    "Last Build Date": "2025-01-03 14:53:14",
+    "Last Build Date": "2025-01-03 15:13:08",
     "Scenes": {
         "": {
             "Scene Settings": {
@@ -11,18 +11,18 @@
                 "Winding Order": 2,
                 "Blending Source": 0,
                 "Blending Destination": 0,
-                "Filling Mode": 0,
+                "Filling Mode": 3,
                 "Level Of Detail": 0.18000000715255737,
                 "Gradient": 0.23999999463558197,
                 "Clear Color": [
                     1.0,
-                    0.5124555230140686,
-                    0.5124555230140686,
+                    1.0,
+                    1.0,
                     1.0
                 ],
                 "Bloom Enabled": true,
-                "Bloom Threshold": 8.069999694824219,
-                "Bloom Intensity": 0.6899999976158142,
+                "Bloom Threshold": 8.020000457763672,
+                "Bloom Intensity": 0.03999999910593033,
                 "Bloom Filter Radius": 0.004999999888241291
             },
             "Entities": {
@@ -106,12 +106,13 @@
                             0.0
                         ]
                     },
-                    "Mesh": "##Cube",
+                    "Mesh": "##Quad",
                     "Material": {
+                        "Ambient Image": 6829518503595925466,
                         "Ambient": [
-                            0.0,
-                            0.0,
-                            0.0,
+                            0.9395017623901367,
+                            0.03343423083424568,
+                            0.03343423083424568,
                             0.0
                         ],
                         "Albedo": [
@@ -122,12 +123,12 @@
                         ],
                         "Metallic": 0.0,
                         "Emission": [
-                            0.0,
-                            0.0,
-                            0.0,
+                            0.6370106935501099,
+                            0.10201239585876465,
+                            0.10201239585876465,
                             0.0
                         ],
-                        "Emission Factor": 0.0,
+                        "Emission Factor": 9.300000190734863,
                         "Roughness": 0.0
                     }
                 }

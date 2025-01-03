@@ -38,7 +38,7 @@ namespace TooGoodEngine {
 
 		glm::mat4 GetTransform();
 
-		virtual const glm::mat4 GetProjection() { return glm::ortho(m_Left, m_Right, m_Bottom, m_Top, -1.0f, 1.0f);  }
+		virtual const glm::mat4 GetProjection() { return glm::ortho(m_Left, m_Right, m_Bottom, m_Top, 0.1f, 1000.0f);  }
 		virtual const glm::mat4 GetView() { return glm::inverse(GetTransform()); }
 		virtual const glm::mat4 GetInverseProjection() { return glm::inverse(GetProjection()); }
 		virtual const glm::mat4 GetInverseView() { return GetTransform(); }

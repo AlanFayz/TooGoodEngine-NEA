@@ -275,6 +275,8 @@ namespace TooGoodEngine {
 		if (m_SceneView == SceneView::View2D)
 			return;
 
+		return;
+
 		glm::mat4 orientation = m_SceneCamera->GetOrientation();
 
 		OrthographicCameraData data;
