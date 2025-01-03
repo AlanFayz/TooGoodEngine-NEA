@@ -187,6 +187,7 @@ namespace TooGoodEngine {
 			m_CameraController2D.Update(delta);
 
 		m_SceneRenderer->Reset();
+
 		DrawAxis();
 
 

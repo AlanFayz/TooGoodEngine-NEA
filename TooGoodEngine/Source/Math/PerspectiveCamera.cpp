@@ -40,6 +40,23 @@ namespace TooGoodEngine {
 			glm::rotate(identity, glm::radians(m_Rotation[1]), { 0.0f, 1.0f, 0.0f });   
 	}
 
+	const glm::mat4 PerspectiveCamera::GetView()
+	{
+		glm::vec3 forward = glm::normalize(glm::vec3(
+			glm::sin(m_Rotation.y) * glm::cos(m_Rotation.x),
+			glm::sin(m_Rotation.x),
+			glm::cos(m_Rotation.y) * glm::cos(m_Rotation.x)
+		));
+
+		glm::vec3 right = glm::normalize(glm::cross(forward, glm::vec3(0.0f, 1.0f, 0.0f)));
+
+		glm::vec3 up = glm::cross(right, forward);
+
+		glm::vec3 target = m_Position + forward;
+
+		return glm::lookAt(m_Position, target, up);
+	}
+
 
 
 }

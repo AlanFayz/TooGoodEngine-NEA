@@ -39,9 +39,9 @@ namespace TooGoodEngine {
 
 		virtual const glm::vec3& GetCameraPosition() { return m_Position; }
 		virtual const glm::mat4 GetProjection() { return glm::perspective(glm::radians(m_Fov), m_AspectRatio, m_Near, m_Far);; }
-		virtual const glm::mat4 GetView() { return glm::inverse(GetTransform()); }
+		virtual const glm::mat4 GetView();
 		virtual const glm::mat4 GetInverseProjection() { return glm::inverse(GetProjection()); }
-		virtual const glm::mat4 GetInverseView() { return GetTransform(); }
+		virtual const glm::mat4 GetInverseView() { return glm::inverse(GetView()); }
 
 	private:
 		glm::vec3 m_Position;
