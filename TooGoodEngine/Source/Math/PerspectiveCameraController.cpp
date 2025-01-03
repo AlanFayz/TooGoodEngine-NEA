@@ -58,7 +58,7 @@ namespace TooGoodEngine {
 
         float sign = up.y < 0 ? -1.0f : 1.0f;
         m_Yaw -= XDifference;
-        m_Pitch = std::clamp(m_Pitch - YDifference, -89.0f, 89.0f);
+        m_Pitch = glm::clamp(m_Pitch - YDifference * sign, -89.0f, 89.0f);
 
         glm::vec3 movement(0.0f);
 
