@@ -79,8 +79,7 @@ namespace TooGoodEngine {
 			}
 
 			//calculates the delta of the current frame in seconds
-			delta = (double)m_Timer.EllapsedMilli();
-			delta /= 1000.0;
+			delta = m_Timer.ElapsedSeconds();
 		}
 	}
 

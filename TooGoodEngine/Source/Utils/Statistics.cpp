@@ -21,6 +21,6 @@ namespace TooGoodEngine {
 	}
 	ProfileScope::~ProfileScope()
 	{
-		Statistics::Add(m_Name, (double)m_Timer.EllapsedMilli());
+		Statistics::Add(m_Name, (double)m_Timer.ElapsedMilli());
 	}
 }

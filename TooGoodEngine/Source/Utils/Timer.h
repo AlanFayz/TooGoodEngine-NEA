@@ -11,7 +11,9 @@ namespace TooGoodEngine {
 		~Timer() = default;
 
 		void Start();
-		int64_t EllapsedMilli();
+		int64_t ElapsedMilli();
+		double ElapsedSeconds();
+		
 
 	private:
 		std::chrono::steady_clock m_Clock;
