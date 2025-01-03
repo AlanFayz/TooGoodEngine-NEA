@@ -29,7 +29,6 @@ namespace TooGoodEngine {
 		virtual void OnEvent(Event* event) override;
 
 		void SetSceneView(SceneView view);
-		void DrawAxis();
 
 		inline EntityTree& GetRegistry() { return m_Registry; }
 		inline Ref<Renderer> GetSceneRenderer() { return m_SceneRenderer; }

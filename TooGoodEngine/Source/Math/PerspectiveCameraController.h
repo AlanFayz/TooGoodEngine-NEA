@@ -28,6 +28,12 @@ namespace TooGoodEngine {
 		void SetCameraSpeed(float newSpeed);
 		void SetCameraSensitivity(float newSensitivity);
 
+		float& GetSensitivity() { return m_Sensitivity; }
+		void SetSensitivity(float sens) { m_Sensitivity = sens; }
+
+		float& GetSpeed() { return m_CameraSpeed; }
+		void SetSpeed(float sens) { m_CameraSpeed = sens; }
+
 	private:
 		Ref<PerspectiveCamera> m_Camera;
 

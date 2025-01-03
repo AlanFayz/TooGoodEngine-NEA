@@ -188,9 +188,6 @@ namespace TooGoodEngine {
 
 		m_SceneRenderer->Reset();
 
-		DrawAxis();
-
-
 		if (m_SceneView == SceneView::View3D)
 			m_SceneRenderer->Begin(m_SceneCamera.get());
 		else
@@ -269,43 +266,6 @@ namespace TooGoodEngine {
 	void Scene::SetSceneView(SceneView view)
 	{
 		m_SceneView = view;
-	}
-	void Scene::DrawAxis()
-	{
-		if (m_SceneView == SceneView::View2D)
-			return;
-
-		return;
-
-		glm::mat4 orientation = m_SceneCamera->GetOrientation();
-
-		OrthographicCameraData data;
-		OrthographicCamera ortho(data);
-
-		m_SceneRenderer->Begin(&ortho);
-
-		glm::mat3 rotationMatrix = glm::mat3(orientation);
-
-		glm::vec3 eulerAngles = glm::eulerAngles(glm::quat_cast(rotationMatrix));
-
-		glm::vec3 screenOffset = { 0.8f, 0.8f, 0.0f }; 
-
-		constexpr glm::mat4 identity = glm::identity<glm::mat4>();
-
-		glm::mat4 transformX = glm::translate(identity, screenOffset) * glm::rotate(identity, eulerAngles[0], {1.0f, 0.0f, 0.0f}) *
-			glm::scale(identity, { 0.3f, 0.02f, 0.02f });
-		m_SceneRenderer->Submit(0, transformX, m_Red);
-
-		glm::mat4 transformY = glm::translate(identity, screenOffset) * glm::rotate(identity, eulerAngles[1], { 0.0f, 1.0f, 0.0f }) *
-			glm::scale(identity, { 0.3f, 0.02f, 0.02f });
-		m_SceneRenderer->Submit(0, transformY, m_Green);
-
-		glm::mat4 transformZ = glm::translate(identity, screenOffset) * glm::rotate(identity, eulerAngles[2], { 0.0f, 0.0f, 1.0f }) *
-			glm::scale(identity, { 0.3f, 0.02f, 0.02f });
-		m_SceneRenderer->Submit(0, transformZ, m_Blue);
-
-		m_SceneRenderer->End();
-
 	}
 	Entity Scene::Add(const std::string& name)
 	{

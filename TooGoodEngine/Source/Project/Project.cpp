@@ -165,6 +165,7 @@ namespace TooGoodEngine {
 		RenderSettings renderSettings = scene->GetSceneRenderer()->GetSettings();
 
 		auto& jsonSettings = jsonScene["Scene Settings"];
+		auto& controller = scene->GetSceneCameraController();
 
 		renderSettings.DepthTesting  = (DepthTestOption)jsonSettings["Depth Testing"].get<int>();
 		renderSettings.WindingOrder  = (WindingOrderOption)jsonSettings["Winding Order"].get<int>();
@@ -188,6 +189,12 @@ namespace TooGoodEngine {
 		}
 
 		scene->GetSceneRenderer()->ChangeSettings(renderSettings);
+		
+		if (jsonSettings.contains("Camera Sensitivity"))
+		{
+			controller.SetSensitivity(jsonSettings["Camera Sensitivity"].get<float>());
+			controller.SetSpeed(jsonSettings["Camera Speed"].get<float>());
+		}
 	}
 
 	void Project::SaveScene(JsonWriter& writer, const Ref<Scene>& scene)
@@ -195,6 +202,8 @@ namespace TooGoodEngine {
 		SaveSceneSettings(writer, scene);
 
 		auto& registry = scene->GetRegistry();
+
+
 
 		//go through each entity in the registry.
 		for (EntityID entityId = 0; entityId < registry.GetCount(); entityId++)
@@ -289,6 +298,8 @@ namespace TooGoodEngine {
 	{
 		//currently only contains renderer settings. this may change in the future.
 		auto& renderSettings = scene->GetSceneRenderer()->GetSettings();
+		auto& controller = scene->GetSceneCameraController();
+
 		std::string sceneName = scene->GetName();
 
 		std::array<float, 4> clearColor = { renderSettings.ClearColor[0], renderSettings.ClearColor[1], renderSettings.ClearColor[2], renderSettings.ClearColor[3] };
@@ -311,6 +322,10 @@ namespace TooGoodEngine {
 		writer.WriteGeneric({ "Scenes", sceneName, "Scene Settings", "Bloom Threshold" },     renderSettings.Threshold);
 		writer.WriteGeneric({ "Scenes", sceneName, "Scene Settings", "Bloom Intensity" },     renderSettings.Intensity);
 		writer.WriteGeneric({ "Scenes", sceneName, "Scene Settings", "Bloom Filter Radius" }, renderSettings.FilterRadius);
+		writer.WriteGeneric({ "Scenes", sceneName, "Scene Settings", "Camera Sensitivity" },  controller.GetSensitivity());
+		writer.WriteGeneric({ "Scenes", sceneName, "Scene Settings", "Camera Speed" },		 controller.GetSpeed());
+
+
 	}
 
 	void Project::SaveAssets(JsonWriter& writer)

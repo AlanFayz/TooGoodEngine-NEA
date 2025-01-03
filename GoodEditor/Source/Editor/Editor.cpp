@@ -170,17 +170,12 @@ namespace GoodEditor {
 			return;
 		}
 		
-		static float s_CameraSpeed = 100.0f;
-		if (ImGui::DragFloat("Camera Speed", &s_CameraSpeed, 0.01f, 0.0f, FLT_MAX / 2.0f))
+		if (ImGui::DragFloat("Camera Speed", &currentScene->GetSceneCameraController().GetSpeed(), 0.01f, 0.0f, FLT_MAX / 2.0f))
 		{
-			currentScene->GetSceneCameraController().SetCameraSpeed(s_CameraSpeed);
-			currentScene->GetSceneCameraController2D().SetCameraSpeed(s_CameraSpeed);
 		}
 
-		static float s_Sensitivity = 1.0f;
-		if (ImGui::DragFloat("Camera Sensitivity", &s_Sensitivity, 0.01f, 0.0f, FLT_MAX / 2.0f))
+		if (ImGui::DragFloat("Camera Sensitivity", &currentScene->GetSceneCameraController().GetSensitivity(), 0.01f, 0.0f, FLT_MAX / 2.0f))
 		{
-			currentScene->GetSceneCameraController().SetCameraSensitivity(s_Sensitivity);
 		}
 
 		ImGui::End();
