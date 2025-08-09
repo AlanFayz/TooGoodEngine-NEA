@@ -19,16 +19,6 @@ git clone --recursive https://github.com/AlanFayz/TooGoodEngine-NEA.git DesiredF
 2. After this navigate to `Scripts/` and run the script to generate project files.
 3. A visual studio solution is generated in the root of the project you can simply double click to open and build.
 
-There are a few configurations to be known about. The first few is your standard Debug and Release which is self explanatory,
-and the third is Dist which is the build configuration used to build a project and run it in the runtime. It will strip a lot of
-debug code such as timings (debating whether this would be useful in Dist), debug logging and a few others. If you
-do use the Dist configuration whilst in the editor some stuff may not appear such as timings, logging etc... this is normal however
-I would recommend staying in Release when using the editor.
-
-## Cheat Sheet
-TODO (will contain all functions available in scripting library and how to navigate and use all the gui elements).
-Currently there is an example project located in the `Example/` directory, this will also grow as I add new features.
-
 ## Attributions
 1. <a href="https://www.flaticon.com/free-icons/obj" title="obj icons">Obj icons created by Freepik - Flaticon</a>
 2. <a target="_blank" href="https://icons8.com/icon/53386/image">Image</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
