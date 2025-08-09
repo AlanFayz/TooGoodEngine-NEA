@@ -1,3 +1,10 @@
+## Project
+I spent a little over a month working on the technical solution to my coursework, my goal was to prioritize performance and creating my own systems to handle data (such as my own renderer, ecs, etc...)
+
+![Screenshot_20250809_232226_Brave](https://github.com/user-attachments/assets/03d20d8a-8777-4b8d-92b9-4e5e28ebbea8)
+
+WASD QE to move around, hold x and use mouse to look in the view panel.
+
 ## Prerequisites
 1. Windows OS 
 2. Visual Studio 
